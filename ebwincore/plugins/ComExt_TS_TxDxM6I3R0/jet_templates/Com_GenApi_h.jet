@@ -1,0 +1,411 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_GenApi_h"
+        imports="dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+         java.io.IOException
+         dreisoft.tresos.com.generator.ComRxIPduType
+         dreisoft.tresos.com.generator.ComRxSignalExtType
+         dreisoft.tresos.com.generator.ComRxSignalType
+         dreisoft.tresos.com.generator.Com_ConfigLayoutType
+         dreisoft.tresos.com.generator.Com_ConfigType
+         dreisoft.tresos.com.generator.output.GenApiHelper
+         dreisoft.tresos.com.generator.ComCfgDataModel
+         dreisoft.tresos.com.generator.types.MapReceiveSignalType
+         dreisoft.tresos.lib2.api.internal.Assert
+         dreisoft.tresos.com.generator.typefactories.ComTypeVariantFactories
+         dreisoft.tresos.com.generator.types.FilterAlgorithmType
+         dreisoft.tresos.com.generator.types.SignalTypeType
+         dreisoft.tresos.com.generated.operationstatus.GeneratorOperationStatus" %>
+<%
+   JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final String includeGuardName = "COM_GENAPI_H";
+    boolean comGenerationSuccessful = !context.gen.isVerifying();
+
+   // get post-build data model
+    Com_ConfigLayoutType comPBCfgDataModel = (Com_ConfigLayoutType) context.gen.getVariable("comPBCfgDataModel", Com_ConfigLayoutType.class, null);
+
+    ComCfgDataModel comCfgDataModel = (ComCfgDataModel) context.gen.getVariable("comCfgDataModel", ComCfgDataModel.class, null);
+
+%>
+
+/*
+ * MISRA-C:2012 Deviation List
+ *
+ * MISRAC2012-1) Deviated Rule: 20.10 (advisory)
+ * The # and ## preprocessor operators should not be used.
+ *
+ * Reason:
+ * ## operator is used for typename generation and improves readability
+ * of code.
+ *
+ */
+
+<%@ include file="head.h.inc" %>
+<%
+if(comCfgDataModel.isComGeneratedRcvSigEnable()) {
+    Com_ConfigType rootConfig = comPBCfgDataModel.Com_RootConfig;
+
+    final boolean filterReceiverEnable = comCfgDataModel.isComFilterReceiverEnable();
+    final long rxPduStatusBase = rootConfig.ComRxIPduStatusBase.getValue();
+
+    final String comRcvSigMacroExtPrefix = comCfgDataModel.getComRcvSigMacroExtPrefix();
+
+    final long comRxTimeoutSignalStatusQueueBase = comCfgDataModel.isComRxSignalBasedDM()
+        ? rootConfig.ComRxTimeoutSignalStatusQueueBase.getValue()
+        : ComTypeVariantFactories.RAM_IDX.createInvalidValue().getValue();
+%>
+/*==================[includes]==============================================*/
+
+#include <Com_GenApi_Static.h>
+#include <Com_Api_Static.h>
+#include <Com_Lcfg_Static.h>
+#include <SchM_Com.h>
+#include <TSAutosar.h>
+#include <TSMem.h>
+
+/*==================[macros]================================================*/
+
+<%
+if(comPBCfgDataModel.ComRxSignal != null) {
+   for(ComRxSignalType signal : comPBCfgDataModel.ComRxSignal.get()) {
+       if(signal.getType() != SignalTypeType.UINT8_DYN && signal.getExt() != null) {
+%>
+#define <%= GenApiHelper.getReceiveFunctionName( signal ) %>U(SignalDataPtr) <%= GenApiHelper.getReceiveFunctionName( signal ) %>(SignalDataPtr)
+#define <%= GenApiHelper.getReceiveFunctionName( signal ) %>u(SignalDataPtr) <%= GenApiHelper.getReceiveFunctionName( signal ) %>(SignalDataPtr)
+<%
+       }
+   }
+}
+%>
+
+/**
+ * \brief Set the leading bits of a signed data element to 1.
+ *
+ * \param sigDataPtr A pointer to the signal data
+ * \param typeBits The number of bits of the data type
+ * \param sigBits The number of used bits used by the data element
+ * \param data A pointer to the data element
+ */
+
+/* Deviation MISRAC2012-1 <START> */
+#define COM_FILL_LEADING_BITS( sigDataPtr, typeBits, sigBits, data) \
+   do { \
+      uint ## typeBits const MSB = \
+        *((P2VAR (uint ## typeBits, AUTOMATIC, COM_APPL_DATA))(sigDataPtr)) >> ((sigBits) - 1U); \
+      if (MSB == 1U)\
+      { \
+        uint ## typeBits mask = (uint ## typeBits)(1U << ((typeBits) - 1U)) - 1U; \
+        mask = (uint ## typeBits)(mask << (sigBits)); \
+        *((P2VAR (uint ## typeBits, AUTOMATIC, COM_APPL_DATA))(sigDataPtr)) |= mask; \
+      } \
+   } while(0)
+
+/**
+ * \brief Set the negative value of a signed data element of size 1 bit.
+ *
+ * \param sigDataPtr A pointer to the signal data
+ * \param typeBits The number of bits of the data type
+ * \param data A pointer to the data element
+ */
+#define COM_FILL_LEADING_BITS_BITSIZE_1( sigDataPtr, typeBits, data) \
+   do { \
+      *((P2VAR (sint ## typeBits, AUTOMATIC, COM_APPL_DATA))(data)) = \
+      *((P2VAR (sint ## typeBits, AUTOMATIC, COM_APPL_DATA))(sigDataPtr)) * -1; \
+   } while(0)
+/* Deviation MISRAC2012-1 <STOP> */
+
+/*------------------[Com_ReceiveRxSignal]-----------------------------------*/
+
+<%
+if(comPBCfgDataModel.ComRxSignal != null) {
+    for(final ComRxSignalType signal : comPBCfgDataModel.ComRxSignal.get()) {
+        ComRxSignalExtType ext = signal.getExt();
+        if(ext != null) {
+    final SignalTypeType signalType = signal.getType();
+    if(signalType != SignalTypeType.UINT8_DYN) {
+    final boolean isSigned = signalType == SignalTypeType.SINT8
+                    || signalType == SignalTypeType.SINT16
+                    || signalType == SignalTypeType.SINT32;
+    final long filterType = filterReceiverEnable ? signal.ComSignalBase.ComFilterConf.ComFilterType.getValue() : -1;
+    final ComRxIPduType pdu = signal.getIPdu();
+    final boolean ramBufferRefIsValid = signal.ComSignalBase.ComFilterConf.ComFilterSignalValueRef != null
+     && signal.ComSignalBase.ComFilterConf.ComFilterSignalValueRef.getValue() != signal.ComSignalBase.ComFilterConf.ComFilterSignalValueRef.getMaxValue();
+    final long filterSignalValueRef = ramBufferRefIsValid ? signal.ComSignalBase.ComFilterConf.ComFilterSignalValueRef.getValue() : 0;
+    final long bits = signal.getBitSize();
+    final long bitPosition = signal.getSignalBitPosition();
+
+    Assert.assertFalse("Bit size of signal '".concat( signal.getSignalName() ).concat(" is 0"), bits == 0);
+%>
+/**
+ * Receive signal "<%= signal.getSignalName() %>"
+ *
+ * \param SignalDataPtr A pointer to the signal data.
+ */
+#define <%= GenApiHelper.getReceiveMacroName( signal ) %>( SignalDataPtr ) \
+   do { \
+<% if( signal.isSigRxDataTimeoutActionReplace() ) { %>
+      uint8 status; \
+      boolean takeInitVal; \
+<%
+    if( comCfgDataModel.isComRxSignalBasedDM() && signal.isSigDMEnabled() ) {
+%>
+      TS_AtomicAssign8(status, Com_gDataMemPtr[<%= comRxTimeoutSignalStatusQueueBase + signal.getExt().RxSigDMQueueRef.getValue() / 4 %>U]); \
+      takeInitVal = ((uint8)(1U << <%= ( signal.getExt().RxSigDMQueueRef.getValue() % 4 ) * 2 %>) == (status & (uint8)(1U << <%= ( signal.getExt().RxSigDMQueueRef.getValue() % 4 ) * 2 %>))); \
+<% } else { // if( comCfgDataModel.isComRxSignalBasedDM() && signal.isSigDMEnabled() ) 
+      final long pduId = pdu.getHandleId();
+%>
+      TS_AtomicAssign8(status, Com_gDataMemPtr[<%= rxPduStatusBase + pduId %>U]); \
+      takeInitVal = ((uint8)0x04U == (uint8)(status & 0x04U));<% /* 0x04 == COM_RXPDU_RXDMTIMEOUT */ %> \
+<% } // if( signal.isSigDMEnabled() ) %>
+<% } // if( signal.isSigRxDataTimeoutActionReplace() ) %>
+<%
+      switch(signalType) {
+      case BOOLEAN:
+%>
+<% if( filterType == FilterAlgorithmType.NEVER.getValue() ) { %>
+         *((P2VAR (<%= signalType.getTypedef() %>, AUTOMATIC, COM_APPL_DATA)) (SignalDataPtr) ) = (boolean)(<%= signal.getInitValue()[0] %>U); \
+<% } else { // if( filterType == FilterAlgorithmType.NEVER.getValue() ) %>
+<% if( signal.isSigRxDataTimeoutActionReplace() ) { %>
+         if( takeInitVal == TRUE ) { \
+            *((P2VAR (<%= signalType.getTypedef() %>, AUTOMATIC, COM_APPL_DATA)) (SignalDataPtr) ) = (boolean)(<%= signal.getInitValue()[0] %>U); \
+         } else \
+<% } // if( signal.isSigRxDataTimeoutActionReplace() ) { %>
+<%
+            if( ramBufferRefIsValid ) {
+%>
+         { \
+            TS_GetBit( \
+               &Com_gDataMemPtr[<%= rootConfig.ComBufferBaseBool.getValue() + filterSignalValueRef / 8 %>U], \
+               <%= filterSignalValueRef % 8 %>U, uint8, *(P2VAR (boolean, AUTOMATIC, COM_APPL_DATA)) (SignalDataPtr) \
+               ); \
+         } \
+<%
+            } else { // if(!invalidRamBufferRef)
+%>
+        { \
+          *((P2VAR (boolean, AUTOMATIC, COM_APPL_DATA))(SignalDataPtr)) = ((Com_gDataMemPtr[<%= pdu.ComIPduValueRef.getValue() + (bitPosition / 8) %>U] & (uint8)<%= 1 << (bitPosition % 8) %>U) != 0U); \
+        } \
+<%
+            } // if(!ramBufferRefIsValid)
+%>
+<% } // if( filterType == FilterAlgorithmType.NEVER.getValue() ) %>
+<%
+         break;
+      case UINT8_DYN:
+          break;
+      case UINT8_N:
+%>
+<%
+    long[] initValue = signal.getInitValue();
+    final int bytes = (int)bits / 8;
+    final short initValues[] = new short[bytes];
+
+    int index = 0;
+    for( long value : initValue ) {
+      initValues[index++] = (short)(value & 0xFFL);
+  }
+%>
+      { \
+<% if( filterType == FilterAlgorithmType.NEVER.getValue() ) { %>
+         uint8 initValue[] = { \
+<%
+            for (int i = 0; i < bytes; ++i) {
+%>
+            <%= i == 0 ? "" : ", " %><%= initValues[i] %>U \
+<%
+            }
+%>
+         }; \
+         TS_MemCpy((SignalDataPtr), &initValue[0], <%= bytes %>); \
+<% } else { // if( filterType == FilterAlgorithmType.NEVER.getValue() ) %>
+<% if( signal.isSigRxDataTimeoutActionReplace() ) { %>
+         if( takeInitVal == TRUE ) { \
+            uint8 initValue[] = { \
+<%
+    for (int i = 0; i < bytes; ++i) {
+%>
+               <%= i == 0 ? "" : ", " %><%= initValues[i] %>U \
+<%
+    }
+%>
+               }; \
+            TS_MemCpy((SignalDataPtr), &initValue[0], <%= bytes %>); \
+         } else \
+<% } // if( signal.isSigRxDataTimeoutActionReplace() ) %>
+         { \
+            COM_RCV_RX_SIG_GENERATED_SCHMENTER(); \
+            TS_MemCpy((SignalDataPtr), \
+               &Com_gDataMemPtr[<%= pdu.ComIPduValueRef.getValue() + bitPosition / 8 %>U], \
+               <%= bytes %> \
+               ); \
+            COM_RCV_RX_SIG_GENERATED_SCHMEXIT(); \
+         } \
+<% } // if( filterType == FilterAlgorithmType.NEVER.getValue() ) %>
+      } \
+<%
+         break;
+      default:
+%>
+<% if( filterType == FilterAlgorithmType.NEVER.getValue() ) { %>
+      *((P2VAR (<%= signalType.getTypedef() %>, AUTOMATIC, COM_APPL_DATA)) (SignalDataPtr) ) = (<%= signalType.getTypedef() %>)(<%= signal.getInitValue()[0] %><%= GenApiHelper.getSignalValuePostfix(signalType) %>); \
+<% } else { // if( filterType == FilterAlgorithmType.NEVER.getValue() ) %>
+<%
+if( signal.isSigRxDataTimeoutActionReplace() ) { %>
+      if( takeInitVal == TRUE ) { \
+         *((P2VAR (<%= signalType.getTypedef() %>, AUTOMATIC, COM_APPL_DATA)) (SignalDataPtr) ) = (<%= signalType.getTypedef() %>)(<%= signal.getInitValue()[0] %><%= GenApiHelper.getSignalValuePostfix(signalType) %>); \
+      } else \
+<% } // if( signal.isSigRxDataTimeoutActionReplace() ) { %>
+<%         if( (ramBufferRefIsValid) && ( !signalType.is64BitDataType() ) ) { %>
+      { \
+         CONSTP2VAR( <%= signalType.getTypedef() %>, AUTOMATIC, COM_VAR ) bufferBase = \
+            (P2VAR( <%= signalType.getTypedef() %>, AUTOMATIC, COM_VAR )) \
+            ((P2VAR( void, AUTOMATIC, COM_VAR )) \
+            & Com_gDataMemPtr[ Com_ConfigLayout.Com_RootConfig.<%= GenApiHelper.getBufferBaseName(signalType) %> ]); \
+         COM_RCV_RX_SIG_GENERATED_ATOMIC_ASSIGN<%= signalType.getSignificantBits() %>(*((P2VAR (<%= signalType.getTypedef() %>, AUTOMATIC, COM_APPL_DATA)) (SignalDataPtr)), bufferBase[ <%= filterSignalValueRef %> ]); \
+      } \
+<%         } else { //if( ramBufferRefIsValid ) %>
+      { \
+<%
+final String extractCall = GenApiHelper.makeComEbExtractCall(
+         pdu.ComIPduValueRef.getValue(),
+         signal.getEndianess(),
+         bitPosition,
+         signal.getConvertedBitPosition(),
+         bits
+         )
+     ;
+if (!signalType.is64BitDataType())
+{
+    final long occupiedBytes = GenApiHelper.getBytesOccupiedBySignal(signal.getConvertedBitPosition(), bits);
+    final String unsignedType;
+    if(occupiedBytes <= 1) {
+        unsignedType = "uint8";
+    } else if(occupiedBytes <= 2) {
+        unsignedType = "uint16";
+    } else if(occupiedBytes <= 4) {
+        unsignedType = "uint32";
+    } else {
+        unsignedType = "uint32";
+    }
+    final String realType = signalType.getTypedef();
+%>
+         <%= unsignedType %> val; \
+         COM_RCV_RX_SIG_GENERATED_SCHMENTER(); \
+         val = <%= extractCall %>; \
+         *((P2VAR (<%= realType %>, AUTOMATIC, COM_APPL_DATA)) (SignalDataPtr) ) = <%= unsignedType.equals( realType ) ? "" : String.format( "(%s)", realType ) %>val; \
+         COM_RCV_RX_SIG_GENERATED_SCHMEXIT(); \
+<%
+         if( isSigned && bits != signalType.getSignificantBits() ) {
+         if( bits == 1 ) {
+%>
+         COM_FILL_LEADING_BITS_BITSIZE_1( (SignalDataPtr), <%= signalType.getSignificantBits() %>, (SignalDataPtr) ); \
+<%
+         }
+         else
+         {
+%>
+         COM_FILL_LEADING_BITS( (SignalDataPtr), <%= signalType.getSignificantBits() %>, <%= bits %>U, (SignalDataPtr) ); \
+<%
+         }
+         } // if( isSigned && bits != signalType.getSignificantBits() ) {
+} // else if (!signalType.is64BitDataType())
+else
+{ // signalType.is64BitDataType
+%>
+        (void)Com_ReceiveSignal<%= comCfgDataModel.getComMapReceiveSignal() == MapReceiveSignalType.Com_ReceiveSignalGeneric ? "" : "Generic" %>(<%= signal.getHandleId() %>U, SignalDataPtr); \
+<%
+}
+%>
+      } \
+<%         } // if( ramBufferRefIsValid ) %>
+<% } // if( filterType == FilterAlgorithmType.NEVER.getValue() ) %>
+<%
+      break;
+   } // switch(signal.getType())
+%>
+   } while( 0 )
+<% if( comRcvSigMacroExtPrefix != null ) { %>
+#define <%= comRcvSigMacroExtPrefix.concat(signal.getSignalName())%>(SignalDataPtr) \
+   <%= GenApiHelper.getReceiveMacroName( signal ) %>(SignalDataPtr)
+#define <%= comRcvSigMacroExtPrefix.concat(Integer.toString( signal.getHandleId())) %>(SignalDataPtr) \
+   <%= GenApiHelper.getReceiveMacroName( signal ) %>(SignalDataPtr)
+#define <%= comRcvSigMacroExtPrefix.concat(Integer.toString( signal.getHandleId())) %>u(SignalDataPtr) \
+   <%= GenApiHelper.getReceiveMacroName( signal ) %>(SignalDataPtr)
+#define <%= comRcvSigMacroExtPrefix.concat(Integer.toString( signal.getHandleId())) %>U(SignalDataPtr) \
+   <%= GenApiHelper.getReceiveMacroName( signal ) %>(SignalDataPtr)
+<% } // if( comRcvSigMacroExtPrefix != null ) { %>
+
+<%
+         }
+      }
+   }
+}
+%>
+
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/* start data section declaration */
+#define COM_START_SEC_CODE
+#include <Com_MemMap.h>
+
+/*------------------[Com_ReceiveRxSignal]-----------------------------------*/
+
+<%
+if(comPBCfgDataModel.ComRxSignal != null) {
+   for(ComRxSignalType signal : comPBCfgDataModel.ComRxSignal.get()) {
+       if(signal.getType() != SignalTypeType.UINT8_DYN && signal.getExt() != null) {
+%>
+/**
+ * \brief Com receive function for rx signal '<%= signal.getSignalName() %>'
+ */
+extern FUNC(uint8,COM_CODE) <%= GenApiHelper.getReceiveFunctionName( signal ) %>
+(
+   P2VAR(void, AUTOMATIC, COM_APPL_DATA) SignalDataPtr
+);
+
+<%
+       }
+   }
+}
+%>
+
+/* stop data section declaration */
+#define COM_STOP_SEC_CODE
+#include <Com_MemMap.h>
+
+/*==================[internal function definitions]=========================*/
+
+
+<%
+} // if(comCfgDataModel.isComGeneratedRcvSigEnable()) {
+%>
+<%@ include file="foot.h.inc" %>
+<%
+if (comGenerationSuccessful == true)
+{
+   context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE( "Com_GenApi.h" ) );
+}
+else {
+   return "";
+}
+%>

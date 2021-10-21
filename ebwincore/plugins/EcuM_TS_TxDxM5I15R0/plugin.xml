@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+    <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="EcuM_TS_TxDxM5I15R0_ModuleId"
+             name="EcuM_TS_TxDxM5I15R0 Module">
+    <module id="EcuM_TS_TxDxM5I15R0"
+            label="EcuM"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-ModeManagement: AUTOSAR EcuM State Manager"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="5"
+            swVersionMinor="15"
+            swVersionPatch="7"
+            swVersionSuffix="B439717"
+            specVersionMajor="3"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="EcuM"
+            categoryLayer="System Services"
+            categoryCategory="Mode Management"
+            categoryComponent="ECUC">
+      <cluster name="Basic Services"/>
+<cluster name="Mode Management Stack"/>
+    </module>
+  </extension>
+
+
+  
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="EcuM_TS_TxDxM5I15R0_ConfigId"
+             name="EcuM_TS_TxDxM5I15R0 Configuration">
+    <configuration moduleId="EcuM_TS_TxDxM5I15R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/EcuM.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the recommended configuration EcuMRecConfiguration -->
+        <resource value="config_ext/EcuMRecConfiguration.xdm" type="xdm" id="res_EcuMRecConfiguration"/>
+        <recconfig
+          name="EcuMRecConfiguration"
+          default="true"
+          description="EcuM basic functionality for wakeup sources, shutdown causes, shutdown targets and reset modes."
+          resourceId="res_EcuMRecConfiguration"
+          path="ASPath:/TS_TxDxM5I15R0/EcuMRecConfiguration"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM5I15R0/EcuM"/>
+      </data>
+
+      <editor id="EcuM_TS_TxDxM5I15R0_EditorId"
+              label="Default"
+              tooltip="ACG-ModeManagement: AUTOSAR EcuM State Manager">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM5I15R0/EcuM"/>
+          <parameter name="title" value="EcuM"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+    <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_EcuM_TS_TxDxM5I15R0"
+           moduleId="EcuM_TS_TxDxM5I15R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.EcuMTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+    <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="EcuM_TS_TxDxM5I15R0_GeneratorId"
+             name="EcuM_TS_TxDxM5I15R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="EcuM_TS_TxDxM5I15R0_TemplateBasedCodeGeneratorId"
+               moduleId="EcuM_TS_TxDxM5I15R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate,generate_macros"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+
+      <!-- swcd AUTOSAR 3.2 modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_asr32_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_asr32_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_asr32_swcd,verify_asr32_swcd" value="generate_asr32_swcd"/>
+
+      <!-- swcd AUTOSAR 4.0 modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_asr40_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_asr40_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_asr40_swcd,verify_asr40_swcd" value="generate_asr40_swcd"/>
+    </generator>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_EcuM_TS_TxDxM5I15R0"
+        name="EcuM service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="EcuM" />
+        <parameter name="req://dem.events:1" value="resources/EcuM_Dem_Events.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/EcuM_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.EcuM_TS_TxDxM5I15R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+
+
+
+  <!-- Generator used to generate all code-templates within a directory the code-templates do all have access to the
+       name of the generated variant but the name of the generated file cannot be influenced directly - if required,
+       renaming a file can e.g. be done by a script run as post-generator
+    -->
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+              id="EcuM_TS_TxDxM5I15R0_Gen_Template">
+    <generator moduleId="EcuM_TS_TxDxM5I15R0"
+               id="EcuM_TS_TxDxM5I15R0_Gen_TemplateId"
+               modes="generate,Template_withPostRename,verify"
+               class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator">
+      <parameter name="mode_type" mode="Template_withPostRename" value="generate"/>
+
+      <!-- common template path parameters -->
+      <parameter name="templates" mode="generate,verify" value="generate_var,generate_macros"/>
+
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+
+    </generator>
+  </extension>
+
+  <!-- NGGenerator which calls a common ant-script within the ant-script it is also possible to call tresos Studio
+       generators in the example-script, a single code-template file is generated with a custom file-name (depending
+       on the variants name)
+    -->
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+    id="EcuM_TS_TxDxM5I15R0_Gen_NG">
+  <generator class="dreisoft.tresos.generator.ng.api.NGGenerator"
+    id="EcuM_TS_TxDxM5I15R0_Gen_NGId"
+    moduleId="EcuM_TS_TxDxM5I15R0"
+    modes="generate,NG_PostfixAndMove"
+    step="post">
+
+    <!-- Specify the ant build script as parameter to the NGGenerator. -->
+    <parameter name="buildfile" value="resources/generator.xml"/>
+
+    <!-- only having this parameter set to true, a generator is called once for each variant! -->
+    <parameter name="variantAware" value="true"/>
+  </generator>
+  </extension>
+
+</plugin>

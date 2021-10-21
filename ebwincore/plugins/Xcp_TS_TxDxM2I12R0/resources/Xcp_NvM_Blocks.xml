@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nvm:blocks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/nvm.blocks_1.xsd"
+    xmlns:nvm="http://www.tresos.de/_project/AutoCore/nvm.blocks_1.xsd">
+    
+    <block name="NVM_BLOCK_XCP_DAQ_LISTS">
+      <updateReference value="as:modconf('Xcp')[1]/XcpGeneral/XcpStoreDaqNvMBlock"/>
+      <!-- !LINKSTO Xcp.RamOptimizations.XcpEnableDaqOptimization.False.NvMBlock,1 -->
+      <enable type="XPATH" value="as:modconf('Xcp')[1]/XcpGeneral/XcpStoreDaqSupported = 'true' and as:modconf('Xcp')[1]/RamOptimizations/XcpEnableDaqOptimization = 'false'"/>
+      <type value="native" />
+      <crc value="CRC16" />
+      <length value="0" />
+      <calcRamBlockCrc value="false" />
+      <ramBlockDataAddress value="&amp;Xcp_DaqLists" />
+      <readonly value="false" />
+      <resistantToChangedSw value="false" />
+      <restoreAtStart value="true" />
+      <writeOnlyOnce value="false" />
+      <writingPriority value="2" />
+      <singleBlockCallback value="Xcp_NvmStoreDaqSingleCbk"/>
+    </block>
+
+    <block name="NVM_BLOCK_XCP_DAQ_LISTS">
+      <updateReference value="as:modconf('Xcp')[1]/XcpGeneral/XcpStoreDaqNvMBlock"/>
+      <!-- !LINKSTO Xcp.RamOptimizations.XcpEnableDaqOptimization.True.NvMBlock,1 -->
+      <enable type="XPATH" value="as:modconf('Xcp')[1]/XcpGeneral/XcpStoreDaqSupported = 'true' and as:modconf('Xcp')[1]/RamOptimizations/XcpEnableDaqOptimization = 'true'"/>
+      <type value="native" />
+      <crc value="CRC16" />
+      <length value="0" />
+      <calcRamBlockCrc value="false" />
+      <readonly value="false" />
+      <resistantToChangedSw value="false" />
+      <restoreAtStart value="true" />
+      <writeOnlyOnce value="false" />
+      <writingPriority value="2" />
+      <singleBlockCallback value="Xcp_NvmStoreDaqSingleCbk"/>
+      <blockUseSyncMechanism value="true" />
+      <readRamBlockFromNvCallback value="Xcp_ReadRamBlockFromNvMNativeCbk"/>
+      <writeRamBlockToNvCallback value="Xcp_WriteRamBlockToNvMNativeCbk"/>
+    </block>
+
+</nvm:blocks>

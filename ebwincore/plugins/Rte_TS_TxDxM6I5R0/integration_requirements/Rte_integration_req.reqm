@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.Rte.EB_INTREQ_Rte_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      Timeout monitoring for intra-ECU transmission acknowledgment not supported for
+      non-blocking calls.
+      Timeout monitoring for intra-ECU transmission acknowledgment is only supported in
+      connection with a wait point and not with non-blocking <code>Rte_Feedback</code>
+      and <code>Rte_IFeedback</code> calls.
+      </description>
+      <rationale>
+      Without using a wait point, the implementation would have to use alarm callbacks to
+      realize the timeout detection. Alarm callbacks shall only be used in scalability classes 1
+      (OS242).
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Rte.EB_INTREQ_Rte_0006</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      The port interface mapping is not applied for inter-ECU communication if data elements
+      are directly mapped to Com signals.
+      A port interface mapping is specified for a connector or for a chain of connectors from
+      a provide port to a require port where both ports are located on different ECUs. In this
+      case the port interface mapping cannot be applied if the data elements are directly mapped
+      to COM signals. The port interface mapping is only applied if the data elements are mapped
+      to system signals in the system description.
+      </description>
+      <rationale>
+      If data elements are directly mapped to COM signals, the information about the port
+      interface mapping gets lost. In this case, the integrator must map the signals by hand
+      according to the specified port interface mapping. Only if the system signal mapping is
+      used, the Rte can calculate which system signal corresponds to which data element on the
+      basis of the port interface mapping.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Rte.EB_INTREQ_Rte_0007</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      <code>Rte_IsUpdated</code> might return true even if no data has been updated since last
+      read.
+      If the runnable that calls <code>Rte_Write()</code>/<code>Rte_IWrite</code> can
+      interrupt the runnable that calls <code>Rte_Read()</code>, it might happen that the update
+      flag is set, although the receiver has already read the updated data.
+      </description>
+      <rationale>
+      Due to performance reasons, no data consistency mechanisms are applied for the sequence
+      of writing data and setting the update flag.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Rte.EB_INTREQ_Rte_0009</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      Mode disabling dependencies for queued ExternalTriggerOccurredEvents are not
+      supported.
+      If a RteTriggerSourceQueueLength greater than 1 is configured for a Trigger port, the
+      Rte requires that no mode disabling dependencies are configured for the corresponding
+      ExternalTriggerOccurredEvents.
+      </description>
+      <rationale>
+      The queueing of trigger events requires that all runnable entities be executed.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Rte.EB_INTREQ_Rte_0011</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      No data consistency for the buffer initialization during <code>Rte_Start</code>/<code>Rte_Restart</code>
+      is guaranteed.
+      The user must guarantee that each partition is started/restarted from a high priority task so that no
+      data corruption can occour during the startup/restart phase.
+      </description>
+      <rationale>
+      The task context of <code>Rte_Start</code>/<code>Rte_Restart</code> is not known by the Rte.
+      Using a data consistency mechanism here would also require a lock in all other APIs which
+      are accessing that buffer. This would have major drawbacks for the overall runtime performance
+      of the system.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Rte.EB_INTREQ_Rte_0012</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      Communication timeout monitoring is not supported for Basic software mode switch acknowledgement request.
+      The communication timeout for Basic software mode switch acknowledgement request is not supported.
+      </description>
+      <rationale>
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Rte.EB_INTREQ_Rte_0013</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      Rte_LdComCbkTriggerTransmit callbacks must be scheduled in a way that they do not interrupt data send preparations (e.g. transformer execution or buffer copy operations) for the corresponding LdCom_Transmit.
+      Otherwise Rte_LdComCbkTriggerTransmit will return E_NOT_OK.
+      </description>
+      <rationale>
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Rte.EB_INTREQ_Rte_0014</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      If inter-ECU C/S communication is used with meta data and the LdCom IF API, direct data provision must be guaranteed for the response signal of the server. Thus, the lower communication interface must directly copy the data when <code>LdCom_Transmit()</code> is called.
+      </description>
+      <rationale>
+      If triggered data provision is used, the Rte would need to wait after each server response until the signal is completly transmitted.
+      Since no reliable mechanism is currently available to detect the end or an error of a signal transmission, only direct data provision is supported.
+      
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Rte.EB_INTREQ_Rte_0015</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      If inter-ECU C/S communication is used with meta data and the LdCom TP API, it must be ensured that the server only produces a result after the transmission of the last response signal has finished.
+      </description>
+      <rationale>
+      Similar to lim.Rte.EB_INTREQ_Rte_0014, a response signal might get lost if the transmission is ongoing and the Tx buffer is still locked. 
+      </rationale>
+    </specobject>    
+  </specobjects>
+</specdocument>

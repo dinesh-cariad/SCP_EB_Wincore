@@ -1,0 +1,1360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+[!/* do not generate this file if RTE is not used */!][!//
+[!AUTOSPACING!]
+[!SKIPFILE "(WdgMGeneral/WdgMRteUsage = 'false') or not(node:exists(WdgMGeneral/WdgMServiceAPI))"!][!//
+  <AR-PACKAGES>
+    <AR-PACKAGE> <!-- AUTOSAR_WdgM -->
+      <SHORT-NAME>AUTOSAR_WdgM</SHORT-NAME>
+      <AR-PACKAGES>
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ServiceAPI = 'true')"!]
+        <!-- Provide AUTOSAR 3.2 service interface -->
+        <AR-PACKAGE> <!-- ASR32 -->
+          <SHORT-NAME>ASR32</SHORT-NAME>
+          <AR-PACKAGES>
+            <AR-PACKAGE> <!-- ImplementationDataTypes -->
+              <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+              <!--
+                We do not use AUTOSAR 3.2.2 package name here for the sake of consistency, since
+                for the SwServiceComponentType we _HAVE_ to use the AUTSOAR 4.0.3 package name unless
+                3.2.2 has been selected as default (i.e., we _CANNOT_ replicate the SwServiceComponentType
+                for each activated version (e.g., one for 3.2.2 and one for 4.0.3)
+              -->
+              <CATEGORY>STANDARD</CATEGORY>
+              <ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_ASR32_SupervisedEntityIdType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                          <!--
+                            We intentionally referring to AUTSOAR 4.0.3 uint8 type here - There is no need to replicate uint16 for AUTOSAR 3.2.2
+                          -->
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <DATA-TYPE-MAPPING-SET>
+                  <SHORT-NAME>WdgM_ASR32_DataTypeMappingSet</SHORT-NAME>
+                  <MODE-REQUEST-TYPE-MAPS>
+                    <MODE-REQUEST-TYPE-MAP>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ASR32/ModeDeclarationGroups/WdgM_ASR32_Mode</MODE-GROUP-REF>
+                    </MODE-REQUEST-TYPE-MAP>
+                  </MODE-REQUEST-TYPE-MAPS>
+                </DATA-TYPE-MAPPING-SET>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- ModeDeclarationGroups -->
+              <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+              <ELEMENTS>
+                <MODE-DECLARATION-GROUP>
+                  <SHORT-NAME>WdgM_ASR32_Mode</SHORT-NAME>
+                  <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_WdgM/ASR32/ModeDeclarationGroups/WdgM_ASR32_Mode/ALIVE_OK</INITIAL-MODE-REF>
+                  <MODE-DECLARATIONS>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>ALIVE_OK</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>ALIVE_FAILED</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>ALIVE_EXPIRED</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>ALIVE_STOPPED</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>ALIVE_DEACTIVATED</SHORT-NAME>
+                    </MODE-DECLARATION>
+                  </MODE-DECLARATIONS>
+                </MODE-DECLARATION-GROUP>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- PortInterfaces -->
+              <SHORT-NAME>PortInterfaces</SHORT-NAME>
+              <ELEMENTS>
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR32_AliveSupervision</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <!-- Operation UpdateAliveCounter -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>UpdateAliveCounter</SHORT-NAME>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_AliveSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+    [!IF "node:exists(WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ActivateAliveSupervisionAPI)"!]
+                    <!-- Operation ActivateAliveSupervision -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>ActivateAliveSupervision</SHORT-NAME>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_AliveSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+    [!ENDIF!]
+    [!IF "node:exists(WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32DeactivateAliveSupervisionAPI)"!]
+                    <!-- Operation DeactivateAliveSupervision -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>DeactivateAliveSupervision</SHORT-NAME>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_AliveSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+    [!ENDIF!]
+                  </OPERATIONS>
+                  <!-- PossibleErrors -->
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+                <!-- Interface WdgM_GlobalMode -->
+                <MODE-SWITCH-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR32_GlobalMode</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <MODE-GROUP>
+                    <SHORT-NAME>currentMode</SHORT-NAME>
+                    <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ASR32/ModeDeclarationGroups/WdgM_ASR32_Mode</TYPE-TREF>
+                  </MODE-GROUP>
+                </MODE-SWITCH-INTERFACE>
+                <!-- Interface WdgM_IndividualMode -->
+                <MODE-SWITCH-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR32_IndividualMode</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <MODE-GROUP>
+                    <SHORT-NAME>currentMode</SHORT-NAME>
+                    <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ASR32/ModeDeclarationGroups/WdgM_ASR32_Mode</TYPE-TREF>
+                  </MODE-GROUP>
+                </MODE-SWITCH-INTERFACE>
+              </ELEMENTS>
+            </AR-PACKAGE>
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR40ServiceAPI = 'true')"!]
+        <!-- Provide AUTOSAR 4.0 service interface -->
+        <AR-PACKAGE> <!-- ASR40 -->
+          <SHORT-NAME>ASR40</SHORT-NAME>
+          <AR-PACKAGES>
+            <AR-PACKAGE> <!-- ImplementationDataTypes -->
+              <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+              <CATEGORY>STANDARD</CATEGORY>
+              <ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_ASR40_SupervisedEntityIdType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_ASR40_CheckpointIdType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_WdgM/ASR40/CompuMethods/WdgM_ASR40_CheckpointIdTypeValues</COMPU-METHOD-REF>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <DATA-TYPE-MAPPING-SET>
+                  <SHORT-NAME>WdgM_ASR40_DataTypeMappingSet</SHORT-NAME>
+                  <MODE-REQUEST-TYPE-MAPS>
+                    <MODE-REQUEST-TYPE-MAP>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ASR40/ModeDeclarationGroups/WdgM_ASR40_Mode</MODE-GROUP-REF>
+                    </MODE-REQUEST-TYPE-MAP>
+                  </MODE-REQUEST-TYPE-MAPS>
+                </DATA-TYPE-MAPPING-SET>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- ModeDeclarationGroups -->
+              <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+              <ELEMENTS>
+                <MODE-DECLARATION-GROUP>
+                  <SHORT-NAME>WdgM_ASR40_Mode</SHORT-NAME>
+                  <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_WdgM/ASR40/ModeDeclarationGroups/WdgM_ASR40_Mode/SUPERVISION_OK</INITIAL-MODE-REF>
+                  <MODE-DECLARATIONS>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SUPERVISION_OK</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SUPERVISION_FAILED</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SUPERVISION_EXPIRED</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SUPERVISION_STOPPED</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SUPERVISION_DEACTIVATED</SHORT-NAME>
+                    </MODE-DECLARATION>
+                  </MODE-DECLARATIONS>
+                </MODE-DECLARATION-GROUP>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- CompuMethods -->
+              <SHORT-NAME>CompuMethods</SHORT-NAME>
+              <ELEMENTS>
+                <COMPU-METHOD>
+                  <SHORT-NAME>WdgM_ASR40_CheckpointIdTypeValues</SHORT-NAME>
+                  <CATEGORY>TEXTTABLE</CATEGORY>
+                  <COMPU-INTERNAL-TO-PHYS>
+                    <COMPU-SCALES>
+                      [!// <!-- !LINKSTO WDGM.EB.RteCheckpointIDs,1 -->
+                      [!IF "count(WdgMGeneral/WdgMSupervisedEntity/*) > 0"!]
+                      [!LOOP "node:order(WdgMGeneral/WdgMSupervisedEntity/*, 'WdgMSupervisedEntityId')"!]
+                      [!IF "count(WdgMCheckpoint/*) > 0"!]
+                      [!LOOP "node:order(WdgMCheckpoint/*, 'WdgMCheckpointId')"!]
+                      <COMPU-SCALE>
+                        <SYMBOL>WdgMConf_WdgMCheckpoint_[!"@name"!]</SYMBOL>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">[!"WdgMCheckpointId"!]</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">[!"WdgMCheckpointId"!]</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>WdgMConf_WdgMCheckpoint_[!"@name"!]</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      [!ENDLOOP!]
+                      [!ENDIF!]
+                      [!ENDLOOP!]
+                      [!ENDIF!]
+                    </COMPU-SCALES>
+                  </COMPU-INTERNAL-TO-PHYS>
+                </COMPU-METHOD>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- PortInterfaces -->
+              <SHORT-NAME>PortInterfaces</SHORT-NAME>
+              <ELEMENTS>
+                <!-- Interface WdgM_AliveSupervision -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR40_AliveSupervision</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+                  <OPERATIONS>
+                    <!-- operation UpdateAliveCounter -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>UpdateAliveCounter</SHORT-NAME>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_AliveSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                    <!-- operation CheckpointReached -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>CheckpointReached</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>CheckpointId</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR40/ImplementationDataTypes/WdgM_ASR40_CheckpointIdType</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_AliveSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                  </OPERATIONS>
+                  <!-- posssible errors -->
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+                <!-- Interface WdgM_GlobalMode -->
+                <MODE-SWITCH-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR40_GlobalMode</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+                  <MODE-GROUP>
+                    <SHORT-NAME>currentMode</SHORT-NAME>
+                    <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ASR40/ModeDeclarationGroups/WdgM_ASR40_Mode</TYPE-TREF>
+                  </MODE-GROUP>
+                </MODE-SWITCH-INTERFACE>
+                <!-- Interface WdgM_IndividualMode -->
+                <MODE-SWITCH-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR40_IndividualMode</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+                  <MODE-GROUP>
+                    <SHORT-NAME>currentMode</SHORT-NAME>
+                    <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ASR40/ModeDeclarationGroups/WdgM_ASR40_Mode</TYPE-TREF>
+                  </MODE-GROUP>
+                </MODE-SWITCH-INTERFACE>
+              </ELEMENTS>
+            </AR-PACKAGE>
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR43ServiceAPI = 'true')"!]
+        <!-- Provide AUTOSAR 4.3/4.4 service interface -->
+        <AR-PACKAGE> <!-- ASR43 -->
+          <SHORT-NAME>ASR43</SHORT-NAME>
+          <AR-PACKAGES>
+            <AR-PACKAGE> <!-- ImplementationDataTypes -->
+              <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+              <CATEGORY>STANDARD</CATEGORY>
+              <ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_ASR43_SupervisedEntityIdType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_ASR43_CheckpointIdType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_ASR43_LocalStatusType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_WdgM/ASR43/CompuMethods/WdgM_ASR43_LocalStatusTypeValues</COMPU-METHOD-REF>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_ASR43_GlobalStatusType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_WdgM/ASR43/CompuMethods/WdgM_ASR43_GlobalStatusTypeValues</COMPU-METHOD-REF>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_ASR43_ModeType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <DATA-TYPE-MAPPING-SET>
+                  <SHORT-NAME>WdgM_ASR43_DataTypeMappingSet</SHORT-NAME>
+                  <MODE-REQUEST-TYPE-MAPS>
+                    <MODE-REQUEST-TYPE-MAP>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ASR43/ModeDeclarationGroups/WdgM_ASR43_Mode</MODE-GROUP-REF>
+                    </MODE-REQUEST-TYPE-MAP>
+                  </MODE-REQUEST-TYPE-MAPS>
+                </DATA-TYPE-MAPPING-SET>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- ModeDeclarationGroups -->
+              <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+              <ELEMENTS>
+                <MODE-DECLARATION-GROUP>
+                  <SHORT-NAME>WdgM_ASR43_Mode</SHORT-NAME>
+                  <CATEGORY>EXPLICIT_ORDER</CATEGORY>
+                  <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_WdgM/ASR43/ModeDeclarationGroups/WdgM_ASR43_Mode/SUPERVISION_OK</INITIAL-MODE-REF>
+                  <MODE-DECLARATIONS>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SUPERVISION_OK</SHORT-NAME>
+                      <VALUE>0</VALUE>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SUPERVISION_FAILED</SHORT-NAME>
+                      <VALUE>1</VALUE>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SUPERVISION_EXPIRED</SHORT-NAME>
+                      <VALUE>2</VALUE>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SUPERVISION_STOPPED</SHORT-NAME>
+                      <VALUE>3</VALUE>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SUPERVISION_DEACTIVATED</SHORT-NAME>
+                      <VALUE>4</VALUE>
+                    </MODE-DECLARATION>
+                  </MODE-DECLARATIONS>
+                  <ON-TRANSITION-VALUE>255</ON-TRANSITION-VALUE>
+                </MODE-DECLARATION-GROUP>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- CompuMethods -->
+              <SHORT-NAME>CompuMethods</SHORT-NAME>
+              <ELEMENTS>
+                <COMPU-METHOD>
+                  <SHORT-NAME>WdgM_ASR43_LocalStatusTypeValues</SHORT-NAME>
+                  <CATEGORY>TEXTTABLE</CATEGORY>
+                  <COMPU-INTERNAL-TO-PHYS>
+                    <COMPU-SCALES>
+                      <COMPU-SCALE>
+                        <SYMBOL>WDGM_LOCAL_STATUS_OK</SYMBOL>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>WDGM_LOCAL_STATUS_OK</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <SYMBOL>WDGM_LOCAL_STATUS_FAILED</SYMBOL>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>WDGM_LOCAL_STATUS_FAILED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <SYMBOL>WDGM_LOCAL_STATUS_EXPIRED</SYMBOL>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>WDGM_LOCAL_STATUS_EXPIRED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <SYMBOL>WDGM_LOCAL_STATUS_DEACTIVATED</SYMBOL>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>WDGM_LOCAL_STATUS_DEACTIVATED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                    </COMPU-SCALES>
+                  </COMPU-INTERNAL-TO-PHYS>
+                </COMPU-METHOD>
+                <COMPU-METHOD>
+                  <SHORT-NAME>WdgM_ASR43_GlobalStatusTypeValues</SHORT-NAME>
+                  <CATEGORY>TEXTTABLE</CATEGORY>
+                  <COMPU-INTERNAL-TO-PHYS>
+                    <COMPU-SCALES>
+                      <COMPU-SCALE>
+                        <SYMBOL>WDGM_GLOBAL_STATUS_OK</SYMBOL>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>WDGM_GLOBAL_STATUS_OK</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <SYMBOL>WDGM_GLOBAL_STATUS_FAILED</SYMBOL>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>WDGM_GLOBAL_STATUS_FAILED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <SYMBOL>WDGM_GLOBAL_STATUS_EXPIRED</SYMBOL>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>WDGM_GLOBAL_STATUS_EXPIRED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <SYMBOL>WDGM_GLOBAL_STATUS_STOPPED</SYMBOL>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>WDGM_GLOBAL_STATUS_STOPPED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <SYMBOL>WDGM_GLOBAL_STATUS_DEACTIVATED</SYMBOL>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>WDGM_GLOBAL_STATUS_DEACTIVATED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                    </COMPU-SCALES>
+                  </COMPU-INTERNAL-TO-PHYS>
+                </COMPU-METHOD>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- PortInterfaces -->
+              <SHORT-NAME>PortInterfaces</SHORT-NAME>
+              <ELEMENTS>
+                <!-- Interface WdgM_LocalSupervision -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR43_LocalSupervision</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+                  <OPERATIONS>
+                    <!-- operation CheckpointReached -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>CheckpointReached</SHORT-NAME>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalSupervision/E_OK</POSSIBLE-ERROR-REF>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                  </OPERATIONS>
+                  <!-- posssible errors -->
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_OK</SHORT-NAME>
+                      <ERROR-CODE>0</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+                <!-- Interface WdgM_LocalSupervisionStatus -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR43_LocalSupervisionStatus</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+                  <OPERATIONS>
+                    <!-- operation GetLocalStatus -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>GetLocalStatus</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR43/ImplementationDataTypes/WdgM_ASR43_LocalStatusType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalSupervisionStatus/E_OK</POSSIBLE-ERROR-REF>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalSupervisionStatus/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                  </OPERATIONS>
+                  <!-- posssible errors -->
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_OK</SHORT-NAME>
+                      <ERROR-CODE>0</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+                <!-- Interface WdgM_GlobalSupervision -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR43_GlobalSupervision</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+                  <OPERATIONS>
+                    <!-- operation GetFirstExpiredSEID -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>GetFirstExpiredSEID</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>SEID</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR43/ImplementationDataTypes/WdgM_ASR43_SupervisedEntityIdType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/E_OK</POSSIBLE-ERROR-REF>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                    <!-- operation GetGlobalStatus -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>GetGlobalStatus</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR43/ImplementationDataTypes/WdgM_ASR43_GlobalStatusType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/E_OK</POSSIBLE-ERROR-REF>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                    <!-- operation GetMode -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>GetMode</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>Mode</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR43/ImplementationDataTypes/WdgM_ASR43_ModeType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/E_OK</POSSIBLE-ERROR-REF>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                    <!-- operation PerformReset -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>PerformReset</SHORT-NAME>
+                    </CLIENT-SERVER-OPERATION>
+[!IF "not(node:exists(WdgMGeneral/WdgMSupervisorCallouts/WdgMGetExpectedWdgMModeCallout))"!]
+                    <!-- operation SetMode -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>SetMode</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>Mode</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR43/ImplementationDataTypes/WdgM_ASR43_ModeType</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+[!IF "WdgMGeneral/WdgMBSWCompatibilityMode = 'AUTOSAR_40'"!]
+                         <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>CallerId</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+[!ENDIF!]
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/E_OK</POSSIBLE-ERROR-REF>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+[!ENDIF!]
+                  </OPERATIONS>
+                  <!-- posssible errors -->
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_OK</SHORT-NAME>
+                      <ERROR-CODE>0</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+                <!-- Interface WdgM_GlobalMode -->
+                <MODE-SWITCH-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR43_GlobalMode</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+                  <MODE-GROUP>
+                    <SHORT-NAME>currentMode</SHORT-NAME>
+                    <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ASR43/ModeDeclarationGroups/WdgM_ASR43_Mode</TYPE-TREF>
+                  </MODE-GROUP>
+                </MODE-SWITCH-INTERFACE>
+                <!-- Interface WdgM_LocalMode -->
+                <MODE-SWITCH-INTERFACE>
+                  <SHORT-NAME>WdgM_ASR43_LocalMode</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+                  <MODE-GROUP>
+                    <SHORT-NAME>currentMode</SHORT-NAME>
+                    <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ASR43/ModeDeclarationGroups/WdgM_ASR43_Mode</TYPE-TREF>
+                  </MODE-GROUP>
+                </MODE-SWITCH-INTERFACE>
+              </ELEMENTS>
+            </AR-PACKAGE>
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and  WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_32'"!]
+        <!-- Provide default service interface as AUTOSAR 3.2 -->
+        <AR-PACKAGE> <!-- Datatypes -->
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+            <!--
+              We use AUTOSAR 3.2.2 package name here since the AUTOSAR 3.2.2 SWC will look in this package
+            -->
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>WdgM_SupervisedEntityIdType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                      <!--
+                        We intentionally referring to AUTSOAR 4.0.3 uint8 type here - There is no need to replicate uint16 for AUTOSAR 3.2.2
+                      -->
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+            <DATA-TYPE-MAPPING-SET>
+              <SHORT-NAME>WdgMDataTypeMappingSet</SHORT-NAME>
+              <MODE-REQUEST-TYPE-MAPS>
+                <MODE-REQUEST-TYPE-MAP>
+                  <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                  <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgMMode</MODE-GROUP-REF>
+                </MODE-REQUEST-TYPE-MAP>
+              </MODE-REQUEST-TYPE-MAPS>
+            </DATA-TYPE-MAPPING-SET>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- ModeDeclarationGroups -->
+          <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+          <ELEMENTS>
+            <MODE-DECLARATION-GROUP>
+              <SHORT-NAME>WdgMMode</SHORT-NAME>
+              <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgMMode/ALIVE_OK</INITIAL-MODE-REF>
+              <MODE-DECLARATIONS>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>ALIVE_OK</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>ALIVE_FAILED</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>ALIVE_EXPIRED</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>ALIVE_STOPPED</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>ALIVE_DEACTIVATED</SHORT-NAME>
+                </MODE-DECLARATION>
+              </MODE-DECLARATIONS>
+            </MODE-DECLARATION-GROUP>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- PortInterfaces -->
+          <SHORT-NAME>PortInterfaces</SHORT-NAME>
+          <ELEMENTS>
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>WdgM_AliveSupervision</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <!-- Operation UpdateAliveCounter -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>UpdateAliveCounter</SHORT-NAME>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+    [!IF "node:exists(WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ActivateAliveSupervisionAPI)"!]
+                <!-- Operation ActivateAliveSupervision -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>ActivateAliveSupervision</SHORT-NAME>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+    [!ENDIF!]
+    [!IF "node:exists(WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32DeactivateAliveSupervisionAPI)"!]
+                <!-- Operation DeactivateAliveSupervision -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>DeactivateAliveSupervision</SHORT-NAME>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+    [!ENDIF!]
+              </OPERATIONS>
+              <!-- PossibleErrors -->
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+            <!-- Interface WdgM_GlobalMode -->
+            <MODE-SWITCH-INTERFACE>
+              <SHORT-NAME>WdgM_GlobalMode</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <MODE-GROUP>
+                <SHORT-NAME>currentMode</SHORT-NAME>
+                <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgMMode</TYPE-TREF>
+              </MODE-GROUP>
+            </MODE-SWITCH-INTERFACE>
+            <!-- Interface WdgM_IndividualMode -->
+            <MODE-SWITCH-INTERFACE>
+              <SHORT-NAME>WdgM_IndividualMode</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <MODE-GROUP>
+                <SHORT-NAME>currentMode</SHORT-NAME>
+                <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgMMode</TYPE-TREF>
+              </MODE-GROUP>
+            </MODE-SWITCH-INTERFACE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_40'"!]
+        <!-- Provide default service interface as AUTOSAR 4.0 -->
+        <AR-PACKAGE> <!-- ImplementationDataTypes -->
+          <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>WdgM_SupervisedEntityIdType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>WdgM_CheckpointIdType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_WdgM/CompuMethods/WdgM_CheckpointIdTypeValues</COMPU-METHOD-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+            <DATA-TYPE-MAPPING-SET>
+              <SHORT-NAME>WdgMDataTypeMappingSet</SHORT-NAME>
+              <MODE-REQUEST-TYPE-MAPS>
+                <MODE-REQUEST-TYPE-MAP>
+                  <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                  <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgMMode</MODE-GROUP-REF>
+                </MODE-REQUEST-TYPE-MAP>
+              </MODE-REQUEST-TYPE-MAPS>
+            </DATA-TYPE-MAPPING-SET>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- ModeDeclarationGroups -->
+          <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+          <ELEMENTS>
+            <MODE-DECLARATION-GROUP>
+              <SHORT-NAME>WdgMMode</SHORT-NAME>
+              <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgMMode/SUPERVISION_OK</INITIAL-MODE-REF>
+              <MODE-DECLARATIONS>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SUPERVISION_OK</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SUPERVISION_FAILED</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SUPERVISION_EXPIRED</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SUPERVISION_STOPPED</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SUPERVISION_DEACTIVATED</SHORT-NAME>
+                </MODE-DECLARATION>
+              </MODE-DECLARATIONS>
+            </MODE-DECLARATION-GROUP>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- CompuMethods -->
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>WdgM_CheckpointIdTypeValues</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  [!// <!-- !LINKSTO WDGM.EB.RteCheckpointIDs,1 -->
+                  [!IF "count(WdgMGeneral/WdgMSupervisedEntity/*) > 0"!]
+                  [!LOOP "node:order(WdgMGeneral/WdgMSupervisedEntity/*, 'WdgMSupervisedEntityId')"!]
+                  [!IF "count(WdgMCheckpoint/*) > 0"!]
+                  [!LOOP "node:order(WdgMCheckpoint/*, 'WdgMCheckpointId')"!]
+                  <COMPU-SCALE>
+                    <SYMBOL>WdgMConf_WdgMCheckpoint_[!"@name"!]</SYMBOL>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">[!"WdgMCheckpointId"!]</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">[!"WdgMCheckpointId"!]</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>WdgMConf_WdgMCheckpoint_[!"@name"!]</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  [!ENDLOOP!]
+                  [!ENDIF!]
+                  [!ENDLOOP!]
+                  [!ENDIF!]
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- PortInterfaces -->
+          <SHORT-NAME>PortInterfaces</SHORT-NAME>
+          <ELEMENTS>
+            <!-- Interface WdgM_AliveSupervision -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>WdgM_AliveSupervision</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+              <OPERATIONS>
+                <!-- operation UpdateAliveCounter -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>UpdateAliveCounter</SHORT-NAME>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <!-- operation CheckpointReached -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>CheckpointReached</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>CheckpointId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ImplementationDataTypes/WdgM_CheckpointIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <!-- posssible errors -->
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+            <!-- Interface WdgM_GlobalMode -->
+            <MODE-SWITCH-INTERFACE>
+              <SHORT-NAME>WdgM_GlobalMode</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+              <MODE-GROUP>
+                <SHORT-NAME>currentMode</SHORT-NAME>
+                <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgMMode</TYPE-TREF>
+              </MODE-GROUP>
+            </MODE-SWITCH-INTERFACE>
+            <!-- Interface WdgM_IndividualMode -->
+            <MODE-SWITCH-INTERFACE>
+              <SHORT-NAME>WdgM_IndividualMode</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+              <MODE-GROUP>
+                <SHORT-NAME>currentMode</SHORT-NAME>
+                <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgMMode</TYPE-TREF>
+              </MODE-GROUP>
+            </MODE-SWITCH-INTERFACE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_43'"!]
+        <!-- Provide default service interface as AUTOSAR 4.3 -->
+        [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00356,1 -->
+        [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00357,1 -->
+        [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00359,1 -->
+        [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00360,1 -->
+        [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00358,1 -->
+        <AR-PACKAGE> <!-- ImplementationDataTypes -->
+              <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+              <CATEGORY>STANDARD</CATEGORY>
+              <ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_SupervisedEntityIdType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_CheckpointIdType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_LocalStatusType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_WdgM/CompuMethods/WdgM_LocalStatusTypeValues</COMPU-METHOD-REF>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_GlobalStatusType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_WdgM/CompuMethods/WdgM_GlobalStatusTypeValues</COMPU-METHOD-REF>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>WdgM_ModeType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+                <DATA-TYPE-MAPPING-SET>
+                  <SHORT-NAME>WdgMDataTypeMappingSet</SHORT-NAME>
+                  <MODE-REQUEST-TYPE-MAPS>
+                    <MODE-REQUEST-TYPE-MAP>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgM_Mode</MODE-GROUP-REF>
+                    </MODE-REQUEST-TYPE-MAP>
+                  </MODE-REQUEST-TYPE-MAPS>
+                </DATA-TYPE-MAPPING-SET>
+              </ELEMENTS>
+            </AR-PACKAGE>
+        <AR-PACKAGE> <!-- ModeDeclarationGroups -->
+          [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00334,1 -->
+          <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+          <ELEMENTS>
+            <MODE-DECLARATION-GROUP>
+              <SHORT-NAME>WdgM_Mode</SHORT-NAME>
+              <CATEGORY>EXPLICIT_ORDER</CATEGORY>
+              <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgM_Mode/SUPERVISION_OK</INITIAL-MODE-REF>
+              <MODE-DECLARATIONS>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SUPERVISION_OK</SHORT-NAME>
+                  <VALUE>0</VALUE>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SUPERVISION_FAILED</SHORT-NAME>
+                  <VALUE>1</VALUE>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SUPERVISION_EXPIRED</SHORT-NAME>
+                  <VALUE>2</VALUE>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SUPERVISION_STOPPED</SHORT-NAME>
+                  <VALUE>3</VALUE>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SUPERVISION_DEACTIVATED</SHORT-NAME>
+                  <VALUE>4</VALUE>
+                </MODE-DECLARATION>
+              </MODE-DECLARATIONS>
+              <ON-TRANSITION-VALUE>255</ON-TRANSITION-VALUE>
+            </MODE-DECLARATION-GROUP>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- CompuMethods -->
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>WdgM_LocalStatusTypeValues</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <SYMBOL>WDGM_LOCAL_STATUS_OK</SYMBOL>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>WDGM_LOCAL_STATUS_OK</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <SYMBOL>WDGM_LOCAL_STATUS_FAILED</SYMBOL>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>WDGM_LOCAL_STATUS_FAILED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <SYMBOL>WDGM_LOCAL_STATUS_EXPIRED</SYMBOL>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>WDGM_LOCAL_STATUS_EXPIRED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <SYMBOL>WDGM_LOCAL_STATUS_DEACTIVATED</SYMBOL>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>WDGM_LOCAL_STATUS_DEACTIVATED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>WdgM_GlobalStatusTypeValues</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <SYMBOL>WDGM_GLOBAL_STATUS_OK</SYMBOL>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>WDGM_GLOBAL_STATUS_OK</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <SYMBOL>WDGM_GLOBAL_STATUS_FAILED</SYMBOL>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>WDGM_GLOBAL_STATUS_FAILED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <SYMBOL>WDGM_GLOBAL_STATUS_EXPIRED</SYMBOL>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>WDGM_GLOBAL_STATUS_EXPIRED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <SYMBOL>WDGM_GLOBAL_STATUS_STOPPED</SYMBOL>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>WDGM_GLOBAL_STATUS_STOPPED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <SYMBOL>WDGM_GLOBAL_STATUS_DEACTIVATED</SYMBOL>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>WDGM_GLOBAL_STATUS_DEACTIVATED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- PortInterfaces -->      
+          <SHORT-NAME>PortInterfaces</SHORT-NAME>
+          <ELEMENTS>
+            <!-- Interface WdgM_LocalSupervision -->
+            [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00333,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>WdgM_LocalSupervision</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+              <OPERATIONS>
+                <!-- operation CheckpointReached -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>CheckpointReached</SHORT-NAME>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalSupervision/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <!-- posssible errors -->
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+            <!-- Interface WdgM_LocalSupervisionStatus -->
+            [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_91004,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>WdgM_LocalSupervisionStatus</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+              <OPERATIONS>
+                <!-- operation GetLocalStatus -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetLocalStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ImplementationDataTypes/WdgM_LocalStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalSupervisionStatus/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalSupervisionStatus/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <!-- posssible errors -->
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+            <!-- Interface WdgM_GlobalSupervision -->
+            [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_91001,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>WdgM_GlobalSupervision</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+              <OPERATIONS>
+                <!-- operation GetFirstExpiredSEID -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetFirstExpiredSEID</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>SEID</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ImplementationDataTypes/WdgM_SupervisedEntityIdType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <!-- operation GetGlobalStatus -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetGlobalStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ImplementationDataTypes/WdgM_GlobalStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <!-- operation GetMode -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetMode</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>Mode</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ImplementationDataTypes/WdgM_ModeType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <!-- operation PerformReset -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>PerformReset</SHORT-NAME>
+                </CLIENT-SERVER-OPERATION>
+[!IF "not(node:exists(WdgMGeneral/WdgMSupervisorCallouts/WdgMGetExpectedWdgMModeCallout))"!]
+                <!-- operation SetMode -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetMode</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>Mode</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ImplementationDataTypes/WdgM_ModeType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+[!IF "WdgMGeneral/WdgMBSWCompatibilityMode = 'AUTOSAR_40'"!]
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>CallerId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+[!ENDIF!]
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!]
+              </OPERATIONS>
+              <!-- posssible errors -->
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+            <!-- Interface WdgM_GlobalMode -->
+            <MODE-SWITCH-INTERFACE>
+              <SHORT-NAME>WdgM_GlobalMode</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+              <MODE-GROUP>
+                <SHORT-NAME>currentMode</SHORT-NAME>
+                <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgM_Mode</TYPE-TREF>
+              </MODE-GROUP>
+            </MODE-SWITCH-INTERFACE>
+            <!-- Interface WdgM_LocalMode -->
+            <MODE-SWITCH-INTERFACE>
+              <SHORT-NAME>WdgM_LocalMode</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <SERVICE-KIND>WATCH-DOG-MANAGER</SERVICE-KIND>
+              <MODE-GROUP>
+                <SHORT-NAME>currentMode</SHORT-NAME>
+                <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_WdgM/ModeDeclarationGroups/WdgM_Mode</TYPE-TREF>
+              </MODE-GROUP>
+            </MODE-SWITCH-INTERFACE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+[!ENDIF!]
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

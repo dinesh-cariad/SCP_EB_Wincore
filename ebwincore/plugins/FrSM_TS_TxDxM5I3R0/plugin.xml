@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+    ** brief AutoCore FrSM_TS_TxDxM5I3R0 plugin
+    **
+    ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+    ** unless expressly agreed to otherwise.
+  -->
+    <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="FrSM_TS_TxDxM5I3R0_ModuleId"
+             name="FrSM_TS_TxDxM5I3R0 Module">
+    <module id="FrSM_TS_TxDxM5I3R0"
+            label="FrSM"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-FlexRayStack: AUTOSAR Flexray State Manager"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="5"
+            swVersionMinor="3"
+            swVersionPatch="18"
+            swVersionSuffix="B439717"
+            specVersionMajor="2"
+            specVersionMinor="2"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="FrSM"
+            categoryLayer="Communication Services"
+            categoryCategory="FlexRay"
+            categoryComponent="ECUC">
+      <cluster name="FlexRay Stack"/>
+    </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="FrSM_TS_TxDxM5I3R0_ConfigId"
+             name="FrSM_TS_TxDxM5I3R0 Configuration">
+    <configuration moduleId="FrSM_TS_TxDxM5I3R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/FrSM.xdm" type="xdm" id="res_default"/>
+
+
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM5I3R0/FrSM"/>
+      </data>
+
+      <editor id="FrSM_TS_TxDxM5I3R0_EditorId"
+              label="Default"
+              tooltip="ACG-FlexRayStack: AUTOSAR Flexray State Manager">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM5I3R0/FrSM"/>
+          <parameter name="title" value="FrSM"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+    <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_FrSM_TS_TxDxM5I3R0"
+           moduleId="FrSM_TS_TxDxM5I3R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.FrSMTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+    <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_FrSM_TS_TxDxM5I3R0"
+        name="FrSM service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="FrSM" />
+        <parameter name="req://dem.events:1" value="resources/FrSM_Dem_Events.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/FrSM_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.FrSM_TS_TxDxM5I3R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="FrSM_TS_TxDxM5I3R0_GeneratorId"
+             name="FrSM_TS_TxDxM5I3R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="FrSM_TS_TxDxM5I3R0_TemplateBasedCodeGeneratorId"
+               moduleId="FrSM_TS_TxDxM5I3R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+
+    <!-- Generator used to generate all code-templates within a directory the code-templates do all have access to the
+        name of the generated variant but the name of the generated file cannot be influenced directly - if required,
+        renaming a file can e.g. be done by a script run as post-generator
+    -->
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+              id="FrSM_TS_TxDxM5I3R0_Gen_Template">
+    <generator moduleId="FrSM_TS_TxDxM5I3R0"
+               id="FrSM_TS_TxDxM5I3R0_Gen_TemplateId"
+               modes="generate,Template_withPostRename,verify"
+               class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator">
+      <parameter name="mode_type" mode="Template_withPostRename" value="generate"/>
+
+      <!-- common template path parameters -->
+      <parameter name="templates" mode="generate,verify" value="generate,generate_var"/>
+
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+
+    </generator>
+  </extension>
+
+  <!-- NGGenerator which calls a common ant-script within the ant-script it is also possible to call tresos Studio
+       generators in the example-script, a single code-template file is generated with a custom file-name (depending
+       on the variants name)
+    -->
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+    id="FrSM_TS_TxDxM5I3R0_Gen_NG">
+  <generator class="dreisoft.tresos.generator.ng.api.NGGenerator"
+    id="FrSM_TS_TxDxM5I3R0_Gen_NGId"
+    moduleId="FrSM_TS_TxDxM5I3R0"
+    modes="generate,NG_PostfixAndMove"
+    step="post">
+
+    <!-- Specify the ant build script as parameter to the NGGenerator. -->
+    <parameter name="buildfile" value="resources/generator.xml"/>
+
+    <!-- only having this parameter set to true, a generator is called once for each variant! -->
+    <parameter name="variantAware" value="true"/>
+  </generator>
+  </extension>
+
+  </plugin>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="tresos" default="all" basedir=".">
+  <ng.property
+    name="autosarVersionUnderscore"
+    dctxt="Base"
+    xpath="BaseEcuConfig/BaseEcuConfigAsrVersion"
+    override="false" >
+  </ng.property>
+  <ng.property
+    name="alwaysExport"
+    dctxt="Base"
+    xpath="BaseEcuConfig/BaseEcuConfigAlwaysExport"
+    override="false" >
+  </ng.property>
+
+  <loadresource property="autosarVersion">
+    <propertyresource name="autosarVersionUnderscore"/>
+    <filterchain>
+      <tokenfilter>
+        <filetokenizer/>
+        <replacestring from="_" to="."/>
+        <replacestring from="r" to=""/>
+      </tokenfilter>
+    </filterchain>
+  </loadresource>
+
+  <ng.getgeneratorvar
+    name="mode"
+    property="generatorMode"
+    override="true" >
+  </ng.getgeneratorvar>
+
+  <condition property="do.generate">
+    <or>
+      <equals arg1="${alwaysExport}" arg2="true" />
+      <equals arg1="${generatorMode}" arg2="export_asr_config" />
+    </or>
+  </condition>
+
+  <target name="all" if="do.generate">
+    <echo message="Creating AUTOSAR Ecu configuration files with version ${autosarVersion}."/>
+    <ng.extgen
+      cfgFilePath="ecuconfig_arxml"
+      generateAllModules="true"
+      generateIntoOneFile="false"
+      contentType="asc:${autosarVersion}"
+      shell="true"
+      timeout="600"
+      evalExitCode="false"
+      workingDir=""
+      commandline="exit"
+      error=""
+      warning=""
+      info=""
+      failonerror="false" >
+    </ng.extgen>
+  </target>
+</project>

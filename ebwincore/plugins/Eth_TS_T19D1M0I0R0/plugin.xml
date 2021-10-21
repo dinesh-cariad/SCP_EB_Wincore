@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR Eth_TS_T19D1M0I0R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2011-2021 by EB Pcap Win32 driver
+    All rights exclusively reserved for EB Pcap Win32 driver,
+    unless expressly agreed to otherwise.
+  -->
+
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Eth_TS_T19D1M0I0R0_ModuleId"
+             name="Eth_TS_T19D1M0I0R0 Module">
+
+    <module id="Eth_TS_T19D1M0I0R0"
+            label="Eth"
+            mandatory="false"
+            allowMultiple="false"
+            description="WinCore-MCAL: AUTOSAR Eth module (WINDOWS: WIN32X86)"
+            copyright="(c) 2011-2021 EB Pcap Win32 driver"
+            swVersionMajor="0"
+            swVersionMinor="0"
+            swVersionPatch="8"
+            swVersionSuffix="B439717"
+            specVersionMajor="1"
+            specVersionMinor="3"
+            specVersionPatch="6"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="1"
+            relVersionPatch="3"
+            categoryType="Eth"
+            categoryLayer="Communication Drivers"
+            categoryCategory="Communication"
+            categoryComponent="ECUC">
+
+      <ecuType target="WINDOWS" derivate="WIN32X86"/>
+
+      <cluster name="Ethernet Stack"/>
+
+    </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Eth_TS_T19D1M0I0R0_ConfigId"
+             name="Eth_TS_T19D1M0I0R0 Configuration">
+    <configuration moduleId="Eth_TS_T19D1M0I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Eth.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_T19D1M0I0R0/Eth"/>
+      </data>
+
+      <editor id="Eth_TS_T19D1M0I0R0_EditorId"
+              label="Default"
+              tooltip="WinCore-MCAL: AUTOSAR Eth module (WINDOWS: WIN32X86)">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_T19D1M0I0R0/Eth"/>
+          <parameter name="title" value="Eth"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_Eth_TS_T19D1M0I0R0"
+           moduleId="Eth_TS_T19D1M0I0R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.EthTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="Eth_TS_T19D1M0I0R0_GeneratorId"
+             name="Eth_TS_T19D1M0I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="Eth_TS_T19D1M0I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="Eth_TS_T19D1M0I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+
+
+
+
+  
+</plugin>

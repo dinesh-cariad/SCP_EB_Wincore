@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.LinIf.EB_INTREQ_LinIf_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      <para>Some LIN Driver API functions must support being called within an interrupt lock</para>
+      <para>Description:</para>
+      <para>
+        The following LIN Driver API functions must support being called by the LinIf within a
+        global interrupt lock:<pre>
+<code>Lin_Wakeup()</code>
+<code>Lin_WakeupInternal()</code></pre>
+      </para>
+      </description>
+      <rationale>
+      The LinIf makes calls to these functions in its critical section to make sure, that the
+      state is consistent to the LIN Driver.
+      As it is assumed, that the LinIf critical sections are configured as global interrupt
+      locks this means that these functions must support being called in such an interrupt lock
+      situation.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.LinIf.EB_INTREQ_LinIf_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      <para>LinIf shall not be initialized as operational</para>
+      <para>Description:</para>
+      <para>
+        The LinIf configuration parameter LinIfStartupState shall only be configured to
+        LINIF_CHANNEL_SLEEP. Configuring it to LINIF_CHANNEL_OPERATIONAL is obsolete.
+      </para>
+      </description>
+      <rationale>
+        Following bugzilla shall be respected: https://bugzilla.autosar.org/show_bug.cgi?id=73095
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.LinIf.EB_INTREQ_LinIf_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      <para>Slave associated response_error signal access</para>
+      <para>Description:</para>
+      <para>
+        The configuration needs to ensure that LinIf is the only user that has
+        write-access to the response_error signal.
+      </para>
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.LinIf.EB_INTREQ_LinIf_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      <para>Slave associated response_error signal access</para>
+      <para>Description:</para>
+      <para>
+        For a given LinTp channel associated to a LinIf Slave channel a single
+        LinTpRxNSdu has to be configured. It shares all physical and functional
+        requests.
+      </para>
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.LinIf.EB_INTREQ_LinIf_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      <para>Expected values by LinIf_SetPIDTable</para>
+      <para>Description:</para>
+      <para>
+        When the API LinIf_SetPIDTable() is used the provided PID list shall
+        not include the PIDs for MRF and SRF.
+      </para>
+      </description>
+      
+    </specobject>
+
+  </specobjects>
+</specdocument>

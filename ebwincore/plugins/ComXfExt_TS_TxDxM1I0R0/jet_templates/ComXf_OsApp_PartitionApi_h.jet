@@ -1,0 +1,133 @@
+<%@ jet package="eb.tresos.comxf.generated.jet" class="ComXf_OsApp_PartitionApi_h" skeleton="File.skeleton"
+    imports="eb.tresos.comxf.generator.intermediate.TransformationFunction
+             eb.tresos.comxf.generator.intermediate.GeneratorPartitionHandler"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final Model model = (Model)context.gen.getVariable( Model.ARG_NAME, Model.class, null );
+    final String includeGuardName = getIncludeGuardName( context );
+    final GeneratorPartitionHandler partitionHandler = model.getGeneratorPartitionHandler();
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+
+#include <Std_Types.h>           /* EB specific standard types */
+#include <TransformerTypes.h>    /* General transformer data types */
+#include <SchM_ComXfType.h>      /* Module interlink types */
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+#define COMXF_START_SEC_CODE
+#include <ComXf_MemMap.h>
+
+<% if (!partitionHandler.getTransformationFunctions(partitionHandler.getPartitionName()).isEmpty()) { %>
+/*------------- C O M   b a s e d   s e r i a l i z a t i o n --------------*/
+<% } %>
+<%
+for (final TransformationFunction serialFunc : partitionHandler.getTransformationFunctions(partitionHandler.getPartitionName()))
+{
+    final String typeName = serialFunc.getDataTypename();
+%>
+
+/**
+ ** \brief The COM transformer interface for '<%= serialFunc.getName() %>'
+ **
+ ** This function transforms a Sender/Receiver communication
+ ** using the serialization of COM Based Transformer. It takes
+ ** the data element as input and outputs an uint8 array contain-
+ ** ing the serialized data.
+ **
+ ** Preconditions:
+ ** The COM module must be initialized.
+ **
+ ** \param[in]  dataElement   Data element which shall be transformed.
+ ** \param[out] buffer        Buffer allocated by the RTE, where the transformed data has to
+ **                           be stored by the transformer.
+ ** \param[out] bufferLength  Used length of the buffer.
+ **
+ ** \return Result of request to serialize the dataElement
+ ** \retval 0x00 (E_OK): Serialization successful
+ ** \retval 0x81 (E_SER_GENERIC_ERROR): A generic error occurred
+ **/
+extern FUNC(uint8, COMXF_CODE) <%= serialFunc.getName() %>
+(
+   P2VAR(uint8, AUTOMATIC, COMXF_APPL_DATA) buffer,
+   P2VAR(uint16, AUTOMATIC, COMXF_APPL_DATA) bufferLength,
+   P2CONST(<%= typeName %>, AUTOMATIC, COMXF_APPL_DATA) dataElement
+);
+
+
+<% } %>
+
+<% if (!partitionHandler.getInvTransformationFunctions(partitionHandler.getPartitionName()).isEmpty()) { %>
+/*----------- C O M   b a s e d   d e s e r i a l i z a t i o n ------------*/
+<% } %>
+
+<%
+for (final TransformationFunction serialFunc : partitionHandler.getInvTransformationFunctions(partitionHandler.getPartitionName()))
+{
+    final String typeName = serialFunc.getDataTypename();
+%>
+
+/**
+ ** \brief The COM deserializer interface for '<%= serialFunc.getName() %>'
+ **
+ ** This function deserializes a Sender/Receiver communication
+ ** using the deserialization of COM Based Transformer. It takes
+ ** the uint8 array containing the serialized data as input and
+ ** outputs the original data element which will be passed to the
+ ** Rte.
+ **
+ ** Preconditions:
+ ** The COM module must be initialized.
+ **
+ ** \param[in] buffer        Buffer allocated by the RTE, where the still serialized data are
+ **                          stored by the Rte.
+ ** \param[in] bufferLength  Used length of the buffer.
+ ** \param[out] dataElement  Data element which is the result of the transformation and contains
+ **                          the deserialized data element.
+ **
+ ** \return Result of request to serialize the dataElement
+ ** \retval 0x00 (E_OK): Serialization successful
+ ** \retval 0x81 (E_SER_GENERIC_ERROR): A generic error occurred
+ **/
+extern FUNC(uint8, COMXF_CODE) <%= serialFunc.getName() %>
+(
+   P2CONST(uint8, AUTOMATIC, COMXF_APPL_DATA) buffer,
+   uint16 bufferLength,
+   P2VAR(<%= typeName %>, AUTOMATIC, COMXF_APPL_DATA) dataElement
+);
+
+<%
+  }
+%>
+
+#define COMXF_STOP_SEC_CODE
+#include <ComXf_MemMap.h>
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tresos Studio Workflow >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+<workflow xmlns="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+  id="ACGPostBuildOnlyWorkflow" version="2.3"
+  label="AutoCore Workflow Post-Build Only"
+  description="The EB tresos workflow is a step-by-step instruction to guide you through the
+    configuration of a project. The workflow represents a sequence of steps to accomplish the task
+    of building an application.">
+
+  <group id="PBONLY" label="Modifying your software project to solely build the post-build configuration">
+    <description>
+      <![CDATA[
+         <h2 style="color:#00c400";><b>GOAL</b></h2>
+          <p>To modify your basic software project to build the post-build configuration.</p>
+          <p>The <b>AutoCore Workflow Post-Build Only</b> helps you modify your existing
+          configuration project to build the post-build configuration.</p>
+         <h2 style="color:#00c400";><b>PRECONDITIONS</b></h2>
+          <p>The <b>AutoCore Workflow Post-Build Only</b> continues the <b>AutoCore Workflow
+          Post-Build Setup</b>. If you did not perform the steps as described in the <b>AutoCore
+          Workflow Post-Build Setup</b>, go to the <a
+          href="workflow://ACGPostBuildSetupWorkflow/PBSETUP">AutoCore Workflow Post-Build Setup</a>
+          before you continue with this post-build workflow.</p>
+        <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+          <p><ol>
+            <li>Disable generation of non post-build capable modules.</li>
+            <li>Store generated pre-compile time configuration files of disabled modules.</li>
+            <li>Delete generated configuration files.</li>
+            <li>Switch to post-build only configuration mode.</li>
+            <li>Build a binary from the post-build configuration.</li>
+          </ol></p>
+       
+      ]]>
+    </description>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< disable generation of modules >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <action id="PBONLY_DISABLE" label="Disable generation of modules">
+      <command description="Disable generation of modules"
+        serialization="dreisoft.tresos.launcher2.api.plugin.ModuleConfigurationDialogCommand"/>
+
+      <description>
+        <![CDATA[
+             <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To disable the generation of non post-build capable modules in your project.</p>
+         <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+            <p><ol>
+              <li>In the <b>Workflows</b> view, double-click this action step to open the <b>Module
+              Configurations</b> dialog.</li>
+              <li>In the <b>Module Configurations</b> list, multi-select (hold down the Shift key
+              when you select) all non post-build capable modules except the mandatory modules
+              <b>Base</b>, <b>Platforms</b>, and <b>Make</b>, as well as the <b>MemMap</b> module.</li>
+              <li>Select the hammer icon in the toolbar to disable the generation for the
+              selected modules.</li>
+              <li>Select <b>OK</b>.</li>
+            
+            </ol></p>
+            <h2 style="color:#00c400";><b>APPLICATION DEMOS CONCRETE EXAMPLES</b></h2>
+        
+            <p><i>simple_demo_can_rte</i>:</p>
+              <p>Disable the generation of all modules except: <i>CanIf</i>,
+              <i>Com</i>, <i>PduR</i>, <i>EcuC</i>, <i>PbcfgM</i>, <i>Base</i>,
+              <i>Platform</i>, <i>Make</i>, <i>MemMap</i>, and <i>Resource</i></p>
+            <p><i>simple_demo_fr_rte</i>:</p>
+              <p>Disable the generation of all modules except <i>Fr</i>, <i>FrIf</i>,
+              <i>Com</i>, <i>PduR</i>, <i>EcuC</i>, <i>PbcfgM</i>, <i>Base</i>,
+              <i>Platform</i>, <i>Make</i>, <i>MemMap</i>, and <i>Resource</i></p>
+            <p><i>simple_demo_lin_rte</i>:</p>
+              <p>Disable the generation of all modules except: <i>LinIf</i>,
+              <i>Com</i>, <i>PduR</i>, <i>EcuC</i>, <i>PbcfgM</i>, <i>Base</i>,
+              <i>Platform</i>, <i>Make</i>, <i>MemMap</i>, and <i>Resource</i></p>
+        ]]>
+      </description>
+    </action>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< store pre-compile time config >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <action id="PBONLY_STORE_PRECONF" label="Store generated pre-compile time configuration"
+      repeatable="true">
+      <description>
+        <![CDATA[
+          <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To store the generated pre-compile time configuration of the non post-build capable
+            modules in your project.</p>
+           <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+            <p><ol>
+              <li>Copy the generated pre-compile time configuration files (for example the files matching the
+              name pattern <tt>&lt;module&gt;_Cfg.h</tt>) of the non post-build capable modules in
+              your project from the <tt>output\generated\include</tt> directory to the
+              <tt>source\stubs</tt>  directory of your project.</li>
+              <li>If available, copy the <tt>Os_user.h</tt> file from the
+              <tt>output\generated\include</tt> directory to the <tt>source\stubs</tt> directory of your
+              project.</li>
+              <li>If available, copy the <tt>EcuM_Types.h</tt> file from the
+              <tt>output\generated\include</tt> directory to the <tt>source\stubs</tt> directory of your
+              project.</li>
+            </ol></p>
+          <p><strong style="color:#ff9900">Important:</strong>
+            The files that match the pattern
+            <tt>&lt;module&gt;_&lt;Int|Det|GeneralTypes|Rte|DefProg|...&gt_Cfg.h</tt> (i.&nbsp;e.
+            CanIf_Int_Cfg.h, CanSM_Det_Cfg.h, Can_GeneralTypes_Cfg.h, ComM_Rte_Cfg.h or
+            Com_DefProg_Cfg.h) should NOT be copied. Additionally, the <tt>ComStack_Cfg.h</tt>
+            and <tt>TSAutosar_Cfg.h</tt> files are not needed.
+          </p>
+        ]]>
+      </description>
+    </action>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Delete generate config >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <action id="PBONLY_DELETE_CONF" label="Delete generated configuration">
+      <description>
+        <![CDATA[
+            <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To delete any previously generated configuration from your project.</p>
+           <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+            <p><ol>
+              <li>Remove the <tt>output</tt> directory from your project.</li>
+            </ol></p>
+        ]]>
+      </description>
+    </action>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< switch to post-build only >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <action id="PBONLY_SWITCH_TO_PB" label="Switch to post-build only configuration mode">
+      <description>
+        <![CDATA[
+           <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To switch the project into post-build only configuration mode.</p> <p>Follow these
+            instructions to change the status of pre-compile time or link-time parameters to
+            read-only. When the parameters are read-only, you avoid accidentally modifications.</p>
+          <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+          <p><ol>
+            <li>Select your project in the <b>Project Explorer</b> tree view.</li>
+            <li>Right-click the project to open the context menu.</li>
+            <li>Select <b>Properties</b>.</li>
+            <li>Select the <b>ECU Configuration</b> item located under <b>Configuration Project</b>
+            to display the ECU configuration properties.</li>
+            <li>Select <b>Enable Config Time Support</b> to enable the support for supervision of the configuration time.</li>
+            <li>Select <b>Post Build</b> to switch to post-build time only.</li>
+            <li>Select <b>Pre Compile</b>, and <b>Link</b> to disable pre-compile and link time.</li>
+            <li>Select <b>OK</b>.</li>
+          </ol></p>
+        ]]>
+      </description>
+    </action>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Application >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="PBONLY_CFG" label="Build your configuration" type="choice">
+      <description>
+        <![CDATA[
+            <h2 style="color:#00c400";><b>GOAL</b></h2> 
+            <p>To build a binary of your configuration.</p>
+         <h2 style="color:#00c400";><b>PROCEDURE</b></h2> 
+          <p>There are two ways to build a binary representation of your configuration:</p>
+          <p><ol>
+            <li>Use <a href="workflow:///PBONLY_CFG_GENERATOR">EB tresos Studio</a></li>
+            <li>Use <a href="workflow:///PBONLY_CFG_COMPILER">Compiler Toolchain</a></li>
+          </ol></p>
+        ]]>
+      </description>
+
+
+      <group id="PBONLY_CFG_GENERATOR" label="Build your binary with EB tresos Studio" type="sequence">
+        <description>
+          <![CDATA[
+          <h2 style="color:#00c400";><b>GOAL</b></h2> 
+              <p>Build and download your configuration.</p>
+             <h2 style="color:#00c400";><b>PROCEDURE</b></h2> 
+            <p><ol>
+              <li><a href="workflow:///PBONLY_BSW_PBCFGM">Enable binary generation support</a></li>
+              <li><a href="workflow:///PBONLY_CFG_GENERATE">Build a binary of your post-build
+              configuration</a></li>
+              <li><a href="workflow:///PBONLY_CFG_DOWNLOAD">Download post-build
+              configuration</a></li>
+            </ol></p>
+           <h2 style="color:#00c400";><b>OUTPUT</b></h2> 
+              <p>The binary is located in the <b>Project Explorer</b> view in the
+              directory <tt>output\generated</tt>.</p>
+          ]]>
+        </description>
+
+        <action label="Configure the PbcfgM module" id="PBONLY_BSW_PBCFGM">
+          <command description="Open PbcfgM configuration"
+            serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=PbcfgM)"
+            autoadvance="false"/>
+
+          <description>
+            <![CDATA[
+             <h2 style="color:#00c400";><b>GOAL</b></h2> 
+              <p>To configure the PbcfgMmodule.</p>
+              <h2 style="color:#00c400";><b>PROCEDURE</b></h2> 
+             <p><ol>
+                <li>In the <Workflows/> view, double-click this action step to open the <b>PbcfgM</b>
+                editor.</li>
+                <li>In the <b>General</b> tab, enable the <b>PbcfgMBinarySupportEnable</b>.</li>
+                <li>The address of your configuration can be set in the <b>PbcfgMConstCfgAddress</b> field.</li>
+              </ol></p>
+              <p>
+               <strong style="color:#ff9900">Note:</strong>
+              A separate license is required for the binary code generation. If this license is
+                   missing, an error is reported in the <b>Problems View</b> window.</p>
+         
+            ]]>
+          </description>
+        </action>
+
+        <action label="Generate code" id="PBONLY_CFG_GENERATE" repeatable="true">
+          <command description="Generate code"
+            serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand()"/>
+
+          <description>
+            <![CDATA[
+               <h2 style="color:#00c400";><b>GOAL</b></h2> 
+               <p>To generate code.</p>
+               <h2 style="color:#00c400";><b>PROCEDURE</b></h2> 
+              <p>In the <b>Workflows</b> view, double-click this action step to start the generation of you post-build configuration, double-click this action or click the hammer icon in the tool bar
+              of EB tresos Studio.</p>
+              <p>The <b>PBcfgM.srec</b> binary is located in the <b>Project Explorer</b> view in the
+              <tt>output\generated</tt> directory.</p>
+            ]]>
+          </description>
+        </action>
+
+        <action label="Download post-build configuration" id="PBONLY_CFG_DOWNLOAD"
+          repeatable="true">
+          <description>
+            <![CDATA[
+            <h2 style="color:#00c400";><b>GOAL</b></h2> 
+              <p>Your finished post-build configuration binary is located in the
+              <tt>output\generated</tt> directory as <tt>PBcfgM.srec</tt> (Motorola S-record format) file.</p>
+              <p>You can use a debugger (such as Lauterbach) to download your post-build configuration
+                 to your target ECU.</p>
+            ]]>
+          </description>
+        </action>
+      </group>
+
+      <group id="PBONLY_CFG_COMPILER" label="Build your binary with the compiler toolchain" type="sequence">
+        <description>
+          <![CDATA[
+           <h2 style="color:#00c400";><b>GOAL</b></h2> 
+              <p>To generate code, build your configuration, and download your configuration.</p>
+           <h2 style="color:#00c400";><b>PROCEDURE</b></h2> 
+            <p><ol>
+              <li><a href="workflow:///PBONLY_CFG_GENERATE_COMPILER">Generate code.</a></li>
+              <li><a href="workflow:///PBONLY_CFG_BUILD_COMPILER">Build a binary of your post-build
+              configuration.</a></li>
+              <li><a href="workflow:///PBONLY_CFG_DOWNLOAD_COMPILER">Download post-build
+              configuration.</a></li>
+            </ol></p>
+         <h2 style="color:#00c400";><b>OUTPUT</b></h2> 
+              <p>The binaries are located in the <b>Project Explorer</b> view in the
+              <tt>output\bin</tt> directory.</p>
+          ]]>
+        </description>
+
+        <action label="Generate code" id="PBONLY_CFG_GENERATE_COMPILER" repeatable="true">
+          <command description="Generate code"
+            serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand()"/>
+
+          <description>
+            <![CDATA[
+              <h2 style="color:#00c400";><b>GOAL</b></h2> 
+              <p>To start generating your project configuration code.</p>
+               <h2 style="color:#00c400";><b>PROCEDURE</b></h2> 
+              <p>Double-click this action
+              step in the <b>Workflows</b> view, or click the hammer icon in the toolbar
+              of EB tresos Studio.</p>
+            ]]>
+          </description>
+        </action>
+
+        <action label="Build a binary of your post-build configuration" id="PBONLY_CFG_BUILD_COMPILER"
+          repeatable="true">
+          <description>
+            <![CDATA[
+             <h2 style="color:#00c400";><b>GOAL</b></h2> 
+              <p>To create a binary containing only the post-build configuration for your target
+              platform.</p>
+                <h2 style="color:#00c400";><b>PROCEDURE</b></h2> 
+              <p><ol>
+                <li>Execute <tt>launch.bat</tt></li>
+                <li>To compile and link your software components, type <tt>make postbuild</tt>.
+                </li>
+              </ol></p>
+              ]]>
+          </description>
+        </action>
+
+        <action label="Download post-build configuration" id="PBONLY_CFG_DOWNLOAD_COMPILER"
+          repeatable="true">
+          <description>
+            <![CDATA[
+             <h2 style="color:#00c400";><b>GOAL</b></h2> 
+              <p>Your finished post-build configuration binary is located in the 
+              <tt>output\bin</tt> directory as <tt>*.bin</tt> (binary image) and <tt>*.hex</tt> (Motorola
+              S-record format) file.</p>
+              <p>You can use a debugger (such as Lauterbach) to download your post-build configuration to
+              your target ECU.</p>
+            ]]>
+          </description>
+        </action>
+      </group>
+    </group>
+
+    <action id="PBONLY_FIN" label="Finish">
+      <description>
+        <![CDATA[
+         <h2 style="color:#00c400";><b>RESULT</b></h2> 
+          <p>You successfully modified your basic software project to build the post-build
+          configuration.</p>
+          <p>You can continue with the <a
+          href="workflow://ACGPostBuildUpdateWorkflow/PBUPDATE">Post-Build Update Workflow</a> which
+          is based on the Post-Build Only Workflow. It contains instructions to upgrade
+          your Post-Build Only Workflow with Post-Build Update support.</p>
+        ]]>
+      </description>
+    </action>
+  </group>
+
+</workflow>

@@ -1,0 +1,65 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_PBcfg_c_common"
+        imports="dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException
+            dreisoft.tresos.com.generator.input.entity.Cache
+            dreisoft.tresos.com.generated.operationstatus.GeneratorOperationStatus
+            dreisoft.tresos.com.generator.constants.Constants" %>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    boolean comGenerationSuccessful = !context.gen.isVerifying();
+
+    final Cache cache = (Cache) context.gen.getVariable("Com.cache", Cache.class, null);
+%>
+<%@ include file="head.c.inc" %>
+/*==================[includes]==============================================*/
+
+<%
+    for(String variant : cache.PostBuildVariants)
+    {
+%>
+#undef TS_RELOCATABLE_CFG_ENABLE
+#undef TS_PB_CFG_NAME
+#undef TS_PB_CFG_LAYOUT_TYPE
+#include "<%= Constants.MODULE_NAME + Constants.GENERATED_FILE_NAME_SEPARATOR + variant + Constants.GENERATED_FILE_NAME_SEPARATOR + Constants.POST_BUILD_FILE_NAME_INFIX + ".c" %>"
+
+<%
+    }
+%>
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.c.inc" %>
+<%
+if (comGenerationSuccessful)
+{
+    String fileName = Constants.MODULE_NAME + Constants.GENERATED_FILE_NAME_SEPARATOR + Constants.POST_BUILD_FILE_NAME_INFIX + ".c";
+    context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE(  fileName ) );
+}
+else {
+    return "";
+}
+%>

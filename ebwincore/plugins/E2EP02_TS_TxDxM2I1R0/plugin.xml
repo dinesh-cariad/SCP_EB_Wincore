@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR E2EP02_TS_TxDxM2I1R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="E2EP02_TS_TxDxM2I1R0_ModuleId"
+             name="E2EP02_TS_TxDxM2I1R0 Module">
+    <module id="E2EP02_TS_TxDxM2I1R0"
+            label="E2EP02"
+            mandatory="false"
+            allowMultiple="false"
+            description="E2E: AUTOSAR E2E Profile 02 Routines"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="2"
+            swVersionMinor="1"
+            swVersionPatch="17"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="2"
+            specVersionPatch="1"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="2"
+            relVersionPatch="1"
+            categoryType="E2EP02"
+            categoryLayer="Standard Library"
+            categoryCategory="System Services"
+            categoryComponent="ECUC">
+      <cluster name="Safety"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="E2EP02_TS_TxDxM2I1R0_ConfigId"
+             name="E2EP02_TS_TxDxM2I1R0 Configuration">
+    <configuration moduleId="E2EP02_TS_TxDxM2I1R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/E2EP02.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM2I1R0/E2EP02"/>
+      </data>
+
+      <editor id="E2EP02_TS_TxDxM2I1R0_EditorId"
+              label="Default"
+              tooltip="E2E: AUTOSAR E2E Profile 02 Routines">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM2I1R0/E2EP02"/>
+          <parameter name="title" value="E2EP02"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="E2EP02_TS_TxDxM2I1R0_GeneratorId"
+             name="E2EP02_TS_TxDxM2I1R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="E2EP02_TS_TxDxM2I1R0_TemplateBasedCodeGeneratorId"
+               moduleId="E2EP02_TS_TxDxM2I1R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+    </generator>
+  </extension>
+  <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="E2EP02_TS_TxDxM2I1R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+</plugin>

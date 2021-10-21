@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+    xmlns="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+    id="ConfigureProject" description="Configure the project"
+    version="10.8" label="Configure the project" icon="../icons/yellow.gif">
+
+   <group id="Configuration" label="Project configuration">
+        <group id="ConfigureModule" label="Module configuration" type="choice">
+            <action id="CalculateHandleIds" label="Calculate HandleIds">
+                <command description="Please configure the autoconfigure dialog so it can be run unattended" type="configure"
+                    serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerType=HandleId)"/>
+                <command description="Calculate HandleIds via an unattended assistance dialog"
+                    serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerType=HandleId)"/>
+                <description><![CDATA[You can automatically <b>calculate HandleIds</b> by using an assistance dialog.<p> 
+                Before you can run the assistance dialog unattended, you have to configure it via the autoconfiguration wizard. 
+                Please use the toolbar button <img src="configure.gif"/> to open the autoconfiguration wizard.  ]]> </description>
+            </action>
+	        <action id="EditModuleConfig" label="Edit module configuration">
+	            <command description="Configure the project" serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=GCDemo2)"/>
+	            <description>Configure the created project by using a generic editor. </description>
+	        </action>
+            <description><![CDATA[Different ways to configure the project<ul><li><a href="workflow:///CalculateHandleIds">via assistant dialog</a></li>
+            <li><a href="workflow:///EditModuleConfig">via generic editor</a></li></ul>.]]></description>
+        </group>
+        <action id="GenerateProject" label="Generate project">
+            <command description="Generate code" serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand(mode=generate_SWC-T)"/>
+            <description><![CDATA[Start the generation of the project.<p>This action is not available, as the mode <b>generate_SWC-T</b> 
+            is not provided by the module GCDemo2_TS_T00D0M0I0R0.]]></description>
+        </action>
+        <description>This workflow will guide you through the configuration of the project.</description>
+   </group>
+</workflow>

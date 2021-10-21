@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<!-- Copyright (C) Elektrobit Automotive GmbH - All rights reserved -->
+<datamodel version="2.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/06/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/06/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr name="AUTOSAR" type="AUTOSAR" factory="autosar">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_T00D0M0I0R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="PublicApiTest" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="DESC" value="The TITLE is the value of node PageTitle"/>
+              <a:a name="LOWER-MULTIPLICITY" value="1"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <v:ctr name="ExamplesCommon" type="IDENTIFIABLE">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                        &lt;html&gt;
+                          All parameters in this container can be set via a guidedconfig wizard.
+                          Parameter changes are done via PushEvents and PushOperations.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                <v:var name="Bool" type="BOOLEAN">
+                  <a:a name="TAB" value="Stuff"/>
+                  <a:a name="LABEL" value="Float Activator"/>
+                </v:var>
+                <v:var name="Int" type="INTEGER">
+                  <a:a name="TAB" value="Stuff"/>
+                  <a:a name="LABEL" value="Labeled Int"/>
+                </v:var>
+                <v:var name="Float" type="FLOAT">
+                  <a:a name="TAB" value="Stuff"/>
+                  <!--
+                    demonstrates usage of registered XPath function demo:MyTestXPathFunction
+                  -->
+                  <a:da name="ENABLE" type="XPath" 
+                          expr="demo:MyTestXPathFunction(../Bool)"/>
+                  <a:a name="TOOLTIP" value="Enables or disables itself via a custom XPATH function"/>
+                </v:var>
+                <v:var name="String" type="STRING">
+                  <a:a name="TAB" value="Stuff"/>
+                </v:var>
+                <v:lst name="StringList">
+                  <a:a name="TAB" value="Stuff"/>
+                  <v:var name="List" type="STRING"/>
+                </v:lst>
+	            </v:ctr>
+              <v:ctr name="ExamplesResourceFile" type="IDENTIFIABLE">
+                <v:var name="SubDerivate" type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                        &lt;html&gt;
+                          Usage of lists for populating an enumeration.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:da name="DEFAULT" value="Default"/>
+                  <!--
+                    The following expression ecu:parameters('subderivate') collects the
+                    values of each parameter with name "subderivate" that is assigned 
+                    to a resource properties file (extension point
+                    "dreisoft.tresos.autosar2.api.plugin.ecuresource") for target "TEST"
+                    and derivate "TEST". In this example the resulting values will be
+                    ['Default', 'SubDerivate1'] (please see registration of the resource
+                    properties files at the plugin.xml).
+                  -->
+                  <a:da name="RANGE" type="XPath" expr="ecu:parameters('subderivate')"/>
+                </v:var>
+                <v:var name="InputFrequency" type="FLOAT">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                        &lt;html&gt;
+                          Read a integer value from resource file and validate it to be within a
+                          certain allowed range.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <!--
+                  The following expression ecu:get('Example.InputFrequency') returns the 
+                  value associated with the name 'Example.InputFrequency'.
+                  
+                  The queried resource properties file depends on the target and derivate
+                  (in this case TEST/TEST) and the selected subderivate at (schema) path
+                  /AUTOSAR/TOP-LEVEL-PACKAGES/TS_T00D0M0I0R0/ELEMENTS/PublicApiTest/ExamplesResourceFile/SubDerivate.
+                  
+                  The further lines shows that it is possible to dynamically build the property's
+                  key (e.g. by concatenating several strings), even from other resource properties
+                  values.
+                  -->
+                  <a:da name="DEFAULT" type="XPath" expr="ecu:get('Example.InputFrequency')"/>
+                  <a:da name="INVALID" type="XPath">
+                    <a:tst
+                           expr=".&gt;=ecu:get(concat(ecu:get('Example.InputFrequency.FrequencyRange'),'.minFrequency'))"
+                           false="Below minimal allowed frequency"/>
+                    <a:tst
+                           expr=".&lt;=ecu:get(concat(ecu:get('Example.InputFrequency.FrequencyRange'),'.maxFrequency'))"
+                           false="Maximal allowed frequency exeeded"/>
+                  </a:da>
+                </v:var>
+                <v:var name="OutputFrequenyPrescaler" type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                        &lt;html&gt;
+                          Usage of lists for populating an enumeration.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <!--
+                    The following ecu:list('Example.OutputFrequency.Prescalers') expressions returns 
+                    a node-set containing the value of the given key 'Example.OutputFrequency.Prescalers'
+                    splitted at comma.
+                    
+                    The queried resource properties file depends on the target and derivate
+                    (in this case TEST/TEST) and the selected subderivate at (schema) path
+                    /AUTOSAR/TOP-LEVEL-PACKAGES/TS_T00D0M0I0R0/ELEMENTS/PublicApiTest/ExamplesResourceFile/SubDerivate.
+                    
+                    For subderivate 'Default': ['PRE_1.0', 'PRE_2.0', 'PRE_3.0', 'PRE_4.0', 'PRE_5.0', 'PRE_6.0']
+                    For subderivate 'SubDerivate1': ['PRE_1.0', 'PRE_2.0', 'PRE_3.0', 'PRE_4.0']
+                  -->
+                  <a:da name="DEFAULT" type="XPath" expr="ecu:list('Example.OutputFrequency.Prescalers')[1]"/>
+                  <a:da name="RANGE" type="XPath" expr="ecu:list('Example.OutputFrequency.Prescalers')"/>
+                </v:var>
+                <v:ctr name="FeatureCan" type="IDENTIFIABLE">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                        &lt;html&gt;
+                          Check if a feature is available by using the the ecu:has function.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <!--
+                    The following expression ecu:has('Example.Feature.Can') checks whether a key
+                    exists with name 'Example.Feature.Can' in the found resource properties file.
+                    
+                    The queried resource properties file depends on the target and derivate
+                    (in this case TEST/TEST) and the selected subderivate at (schema) path
+                    /AUTOSAR/TOP-LEVEL-PACKAGES/TS_T00D0M0I0R0/ELEMENTS/PublicApiTest/ExamplesResourceFile/SubDerivate.
+                  -->
+                  <a:da name="ENABLE" type="XPath" expr="ecu:has('Example.Feature.Can') = 'true'"/>
+                  <v:var name="CanParam1" type="INTEGER"/>
+                  <v:var name="CanParam2" type="INTEGER"/>
+                  <v:var name="CanParamN" type="INTEGER"/>
+                </v:ctr>
+                <v:ctr name="FeatureFlexRay" type="IDENTIFIABLE">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                        &lt;html&gt;
+                          Check if a feature is available by using the the ecu:get functionality.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:da name="ENABLE" type="XPath" expr="ecu:get('Example.Feature.FlexRay') = 'yes'"/>
+                  <v:var name="FlexRayParam1" type="INTEGER"/>
+                  <v:var name="FlexRayParam2" type="INTEGER"/>
+                  <v:var name="FlexRayParamN" type="INTEGER"/>
+                </v:ctr>
+              </v:ctr>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

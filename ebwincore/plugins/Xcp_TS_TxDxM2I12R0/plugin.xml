@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR Xcp_TS_TxDxM2I12R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="Xcp_TS_TxDxM2I12R0_GeneratorId"
+             name="Xcp_TS_TxDxM2I12R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="Xcp_TS_TxDxM2I12R0_TemplateBasedCodeGeneratorId"
+               moduleId="Xcp_TS_TxDxM2I12R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate,generate_macros"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd,generate_macros"/>
+    </generator>
+  </extension>
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Xcp_TS_TxDxM2I12R0_ModuleId"
+             name="Xcp_TS_TxDxM2I12R0 Module">
+    <module id="Xcp_TS_TxDxM2I12R0"
+            label="Xcp"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-XCP: AUTOSAR XCP"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="2"
+            swVersionMinor="12"
+            swVersionPatch="0"
+            swVersionSuffix="B439717"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            specVersionSuffix="0"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="Xcp"
+            categoryLayer="Communication Services"
+            categoryCategory="Communication"
+            categoryComponent="ECUC">
+      <cluster name="Debugging"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Xcp_TS_TxDxM2I12R0_ConfigId"
+             name="Xcp_TS_TxDxM2I12R0 Configuration">
+    <configuration moduleId="Xcp_TS_TxDxM2I12R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Xcp.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the recommended configuration XcpRecConfigurationMaxAllConnections -->
+        <resource value="config_ext/XcpRecConfigurationMaxAllConnections.xdm" type="xdm" id="res_XcpRecConfigurationMaxAllConnections"/>
+        <recconfig
+          name="XcpRecConfigurationMaxAllConnections"
+          default="false"
+          description="All features are enabled including multiple connections. It is very similar with the XcpRecConfigurationMaxFlexRay configuration."
+          resourceId="res_XcpRecConfigurationMaxAllConnections"
+          path="ASPath:/TS_TxDxM2I12R0/XcpRecConfigurationMaxAllConnections"/>
+
+        <!-- register the recommended configuration XcpRecConfigurationMaxFlexRay -->
+        <resource value="config_ext/XcpRecConfigurationMaxFlexRay.xdm" type="xdm" id="res_XcpRecConfigurationMaxFlexRay"/>
+        <recconfig
+          name="XcpRecConfigurationMaxFlexRay"
+          default="false"
+          description="All features are enabled. DAQ lists configuration is dynamic. Underlying communication is FlexRay."
+          resourceId="res_XcpRecConfigurationMaxFlexRay"
+          path="ASPath:/TS_TxDxM2I12R0/XcpRecConfigurationMaxFlexRay"/>
+
+        <!-- register the recommended configuration XcpRecConfigurationMinCan -->
+        <resource value="config_ext/XcpRecConfigurationMinCan.xdm" type="xdm" id="res_XcpRecConfigurationMinCan"/>
+        <recconfig
+          name="XcpRecConfigurationMinCan"
+          default="true"
+          description="Only basic functionality. No DAQ lists support. Underlying communication is CAN."
+          resourceId="res_XcpRecConfigurationMinCan"
+          path="ASPath:/TS_TxDxM2I12R0/XcpRecConfigurationMinCan"/>
+
+        <!-- register the recommended configuration XcpRecConfigurationMinEthernetTCP -->
+        <resource value="config_ext/XcpRecConfigurationMinEthernetTCP.xdm" type="xdm" id="res_XcpRecConfigurationMinEthernetTCP"/>
+        <recconfig
+          name="XcpRecConfigurationMinEthernetTCP"
+          default="false"
+          description="Basic features are configured. Underlying communication is Ethernet over TCP/IP protocol. DAQ lists support and STIM list support"
+          resourceId="res_XcpRecConfigurationMinEthernetTCP"
+          path="ASPath:/TS_TxDxM2I12R0/XcpRecConfigurationMinEthernetTCP"/>
+
+        <!-- register the recommended configuration XcpRecConfigurationMinEthernetUDP -->
+        <resource value="config_ext/XcpRecConfigurationMinEthernetUDP.xdm" type="xdm" id="res_XcpRecConfigurationMinEthernetUDP"/>
+        <recconfig
+          name="XcpRecConfigurationMinEthernetUDP"
+          default="false"
+          description="Basic features are configured. Underlying communication is Ethernet over UDP protocol. DAQ lists support and STIM list support"
+          resourceId="res_XcpRecConfigurationMinEthernetUDP"
+          path="ASPath:/TS_TxDxM2I12R0/XcpRecConfigurationMinEthernetUDP"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM2I12R0/Xcp"/>
+      </data>
+
+      <editor id="Xcp_TS_TxDxM2I12R0_EditorId"
+              label="Default"
+              tooltip="ACG-XCP: AUTOSAR XCP">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM2I12R0/Xcp"/>
+          <parameter name="title" value="Xcp"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_Xcp_TS_TxDxM2I12R0"
+           moduleId="Xcp_TS_TxDxM2I12R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.XcpTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_Xcp_TS_TxDxM2I12R0"
+        name="Xcp service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="Xcp" />
+        <parameter name="req://dem.events:1" value="resources/Xcp_Dem_Events.xml" />
+        <parameter name="req://nvm.blocks:1" value="resources/Xcp_NvM_Blocks.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/Xcp_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.Xcp_TS_TxDxM2I12R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+  <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="Xcp_TS_TxDxM2I12R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+</plugin>

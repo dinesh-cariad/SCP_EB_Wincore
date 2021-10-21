@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+    ** \brief AUTOSAR BswM_TS_TxDxM1I15R0 plugin
+    ** \project AUTOSAR Standard Core
+    ** \file plugin.xml
+    **
+    ** Copyright 2012 by Elektrobit Automotive GmbH
+    ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+    ** unless expressly agreed to otherwise.
+  -->
+
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="BswM_TS_TxDxM1I15R0_ModuleId"
+             name="BswM_TS_TxDxM1I15R0 Module">
+    <module id="BswM_TS_TxDxM1I15R0"
+            label="BswM"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-ModeManagement: AUTOSAR BswM module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="15"
+            swVersionPatch="6"
+            swVersionSuffix="B439717"
+            specVersionMajor="1"
+            specVersionMinor="2"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="BswM"
+            categoryLayer="System Services"
+            categoryCategory="Mode Management"
+            categoryComponent="ECUC">
+      <cluster name="Basic Services"/>
+<cluster name="Mode Management Stack"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="BswM_TS_TxDxM1I15R0_GeneratorId"
+             name="BswM_TS_TxDxM1I15R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="BswM_TS_TxDxM1I15R0_TemplateBasedCodeGeneratorId"
+               moduleId="BswM_TS_TxDxM1I15R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+    </generator>
+  </extension>
+
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_BswM_TS_TxDxM1I15R0"
+        name="BswM service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="BswM" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/BswM_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.BswM_TS_TxDxM1I15R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="BswM_TS_TxDxM1I15R0_ConfigId"
+             name="BswM_TS_TxDxM1I15R0 Configuration">
+    <configuration moduleId="BswM_TS_TxDxM1I15R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/BswM.xdm" type="xdm"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM1I15R0/BswM"/>
+      </data>
+
+      <editor id="BswM_TS_TxDxM1I15R0_GenEditorId"
+              label="Generic Editor"
+              tooltip="Generic configuration editor for the BswM module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM1I15R0/BswM"/>
+          <parameter name="title" value="BswM"/>
+          <parameter name="groupLinks" value="true"/>
+        </class>
+      </editor>
+
+    </configuration>
+  </extension>
+</plugin>
+

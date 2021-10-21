@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="dev">
+    <specobject>
+      
+      <id>dev.Dcm.External.ServiceAndSubService</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Diagnostic requests and subfunctions which are configured to be externally handled
+        behave as follows:<ul>
+        <li>Service and subfunction request message validations are not performed as
+          part of the Dcm. Request message validations for externally handled
+          services and subfunctions are part of an integration activity.</li>
+        <li>As the name of the callout is defined within the parameters
+          <i>DcmDsdSidTabFnc</i> and <i>DcmDsdSubServiceFnc</i>,
+          the service and subfunction handler prototype
+          given by the SWS cannot be followed.</li>
+         <li>A const qualifier is removed from the parameter
+          <i>Dcm_MsgContextType* pMsgContext</i>
+          because structure contents at the address <i>pMsgContext</i> get modified.
+          This occurs, for example, if writing the positive response size in the
+          <i>resDataLen</i> parameter of this structure while servicing the request.</li>
+         <li><i>DCM_PENDING</i> is used as a value for the <i>OpStatus</i> in the call.
+          This is to inform the service or subfunction handler whether
+          the previous execution is complete or not and needs to be resumed.
+          Also see the enhancement related to 'Usage of <i>DCM_FORCE_RCRRP_OK</i>
+          in external service handlers'.</li>
+          </ul>
+      </description>
+      <rationale>
+        See the individual list items.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+      
+    </specobject>
+
+  </specobjects>
+
+  <specobjects doctype="lim">
+    <specobject>
+      
+      <id>intgr.Dcm.ReadDTCInformation.ResponseBuffer</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The integrator should provide enough buffer for accommodating the total response if
+        paged buffering is disabled. Also, buffer size should be at least enough to hold one DTC
+        record if paged buffering is enabled.
+      </description>
+      <rationale>
+        Response buffer size should suffice the total response if paging is disabled and it should
+        have the minimum length if paging is enabled.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      
+      <id>intgr.Dcm.DiagnosticSessionControl.ExtSubService</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The user cannot configure external subfunction handlers for service
+        <i>DiagnosticSessionControl (0x10)</i>.
+      </description>
+      <rationale>
+        Subfunctions configured for service <i>DiagnosticSessionControl (0x10)</i> do not
+        refer to different actions/functions to execute for different session levels requested.
+        However, these subfunctions are configurable in order to allow security/session level and
+        mode rule checks if transitioning between different session levels. Therefore they can all
+        be handled in the same manner and no external subfunction handlers are required. If
+        customized actions need to be executed for transitions to certain sessions, the
+        <i>ServiceRequestNotification</i> interface may be used.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      
+      <id>intgr.Dcm.ModeDeclaration.RangeLimit</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The range for <i>ModeDeclaration</i> within <i>ModeDeclarationGroup</i> is
+        limited. The current implementation supports <i>ImplementationDataType</i> uint16 for
+        <i>ModeDeclaration</i> inside <i>ModeDeclarationGroup</i> for modes provided
+        by SWC or any other BSW mode manager (including Dcm) and required by the Dcm. This implies
+        that a reference of <i>ModeDeclarationGroupPrototype</i> of
+        <i>ModeDeclarationGroup</i> contains a maximum of 65535 elements of
+        <i>ModeDeclaration</i> only.
+      </description>
+      <rationale>
+        The Dcm does not know the total number of <i>ModeDeclaration</i> defined by an SWC
+        for its <i>ModeDeclarationGroup</i>. The Dcm cannot infer this because the mapping of
+        the data type to the <i>ModeDeclarationGroup</i> cannot be obtained from the
+        reference to the <i>ModeDeclaration</i> which belongs to the
+        <i>ModeDeclarationGroupPrototype</i>, see configuration parameter
+        <i>DcmSwcModeRef</i>.
+        Thus, the Dcm sets the data type for <i>ModeDeclaration</i> to uint16 in order to
+        ensure compatibility with elements of <i>ModeDeclarationGroup</i> that contain a
+        maximum of 65535 <i>ModeDeclaration</i> elements.
+        Also see constr_1166 in Software Component Template, V4.2.0, AUTOSAR 4.0.3.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      
+      <id>intgr.Dcm.Nvm.Timing</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The timing of operations issued by other users of the same NvM blocks
+        that the Dcm uses must allow successful polling of block operation status by the Dcm.
+        The integrator must ensure that other users of NvM blocks which the Dcm also uses shall
+        execute operations on these NvM blocks only on startup for read operations or shutdown
+        for write operations. The reason is to interfere as little as possible with the
+        operations that the Dcm might execute using these blocks.
+      </description>
+      <rationale>
+        The Dcm polls the state of NvM operations <i>NvM_ReadBlock()</i>
+        and <i>NvM_WriteBlock()</i> by calling the <i>NvM_GetErrorStatus()</i> API.
+        This is done cyclically in each <i>Dcm_MainFunction()</i> cycle.
+        If another user of the same NvM block triggers an operation between two of
+        these polls, the user is enqueued. Thus, the next poll of the
+        <i>NvM_GetErrorStatus()</i> API returns the result that an operation is still
+        pending. Although the operation requested by the Dcm was completed, the Dcm is kept
+        in a waiting state by the pending status of another user's operation.
+        This means that the Dcm may time out while waiting for an operation on which its functionality
+        does not depend to succeed.
+        Requires clarification from Bugzilla <ulink url="http://www.autosar.org/bugzilla/show_bug.cgi?id=60936">http://www.autosar.org/bugzilla/show_bug.cgi?id=60936</ulink>.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      
+      <id>intgr.Dcm.DynamicallyDefineDataIdentifier.ExtSubService</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The user cannot configure external subfunction handlers for service
+        <i>DynamicallyDefineDataIdentifier (0x2C)</i>.
+      </description>
+      <rationale>
+        Subfunctions configured for service <i>DynamicallyDefineDataIdentifier (0x2C)</i> do
+        not refer to different actions/functions to execute for different session levels requested.
+        However, these subfunctions are configurable in order to allow security/session level and
+        mode rule checks if transitioning between different session levels. Therefore they can all
+        be handled in the same manner and no external subfunction handlers are required. If
+        customized actions need to be executed for transitions to certain sessions, the
+        <i>ServiceRequestNotification</i> interface may be used.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      
+      <id>intgr.Dcm.ReadDTCInformation.ReportDTCFaultDetectionCounter</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the <i>ReadDTCInformation (0x19)</i> service is configured to also offer the
+        EB-supplied <i>reportDTCFaultDetectionCounter (0x14)</i> subfunction, the following
+        limitations apply:
+        <ul>
+         <li>If the service <i>ReadDTC (0x19)</i> is configured to be processed
+            synchronously (i.e.the parameter <i>DcmDspProcessServiceAsync</i> is set to 'false'),
+            the <i>TimingEvent_MainFunction</i> TimingEvent of the Dcm must be mapped either to:
+            <ul>
+            <li>a task of a priority that is lower than the priority of any task which
+                contains a direct call to the <i>Dcm_SetDTCFilter()</i> API or</li>
+            <li>the same task that the <i>Dem_MainFunction()</i> is mapped to.</li>
+            </ul>
+          </li>
+         <li>If the service <i>ReadDTC (0x19)</i> is configured to be processed
+            asynchronously (i.e. the parameter <i>DcmDspProcessServiceAsync</i> is set to 'true'),
+            the <i>BswInternalTriggerOccurredEvent_Async</i> TriggerOccurredEvent of the
+            Dcm must be mapped to a task of a priority which is lower than the priority of
+            any task which contains a direct call to <i>the Dcm_SetDTCFilter()</i> API.</li>
+        </ul>
+      </description>
+      <rationale>
+        This ensures that even though the Rte cannot correctly determine the context of calls
+        to operations originating from the <i>Dcm_SetDTCFilter()</i> API call, corruption of
+        data as a result of preemptions does not occur.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      
+      <id>intgr.Dcm.NvmBlocks.ServiceNeedsWizard</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        When using NvM blocks for persistence in Dcm, the integrator must check the block sizes that are calculated by the
+        Calculate Service Needs wizard against the size of the data that the block needs to contain.
+        The following NvM blocks are affected:
+        <ul>
+          <li>BlockId: NVM_BLOCK_DCM_DDDID<ul>
+            <li>Variable: Dcm_DDDidSrcTable</li>
+            <li>in case of UDS service 0x2C (DynamicallyDefineDataIdentifier)</li></ul></li>
+          <li>BlockId: NVM_BLOCK_DCM_ROE<ul>
+            <li>Variable: Dcm_Dsl_RoeServices_Persistent_Data</li>
+            <li>in case of UDS service 0x86 (ResponseOnEvent)</li></ul></li>
+         </ul>
+      </description>
+      <rationale>
+        The real size could be different from the calculated size for different
+        platforms/compiler options.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      
+      <id>intgr.Dcm.SecurityAccess.DelayTimersMigration</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        When migrating to the ACG-7.7.2.3 or the ACG-8 Dcm, the mechanism for handling
+        DelayTimers for the SecurityAccess (0x27) service changed. The following interfaces are no longer used:
+        <ul>
+          <li><i>Rte_DcmSecSetNumAtt(uint8 SecurityLevel)</i></li>
+          <li><i>Rte_DcmSecGetNumAtt(uint8 SecurityLevel, uint8 NumberOfAttempts)</i></li>
+        </ul>
+        In order to migrate the behavior to the new interfaces, use the following generated
+        or configured AUTOSAR 4.3-compliant:
+        <ul>
+          <li><i>Xxx_GetSecurityAttemptCounter((
+                  optional Dcm_OpStatusType OpStatus), uint8* AttemptCounter)</i></li>
+          <li><i>Xxx_SetSecurityAttemptCounter((
+                  optional Dcm_OpStatusType OpStatus), uint8 AttemptCounter)</i></li>
+        </ul>
+        as wrappers for the previous interfaces. In order to do this, the
+        <i>Xxx_Get/SetSecurityAttemptCounter</i> interface shall pass the SecurityLevel
+        identifier corresponding to the SecurityLevel in question. These interfaces are configured/generated
+        per SecurityLevel, therefore the SecurityLevel identifier is known within them.<br/>
+        Alternatively, if the legacy behavior is required, perform the following actions:
+        <ul>
+          <li>For every <i>DcmDspSecurityRow</i>, configure the <i>DcmDspSecurityAttemptCounterEnabled</i>
+            parameter to <i>FALSE</i>.</li>
+          <li>Configure the <i>DcmDspSecurityLegacyAttemptCountersHandling</i> parameter to <i>TRUE</i>.</li>
+        </ul>
+      </description>
+      <rationale>
+        The new implementation is based on AUTOSAR 4.3 and ISO 14229-1:2013. The old implementation
+        was not completely and correctly specified within the AUTOSAR 4.0.3 Dcm specification.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+
+  </specobjects>
+</specdocument>

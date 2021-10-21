@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="swurs">
+    <specobject>
+      <id>intgr.XcpR.EB_INTREQ_XcpR_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The Routing Paths for requests from the Xcp master to the Xcp slave and for responses from Xcp slave to Xcp master,
+        shall be unique between configured Connection Groups.
+      </description>
+      <rationale>
+        Each configured Connection Group is composed of at least one Routing Path for requests from Xcp master to Xcp slave
+        and for responses from Xcp slave to Xcp master.
+        After XcpR is in state CONNECTED, the Active Connection Group is saved based on these two Routing Paths.
+        When a XcpR_RxIndication() request is made, it is accepted only if it is part of the Active Connection Group.
+        If these two Routing Paths are not unique for each Connection Group, XcpR cannot determine which Connection Group shall
+        be used for forwarding messages.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>intgr.XcpR.EB_INTREQ_XcpR_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The master Xcp shall have MaxCto set as the minimum between MaxCto from the local Xcp slave
+        and remote Xcp slave, otherwise messages won't be correctly received.
+      </description>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.XcpR.EB_INTREQ_XcpR_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>2</version>
+      <description>
+        If "packing of multiple messages in one frame" is enabled on a remote Xcp instance, both XcpR Source and Destination connected
+        to that particular Xcp instance shall have "packing of multiple messages in one frame" enabled.
+      </description>
+      <rationale>
+        Xcp supports the "packing of multiple messages in one frame" feature.
+        XcpR also supports this feature, but it can be enabled either for a Source, either for a Destination.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.XcpR.EB_INTREQ_XcpR_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If XcpR supports "packing of multiple messages in one frame" for the connection to Master Xcp but not for the connection
+        to the slave Xcp, the XcpR Source from slave Xcp shall have the "receive from rx indication" option enabled and the
+        Master Xcp shall have "packing of multiple messages in one frame" enabled.
+      </description>
+      <rationale>
+        If one frame with multiple messages received from master Xcp, and the slave Xcp replies with multiple responses,
+        if "receive from rx indication" option is not enabled, the second response will be sent with the same PduId,
+        and the buffer for this PduId is locked in XcpR.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.XcpR.EB_INTREQ_XcpR_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The bus timeout for TxConfirmation in Xcp shall be configured with a higher value than the one in XcpR.
+      </description>
+      <rationale>
+        XcpR will forward the messages from Xcp and will wait for TxConfirmation which it forwards to Xcp, so 
+        Xcp should not disconnect before XcpR.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.XcpR.EB_INTREQ_XcpR_0006</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>2</version>
+      <description>
+        If FlexRay sequence correction is enabled for a source, then it shall be enabled for its linked remote Xcp destination
+        and also for the Master Xcp.
+      </description>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.XcpR.EB_INTREQ_XcpR_0007</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        For connections over CDD, the Upper Layer short name and Upper Layer header file, shall have UpperLayer Cdd Short name
+        and UpperLayer Cdd Header file need to have the same values in all configured Rx Destinations.
+      </description>
+      <rationale>
+        Examples for connection over CDD with a upper layer Xcp module are: Xcp and XcpOnCdd_Cbk.h
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.XcpR.EB_INTREQ_XcpR_0008</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If multiple CDD destinations are configured, then all these destinations
+        shall use the same callback functions.
+      </description>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.XcpR.EB_INTREQ_XcpR_0009</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In the XcpR routing paths list, one source shall be linked to either one destination,
+        or a maximum of 2 destinations: one Rx destination and one Tx destination. A source cannot
+        be linked to 2 Rx destinations or 2 Tx destinations.
+      </description>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      <id>intgr.XcpR.EB_INTREQ_XcpR_0010</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Connections between XcpR and a master Xcp, or between XcpR and a slave Xcp, shall have the same bus-type attributes and PDU attributes.
+      </description>
+      <rationale>
+        For XcpR to be connected, for example, to a master Xcp on FlexRay, it needs to configure a XcpR source on Fr and a XcpR
+        destination on Fr. This source shall have the same characteristics as the destination (i.e. Multiple packing enabled, package alignment, MaxCto etc.)
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+
+  </specobjects>
+</specdocument>

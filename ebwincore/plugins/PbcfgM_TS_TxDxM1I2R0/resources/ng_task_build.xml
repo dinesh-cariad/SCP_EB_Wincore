@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="tresos" default="all" basedir=".">
+    <target name="all">
+
+      <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+          <pathelement location="./ant-contrib-1.0b1.jar"/>
+        </classpath>
+      </taskdef>
+
+      <macrodef name="generate-common">
+        <sequential>
+
+          <ng.tmplgen
+              template="generate/templates/include/PbcfgM_Cfg.h"
+              file="include/PbcfgM_Cfg.h"
+              dctxt="PbcfgM"
+              failonerror="false"
+              needCodeTags="false" >
+              <variable name="project" value="${genProject}"/>
+          </ng.tmplgen>
+
+          <ng.tmplgen
+              template="generate/templates/include/PbcfgM_Lcfg.h"
+              file="include/PbcfgM_Lcfg.h"
+              dctxt="PbcfgM"
+              failonerror="false"
+              needCodeTags="false" >
+              <variable name="project" value="${genProject}"/>
+          </ng.tmplgen>
+
+          <ng.tmplgen
+              template="generate/templates/src/PbcfgM_Lcfg.c"
+              file="src/PbcfgM_Lcfg.c"
+              dctxt="PbcfgM"
+              failonerror="false"
+              needCodeTags="false" >
+              <variable name="project" value="${genProject}"/>
+          </ng.tmplgen>
+
+          <ng.tmplgen
+              template="generate/templates/include/PbcfgM_SymbolicNames_PBcfg.h"
+              file="include/PbcfgM_SymbolicNames_PBcfg.h"
+              dctxt="PbcfgM"
+              failonerror="false"
+              needCodeTags="false" >
+              <variable name="project" value="${genProject}"/>
+          </ng.tmplgen>
+
+        </sequential>
+      </macrodef>
+
+      <macrodef name="generate-default">
+        <sequential>
+
+          <generate-common />
+
+          <ng.tmplgen
+              template="generate/templates/xgen/PbcfgM.xgen"
+              file="xgen/PbcfgM.xgen"
+              dctxt="PbcfgM"
+              failonerror="false"
+              needCodeTags="false" >
+              <variable name="project" value="${genProject}"/>
+          </ng.tmplgen>
+
+        </sequential>
+      </macrodef>
+
+      <macrodef name="generate-master">
+        <sequential>
+
+          <generate-common />
+
+          <ng.tmplgen
+              template="generate/templates/include/PbcfgM_Master_PBcfg.h"
+              file="include/PbcfgM_PBcfg.h"
+              dctxt="PbcfgM"
+              failonerror="false"
+              needCodeTags="false" >
+              <variable name="project" value="${genProject}"/>
+          </ng.tmplgen>
+
+          <ng.tmplgen
+              template="generate/templates/src/PbcfgM_Master_Pbcfg.c"
+              file="src/PbcfgM_Pbcfg.c"
+              dctxt="PbcfgM"
+              failonerror="false"
+              needCodeTags="false" >
+              <variable name="project" value="${genProject}"/>
+          </ng.tmplgen>
+
+        </sequential>
+      </macrodef>
+
+      <macrodef name="generate-slave">
+        <sequential>
+
+        <generate-common />
+
+        <ng.tmplgen
+              template="generate/templates/xgen/PbcfgM.xgen"
+              file="xgen/PbcfgM_${variantName}.xgen"
+              dctxt="PbcfgM"
+              failonerror="false"
+              needCodeTags="false" >
+              <variable name="project" value="${genProject}"/>
+          </ng.tmplgen>
+        </sequential>
+      </macrodef>
+
+      <ng.property
+        name="variantName"
+        dctxt="Base"
+        xpath="asc:getVariantName()"
+        override="false" >
+      </ng.property>
+
+      <ng.property
+        name="variantList"
+        dctxt="Base"
+        xpath="asc:getVariants()"
+        override="false" >
+      </ng.property>
+
+      <if>
+        <equals arg1="${variantName}" arg2="" />
+        <then>
+          <if>
+            <equals arg1="${variantList}" arg2="" />
+            <then>
+              <generate-default />
+            </then>
+            <else>
+              <generate-master />
+            </else>
+          </if>
+        </then>
+        <else>
+          <generate-slave />
+        </else>
+      </if>
+
+    </target>
+
+</project>

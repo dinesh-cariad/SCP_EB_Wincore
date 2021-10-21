@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.FrSM.EB_INTREQ_FrSM_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      <code>FrSM_SetEcuPassive()</code> and <code>FrSM_MainFunction_&lt;Cluster Id&gt;()</code> must not execute concurrently.
+      The API functions <code>FrSM_SetEcuPassive()</code> and <code>FrSM_MainFunction_&lt;Cluster Id&gt;()</code> must not
+      execute concurrently.
+      </description>
+      <rationale>
+      If <code>FrSM_SetEcuPassive()</code> and <code>FrSM_MainFunction_&lt;Cluster Id&gt;()</code> execute concurrently,
+      they might change the transceiver state simultaneously. This limitation avoids the overhead
+      associated with consistency actions for the simultaneous transceiver state change.
+      </rationale>
+    </specobject>
+  </specobjects>
+</specdocument>

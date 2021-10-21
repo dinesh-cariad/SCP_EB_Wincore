@@ -1,0 +1,823 @@
+<?xml version='1.0'?>
+<datamodel version="7.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/16/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/16/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:cd="http://www.tresos.de/_projects/DataModel2/08/customdata.xsd" 
+         xmlns:f="http://www.tresos.de/_projects/DataModel2/14/formulaexpr.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd"  
+         xmlns:variant="http://www.tresos.de/_projects/DataModel2/11/variant.xsd">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_TxDxM3I4R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="LinSM" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="ADMIN-DATA" type="ADMIN-DATA">
+                <ad:ADMIN-DATA>
+                  <ad:LANGUAGE>EN</ad:LANGUAGE>
+                  <ad:DOC-REVISIONS>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>4.2.0</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>AUTOSAR</ad:ISSUED-BY>
+                      <ad:DATE>2011-11-09T11:36:22Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>3.4.19</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>Elektrobit Automotive GmbH</ad:ISSUED-BY>
+                      <ad:DATE>2021-07-14T23:59:59Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                  </ad:DOC-REVISIONS>
+                </ad:ADMIN-DATA>
+              </a:a>
+              <a:a name="DESC">
+                <a:v>&lt;html&gt;
+                      Configuration of the Lin State Manager module.   
+                    &lt;/html&gt;</a:v>
+              </a:a>
+              <a:a name="LOWER-MULTIPLICITY" value="0"/>
+              <a:a name="RELEASE" value="asc:4.0"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <a:a name="UUID" value="ECUC:240b0def-26c5-4bd2-ae58-1b5b570c70a4"/>
+              <a:da name="WARNING" type="XPath">
+                <a:tst expr="(count(as:modconf(&apos;BswM&apos;)) = 1)" 
+                       false="The LIN State Manager module (LinSM) needs the Basic Software Mode Manager module (BswM)."/>
+                <a:tst 
+                       expr="node:exists(as:modconf(&apos;BswM&apos;)[1]/BswMGeneral/BswMLinSMEnabled)                   and                   (as:modconf(&apos;BswM&apos;)[1]/BswMGeneral/BswMLinSMEnabled = &apos;false&apos;)" 
+                       true="The BswM does not have LinSM support enabled."/>
+                <a:tst 
+                       expr="(count(as:modconf(&apos;Det&apos;)) = 1)                    or                   (LinSMGeneral/LinSMDevErrorDetect = &apos;false&apos;)" 
+                       false="The LIN State Manager module (LinSM) needs the Development Error Tracer module (Det), unless LinSMDevErrorDetect is false."/>
+              </a:da>
+              <v:ctr name="CommonPublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Common Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6"/>
+                <v:var name="ArMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="ArMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70"/>
+                  <a:da name="DEFAULT" value="3"/>
+                </v:var>
+                <v:var name="ArPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="SwMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34"/>
+                  <a:da name="DEFAULT" value="3"/>
+                </v:var>
+                <v:var name="SwMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f"/>
+                  <a:da name="DEFAULT" value="4"/>
+                </v:var>
+                <v:var name="SwPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a318d2d9-0e75-49da-ac43-e7e4e682e2f9"/>
+                  <a:da name="DEFAULT" value="19"/>
+                </v:var>
+                <v:var name="ModuleId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Numeric Module ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:78bc8362-080f-4253-b3da-804ab69a7154"/>
+                  <a:da name="DEFAULT" value="141"/>
+                </v:var>
+                <v:var name="VendorId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Vendor ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="Release" type="STRING_LABEL">
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Release Information"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89"/>
+                  <a:da name="DEFAULT" value=""/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="LinSMDefensiveProgramming" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                &lt;p&gt;Parameters for defensive programming&lt;/p&gt;
+                &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Defensive Programming Options"/>
+                <v:var name="LinSMDefProgEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                    &lt;p&gt;Enables or disables the defensive
+                    programming feature for the module LinSM.&lt;/p&gt;
+                    &lt;p&gt;Note: This feature is dependent on the use of the development error detection module.
+                    To use the defensive programming feature, proceed as follows:
+                    &lt;ol&gt;
+                    &lt;li&gt;Enable development error detection&lt;/li&gt;
+                    &lt;li&gt;Enable defensive programming&lt;/li&gt;
+                    &lt;li&gt;Enable assertions as required&lt;/li&gt;
+                    &lt;/ol&gt;
+                    &lt;/p&gt;
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Defensive Programming"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../../LinSMGeneral/LinSMDevErrorDetect = &apos;true&apos;" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="LinSMPrecondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of precondition assertion checks reported from
+                  the module LinSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;LinSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;LinSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Precondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../LinSMGeneral/LinSMDevErrorDetect = &apos;true&apos;) and (../LinSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="LinSMPostcondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of postcondition assertion checks reported from
+                  the module LinSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;LinSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;LinSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Postcondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../LinSMGeneral/LinSMDevErrorDetect = &apos;true&apos;) and (../LinSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="LinSMStaticAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of static assertion checks reported from
+                  the module LinSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;LinSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;LinSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Static Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../LinSMGeneral/LinSMDevErrorDetect = &apos;true&apos;) and (../LinSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="LinSMUnreachAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of unreachable code assertion checks
+                  reported from the module LinSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;LinSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;LinSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Unreachable Code Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../LinSMGeneral/LinSMDevErrorDetect = &apos;true&apos;) and (../LinSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="LinSMInvariantAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of invariant assertion checks
+                  reported from functions of the module LinSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;LinSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;LinSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Invariant Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../LinSMGeneral/LinSMDevErrorDetect = &apos;true&apos;) and (../LinSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+              </v:ctr>
+              <v:var name="IMPLEMENTATION_CONFIG_VARIANT" type="ENUMERATION">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                        Configuration variant. Only pre-compile configuration is supported.
+                      &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Config Variant"/>
+                <a:da name="DEFAULT" value="VariantPreCompile"/>
+                <a:da name="EDITABLE" value="false"/>
+                <a:da name="RANGE" value="VariantPreCompile"/>
+              </v:var>
+              <d:ref type="REFINED_MODULE_DEF" 
+                     value="ASPath:/AUTOSAR/EcucDefs/LinSM"/>
+              <v:lst name="LinSMConfigSet" 
+                     type="MULTIPLE-CONFIGURATION-CONTAINER">
+                <a:a name="LABEL" value="Configuration Set List"/>
+                <a:a name="TAB" value="Configuration Set"/>
+                <a:da name="MAX" value="1"/>
+                <a:da name="MIN" value="1"/>
+                <v:ctr name="LinSMConfigSet" 
+                       type="MULTIPLE-CONFIGURATION-CONTAINER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;This container describes the configuration set of LinSM.&lt;/p&gt;
+                          &lt;p&gt;
+                            This is a MultipleConfigurationContainer, i.e. this container and its
+                            sub-containers exist once per configuration set.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <v:lst name="LinSMChannel" type="MAP">
+                    <a:a name="LABEL" value="LIN Channel List"/>
+                    <a:da name="MAX" value="255"/>
+                    <a:da name="MIN" value="1"/>
+                    <v:ctr name="LinSMChannel" type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              Describes each LIN channel the LinSM is connected to.   
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="UUID" 
+                           value="ECUC:8a11f492-22a7-4281-9060-5dae0f844c5a"/>
+                      <v:var name="LinSMConfirmationTimeout" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;Timeout in seconds for the goto sleep, wakeup and schedule request calls to LinIf.&lt;/p&gt;
+                                &lt;p&gt;The timeout must be longer than a goto-sleep command on the bus (i.e. it is bit rate dependent).&lt;/p&gt;
+                                &lt;p&gt;It also must be longer than the expected duration between a schedule request and the next
+                                confirmation - that is, it must be longer than the runtime of the
+                                longest RUN_ONCE schedule table in the LinIf configuration.&lt;/p&gt;
+                                &lt;p&gt;Alternatively, setting this parameter to 0 will disable the timeout.&lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:f789b753-d4a6-41c6-858d-74962c64921e"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&gt;= 0"/>
+                            <mt:tst expr="&lt;= 65535"/>
+                          </mt:range>
+                          <mt:xpath 
+                                    true="Resulting number of MainFunction ticks exceeds 65535. Decrease value or increase LinSMMainProcessingPeriod." 
+                                    expr="( num:i( (. div as:modconf(&apos;LinSM&apos;)[1]/LinSMGeneral/LinSMMainProcessingPeriod) - 0.00001 ) + 2 ) &gt; 65535"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="( (  (. div as:modconf(&apos;LinSM&apos;)[1]/LinSMGeneral/LinSMMainProcessingPeriod) - round(. div as:modconf(&apos;LinSM&apos;)[1]/LinSMGeneral/LinSMMainProcessingPeriod) ) &gt; 0.00001 ) or ( (  (. div as:modconf(&apos;LinSM&apos;)[1]/LinSMGeneral/LinSMMainProcessingPeriod) - round(. div as:modconf(&apos;LinSM&apos;)[1]/LinSMGeneral/LinSMMainProcessingPeriod) ) &lt; -0.00001 )" 
+                              true="Value is not divisible by LinSMMainProcessingPeriod. Resulting tick count will be rounded up."/>
+                      </v:var>
+                      <v:var name="LinSMSleepSupport" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;Some LIN clusters do not need sleep, they will just shut off. This parameter will affect the behavior to achieve the &apos;full communication&apos; and &apos;no communication&apos; states.&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: LinSM will call LinIf_Wakeup() or LinIf_GotoSleep() to change the communication state.&lt;/li&gt;
+                                  &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: LinSM will change the communication state without calling LinIf_Wakeup() or LinIf_GotoSleep().&lt;/li&gt;
+                                &lt;/ul&gt; 
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                    &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                    Disabling this parameter reduces the execution time of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                    Disabling this parameter reduces the ROM consumption of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                    Choosing a globally common value for this parameter reduces the ROM
+                                    consumption of the module configuration.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:dbc022f5-65ae-421b-bdb7-4e547fa5b0de"/>
+                        <a:da name="DEFAULT" value="false"/>
+                      </v:var>
+                      <v:var name="LinSMTransceiverPassiveMode" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                Selects STANDBY (true) or SLEEP (false) transceiver mode when entering LINSM_NO_COM.   
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:725086a2-39ce-474c-8be0-51d4f15000cb"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="node:value(.) = &apos;false&apos; and node:value(../LinSMSleepSupport) = &apos;false&apos;" 
+                              true="LinSMSleepSupport has to be ENABLED with LinSMTransceiverPassiveMode configured as FALSE"/>
+                      </v:var>
+                      <v:ref name="LinSMComMNetworkHandleRef" 
+                             type="SYMBOLIC-NAME-REFERENCE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;Unique handle to identify one certain LIN network.&lt;/p&gt;
+                                &lt;p&gt;Reference to one of the network handles configured in the ComM.&lt;/p&gt;
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                    &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                    Configuring consecutive channel IDs for the ComM channels referenced by LinSM reduces the execution time of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                    Configuring consecutive channel IDs for the ComM channels referenced by LinSM reduces the ROM consumption of the module code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="UUID" 
+                             value="ECUC:da189e8d-231d-4b36-8d21-f413789897a0"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst expr="node:refvalid(.)" 
+                                 false="A valid ComMChannel reference is required."/>
+                          <a:tst 
+                                 expr="node:refvalid(.)                                   and                                   (                                     not (node:exists(as:ref(.)/ComMChannelId))                                     or                                     (as:ref(.)/ComMChannelId = &apos;&apos;)                                   )" 
+                                 true="The ComMChannel referenced needs to provide a valid ComMChannelId."/>
+                          <a:tst 
+                                 expr="node:refvalid(.) and node:exists(as:ref(.)/ComMBusType) and (as:ref(.)/ComMBusType != &apos;COMM_BUS_TYPE_LIN&apos;)" 
+                                 true="The LinSM can only be used for LIN networks. ComMBusType of the referenced channel is not set to COMM_BUS_TYPE_LIN."/>
+                          <a:tst 
+                                 expr="text:uniq(../../*/LinSMComMNetworkHandleRef, .)" 
+                                 false="A 1:1 relation between ComM channels and LinSM channels is required. This channel is referenced more than once."/>
+                        </a:da>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/ComM/ComMConfigSet/ComMChannel"/>
+                      </v:ref>
+                      <v:var name="LinSMNodeType" type="ENUMERATION">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                Specifies the LIN node type of this channel.
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:7ba44b49-1c25-467f-ae15-bfd3246e3091"/>
+                        <a:da name="DEFAULT" value="MASTER"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(node:value(.) = &apos;SLAVE&apos; and not(node:value(as:ref(../LinSMComMNetworkHandleRef)/ComMNetworkManagement/ComMNmVariant) = &apos;SLAVE_ACTIVE&apos;))" 
+                                 true="If this LinSM channel is SLAVE, the referenced ComM channel should have ComMNmVariant set to SLAVE_ACTIVE."/>
+                          <a:tst 
+                                 expr="(node:value(.) = &apos;SLAVE&apos; and node:value(../LinSMSleepSupport) = &apos;false&apos;)" 
+                                 true="If this LinSM channel is SLAVE, it needs to have LinSMSleepSupport enabled."/>
+                        </a:da>
+                        <a:da name="RANGE">
+                          <a:v>MASTER</a:v>
+                          <a:v>SLAVE</a:v>
+                        </a:da>
+                      </v:var>
+                      <v:var name="LinSMSilenceAfterWakeupTimeout" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                Timeout in seconds after a failed wakeup sequence until a new wakeup process is started.
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:edb7d391-02ad-4c16-aa54-d89b207083f9"/>
+                        <a:da name="DEFAULT" value="0.0"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="(../LinSMNodeType = &apos;SLAVE&apos;)"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&gt;= 0"/>
+                            <mt:tst expr="&lt;= 65534"/>
+                          </mt:range>
+                          <mt:xpath 
+                                    true="Resulting number of MainFunction ticks exceeds 65534. Decrease value or increase LinSMMainProcessingPeriod." 
+                                    expr="( num:i( (. div as:modconf(&apos;LinSM&apos;)[1]/LinSMGeneral/LinSMMainProcessingPeriod) - 0.00001 ) + 2 ) &gt; 65534"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="( (  (. div as:modconf(&apos;LinSM&apos;)[1]/LinSMGeneral/LinSMMainProcessingPeriod) - round(. div as:modconf(&apos;LinSM&apos;)[1]/LinSMGeneral/LinSMMainProcessingPeriod) ) &gt; 0.00001 ) or ( (  (. div as:modconf(&apos;LinSM&apos;)[1]/LinSMGeneral/LinSMMainProcessingPeriod) - round(. div as:modconf(&apos;LinSM&apos;)[1]/LinSMGeneral/LinSMMainProcessingPeriod) ) &lt; -0.00001 )" 
+                              true="Value is not divisible by LinSMMainProcessingPeriod. Resulting tick count will be rounded up."/>
+                      </v:var>
+                      <v:lst name="LinSMSchedule" type="MAP">
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="(../LinSMNodeType = &apos;MASTER&apos;)"/>
+                        <a:da name="MAX" value="254"/>
+                        <a:da name="MIN" value="1"/>
+                        <v:ctr name="LinSMSchedule" type="IDENTIFIABLE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  The schedule references to a schedule that is located in the LinIf configuration.
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="UUID" 
+                               value="ECUC:822d7642-7685-45cb-a7f9-6438539a9b18"/>
+                          <a:da name="INVALID" type="XPath" 
+                                expr="text:uniq(../../../*/LinSMSchedule/*/@name, ./@name)" 
+                                false="A LinSM schedule table name shall be unique across all channels."/>
+                          <v:var name="LinSMScheduleIndex" type="INTEGER">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;This index parameter can be used by the BswM as a  SymbolicNameReference target.&lt;/p&gt; 
+                                    &lt;p&gt;The LinSM just forwards the request from the BswM to LinIf.&lt;/p&gt;
+                                    &lt;p&gt;Note that the value of the LinSMScheduleIndex shall be the same as the value from the LinIf.&lt;/p&gt;   
+                                    &lt;p&gt;&lt;strong&gt;This parameter is currently not used by LinSM module. However for configuration compatibility with other modules, please configure LinSMScheduleIndex properly.&lt;/strong&gt;&lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                            <a:a name="UUID" 
+                                 value="ECUC:f5c68884-c8e8-4f73-93dd-92f3e25b8532"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&lt; 255"/>
+                                <mt:tst expr="&gt;= 0"/>
+                              </mt:range>
+                              <mt:xpath>
+                                <mt:tst 
+                                        true="The value 0 is reserved for the NULL_SCHEDULE_channelIndex" 
+                                        expr=". = 0 and node:name(..) != concat(&apos;NULL_SCHEDULE_&apos;, num:i(../../../@index))"/>
+                                <mt:tst 
+                                        true="The NULL_SCHEDULE_channelIndex has to have LinSMScheduleIndex configured with the value 0" 
+                                        expr="(node:name(..) = concat(&apos;NULL_SCHEDULE_&apos;, num:i(../../../@index))) and (. != 0)"/>
+                              </mt:xpath>
+                            </a:da>
+                          </v:var>
+                          <v:ref name="LinSMScheduleIndexRef" 
+                                 type="SYMBOLIC-NAME-REFERENCE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Reference to a schedule table in the LinIf configuration.
+                                    &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                    &lt;ul&gt;
+                                      &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                        &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                        Configuring consecutive indices for the schedule tables referenced by LinSM reduces the execution time of the module code.
+                                      &lt;/li&gt;
+                                      &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                        &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                        Configuring consecutive indices for the schedule tables referenced by LinSM reduces the ROM consumption of the module code.
+                                      &lt;/li&gt;
+                                    &lt;/ul&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="UUID" 
+                                 value="ECUC:9627768d-4365-4d19-8861-3d50af9d645c"/>
+                            <a:da name="INVALID" type="XPath" 
+                                  expr="node:refvalid(.)" 
+                                  false="A valid LinIfScheduleTable reference is required."/>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/LinIf/LinIfGlobalConfig/LinIfChannel/LinIfScheduleTable"/>
+                          </v:ref>
+                        </v:ctr>
+                      </v:lst>
+                      <v:var name="LinSMModeRequestRepetitionMax" 
+                             type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;Specifies the maximal amount of mode request repetitions without a respective mode indication from the LinIf module until the LinSM module reports a development error to the DET and tries to go back to no communication.&lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:972d37f5-9b42-4f2c-85b0-330e7a5e981b"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&gt;= 0"/>
+                            <mt:tst expr="&lt; 255"/>
+                          </mt:range>
+                        </a:da>
+                      </v:var>
+                    </v:ctr>
+                  </v:lst>
+                </v:ctr>
+              </v:lst>
+              <v:ctr name="LinSMGeneral" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                        This container contains general parameters of LIN State Manager module.   
+                      &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="UUID" 
+                     value="ECUC:d2be68b0-eae8-4082-b021-e1c67fdc3a4b"/>
+                <v:var name="LinSMDevErrorDetect" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Switches the Development Error Detection and Notification ON or OFF.
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the module code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                              &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the execution time of the module code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:720778ca-0908-4c9a-b0f7-b3f7e2258bb1"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="LinSMMainProcessingPeriod" type="FLOAT">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Fixed period that the MainFunction shall be called [s].
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:a7cedc57-8695-465d-8362-47dc7178afee"/>
+                  <a:da name="DEFAULT" value="0.02"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=5.0"/>
+                    <a:tst expr="&gt;=0.00001"/>
+                  </a:da>
+                </v:var>
+                <v:var name="LinSMVersionInfoApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Switches the LinSM_GetVersionInfo function ON or OFF.
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the module code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:ef96408d-a53b-442d-87f2-d537f8761957"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="LinSMMultiCoreSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Switches the LinSM MultiCore Support ON or OFF.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="PublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="EB Published Information"/>
+                <a:a name="TAB" value="EB Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07"/>
+                <v:var name="PbcfgMSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Specifies whether or not the LinSM can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="PbcfgM support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+              </v:ctr>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

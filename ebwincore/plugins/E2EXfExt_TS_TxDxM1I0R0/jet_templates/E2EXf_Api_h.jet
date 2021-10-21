@@ -1,0 +1,49 @@
+<%@ jet package="eb.tresos.e2exf.generated.jet" class="E2EXf_Api_h" skeleton="File.skeleton"
+        imports="
+                eb.tresos.e2exf.generator.intermediate.Model
+                eb.tresos.e2exf.generator.intermediate.GeneratorPartitionHandler
+                "
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final String includeGuardName = getIncludeGuardName( context );
+    final Model model = (Model)context.gen.getVariable( Model.ARG_NAME, Model.class, null );
+    final GeneratorPartitionHandler partitionHandler = model.getGeneratorPartitionHandler();
+%>
+<%@ include file="head.h.inc" %>
+
+/*==================[includes]==============================================*/
+
+<%for (final String partitionInfix : partitionHandler.getPartitionInfixes()) { %>
+#include <E2EXf<%= partitionInfix %>_PartitionApi.h>       /* Generated partition API */
+<% } %>
+
+/*==================[macros]================================================*/
+
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

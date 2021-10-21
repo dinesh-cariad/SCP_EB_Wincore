@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?module CanSM?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+[!CODE!]
+[!AUTOSPACING!]
+
+[!INCLUDE "../include/CanSM_Macros.m"!]
+
+[!VAR "ModeReqRepTimeVar"!][!CALL "CalcToTicks", "time"="CanSMConfiguration/*[1]/CanSMModeRequestRepetitionTime", "maxTicks"="65534"!][!ENDVAR!]
+[!// maxTicks covers CanSM.Design.20092
+
+[!/* special value: no Dem event id configured (0 is not a valid value for Dem_EventIdType)
+*/!][!VAR "CANSM_INVALID_DEM_EVENTID"="num:i(0)"!]
+[!/* transceiver id indicating that no transceiver is present
+*/!][!VAR "CANSM_TRANSCEIVER_ID_NONE"="num:i(255)"!]
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "CANSM_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "CANSM_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat('CanSM_Config','_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="string("CanSM_Config_0")"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+*/!][!VAR "CANSM_PBCFG_C_VARIANT"="concat('CanSM',$CANSM_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "CANSM_PBCFG_H_VARIANT"="concat('CanSM',$CANSM_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "CANSM_CONFIG_LAYOUT_VARIANT"="concat('CanSM',$CANSM_VARIANT_SUFIX,'ConfigLayout')"!]
+[!/* Current Config Type variant based
+*/!][!VAR "CANSM_CONFIGLAYOUTTYPE_VARIANT"="concat('CanSM',$CANSM_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "CANSM_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('CanSM',$CANSM_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+
+  <module name="CanSM" version="[!"$moduleSoftwareVer"!]">
+    <configuration class="PreCompile">
+      [!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+      <?artifact directory="include" file="CanSM_Types_Int.h" type="types-h" generate="yes"?>
+      [!ELSE!]
+      <?artifact directory="include" file="CanSM_Types_Int.h" type="types-h" generate="no"?>
+      [!ENDIF!]
+      
+      <parameter name="relocatable-enable">
+        <boolean-value>
+          false
+        </boolean-value>
+      </parameter>
+      
+      <type name="CanSM_ConfigType">
+        <struct>
+          <member name="NetRef" type="CanSMNetworkType" comment="Reference to CanSM networks." >
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ModeReqRepTime" type="uint16" comment="Time duration after which a mode change request is repeated (in ticks)." />
+          <member name="ModeReqRepMax" type="uint8" comment="Maximum amount of mode change request repetitions." />
+        </struct>
+      </type>
+
+      <type name="CanSMNetworkType">
+        <struct>
+          <member name="CtrlRef" type="CanSMControllerType" comment="Reference to CanSM configured controllers." >
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="BorCounterL1ToL2" type="uint16" comment="Bus-off recovery L1 to L2 Threshold." />
+          <member name="BorTimeL1" type="uint16" comment="Duration to stay in level 1 check before restart of communication." />
+          <member name="BorTimeL2" type="uint16" comment="Duration to stay in level 2 check before restart of communication." />
+          <member name="BorTimeTxEnsured" type="uint16" comment="Duration until bus-off free communication is assumed." />
+          [!IF "$useDEM = 'true'"!]
+          <member name="DemEventId" type="uint16" comment="ID of referenced DEM event to be reported in case of bus-off errors." />
+          [!ENDIF!]
+          <member name="ComMChId" type="uint8" comment="ID of referenced ComM channel." />
+          <member name="TrcvId" type="uint8" comment="ID of CAN Transceiver." />
+          <member name="NumNwCtrl" type="uint8" comment="Number of controllers per network." />
+          <member name="BorTxConfirmationPolling" type="boolean" comment="BOR Tx Confirmation Polling." />
+        </struct>
+      </type>
+
+      <type name="CanSMControllerType">
+        <struct>
+          <member name="ControllerId" type="uint8" comment="ID of CAN controller." />
+        </struct>
+      </type>
+      
+    </configuration>
+    <configuration class="PostBuild">
+      <?artifact directory="include" file="[!"$CANSM_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$CANSM_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!-- !LINKSTO dsn.CanSM.PostBuildConfigurationData,1 -->
+      <type name="[!"$CANSM_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <member type="CanSM_ConfigType" name="RootCfg" />
+          <member type="CanSMNetworkType" name="CanSM_Net" count="[!"num:i(count(as:modconf('CanSM')[1]/CanSMConfiguration/*[1]/CanSMManagerNetwork/*))"!]" />
+          <member type="CanSMControllerType" name="CanSM_Ctrl" count="[!"num:i(count(as:modconf('CanSM')[1]/CanSMConfiguration/*[1]/CanSMManagerNetwork/*/CanSMController/*))"!]" />
+        </struct>
+      </type>
+
+
+      <type name="[!"$CANSM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$CANSM_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="CANSM_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <memory-section  name="CONFIG_DATA_UNSPECIFIED">
+        <instance type="[!"$CANSM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]" name="[!"$CANSM_CONFIG_LAYOUT_VARIANT"!]">
+          <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+        [!IF "not(var:defined('postBuildVariant')) and not(node:name(CanSMConfiguration/*[1]) = $initPredefinedCfgName)"!]
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"node:name(CanSMConfiguration/*[1])"!]</symbolic-value>
+        </parameter>
+        [!ENDIF!]
+
+          <field>
+            <field>
+              <ref>
+                <struct-field name="CanSM_Net" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            <field>
+              <int>[!"num:i($ModeReqRepTimeVar)"!]</int>
+            </field>
+            <field>
+              <int>[!"num:i(as:modconf('CanSM')[1]/CanSMConfiguration/*[1]/CanSMModeRequestRepetitionMax)"!]</int>
+            </field>
+          </field>
+
+          <field>
+            [!VAR "startNwCtrl" = "num:i(0)"!]
+            [!LOOP "node:order(as:modconf('CanSM')[1]/CanSMConfiguration/*[1]/CanSMManagerNetwork/*,'as:ref(CanSMComMNetworkHandleRef)/ComMChannelId')"!]
+              [!VAR "CanSMBorL1"!][!CALL "CalcToTicks", "time"="CanSMBorTimeL1", "maxTicks"="65535"!][!ENDVAR!]
+              [!VAR "CanSMBorL2"!][!CALL "CalcToTicks", "time"="CanSMBorTimeL2", "maxTicks"="65535"!][!ENDVAR!]
+              [!VAR "CanSMBorTx"!][!CALL "CalcToTicks", "time"="CanSMBorTimeTxEnsured", "maxTicks"="65534"!][!ENDVAR!]
+              [!// maxTicks covers CanSM.Design.20092
+            <field>
+              <field>
+                <ref>
+                  <struct-field name="CanSM_Ctrl" />
+                  <array-field index="[!"num:i($startNwCtrl)"!]" />
+                </ref>
+              </field>
+              [!VAR "startNwCtrl"!][!"num:i($startNwCtrl + count(CanSMController/*))"!][!ENDVAR!]
+              <field>
+                <int>[!"num:i(CanSMBorCounterL1ToL2)"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i($CanSMBorL1)"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i($CanSMBorL2)"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i($CanSMBorTx)"!]</int>
+              </field>
+              [!IF "$useDEM = 'true'"!]
+              <field>
+                [!IF "node:exists(CanSMDemEventParameterRefs/CANSM_E_BUS_OFF)"!]
+                <int>[!"num:i(as:ref(CanSMDemEventParameterRefs/CANSM_E_BUS_OFF)/DemEventId)"!]</int>
+                [!ELSE!]
+                <int>[!"$CANSM_INVALID_DEM_EVENTID"!]</int>
+                [!ENDIF!]
+              </field>
+              [!ENDIF!]
+              <field>
+                <int>[!"num:i(as:ref(CanSMComMNetworkHandleRef)/ComMChannelId)"!]</int>
+              </field>
+              <field>
+                [!IF "node:exists(CanSMTransceiverId)"!]
+                <int>[!"num:i(as:ref(CanSMTransceiverId)/CanIfTrcvId)"!]</int>
+                [!ELSE!]
+                <int>[!"$CANSM_TRANSCEIVER_ID_NONE"!]</int>
+                [!ENDIF!]
+              </field>
+              <field>
+                <int>[!"num:i(count(CanSMController/*))"!]</int>
+              </field>
+              <field>
+                [!IF "node:value(CanSMBorTxConfirmationPolling)='true'"!]
+                <int>1</int>
+                [!ELSE!]
+                <int>0</int>
+                [!ENDIF!]
+              </field>
+            </field>
+            [!ENDLOOP!]
+          </field>
+
+          <field>
+            [!LOOP "node:order(as:modconf('CanSM')[1]/CanSMConfiguration/*[1]/CanSMManagerNetwork/*,'as:ref(CanSMComMNetworkHandleRef)/ComMChannelId')"!]
+              [!LOOP "CanSMController/*"!]
+              <field>
+                <field>
+                  <int>[!"num:i(as:ref(CanSMControllerId)/CanIfCtrlId)"!]</int>
+                </field>
+              </field>
+              [!ENDLOOP!]
+            [!ENDLOOP!]
+          </field>
+
+        </instance>
+      </memory-section>
+    </configuration>
+  </module>
+[!ENDCODE!]
+  <xi:include href="Base.xgen" xpointer="element(/1/1)" />
+</xgen>

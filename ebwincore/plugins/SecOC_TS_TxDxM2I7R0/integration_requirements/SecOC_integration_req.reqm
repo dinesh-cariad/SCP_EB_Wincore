@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+ <specobjects doctype="dev">
+   <specobject>
+     <id>SecOC.Req.Integration_MacUniformProcType</id>
+     <status>approved</status>
+     <source>EB integration requirement</source>
+     <version>1</version>
+     <description>
+        All Csm MacGenerate or MacVerify jobs referenced by the SecOC module for I-PDU
+        authentication and verification need to be either synchronous or asynchronous.
+     </description>
+     <rationale>
+        The current implementation of the SecOC module only offers a global configuration
+        parameter to select between Csm synchronous or asynchronous job processing types.
+     </rationale>
+     
+   </specobject>
+   <specobject>
+      <id>SecOC.Req.Integration_Init</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        <i>SecOC_Init()</i> initializes the module. <i>SecOC_Init()</i> shall be called during the start-up procedure of the ECU before any other API of the module is called.
+        It is allowed to call the <i>SecOC_MainFunctionRx()</i> or <i>SecOC_MainFunctionTx()</i> before the initialization.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>SecOC.Req.Integration_DeInit</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The function <i>SecOC_DeInit()</i> deinitializes the module. <i>SecOC_DeInit()</i> shall be called during the shutdown procedure of the ECU.
+      </description>
+      
+    </specobject>
+
+
+    <specobject>
+      <id>SecOC.Req.Integration_MainFuncRxCycleTime</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The <i>SecOC_MainFunctionRx()</i> shall be called with a sufficient cycle time depending on the received data. Example: If the fastest I-PDU in the lower layer is transmitted with a cycle time of 10 ms, the <i>SecOC_MainFunctionRx()</i> needs to be called with the same or a lower cycle time.<br/>
+        Note: If Csm is used synchronously as the provider of cryptographic functionality, the cryptographic calculations are executed directly within the <i>SecOC_MainFunctionRx()</i> context. Therefore, the run-time of the <i>SecOC_MainFunctionRx()</i> might be significantly higher than if you use a Csm module asynchronously. The overall time consumption for verification is lower when synchronous job processing is used.
+      </description>
+       
+    </specobject>
+
+    <specobject>
+      <id>SecOC.Req.Integration_RxScheduledNetworks</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        For scheduled networks like FlexRay, the <i>SecOC_MainFunctionRx()</i> shall be scheduled to synchronize to the network.
+      </description>
+      <rationale>
+        This avoids authentication failures caused by the discontinuity of the freshness value.
+      </rationale>
+       
+    </specobject>
+
+    <specobject>
+      <id>SecOC.Req.Integration_MainFuncTxCycleTime</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The <i>SecOC_MainFunctionTx()</i> shall be called with a sufficient cycle time depending on the transmitted data. Example: If the fastest I-PDU in the lower layer is transmitted with a cycle time of 10 ms, the <i>SecOC_MainFunctionTx()</i> needs to be called with the same or a lower cycle time.<br/>
+        Note: If Csm is used synchronously as the provider of cryptographic functionality, the cryptographic calculations are executed directly within the <i>SecOC_MainFunctionTx()</i> context. Therefore, the run-time of the <i>SecOC_MainFunctionTx()</i> might be significantly higher than if you use the Csm module asynchronously. The overall time consumption for message authentication is lower when synchronous job processing is used.
+      </description>
+       
+    </specobject>
+
+    <specobject>
+      <id>SecOC.Req.Integration_TxScheduledNetworks</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        For scheduled networks like FlexRay, the <i>SecOC_MainFunctionTx()</i> shall be scheduled to synchronize to the network.
+      </description>
+      <rationale>
+        This avoids authentication failures caused by the discontinuity of the freshness value.
+      </rationale>
+       
+    </specobject>
+
+    <specobject>
+      <id>SecOC.Req.Integration_PropagateVerificationStatus</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        To propagate the verification status via CFUNC or RTE, <i>SecOCPropagateVerificationStatus</i>
+        must set to a value different that <i>NONE</i>.
+        NOTE: In order to have Autosar compliant interfaces to propagate the verification status,
+        the option <i>AUTOSAR</i> must be set.
+      </description>
+       
+    </specobject>
+
+ </specobjects>
+</specdocument>

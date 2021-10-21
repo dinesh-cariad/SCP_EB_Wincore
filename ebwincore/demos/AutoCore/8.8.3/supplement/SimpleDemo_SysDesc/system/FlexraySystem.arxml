@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>FlexraySystem</SHORT-NAME>
+      <ELEMENTS>
+        <SYSTEM>
+          <SHORT-NAME>FlexraySystem</SHORT-NAME>
+          <FIBEX-ELEMENTS>
+            <FIBEX-ELEMENT-REF-CONDITIONAL>
+              <FIBEX-ELEMENT-REF DEST="ECU-INSTANCE">/FlexraySystem/ECUINSTANCES/DebugNode</FIBEX-ELEMENT-REF>
+            </FIBEX-ELEMENT-REF-CONDITIONAL>
+            <FIBEX-ELEMENT-REF-CONDITIONAL>
+              <FIBEX-ELEMENT-REF DEST="ECU-INSTANCE">/FlexraySystem/ECUINSTANCES/EcuTestNode</FIBEX-ELEMENT-REF>
+            </FIBEX-ELEMENT-REF-CONDITIONAL>
+            <FIBEX-ELEMENT-REF-CONDITIONAL>
+              <FIBEX-ELEMENT-REF DEST="I-SIGNAL-I-PDU">/FlexraySystem/PDUS/Pdu_CounterIn</FIBEX-ELEMENT-REF>
+            </FIBEX-ELEMENT-REF-CONDITIONAL>
+            <FIBEX-ELEMENT-REF-CONDITIONAL>
+              <FIBEX-ELEMENT-REF DEST="I-SIGNAL-I-PDU">/FlexraySystem/PDUS/Pdu_CounterOut</FIBEX-ELEMENT-REF>
+            </FIBEX-ELEMENT-REF-CONDITIONAL>
+            <FIBEX-ELEMENT-REF-CONDITIONAL>
+              <FIBEX-ELEMENT-REF DEST="I-SIGNAL">/FlexraySystem/ISIGNALS/CounterIn</FIBEX-ELEMENT-REF>
+            </FIBEX-ELEMENT-REF-CONDITIONAL>
+            <FIBEX-ELEMENT-REF-CONDITIONAL>
+              <FIBEX-ELEMENT-REF DEST="I-SIGNAL">/FlexraySystem/ISIGNALS/CounterOut</FIBEX-ELEMENT-REF>
+            </FIBEX-ELEMENT-REF-CONDITIONAL>
+            <FIBEX-ELEMENT-REF-CONDITIONAL>
+              <FIBEX-ELEMENT-REF DEST="FLEXRAY-FRAME">/FlexraySystem/FRAMES/CounterInFrame_001</FIBEX-ELEMENT-REF>
+            </FIBEX-ELEMENT-REF-CONDITIONAL>
+            <FIBEX-ELEMENT-REF-CONDITIONAL>
+              <FIBEX-ELEMENT-REF DEST="FLEXRAY-FRAME">/FlexraySystem/FRAMES/CounterOutFrame_001</FIBEX-ELEMENT-REF>
+            </FIBEX-ELEMENT-REF-CONDITIONAL>
+            <FIBEX-ELEMENT-REF-CONDITIONAL>
+              <FIBEX-ELEMENT-REF DEST="FLEXRAY-CLUSTER">/FlexraySystem/CLUSTERS/simple_demo_flexray</FIBEX-ELEMENT-REF>
+            </FIBEX-ELEMENT-REF-CONDITIONAL>
+          </FIBEX-ELEMENTS>
+          <MAPPINGS>
+            <SYSTEM-MAPPING>
+              <SHORT-NAME>SystemMapping</SHORT-NAME>
+              <DATA-MAPPINGS>
+                <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                  <DATA-ELEMENT-IREF>
+                    <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/FlexraySystem/FlexraySystem/TopLevelComposition</CONTEXT-COMPOSITION-REF>
+                    <CONTEXT-PORT-REF DEST="P-PORT-PROTOTYPE">/DemoApplication/SwComponentTypes/TopLevelComposition/P_CounterOut</CONTEXT-PORT-REF>
+                    <TARGET-DATA-PROTOTYPE-REF
+                      DEST="VARIABLE-DATA-PROTOTYPE">/DemoApplication/PortInterfaces/If_Counter/CounterValue</TARGET-DATA-PROTOTYPE-REF>
+                  </DATA-ELEMENT-IREF>
+                  <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/FlexraySystem/SYSSIGNALS/CounterOut</SYSTEM-SIGNAL-REF>
+                </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                <SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+                  <DATA-ELEMENT-IREF>
+                    <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/FlexraySystem/FlexraySystem/TopLevelComposition</CONTEXT-COMPOSITION-REF>
+                    <CONTEXT-PORT-REF DEST="R-PORT-PROTOTYPE">/DemoApplication/SwComponentTypes/TopLevelComposition/R_CounterIn</CONTEXT-PORT-REF>
+                    <TARGET-DATA-PROTOTYPE-REF
+                      DEST="VARIABLE-DATA-PROTOTYPE">/DemoApplication/PortInterfaces/If_Counter/CounterValue</TARGET-DATA-PROTOTYPE-REF>
+                  </DATA-ELEMENT-IREF>
+                  <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/FlexraySystem/SYSSIGNALS/CounterIn</SYSTEM-SIGNAL-REF>
+                </SENDER-RECEIVER-TO-SIGNAL-MAPPING>
+              </DATA-MAPPINGS>
+              <SW-MAPPINGS>
+                <SWC-TO-ECU-MAPPING>
+                  <SHORT-NAME>EcuTestNodeMapping</SHORT-NAME>
+                  <COMPONENT-IREFS>
+                    <COMPONENT-IREF>
+                      <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/FlexraySystem/FlexraySystem/TopLevelComposition</CONTEXT-COMPOSITION-REF>
+                      <TARGET-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/DemoApplication/SwComponentTypes/TopLevelComposition/SWC_ModifyEcho</TARGET-COMPONENT-REF>
+                    </COMPONENT-IREF>
+                    <COMPONENT-IREF>
+                      <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/FlexraySystem/FlexraySystem/TopLevelComposition</CONTEXT-COMPOSITION-REF>
+                      <TARGET-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/DemoApplication/SwComponentTypes/TopLevelComposition/SWC_CyclicCounter</TARGET-COMPONENT-REF>
+                    </COMPONENT-IREF>
+                    <COMPONENT-IREF>
+                      <CONTEXT-COMPOSITION-REF DEST="ROOT-SW-COMPOSITION-PROTOTYPE">/FlexraySystem/FlexraySystem/TopLevelComposition</CONTEXT-COMPOSITION-REF>
+                      <TARGET-COMPONENT-REF DEST="SW-COMPONENT-PROTOTYPE">/DemoApplication/SwComponentTypes/TopLevelComposition/SWC_IoHwAbs</TARGET-COMPONENT-REF>
+                    </COMPONENT-IREF>
+                  </COMPONENT-IREFS>
+                  <ECU-INSTANCE-REF DEST="ECU-INSTANCE">/FlexraySystem/ECUINSTANCES/EcuTestNode</ECU-INSTANCE-REF>
+                </SWC-TO-ECU-MAPPING>
+              </SW-MAPPINGS>
+            </SYSTEM-MAPPING>
+          </MAPPINGS>
+          <ROOT-SOFTWARE-COMPOSITIONS>
+            <ROOT-SW-COMPOSITION-PROTOTYPE>
+              <SHORT-NAME>TopLevelComposition</SHORT-NAME>
+              <SOFTWARE-COMPOSITION-TREF DEST="COMPOSITION-SW-COMPONENT-TYPE">/DemoApplication/SwComponentTypes/TopLevelComposition</SOFTWARE-COMPOSITION-TREF>
+            </ROOT-SW-COMPOSITION-PROTOTYPE>
+          </ROOT-SOFTWARE-COMPOSITIONS>
+          <SYSTEM-VERSION>1.0.0</SYSTEM-VERSION>
+        </SYSTEM>
+      </ELEMENTS>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>CLUSTERS</SHORT-NAME>
+          <ELEMENTS>
+            <FLEXRAY-CLUSTER>
+              <SHORT-NAME>simple_demo_flexray</SHORT-NAME>
+              <FLEXRAY-CLUSTER-VARIANTS>
+                <FLEXRAY-CLUSTER-CONDITIONAL>
+                  <PHYSICAL-CHANNELS>
+                    <FLEXRAY-PHYSICAL-CHANNEL>
+                      <SHORT-NAME>Channel_A_FlexRayNetwork_1</SHORT-NAME>
+                      <COMM-CONNECTORS>
+                        <COMMUNICATION-CONNECTOR-REF-CONDITIONAL>
+                          <COMMUNICATION-CONNECTOR-REF DEST="FLEXRAY-COMMUNICATION-CONNECTOR">/FlexraySystem/ECUINSTANCES/DebugNode/ECU_DebugNode_CC_FlexRay_Controller_2_Ch_Channel_A_FlexRayNetwork_1</COMMUNICATION-CONNECTOR-REF>
+                        </COMMUNICATION-CONNECTOR-REF-CONDITIONAL>
+                        <COMMUNICATION-CONNECTOR-REF-CONDITIONAL>
+                          <COMMUNICATION-CONNECTOR-REF DEST="FLEXRAY-COMMUNICATION-CONNECTOR">/FlexraySystem/ECUINSTANCES/EcuTestNode/ECU_EcuTestNode_CC_FlexRay_Controller_1_Ch_Channel_A_FlexRayNetwork_1</COMMUNICATION-CONNECTOR-REF>
+                        </COMMUNICATION-CONNECTOR-REF-CONDITIONAL>
+                      </COMM-CONNECTORS>
+                      <FRAME-TRIGGERINGS>
+                        <FLEXRAY-FRAME-TRIGGERING>
+                          <SHORT-NAME>CounterInFrame_001_Channel_A_FlexRayNetwork_1_1_0_1</SHORT-NAME>
+                          <FRAME-PORT-REFS>
+                            <FRAME-PORT-REF DEST="FRAME-PORT">/FlexraySystem/ECUINSTANCES/EcuTestNode/ECU_EcuTestNode_CC_FlexRay_Controller_1_Ch_Channel_A_FlexRayNetwork_1/IN_CounterInFrame_001_Channel_A_FlexRayNetwork_1_1_0_1_FlexRay_Controller_1_to_Channel_A_FlexRayNetwork_1</FRAME-PORT-REF>
+                            <FRAME-PORT-REF DEST="FRAME-PORT">/FlexraySystem/ECUINSTANCES/DebugNode/ECU_DebugNode_CC_FlexRay_Controller_2_Ch_Channel_A_FlexRayNetwork_1/OUT_CounterInFrame_001_Channel_A_FlexRayNetwork_1_1_0_1_FlexRay_Controller_2_to_Channel_A_FlexRayNetwork_1</FRAME-PORT-REF>
+                          </FRAME-PORT-REFS>
+                          <FRAME-REF DEST="FLEXRAY-FRAME">/FlexraySystem/FRAMES/CounterInFrame_001</FRAME-REF>
+                          <ABSOLUTELY-SCHEDULED-TIMINGS>
+                            <FLEXRAY-ABSOLUTELY-SCHEDULED-TIMING>
+                              <COMMUNICATION-CYCLE>
+                                <CYCLE-REPETITION>
+                                  <BASE-CYCLE>0</BASE-CYCLE>
+                                  <CYCLE-REPETITION>CYCLE-REPETITION-1</CYCLE-REPETITION>
+                                </CYCLE-REPETITION>
+                              </COMMUNICATION-CYCLE>
+                              <SLOT-ID>1</SLOT-ID>
+                            </FLEXRAY-ABSOLUTELY-SCHEDULED-TIMING>
+                          </ABSOLUTELY-SCHEDULED-TIMINGS>
+                          <ALLOW-DYNAMIC-L-SDU-LENGTH>false</ALLOW-DYNAMIC-L-SDU-LENGTH>
+                          <PAYLOAD-PREAMBLE-INDICATOR>false</PAYLOAD-PREAMBLE-INDICATOR>
+                        </FLEXRAY-FRAME-TRIGGERING>
+                        <FLEXRAY-FRAME-TRIGGERING>
+                          <SHORT-NAME>CounterOutFrame_001_Channel_A_FlexRayNetwork_1_10_0_1</SHORT-NAME>
+                          <FRAME-PORT-REFS>
+                            <FRAME-PORT-REF DEST="FRAME-PORT">/FlexraySystem/ECUINSTANCES/DebugNode/ECU_DebugNode_CC_FlexRay_Controller_2_Ch_Channel_A_FlexRayNetwork_1/IN_CounterOutFrame_001_Channel_A_FlexRayNetwork_1_10_0_1_FlexRay_Controller_2_to_Channel_A_FlexRayNetwork_1</FRAME-PORT-REF>
+                            <FRAME-PORT-REF DEST="FRAME-PORT">/FlexraySystem/ECUINSTANCES/EcuTestNode/ECU_EcuTestNode_CC_FlexRay_Controller_1_Ch_Channel_A_FlexRayNetwork_1/OUT_CounterOutFrame_001_Channel_A_FlexRayNetwork_1_10_0_1_FlexRay_Controller_1_to_Channel_A_FlexRayNetwork_1</FRAME-PORT-REF>
+                          </FRAME-PORT-REFS>
+                          <FRAME-REF DEST="FLEXRAY-FRAME">/FlexraySystem/FRAMES/CounterOutFrame_001</FRAME-REF>
+                          <ABSOLUTELY-SCHEDULED-TIMINGS>
+                            <FLEXRAY-ABSOLUTELY-SCHEDULED-TIMING>
+                              <COMMUNICATION-CYCLE>
+                                <CYCLE-REPETITION>
+                                  <BASE-CYCLE>0</BASE-CYCLE>
+                                  <CYCLE-REPETITION>CYCLE-REPETITION-1</CYCLE-REPETITION>
+                                </CYCLE-REPETITION>
+                              </COMMUNICATION-CYCLE>
+                              <SLOT-ID>10</SLOT-ID>
+                            </FLEXRAY-ABSOLUTELY-SCHEDULED-TIMING>
+                          </ABSOLUTELY-SCHEDULED-TIMINGS>
+                          <ALLOW-DYNAMIC-L-SDU-LENGTH>false</ALLOW-DYNAMIC-L-SDU-LENGTH>
+                          <PAYLOAD-PREAMBLE-INDICATOR>false</PAYLOAD-PREAMBLE-INDICATOR>
+                        </FLEXRAY-FRAME-TRIGGERING>
+                      </FRAME-TRIGGERINGS>
+                      <I-SIGNAL-TRIGGERINGS>
+                        <I-SIGNAL-TRIGGERING>
+                          <SHORT-NAME>IST_1_1</SHORT-NAME>
+                          <I-SIGNAL-PORT-REFS>
+                            <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/FlexraySystem/ECUINSTANCES/DebugNode/ECU_DebugNode_CC_FlexRay_Controller_2_Ch_Channel_A_FlexRayNetwork_1/OSP_1_1</I-SIGNAL-PORT-REF>
+                            <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/FlexraySystem/ECUINSTANCES/EcuTestNode/ECU_EcuTestNode_CC_FlexRay_Controller_1_Ch_Channel_A_FlexRayNetwork_1/ISP_2_1</I-SIGNAL-PORT-REF>
+                          </I-SIGNAL-PORT-REFS>
+                          <I-SIGNAL-REF DEST="I-SIGNAL">/FlexraySystem/ISIGNALS/CounterIn</I-SIGNAL-REF>
+                        </I-SIGNAL-TRIGGERING>
+                        <I-SIGNAL-TRIGGERING>
+                          <SHORT-NAME>IST_2_1</SHORT-NAME>
+                          <I-SIGNAL-PORT-REFS>
+                            <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/FlexraySystem/ECUINSTANCES/DebugNode/ECU_DebugNode_CC_FlexRay_Controller_2_Ch_Channel_A_FlexRayNetwork_1/ISP_1_2</I-SIGNAL-PORT-REF>
+                            <I-SIGNAL-PORT-REF DEST="I-SIGNAL-PORT">/FlexraySystem/ECUINSTANCES/EcuTestNode/ECU_EcuTestNode_CC_FlexRay_Controller_1_Ch_Channel_A_FlexRayNetwork_1/OSP_2_2</I-SIGNAL-PORT-REF>
+                          </I-SIGNAL-PORT-REFS>
+                          <I-SIGNAL-REF DEST="I-SIGNAL">/FlexraySystem/ISIGNALS/CounterOut</I-SIGNAL-REF>
+                        </I-SIGNAL-TRIGGERING>
+                      </I-SIGNAL-TRIGGERINGS>
+                      <PDU-TRIGGERINGS>
+                        <PDU-TRIGGERING>
+                          <SHORT-NAME>IPT_1_1</SHORT-NAME>
+                          <I-PDU-PORT-REFS>
+                            <I-PDU-PORT-REF DEST="I-PDU-PORT">/FlexraySystem/ECUINSTANCES/DebugNode/ECU_DebugNode_CC_FlexRay_Controller_2_Ch_Channel_A_FlexRayNetwork_1/OPP_1_1</I-PDU-PORT-REF>
+                            <I-PDU-PORT-REF DEST="I-PDU-PORT">/FlexraySystem/ECUINSTANCES/EcuTestNode/ECU_EcuTestNode_CC_FlexRay_Controller_1_Ch_Channel_A_FlexRayNetwork_1/IPP_2_1</I-PDU-PORT-REF>
+                          </I-PDU-PORT-REFS>
+                          <I-PDU-REF DEST="I-SIGNAL-I-PDU">/FlexraySystem/PDUS/Pdu_CounterIn</I-PDU-REF>
+                        </PDU-TRIGGERING>
+                        <PDU-TRIGGERING>
+                          <SHORT-NAME>IPT_2_1</SHORT-NAME>
+                          <I-PDU-PORT-REFS>
+                            <I-PDU-PORT-REF DEST="I-PDU-PORT">/FlexraySystem/ECUINSTANCES/DebugNode/ECU_DebugNode_CC_FlexRay_Controller_2_Ch_Channel_A_FlexRayNetwork_1/IPP_1_2</I-PDU-PORT-REF>
+                            <I-PDU-PORT-REF DEST="I-PDU-PORT">/FlexraySystem/ECUINSTANCES/EcuTestNode/ECU_EcuTestNode_CC_FlexRay_Controller_1_Ch_Channel_A_FlexRayNetwork_1/OPP_2_2</I-PDU-PORT-REF>
+                          </I-PDU-PORT-REFS>
+                          <I-PDU-REF DEST="I-SIGNAL-I-PDU">/FlexraySystem/PDUS/Pdu_CounterOut</I-PDU-REF>
+                        </PDU-TRIGGERING>
+                      </PDU-TRIGGERINGS>
+                      <CHANNEL-NAME>CHANNEL-A</CHANNEL-NAME>
+                    </FLEXRAY-PHYSICAL-CHANNEL>
+                  </PHYSICAL-CHANNELS>
+                  <PROTOCOL-NAME>FlexRay</PROTOCOL-NAME>
+                  <PROTOCOL-VERSION>2.1</PROTOCOL-VERSION>
+                  <SPEED>10000</SPEED>
+                  <ACTION-POINT-OFFSET>6</ACTION-POINT-OFFSET>
+                  <BIT>0.000000001</BIT>
+                  <CAS-RX-LOW-MAX>81</CAS-RX-LOW-MAX>
+                  <COLD-START-ATTEMPTS>10</COLD-START-ATTEMPTS>
+                  <CYCLE>0.01</CYCLE>
+                  <CYCLE-COUNT-MAX>63</CYCLE-COUNT-MAX>
+                  <DETECT-NIT-ERROR>false</DETECT-NIT-ERROR>
+                  <DYNAMIC-SLOT-IDLE-PHASE>1</DYNAMIC-SLOT-IDLE-PHASE>
+                  <IGNORE-AFTER-TX>0</IGNORE-AFTER-TX>
+                  <LISTEN-NOISE>2</LISTEN-NOISE>
+                  <MACRO-PER-CYCLE>10000</MACRO-PER-CYCLE>
+                  <MACROTICK-DURATION>1.0E-6</MACROTICK-DURATION>
+                  <MAX-WITHOUT-CLOCK-CORRECTION-FATAL>2</MAX-WITHOUT-CLOCK-CORRECTION-FATAL>
+                  <MAX-WITHOUT-CLOCK-CORRECTION-PASSIVE>2</MAX-WITHOUT-CLOCK-CORRECTION-PASSIVE>
+                  <MINISLOT-ACTION-POINT-OFFSET>3</MINISLOT-ACTION-POINT-OFFSET>
+                  <MINISLOT-DURATION>6</MINISLOT-DURATION>
+                  <NETWORK-IDLE-TIME>250</NETWORK-IDLE-TIME>
+                  <NETWORK-MANAGEMENT-VECTOR-LENGTH>2</NETWORK-MANAGEMENT-VECTOR-LENGTH>
+                  <NUMBER-OF-MINISLOTS>0</NUMBER-OF-MINISLOTS>
+                  <NUMBER-OF-STATIC-SLOTS>195</NUMBER-OF-STATIC-SLOTS>
+                  <OFFSET-CORRECTION-START>9987</OFFSET-CORRECTION-START>
+                  <PAYLOAD-LENGTH-STATIC>10</PAYLOAD-LENGTH-STATIC>
+                  <SAFETY-MARGIN>0</SAFETY-MARGIN>
+                  <SAMPLE-CLOCK-PERIOD>0.0000000125</SAMPLE-CLOCK-PERIOD>
+                  <STATIC-SLOT-DURATION>50</STATIC-SLOT-DURATION>
+                  <SYMBOL-WINDOW>0</SYMBOL-WINDOW>
+                  <SYMBOL-WINDOW-ACTION-POINT-OFFSET>6</SYMBOL-WINDOW-ACTION-POINT-OFFSET>
+                  <SYNC-FRAME-ID-COUNT-MAX>15</SYNC-FRAME-ID-COUNT-MAX>
+                  <TRANSMISSION-START-SEQUENCE-DURATION>6</TRANSMISSION-START-SEQUENCE-DURATION>
+                  <WAKEUP-RX-IDLE>59</WAKEUP-RX-IDLE>
+                  <WAKEUP-RX-LOW>55</WAKEUP-RX-LOW>
+                  <WAKEUP-RX-WINDOW>301</WAKEUP-RX-WINDOW>
+                  <WAKEUP-TX-ACTIVE>60</WAKEUP-TX-ACTIVE>
+                  <WAKEUP-TX-IDLE>180</WAKEUP-TX-IDLE>
+                </FLEXRAY-CLUSTER-CONDITIONAL>
+              </FLEXRAY-CLUSTER-VARIANTS>
+            </FLEXRAY-CLUSTER>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>ECUINSTANCES</SHORT-NAME>
+          <ELEMENTS>
+            <ECU-INSTANCE>
+              <SHORT-NAME>DebugNode</SHORT-NAME>
+              <COM-CONFIGURATION-GW-TIME-BASE>0.005</COM-CONFIGURATION-GW-TIME-BASE>
+              <COM-CONFIGURATION-RX-TIME-BASE>0.005</COM-CONFIGURATION-RX-TIME-BASE>
+              <COM-CONFIGURATION-TX-TIME-BASE>0.005</COM-CONFIGURATION-TX-TIME-BASE>
+              <COM-ENABLE-MDT-FOR-CYCLIC-TRANSMISSION>false</COM-ENABLE-MDT-FOR-CYCLIC-TRANSMISSION>
+              <COMM-CONTROLLERS>
+                <FLEXRAY-COMMUNICATION-CONTROLLER>
+                  <SHORT-NAME>FlexRay_Controller_2</SHORT-NAME>
+                  <FLEXRAY-COMMUNICATION-CONTROLLER-VARIANTS>
+                    <FLEXRAY-COMMUNICATION-CONTROLLER-CONDITIONAL>
+                      <ACCEPTED-STARTUP-RANGE>109</ACCEPTED-STARTUP-RANGE>
+                      <ALLOW-HALT-DUE-TO-CLOCK>true</ALLOW-HALT-DUE-TO-CLOCK>
+                      <ALLOW-PASSIVE-TO-ACTIVE>0</ALLOW-PASSIVE-TO-ACTIVE>
+                      <CLUSTER-DRIFT-DAMPING>1</CLUSTER-DRIFT-DAMPING>
+                      <DECODING-CORRECTION>36</DECODING-CORRECTION>
+                      <DELAY-COMPENSATION-A>10</DELAY-COMPENSATION-A>
+                      <DELAY-COMPENSATION-B>10</DELAY-COMPENSATION-B>
+                      <EXTERN-OFFSET-CORRECTION>0</EXTERN-OFFSET-CORRECTION>
+                      <EXTERN-RATE-CORRECTION>0</EXTERN-RATE-CORRECTION>
+                      <EXTERNAL-SYNC>false</EXTERNAL-SYNC>
+                      <FALL-BACK-INTERNAL>false</FALL-BACK-INTERNAL>
+                      <KEY-SLOT-ID>6</KEY-SLOT-ID>
+                      <KEY-SLOT-ONLY-ENABLED>false</KEY-SLOT-ONLY-ENABLED>
+                      <KEY-SLOT-USED-FOR-START-UP>true</KEY-SLOT-USED-FOR-START-UP>
+                      <KEY-SLOT-USED-FOR-SYNC>true</KEY-SLOT-USED-FOR-SYNC>
+                      <LATEST-TX>0</LATEST-TX>
+                      <LISTEN-TIMEOUT>802404</LISTEN-TIMEOUT>
+                      <MACRO-INITIAL-OFFSET-A>8</MACRO-INITIAL-OFFSET-A>
+                      <MACRO-INITIAL-OFFSET-B>8</MACRO-INITIAL-OFFSET-B>
+                      <MAXIMUM-DYNAMIC-PAYLOAD-LENGTH>16</MAXIMUM-DYNAMIC-PAYLOAD-LENGTH>
+                      <MICRO-INITIAL-OFFSET-A>34</MICRO-INITIAL-OFFSET-A>
+                      <MICRO-INITIAL-OFFSET-B>34</MICRO-INITIAL-OFFSET-B>
+                      <MICRO-PER-CYCLE>400000</MICRO-PER-CYCLE>
+                      <MICROTICK-DURATION>2.5000000000000002E-8</MICROTICK-DURATION>
+                      <NM-VECTOR-EARLY-UPDATE>false</NM-VECTOR-EARLY-UPDATE>
+                      <OFFSET-CORRECTION-OUT>259</OFFSET-CORRECTION-OUT>
+                      <RATE-CORRECTION-OUT>1202</RATE-CORRECTION-OUT>
+                      <SAMPLES-PER-MICROTICK>2</SAMPLES-PER-MICROTICK>
+                      <TWO-KEY-SLOT-MODE>false</TWO-KEY-SLOT-MODE>
+                      <WAKE-UP-PATTERN>63</WAKE-UP-PATTERN>
+                    </FLEXRAY-COMMUNICATION-CONTROLLER-CONDITIONAL>
+                  </FLEXRAY-COMMUNICATION-CONTROLLER-VARIANTS>
+                </FLEXRAY-COMMUNICATION-CONTROLLER>
+              </COMM-CONTROLLERS>
+              <CONNECTORS>
+                <FLEXRAY-COMMUNICATION-CONNECTOR>
+                  <SHORT-NAME>ECU_DebugNode_CC_FlexRay_Controller_2_Ch_Channel_A_FlexRayNetwork_1</SHORT-NAME>
+                  <COMM-CONTROLLER-REF DEST="FLEXRAY-COMMUNICATION-CONTROLLER">/FlexraySystem/ECUINSTANCES/DebugNode/FlexRay_Controller_2</COMM-CONTROLLER-REF>
+                  <ECU-COMM-PORT-INSTANCES>
+                    <FRAME-PORT>
+                      <SHORT-NAME>IN_CounterOutFrame_001_Channel_A_FlexRayNetwork_1_10_0_1_FlexRay_Controller_2_to_Channel_A_FlexRayNetwork_1</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                    </FRAME-PORT>
+                    <I-PDU-PORT>
+                      <SHORT-NAME>OPP_1_1</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                    </I-PDU-PORT>
+                    <I-SIGNAL-PORT>
+                      <SHORT-NAME>OSP_1_1</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                    </I-SIGNAL-PORT>
+                    <FRAME-PORT>
+                      <SHORT-NAME>OUT_CounterInFrame_001_Channel_A_FlexRayNetwork_1_1_0_1_FlexRay_Controller_2_to_Channel_A_FlexRayNetwork_1</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                    </FRAME-PORT>
+                    <I-PDU-PORT>
+                      <SHORT-NAME>IPP_1_2</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                    </I-PDU-PORT>
+                    <I-SIGNAL-PORT>
+                      <SHORT-NAME>ISP_1_2</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                    </I-SIGNAL-PORT>
+                  </ECU-COMM-PORT-INSTANCES>
+                  <WAKE-UP-CHANNEL>true</WAKE-UP-CHANNEL>
+                </FLEXRAY-COMMUNICATION-CONNECTOR>
+              </CONNECTORS>
+              <SLEEP-MODE-SUPPORTED>false</SLEEP-MODE-SUPPORTED>
+              <WAKE-UP-OVER-BUS-SUPPORTED>false</WAKE-UP-OVER-BUS-SUPPORTED>
+            </ECU-INSTANCE>
+            <ECU-INSTANCE>
+              <SHORT-NAME>EcuTestNode</SHORT-NAME>
+              <COM-CONFIGURATION-GW-TIME-BASE>0.005</COM-CONFIGURATION-GW-TIME-BASE>
+              <COM-CONFIGURATION-RX-TIME-BASE>0.005</COM-CONFIGURATION-RX-TIME-BASE>
+              <COM-CONFIGURATION-TX-TIME-BASE>0.005</COM-CONFIGURATION-TX-TIME-BASE>
+              <COM-ENABLE-MDT-FOR-CYCLIC-TRANSMISSION>false</COM-ENABLE-MDT-FOR-CYCLIC-TRANSMISSION>
+              <COMM-CONTROLLERS>
+                <FLEXRAY-COMMUNICATION-CONTROLLER>
+                  <SHORT-NAME>FlexRay_Controller_1</SHORT-NAME>
+                  <FLEXRAY-COMMUNICATION-CONTROLLER-VARIANTS>
+                    <FLEXRAY-COMMUNICATION-CONTROLLER-CONDITIONAL>
+                      <ACCEPTED-STARTUP-RANGE>109</ACCEPTED-STARTUP-RANGE>
+                      <ALLOW-HALT-DUE-TO-CLOCK>true</ALLOW-HALT-DUE-TO-CLOCK>
+                      <ALLOW-PASSIVE-TO-ACTIVE>0</ALLOW-PASSIVE-TO-ACTIVE>
+                      <CLUSTER-DRIFT-DAMPING>1</CLUSTER-DRIFT-DAMPING>
+                      <DECODING-CORRECTION>36</DECODING-CORRECTION>
+                      <DELAY-COMPENSATION-A>10</DELAY-COMPENSATION-A>
+                      <DELAY-COMPENSATION-B>10</DELAY-COMPENSATION-B>
+                      <EXTERN-OFFSET-CORRECTION>0</EXTERN-OFFSET-CORRECTION>
+                      <EXTERN-RATE-CORRECTION>0</EXTERN-RATE-CORRECTION>
+                      <EXTERNAL-SYNC>false</EXTERNAL-SYNC>
+                      <FALL-BACK-INTERNAL>false</FALL-BACK-INTERNAL>
+                      <KEY-SLOT-ID>10</KEY-SLOT-ID>
+                      <KEY-SLOT-ONLY-ENABLED>false</KEY-SLOT-ONLY-ENABLED>
+                      <KEY-SLOT-USED-FOR-START-UP>true</KEY-SLOT-USED-FOR-START-UP>
+                      <KEY-SLOT-USED-FOR-SYNC>true</KEY-SLOT-USED-FOR-SYNC>
+                      <LATEST-TX>0</LATEST-TX>
+                      <LISTEN-TIMEOUT>802404</LISTEN-TIMEOUT>
+                      <MACRO-INITIAL-OFFSET-A>8</MACRO-INITIAL-OFFSET-A>
+                      <MACRO-INITIAL-OFFSET-B>8</MACRO-INITIAL-OFFSET-B>
+                      <MAXIMUM-DYNAMIC-PAYLOAD-LENGTH>16</MAXIMUM-DYNAMIC-PAYLOAD-LENGTH>
+                      <MICRO-INITIAL-OFFSET-A>34</MICRO-INITIAL-OFFSET-A>
+                      <MICRO-INITIAL-OFFSET-B>34</MICRO-INITIAL-OFFSET-B>
+                      <MICRO-PER-CYCLE>400000</MICRO-PER-CYCLE>
+                      <MICROTICK-DURATION>2.5000000000000002E-8</MICROTICK-DURATION>
+                      <NM-VECTOR-EARLY-UPDATE>false</NM-VECTOR-EARLY-UPDATE>
+                      <OFFSET-CORRECTION-OUT>259</OFFSET-CORRECTION-OUT>
+                      <RATE-CORRECTION-OUT>1202</RATE-CORRECTION-OUT>
+                      <SAMPLES-PER-MICROTICK>2</SAMPLES-PER-MICROTICK>
+                      <TWO-KEY-SLOT-MODE>false</TWO-KEY-SLOT-MODE>
+                      <WAKE-UP-PATTERN>63</WAKE-UP-PATTERN>
+                    </FLEXRAY-COMMUNICATION-CONTROLLER-CONDITIONAL>
+                  </FLEXRAY-COMMUNICATION-CONTROLLER-VARIANTS>
+                </FLEXRAY-COMMUNICATION-CONTROLLER>
+              </COMM-CONTROLLERS>
+              <CONNECTORS>
+                <FLEXRAY-COMMUNICATION-CONNECTOR>
+                  <SHORT-NAME>ECU_EcuTestNode_CC_FlexRay_Controller_1_Ch_Channel_A_FlexRayNetwork_1</SHORT-NAME>
+                  <COMM-CONTROLLER-REF DEST="FLEXRAY-COMMUNICATION-CONTROLLER">/FlexraySystem/ECUINSTANCES/EcuTestNode/FlexRay_Controller_1</COMM-CONTROLLER-REF>
+                  <ECU-COMM-PORT-INSTANCES>
+                    <FRAME-PORT>
+                      <SHORT-NAME>IN_CounterInFrame_001_Channel_A_FlexRayNetwork_1_1_0_1_FlexRay_Controller_1_to_Channel_A_FlexRayNetwork_1</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                    </FRAME-PORT>
+                    <I-PDU-PORT>
+                      <SHORT-NAME>IPP_2_1</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                    </I-PDU-PORT>
+                    <I-SIGNAL-PORT>
+                      <SHORT-NAME>ISP_2_1</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>IN</COMMUNICATION-DIRECTION>
+                    </I-SIGNAL-PORT>
+                    <FRAME-PORT>
+                      <SHORT-NAME>OUT_CounterOutFrame_001_Channel_A_FlexRayNetwork_1_10_0_1_FlexRay_Controller_1_to_Channel_A_FlexRayNetwork_1</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                    </FRAME-PORT>
+                    <I-PDU-PORT>
+                      <SHORT-NAME>OPP_2_2</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                    </I-PDU-PORT>
+                    <I-SIGNAL-PORT>
+                      <SHORT-NAME>OSP_2_2</SHORT-NAME>
+                      <COMMUNICATION-DIRECTION>OUT</COMMUNICATION-DIRECTION>
+                    </I-SIGNAL-PORT>
+                  </ECU-COMM-PORT-INSTANCES>
+                  <WAKE-UP-CHANNEL>true</WAKE-UP-CHANNEL>
+                </FLEXRAY-COMMUNICATION-CONNECTOR>
+              </CONNECTORS>
+              <SLEEP-MODE-SUPPORTED>false</SLEEP-MODE-SUPPORTED>
+              <WAKE-UP-OVER-BUS-SUPPORTED>false</WAKE-UP-OVER-BUS-SUPPORTED>
+            </ECU-INSTANCE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>PDUS</SHORT-NAME>
+          <ELEMENTS>
+            <I-SIGNAL-I-PDU>
+              <SHORT-NAME>Pdu_CounterIn</SHORT-NAME>
+              <LENGTH>1</LENGTH>
+              <I-PDU-TIMING-SPECIFICATIONS>
+                <I-PDU-TIMING>
+                  <TRANSMISSION-MODE-DECLARATION>
+                    <TRANSMISSION-MODE-CONDITIONS>
+                      <TRANSMISSION-MODE-CONDITION>
+                        <DATA-FILTER>
+                          <DATA-FILTER-TYPE>ALWAYS</DATA-FILTER-TYPE>
+                        </DATA-FILTER>
+                        <I-SIGNAL-IN-I-PDU-REF DEST="I-SIGNAL-TO-I-PDU-MAPPING">/FlexraySystem/PDUS/Pdu_CounterIn/CounterIn_Pdu_CounterIn_0</I-SIGNAL-IN-I-PDU-REF>
+                      </TRANSMISSION-MODE-CONDITION>
+                    </TRANSMISSION-MODE-CONDITIONS>
+                    <TRANSMISSION-MODE-TRUE-TIMING>
+                      <EVENT-CONTROLLED-TIMING>
+                        <NUMBER-OF-REPETITIONS>1</NUMBER-OF-REPETITIONS>
+                        <REPETITION-PERIOD>
+                          <VALUE>1.0</VALUE>
+                        </REPETITION-PERIOD>
+                      </EVENT-CONTROLLED-TIMING>
+                    </TRANSMISSION-MODE-TRUE-TIMING>
+                  </TRANSMISSION-MODE-DECLARATION>
+                </I-PDU-TIMING>
+              </I-PDU-TIMING-SPECIFICATIONS>
+              <I-SIGNAL-TO-PDU-MAPPINGS>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>CounterIn_Pdu_CounterIn_0</SHORT-NAME>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/FlexraySystem/ISIGNALS/CounterIn</I-SIGNAL-REF>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-FIRST</PACKING-BYTE-ORDER>
+                  <START-POSITION>7</START-POSITION>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+              </I-SIGNAL-TO-PDU-MAPPINGS>
+              <UNUSED-BIT-PATTERN>0</UNUSED-BIT-PATTERN>
+            </I-SIGNAL-I-PDU>
+            <I-SIGNAL-I-PDU>
+              <SHORT-NAME>Pdu_CounterOut</SHORT-NAME>
+              <LENGTH>1</LENGTH>
+              <I-PDU-TIMING-SPECIFICATIONS>
+                <I-PDU-TIMING>
+                  <TRANSMISSION-MODE-DECLARATION>
+                    <TRANSMISSION-MODE-CONDITIONS>
+                      <TRANSMISSION-MODE-CONDITION>
+                        <DATA-FILTER>
+                          <DATA-FILTER-TYPE>ALWAYS</DATA-FILTER-TYPE>
+                        </DATA-FILTER>
+                        <I-SIGNAL-IN-I-PDU-REF DEST="I-SIGNAL-TO-I-PDU-MAPPING">/FlexraySystem/PDUS/Pdu_CounterOut/CounterOut_Pdu_CounterOut_0</I-SIGNAL-IN-I-PDU-REF>
+                      </TRANSMISSION-MODE-CONDITION>
+                    </TRANSMISSION-MODE-CONDITIONS>
+                    <TRANSMISSION-MODE-TRUE-TIMING>
+                      <EVENT-CONTROLLED-TIMING>
+                        <NUMBER-OF-REPETITIONS>1</NUMBER-OF-REPETITIONS>
+                        <REPETITION-PERIOD>
+                          <VALUE>1.0</VALUE>
+                        </REPETITION-PERIOD>
+                      </EVENT-CONTROLLED-TIMING>
+                    </TRANSMISSION-MODE-TRUE-TIMING>
+                  </TRANSMISSION-MODE-DECLARATION>
+                </I-PDU-TIMING>
+              </I-PDU-TIMING-SPECIFICATIONS>
+              <I-SIGNAL-TO-PDU-MAPPINGS>
+                <I-SIGNAL-TO-I-PDU-MAPPING>
+                  <SHORT-NAME>CounterOut_Pdu_CounterOut_0</SHORT-NAME>
+                  <I-SIGNAL-REF DEST="I-SIGNAL">/FlexraySystem/ISIGNALS/CounterOut</I-SIGNAL-REF>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-FIRST</PACKING-BYTE-ORDER>
+                  <START-POSITION>7</START-POSITION>
+                </I-SIGNAL-TO-I-PDU-MAPPING>
+              </I-SIGNAL-TO-PDU-MAPPINGS>
+              <UNUSED-BIT-PATTERN>0</UNUSED-BIT-PATTERN>
+            </I-SIGNAL-I-PDU>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>ISIGNALS</SHORT-NAME>
+          <ELEMENTS>
+            <I-SIGNAL>
+              <SHORT-NAME>CounterIn</SHORT-NAME>
+              <DATA-TYPE-POLICY>PORT-INTERFACE-DEFINITION</DATA-TYPE-POLICY>
+              <LENGTH>8</LENGTH>
+              <NETWORK-REPRESENTATION-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <IMPLEMENTATION-DATA-TYPE-REF
+                      DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </NETWORK-REPRESENTATION-PROPS>
+              <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/FlexraySystem/SYSSIGNALS/CounterIn</SYSTEM-SIGNAL-REF>
+            </I-SIGNAL>
+            <I-SIGNAL>
+              <SHORT-NAME>CounterOut</SHORT-NAME>
+              <DATA-TYPE-POLICY>PORT-INTERFACE-DEFINITION</DATA-TYPE-POLICY>
+              <LENGTH>8</LENGTH>
+              <NETWORK-REPRESENTATION-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <IMPLEMENTATION-DATA-TYPE-REF
+                      DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </NETWORK-REPRESENTATION-PROPS>
+              <SYSTEM-SIGNAL-REF DEST="SYSTEM-SIGNAL">/FlexraySystem/SYSSIGNALS/CounterOut</SYSTEM-SIGNAL-REF>
+            </I-SIGNAL>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>SYSSIGNALS</SHORT-NAME>
+          <ELEMENTS>
+            <SYSTEM-SIGNAL>
+              <SHORT-NAME>CounterIn</SHORT-NAME>
+              <DYNAMIC-LENGTH>false</DYNAMIC-LENGTH>
+            </SYSTEM-SIGNAL>
+            <SYSTEM-SIGNAL>
+              <SHORT-NAME>CounterOut</SHORT-NAME>
+              <DYNAMIC-LENGTH>false</DYNAMIC-LENGTH>
+            </SYSTEM-SIGNAL>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>FRAMES</SHORT-NAME>
+          <ELEMENTS>
+            <FLEXRAY-FRAME>
+              <SHORT-NAME>CounterInFrame_001</SHORT-NAME>
+              <FRAME-LENGTH>8</FRAME-LENGTH>
+              <PDU-TO-FRAME-MAPPINGS>
+                <PDU-TO-FRAME-MAPPING>
+                  <SHORT-NAME>PduToFrame_Pdu_CounterIn_0</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <PDU-REF DEST="I-SIGNAL-I-PDU">/FlexraySystem/PDUS/Pdu_CounterIn</PDU-REF>
+                  <START-POSITION>0</START-POSITION>
+                </PDU-TO-FRAME-MAPPING>
+              </PDU-TO-FRAME-MAPPINGS>
+            </FLEXRAY-FRAME>
+            <FLEXRAY-FRAME>
+              <SHORT-NAME>CounterOutFrame_001</SHORT-NAME>
+              <FRAME-LENGTH>8</FRAME-LENGTH>
+              <PDU-TO-FRAME-MAPPINGS>
+                <PDU-TO-FRAME-MAPPING>
+                  <SHORT-NAME>PduToFrame_Pdu_CounterOut_0</SHORT-NAME>
+                  <PACKING-BYTE-ORDER>MOST-SIGNIFICANT-BYTE-LAST</PACKING-BYTE-ORDER>
+                  <PDU-REF DEST="I-SIGNAL-I-PDU">/FlexraySystem/PDUS/Pdu_CounterOut</PDU-REF>
+                  <START-POSITION>0</START-POSITION>
+                </PDU-TO-FRAME-MAPPING>
+              </PDU-TO-FRAME-MAPPINGS>
+            </FLEXRAY-FRAME>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

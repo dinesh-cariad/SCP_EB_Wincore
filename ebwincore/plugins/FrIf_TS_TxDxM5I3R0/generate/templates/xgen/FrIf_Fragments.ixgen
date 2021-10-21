@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+  [!VAR "FrIfSoftwareVersion"!]
+  [!"as:modconf('FrIf')[1]/CommonPublishedInformation/SwMajorVersion"!].[!"as:modconf('FrIf')[1]/CommonPublishedInformation/SwMinorVersion"!].[!"as:modconf('FrIf')[1]/CommonPublishedInformation/SwPatchVersion"!]
+  [!ENDVAR!]
+  <module name="FrIf" version="[!"$FrIfSoftwareVersion"!]">
+  <instance type="Signature-Fragment" name="Signature-Fragment" memory-section="CONFIG_DATA_UNSPECIFIED">
+      <field comment="PlatformSignature">
+        <int>[!"asc:getPlatformSignature()"!]</int>
+      </field>
+      <field comment="PublicInfoSignature">
+        <int>[!"asc:getConfigSignature(node:difference(as:modconf('FrIf')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation')], as:modconf('FrIf')[1]/CommonPublishedInformation/Release))"!]</int>
+      </field>
+      <field comment="CfgSignature">
+        <int>[!"asc:getConfigSignature(as:modconf('FrIf')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int>
+      </field>
+      <field comment="LcfgSignature">
+        <int>[!"asc:getConfigSignature(as:modconf('FrIf')[1]//*[not(child::*) and (node:configclass() = 'Link') ])"!]</int>
+      </field>
+      <parameter name="relocatable-enable">
+        <boolean-value>
+[!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('FrIf')) = 'true'"!]
+          [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!]true[!ELSE!]false[!ENDIF!]
+[!ELSE!]
+          [!IF "as:modconf('FrIf')[1]/FrIfGeneral/VendorSpecific/FrIfRelocatablePbcfgEnable = 'true'"!]true[!ELSE!]false[!ENDIF!]
+[!ENDIF!]
+        </boolean-value>
+      </parameter>
+    </instance>
+  </module>
+</xgen>

@@ -1,0 +1,1345 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module CanTp?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!CODE!]
+[!AUTOSPACING!]
+[!INCLUDE "../../generate_macros/CanTp_PostBuild.m"!][!//
+[!INCLUDE "../../generate_macros/CanTp_Precompile.m"!][!//
+
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "CANTP_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "CANTP_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat('CanTp_Config','_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="string("CanTp_Config")"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+*/!][!VAR "CANTP_PBCFG_C_VARIANT"="concat('CanTp',$CANTP_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "CANTP_PBCFG_H_VARIANT"="concat('CanTp',$CANTP_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "CANTP_CONFIG_LAYOUT_VARIANT"="concat('CanTp',$CANTP_VARIANT_SUFIX,'ConfigLayout')"!]
+[!/* Current Config Type variant based
+*/!][!VAR "CANTP_CONFIGLAYOUTTYPE_VARIANT"="concat('CanTp',$CANTP_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "CANTP_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('CanTp',$CANTP_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+
+[!/* Standard addressing format
+*/!][!VAR "CANTP_STANDARD"="num:i(0)"!]
+[!/* Extended addressing format
+*/!][!VAR "CANTP_EXTENDED"="num:i(1)"!]
+[!/* Mixed addressing format
+*/!][!VAR "CANTP_MIXED"="num:i(2)"!]
+[!/* Normal fixed addressing format
+*/!][!VAR "CANTP_NORMALFIXED"="num:i(3)"!]
+[!/* N-SDU direction is Tx
+*/!][!VAR "CANTP_PDU_DIR_TRANSMIT"="num:i(0)"!]
+[!/* N-SDU direction is Rx
+*/!][!VAR "CANTP_PDU_DIR_RECEIVE"="num:i(1)"!]
+[!/* Indicating that no FC Tx PDU is used
+*/!][!VAR "CANTP_FC_FRAME_NOT_USED"="num:i(65535)"!]
+[!/* Indicating that no FC Tx PDU is used and number of channels is stored in a UINT8 variable
+*/!][!VAR "CANTP_FC_FRAME_NOT_USED_UINT8"="num:i(255)"!]
+[!/* physical for 1 to 1 connections
+*/!][!VAR "CANTP_PHYSICAL"="num:i(0)"!]
+[!/* physical for 1 to n connections
+*/!][!VAR "CANTP_FUNCTIONAL"="num:i(1)"!]
+
+[!/* padding disabled
+*/!][!VAR "CANTP_OFF"="num:i(0)"!]
+[!/* mandatory padding to 8 bytes for CAN 2.0 PDUs only
+*/!][!VAR "CANTP_ON"="num:i(1)"!]
+[!/* mandatory padding to 8 bytes for CAN 2.0 PDUs and 64 bytes for CAN FD PDUs
+*/!][!VAR "CANTP_ON_CAN_CAN_FD"="num:i(2)"!]
+
+[!/* CAN 2.0 Tx frame with standard identifier (11bits)
+*/!][!VAR "CANTP_TX_STANDARD_CAN"="num:i(0)"!]
+[!/* CAN 2.0 Tx frame with extended identifier (29bits)
+*/!][!VAR "CANTP_TX_EXTENDED_CAN"="num:i(1)"!]
+[!/* CAN FD Tx frame with standard identifier (11bits)
+*/!][!VAR "CANTP_TX_STANDARD_FD_CAN"="num:i(2)"!]
+[!/* CAN FD Tx frame with extended identifier (29bits)
+*/!][!VAR "CANTP_TX_EXTENDED_FD_CAN"="num:i(3)"!]
+[!/* Invalid or non existing CanIdType
+*/!][!VAR "CANTP_TX_INVALID_CANID"="num:i(255)"!]
+
+[!/* Channel mode type Full Duplex
+*/!][!VAR "CANTP_MODE_FULL_DUPLEX"="num:i(0)"!]
+[!/* Channel mode type Half Duplex
+*/!][!VAR "CANTP_MODE_HALF_DUPLEX"="num:i(1)"!]
+[!/* Global state of CanTp is ON
+*/!][!VAR "CANTP_OFF"="num:i(0)"!]
+[!/* Global state of CanTp is OFF
+*/!][!VAR "CANTP_ON"="num:i(1)"!]
+
+  <!-- This is the configuration of module CanTp -->
+  <module name="CanTp" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+      [!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+        <?artifact directory="include" file="CanTp_Types_Int.h" type="types-h" generate="yes" ?>
+      [!ELSE!]
+        <?artifact directory="include" file="CanTp_Types_Int.h" type="types-h" generate="no" ?>
+      [!ENDIF!]
+
+      [!VAR "relocatable" = "'false'"!]
+      [!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('CanTp')) = 'true'"!]
+      [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ELSE!]
+      [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpRelocatablePbcfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ENDIF!]
+
+
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+
+      <!-- This is the type definition of the root structure -->
+      <type name="CanTp_ConfigType">
+        <struct>
+          <comment><![CDATA[Post-build configuration type]]></comment>
+          <member name="PlatformSignature" type="uint32">
+            <comment><![CDATA[Used to validate the platform]]></comment>
+          </member>
+          <member name="LcfgSignature" type="uint32">
+            <comment><![CDATA[Used to validate the post build configuration against the link time configuration.]]></comment>
+          </member>
+          <member name="CfgSignature" type="uint32">
+            <comment><![CDATA[Used to validate the post build configuration against the precompile time configuration.]]></comment>
+          </member>
+          <member name="PublicInfoSignature" type="uint32">
+            <comment>
+               <![CDATA[Used to validate the post build configuration against the precompile time published info
+                        configuration.
+               ]]>
+            </comment>
+          </member>
+          <!-- Pointers to post build data structures -->
+          <member name="RxNPduLookupTablePtr" type="CanTp_RxNPduLookupEntryType">
+            <comment><![CDATA[This pointer contains the address to the N-PDU lookup table.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="RxNPduTablePtr" type="CanTp_RxNPduTableType">
+            <comment><![CDATA[This pointer contains the address to the RX N-PDU table if available.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="RxNSduConfigPtr" type="CanTp_RxNSduConfigType">
+            <comment><![CDATA[This pointer contains the address to the RX N-SDU config array if available.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="TxNSduConfigPtr" type="CanTp_TxNSduConfigType">
+            <comment><![CDATA[This pointer contains the address to the TX N-SDU config array if available.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!IF "CanTpGeneral/CanTpGptUsageEnable = 'true'"!]
+          <member name="GptChannelPtr" type="CanTp_GptChannelType">
+            <comment><![CDATA[This pointer contains the address to the array of channels using general purpose timer.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!ENDIF!]
+          <member name="MfCtrConfigPtr" type="CanTp_MfCtrConfigType">
+            <comment><![CDATA[This pointer contains the address to the main function control config array if available.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          [!IF "not(node:exists(as:modconf('CanTp')[1]/CanTpGeneral/CanTpMaxParallelTxChannels))"!]
+
+          <member name="TxNPduToTpChannelPtr" type="CanTp_TxNPduToTpChannelType">
+            <comment><![CDATA[Array to translate CanIf Tx Confirmation PDU IDs into the CanTp channel.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!ENDIF!]
+
+
+          <member name="NumberRxNPdus" type="uint16">
+            <comment><![CDATA[Number of unequal Rx N-PDU elements.]]></comment>
+          </member>
+          <member name="NumberTxNSdus" type="uint16">
+            <comment><![CDATA[Configured number of TxNSdus.]]></comment>
+          </member>
+          <member name="NumberRxNSdus" type="uint16">
+            <comment><![CDATA[Configured number of RxNSdus.]]></comment>
+          </member>
+
+          <member name="NumberTxConfNPdus" type="uint16">
+            <comment><![CDATA[Configured number of Tx confirmation NPdus (Tx ConfNPdus + RxFcNPdus).]]></comment>
+          </member>
+
+          [!IF "CanTpGeneral/CanTpDynamicNSaEnabled = 'true'"!]
+          <member name="RxPduTableEntries" type="uint16">
+            <comment>
+               <![CDATA[This macro defines the numbers of entries in the CanTp_RxNPduTable[].
+                        It is used to find PDU's in a loop.
+               ]]>
+            </comment>
+          </member>
+          [!ENDIF!]
+
+          [!IF "not(node:exists(as:modconf('CanTp')[1]/CanTpGeneral/CanTpMaxParallelTxChannels))"!]
+           [!IF "($numAllChannels > 256)"!]
+           <member name="NumberOfChannels" type="uint16">
+             <comment><![CDATA[Number of Tx and Rx channels.]]></comment>
+           </member>
+           [!ELSE!]
+           <member name="NumberOfChannels" type="uint8">
+             <comment><![CDATA[Number of Tx and Rx channels.]]></comment>
+           </member>
+           [!ENDIF!]
+
+           [!IF "($numTxChannels > 256)"!]
+           <member name="NumberOfTxChannels" type="uint16">
+             <comment><![CDATA[Number of Tx channels.]]></comment>
+           </member>
+           [!ELSE!]
+           <member name="NumberOfTxChannels" type="uint8">
+             <comment><![CDATA[Number of Tx channels.]]></comment>
+           </member>
+           [!ENDIF!]
+          [!ENDIF!]
+
+        </struct>
+      </type>
+
+      <!-- This is the type definition of the Tx PDU config structure -->
+      <type name="CanTp_RxNPduLookupEntryType">
+          <comment><![CDATA[Type for the N-PDU Lookup Table.]]></comment>
+        <reference type="uint16" />
+      </type>
+
+      <!--  Type for List of CanTp Rx N-PDUs. -->
+      <type name="CanTp_RxNPduTableType">
+       <struct>
+        <comment><![CDATA[Type for CanTp List of all receivable N-PDUs.]]></comment>
+        <member name="Next" type="uint16">
+          <comment><![CDATA[index of next element with the same N-PDU Id, zero terminates]]></comment>
+        </member>
+        <member name="Index" type="PduIdType">
+          <comment><![CDATA[index in Tx or Rx array]]></comment>
+        </member>
+        <member name="AddressingFormat" type="uint8">
+          <comment><![CDATA[address format of this N-PDU]]></comment>
+        </member>
+        <member name="N_SA_AE" type="uint8">
+          <comment>
+             <![CDATA[expected source address in extended addressing mode or address extension
+                     (N_AE) in mixed addressing mode.
+             ]]>
+          </comment>
+        </member>
+        <member name="Direction" type="uint8">
+          <comment><![CDATA[direction (tx or rx)]]></comment>
+        </member>
+       </struct>
+      </type>
+
+      <!-- Type for CanTp Rx N-SDU configuration. -->
+      <type name="CanTp_RxNSduConfigType">
+        <struct>
+        <comment><![CDATA[Type for CanTp Rx N-SDU configuration.]]></comment>
+        <member name="N_Ar" type="uint16">
+          <comment><![CDATA[time to transmit N-PDU]]></comment>
+        </member>
+        <member name="N_Br" type="uint16">
+          <comment><![CDATA[time between two FCs]]></comment>
+        </member>
+        [!IF "CanTpGeneral/CanTpNbrWaitRepeatedSupport = 'true'"!]
+        <member name="N_Br_WT" type="uint16">
+          <comment><![CDATA[time between two FCs (WT) starting with the second FC (WT)]]></comment>
+        </member>
+        [!ENDIF!]
+        <member name="N_Cr" type="uint16">
+          <comment><![CDATA[time until CF receive]]></comment>
+        </member>
+        <member name="NPduConfIdFc" type="PduIdType">
+          <comment><![CDATA[N-Pdu confirmation Id for sent FC frames]]></comment>
+        </member>
+        <member name="LSduIdFc" type="PduIdType">
+          <comment><![CDATA[L-Sdu Id for sending FC frames]]></comment>
+        </member>
+        <member name="IPduId" type="PduIdType">
+          <comment><![CDATA[I-Pdu Id for Rx-UL communication (PduR_CanTpRxIndication)]]></comment>
+        </member>
+        <member name="NPduIdxF" type="PduIdType">
+          <comment><![CDATA[N-Pdu Id for receiving frames from lower layer]]></comment>
+        </member>
+        [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpDynIdSupport = 'true'"!]
+        <member name="MetadataULPduId" type="PduIdType">
+          <comment><![CDATA[Pdu Id for Ecuc to set the MetaData for the upper layer (EcuC_SetMetaDataSourceAddr and EcuC_SetMetaDataTargetAddr)]]></comment>
+        </member>
+        <member name="MetadataLLPduId" type="PduIdType">
+          <comment><![CDATA[Pdu Id for Ecuc to get the MetaData set by CanIf (EcuC_GetMetaDataCanId)]]></comment>
+        </member>
+        <member name="MetadataLLFcPduId" type="PduIdType">
+          <comment><![CDATA[Pdu Id for Ecuc to set the FC MetaData for CanIf (EcuC_SetMetaDataCanId)]]></comment>
+        </member>
+        [!ENDIF!]
+
+        <!--  check if the local index channel exceeds uint8 range
+              Rationale: For each full duplex channel, two channel indexes are assigned ($numAllChannels * 2),
+                         but for half duplex channels ($numAllChannels - $numFullDuplexChannels) only one channel index is assigned. -->
+        [!IF "((($numAllChannels * 2) - ($numAllChannels - $numFullDuplexChannels) - 1) > 255)"!]
+        <member name="Channel" type="uint16">
+          <comment><![CDATA[associated Rx channel ID]]></comment>
+        </member>
+        [!ELSE!]
+        <member name="Channel" type="uint8">
+          <comment><![CDATA[associated Rx channel ID]]></comment>
+        </member>
+        [!ENDIF!]
+
+       [!IF "not(node:exists(as:modconf('CanTp')[1]/CanTpGeneral/CanTpMaxParallelTxChannels))"!]
+       <!--  check if the Tx channel index exceeds uint8 range -->
+        [!IF "($numTxChannels > 256)"!]
+        <member name="Tx_Channel" type="uint16">
+          <comment><![CDATA[associated Tx channel ID]]></comment>
+        </member>
+          [!ELSE!]
+        <member name="Tx_Channel" type="uint8">
+          <comment><![CDATA[associated Tx channel ID]]></comment>
+        </member>
+          [!ENDIF!]
+        [!ENDIF!]
+
+        <member name="AddressingFormat" type="uint8">
+          <comment><![CDATA[addressing format - standard, extended, mixed, normal fixed]]></comment>
+        </member>
+        <member name="Tatype" type="uint8">
+          <comment><![CDATA[physical, functional]]></comment>
+        </member>
+        <member name="PaddingActivation" type="uint8">
+          <comment><![CDATA[padding of N-PDUs]]></comment>
+        </member>
+          [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpFlexibleDataRateSupport = 'true'"!]
+        <member name="FcCanIdType" type="uint8">
+          <comment><![CDATA[CANTP_TX_STANDARD_CAN, CANTP_TX_EXTENDED_CAN, CANTP_TX_STANDARD_FD_CAN, CANTP_TX_EXTENDED_FD_CAN]]></comment>
+        </member>
+          [!ENDIF!]
+        <member name="N_TA_AE" type="uint8">
+          <comment><![CDATA[extended/normal fixed target address (N_TA) or mixed address extension (N_AE)]]></comment>
+        </member>
+        <member name="WftMax" type="uint8">
+          <comment><![CDATA[max number of FC wait]]></comment>
+        </member>
+        <member name="BS" type="uint8">
+          <comment><![CDATA[block size]]></comment>
+        </member>
+        <member name="ChannelMode" type="uint8">
+          <comment><![CDATA[associated channel mode]]></comment>
+        </member>
+        <member name="STmin" type="uint8">
+          <comment><![CDATA[STmin value to be used for the sender]]></comment>
+        </member>
+        <member name="NPduMaxLength" type="uint8">
+          <comment><![CDATA[Maximum length of N-PDU]]></comment>
+        </member>
+        [!IF "CanTpGeneral/CanTpNbrWaitRepeatedSupport = 'true'"!]
+        <member name="NBrWTUsed" type="boolean">
+          <comment><![CDATA[Support of N_Br_WT]]></comment>
+        </member>
+        [!ENDIF!]
+       </struct>
+      </type>
+
+      <!-- Type for Tx N-SDU configuration. -->
+      <type name="CanTp_TxNSduConfigType">
+       <struct>
+        <comment><![CDATA[Type for CanTp Tx N-SDU configuration.]]></comment>
+        <member name="N_As" type="uint16">
+          <comment><![CDATA[time to transmit N-PDU]]></comment>
+        </member>
+        <member name="N_Bs" type="uint16">
+          <comment><![CDATA[time to next FC]]></comment>
+        </member>
+        <member name="N_Cs" type="uint16">
+          <comment><![CDATA[time to next CF]]></comment>
+        </member>
+        <member name="NPduIdFc" type="PduIdType">
+          <comment><![CDATA[N-Pdu Id for incoming FC frames]]></comment>
+        </member>
+        <member name="NPduConfIdxF" type="PduIdType">
+          <comment><![CDATA[N-Pdu confirmation Id for sent SF, FF, CF]]></comment>
+        </member>
+        <member name="LSduIdxF" type="PduIdType">
+          <comment><![CDATA[L-Sdu Id for SF, FF, CF]]></comment>
+        </member>
+        <member name="IPduConfId" type="PduIdType">
+          <comment><![CDATA[I-PDU Id for Tx-UL communication (CopyTxData, TxConfirmation)]]></comment>
+        </member>
+        [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpDynIdSupport = 'true'"!]
+        <member name="MetadataULPduId" type="PduIdType">
+          <comment><![CDATA[Pdu Id for Ecuc to get the MetaData set by the upper layer (EcuC_GetMetaDataSourceAddr and EcuC_GetMetaDataTargetAddr)]]></comment>
+        </member>
+        <member name="MetadataLLPduId" type="PduIdType">
+          <comment><![CDATA[Pdu Id for Ecuc to set the MetaData(CanId) for CanIf (EcuC_SetMetaDataCanId)]]></comment>
+        </member>
+        <member name="MetadataLLFcPduId" type="PduIdType">
+          <comment><![CDATA[Pdu Id for Ecuc to get the MetaData(CanId) set by CanIf (EcuC_GetMetaDataCanId)]]></comment>
+        </member>
+        [!ENDIF!]
+
+
+        <!--  check if the local index channel exceeds uint8 range
+              Rationale: For each full duplex channel, two channel indexes are assigned ($numAllChannels * 2),
+                         but for half duplex channels ($numAllChannels - $numFullDuplexChannels) only one channel index is assigned. -->
+        [!IF "((($numAllChannels * 2) - ($numAllChannels - $numFullDuplexChannels) - 1) > 255)"!]
+        <member name="Channel" type="uint16">
+          <comment><![CDATA[associated Tx channel ID]]></comment>
+        </member>
+          [!ELSE!]
+        <member name="Channel" type="uint8">
+          <comment><![CDATA[associated Tx channel ID]]></comment>
+        </member>
+          [!ENDIF!]
+
+        [!IF "not(node:exists(as:modconf('CanTp')[1]/CanTpGeneral/CanTpMaxParallelRxChannels))"!]
+        <!--  check if the Rx channel index exceeds uint8 range -->
+        [!IF "((($numAllChannels * 2) - ($numAllChannels - $numFullDuplexChannels) - 1) > 255)"!]
+        <member name="Rx_Channel" type="uint16">
+          <comment><![CDATA[associated Rx channel ID]]></comment>
+        </member>
+        [!ELSE!]
+        <member name="Rx_Channel" type="uint8">
+          <comment><![CDATA[associated Rx channel ID]]></comment>
+        </member>
+        [!ENDIF!]
+        [!ENDIF!]
+
+        <member name="AddressingFormat" type="uint8">
+          <comment><![CDATA[defines address format (standard, extended, mixed, normal fixed)]]></comment>
+        </member>
+        <member name="Tatype" type="uint8">
+          <comment><![CDATA[physical, functional]]></comment>
+        </member>
+        <member name="PaddingActivation" type="uint8">
+          <comment><![CDATA[padding of N-PDUs]]></comment>
+        </member>
+          [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpFlexibleDataRateSupport = 'true'"!]
+        <member name="CanIdType" type="uint8">
+          <comment><![CDATA[CANTP_TX_STANDARD_CAN, CANTP_TX_EXTENDED_CAN, CANTP_TX_STANDARD_FD_CAN, CANTP_TX_EXTENDED_FD_CAN]]></comment>
+        </member>
+          [!ENDIF!]
+        <member name="N_TA_AE" type="uint8">
+          <comment><![CDATA[extended/normal fixed target address (N_TA) or mixed address extension (N_AE)]]></comment>
+        </member>
+          [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpDynIdSupport = 'true'"!]
+        <member name="N_SA" type="uint8">
+          <comment><![CDATA[normal fixed source address (N_SA)]]></comment>
+        </member>
+          [!ENDIF!]
+        <member name="ChannelMode" type="uint8">
+          <comment><![CDATA[associated channel mode]]></comment>
+        </member>
+        <member name="LSduMaxLength" type="uint8">
+          <comment><![CDATA[Maximum length of L-SDU]]></comment>
+        </member>
+        <member name="CanTpTc" type="boolean">
+          <comment><![CDATA[parameter for enabling Tx cancellation]]></comment>
+        </member>
+       </struct>
+      </type>
+
+      [!IF "CanTpGeneral/CanTpGptUsageEnable = 'true'"!]
+      <!-- Type for Gpt handling Tx channels -->
+      <type name="CanTp_GptChannelType">
+        <comment><![CDATA[Type for Gpt channel administration, needed for all Tx channels.]]></comment>
+        <reference type="uint32" />
+      </type>
+      [!ENDIF!]
+
+      <!-- Type of MainFunction counter config for Tx channels. -->
+      <type name="CanTp_MfCtrConfigType">
+       <struct>
+        <comment><![CDATA[Type of MainFunction counter config, needed for all Tx channels.]]></comment>
+        <member name="Resolution" type="uint32">
+          <comment><![CDATA[Resolution of GPT in ns per ticks.]]></comment>
+        </member>
+        <member name="CallbackType" type="uint8">
+          <comment><![CDATA[GPT or MainFunction callback.]]></comment>
+        </member>
+       </struct>
+      </type>
+      
+            <!-- Type of CanTp channel index for the TX N-SDU. -->
+      <type name="CanTp_TxNPduToTpChannelType">
+       <struct>
+       [!IF "($numTxChannels > 256)"!]
+        <member name="Tx_Chan" type="uint16">
+          <comment><![CDATA[CanTp channel index for the N-SDU, to which the CanIf Tx 
+                      confirmation PDU with the ID as index of this array is assigned.]]></comment>
+        </member>
+        [!ELSE!]
+        <member name="Tx_Chan" type="uint8">
+          <comment><![CDATA[CanTp channel index for the N-SDU, to which the CanIf Tx 
+                      confirmation PDU with the ID as index of this array is assigned.]]></comment>
+        </member>
+        [!ENDIF!]
+        [!IF "((($numAllChannels * 2) - ($numAllChannels - $numFullDuplexChannels) - 1) > 255)"!]
+        <member name="Rx_Chan" type="uint16">
+          <comment><![CDATA[CanTp channel index for the N-SDU, to which the CanIf Tx 
+                      confirmation FC PDU with the ID as index of this array is assigned.]]></comment>
+        </member>
+        [!ELSE!]
+        <member name="Rx_Chan" type="uint8">
+          <comment><![CDATA[CanTp channel index for the N-SDU, to which the CanIf Tx 
+                      confirmation FC PDU with the ID as index of this array is assigned.]]></comment>
+        </member>
+        [!ENDIF!]
+       </struct>
+      </type>
+
+    </configuration>  <!-- PreCompile -->
+
+
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <!-- !LINKSTO CanTp.ASR40.CANTP160_2,1 -->
+      <?artifact directory="include" file="[!"$CANTP_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <!-- !LINKSTO CanTp.ASR40.CANTP259,1 -->
+      <?artifact directory="src" file="[!"$CANTP_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of CanTp_PBcfg.h and CanTp_Types.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+      <type name="[!"$CANTP_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="CanTp_ConfigType"/>
+          <member name="RxNPduLookupTable" type="CanTp_RxNPduLookupEntryType" count="[!"num:i($numRxNPdus + 1)"!]">
+            <comment><![CDATA[This array contains the N-PDU lookup table.]]></comment>
+          </member>
+          [!IF "num:i($numRxNSdus + count(CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[node:exists(CanTpRxFcNPdu)])) > 0"!]
+          <member name="RxNPduTable" type="CanTp_RxNPduTableType" count="[!"num:i($numRxNSdus + count(CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[node:exists(CanTpRxFcNPdu)]))"!]">
+            <comment><![CDATA[This array contains the RX N-PDU table.]]></comment>
+          </member>
+          [!ENDIF!]
+          [!IF "$numRxNSdus > 0"!]
+          <member name="RxNSduConfig" type="CanTp_RxNSduConfigType" count="[!"num:i($numRxNSdus)"!]">
+            <comment><![CDATA[This array contains the RX N-SDU config.]]></comment>
+          </member>
+          [!ENDIF!]
+          [!IF "$numTxNSdus > 0"!]
+          <member name="TxNSduConfig" type="CanTp_TxNSduConfigType" count="[!"num:i($numTxNSdus)"!]">
+            <comment><![CDATA[This array contains the TX N-SDU config.]]></comment>
+          </member>
+          [!IF "CanTpGeneral/CanTpGptUsageEnable = 'true'"!]
+          <member name="GptChannel" type="CanTp_GptChannelType" count="[!"num:i($numTxChannels)"!]">
+            <comment><![CDATA[This array contains information about which channels are using general purpose timer.]]></comment>
+          </member>
+          [!ENDIF!]
+          <member name="MfCtrConfig" type="CanTp_MfCtrConfigType" count="[!"num:i($numTxChannels)"!]">
+            <comment><![CDATA[This array contains the main function control config.]]></comment>
+          </member>
+          [!ENDIF!]
+
+          [!IF "not(node:exists(as:modconf('CanTp')[1]/CanTpGeneral/CanTpMaxParallelTxChannels))"!]
+          [!IF "$numTxConfNPdus > 0"!]
+
+          <member name="TxNPduToTpChannel" type="CanTp_TxNPduToTpChannelType" count="[!"num:i($numTxConfNPdus)"!]">
+            <comment><![CDATA[This array contains the CanTp channel index for the N-SDU, to which the
+            CanIf Tx confirmation PDU with the ID as index of this array is assigned.]]></comment>
+          </member>
+          [!ENDIF!]
+          [!ENDIF!]
+
+        </struct>
+      </type>
+
+      <type name="[!"$CANTP_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$CANTP_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <!-- !LINKSTO CanTp.ASR40.CANTP152,1 -->
+            <const memory-class="CANTP_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialization:
+          Specifies the content of CanTp_PBcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="[!"$CANTP_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+             name="[!"$CANTP_CONFIG_LAYOUT_VARIANT"!]">
+
+        <comment><![CDATA[CanTp post build config. - Static code accesses this config
+ solely via the pointer of type CanTp_ConfigType passed to
+ \a CanTp_Init() as parameter.]]></comment>
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+        [!IF "not(var:defined('postBuildVariant')) and not(node:name(CanTpConfig/*[1]) = $initPredefinedCfgName)"!]
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"node:name(CanTpConfig/*[1])"!]</symbolic-value>
+        </parameter>
+        [!ENDIF!]
+
+        <!-- CanTp_ConfigLayout.RootCfg -->
+        <field>
+          <field>
+            <int>[!"num:i(asc:getPlatformSignature())"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('CanTp')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('CanTp')[1]//*[not(child::*) and (node:configclass() = 'PreCompile')],as:modconf('CanTp')[1]/CanTpJumpTable/*))"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('CanTp')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('CanTp')[1]/CommonPublishedInformation/Release))"!]</int>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="RxNPduLookupTable"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              [!IF "num:i($numRxNSdus + count(CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[node:exists(CanTpRxFcNPdu)])) > 0"!]
+              <struct-field name="RxNPduTable"/>
+              <array-field index="0" />
+              [!ENDIF!]
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              [!IF "$numRxNSdus > 0"!]
+              <struct-field name="RxNSduConfig"/>
+              <array-field index="0" />
+              [!ENDIF!]
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              [!IF "$numTxNSdus > 0"!]
+              <struct-field name="TxNSduConfig"/>
+              <array-field index="0" />
+              [!ENDIF!]
+            </ref>
+          </field>
+
+          [!IF "CanTpGeneral/CanTpGptUsageEnable = 'true'"!]
+          <field>
+            <ref>
+              [!IF "$numTxNSdus > 0"!]
+              <struct-field name="GptChannel"/>
+              <array-field index="0" />
+              [!ENDIF!]
+            </ref>
+          </field>
+          [!ENDIF!]
+
+          <field>
+            <ref>
+              [!IF "$numTxNSdus > 0"!]
+              <struct-field name="MfCtrConfig"/>
+              <array-field index="0" />
+              [!ENDIF!]
+            </ref>
+          </field>
+
+          [!IF "not(node:exists(as:modconf('CanTp')[1]/CanTpGeneral/CanTpMaxParallelTxChannels))"!]
+          <field>
+            <ref>
+              [!IF "$numTxConfNPdus > 0"!]
+              <struct-field name="TxNPduToTpChannel"/>
+              <array-field index="0" />
+              [!ENDIF!]
+            </ref>
+          </field>
+          [!ENDIF!]
+
+          <field>
+            <int>[!"num:i($numRxNPdus)"!]</int>
+          </field>
+          <field>
+            <int>[!"num:i($numTxNSdus)"!]</int>
+          </field>
+          <field>
+            <int>[!"num:i($numRxNSdus)"!]</int>
+          </field>
+
+          <field>
+            <int>[!"num:i($numTxConfNPdus)"!]</int>
+          </field>
+
+          [!IF "CanTpGeneral/CanTpDynamicNSaEnabled = 'true'"!]
+          <field>
+            <int>[!"num:i($numRxNSdus + count(CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[node:exists(CanTpRxFcNPdu)]))"!]</int>
+          </field>
+          [!ENDIF!]
+
+          [!IF "not(node:exists(as:modconf('CanTp')[1]/CanTpGeneral/CanTpMaxParallelTxChannels))"!]
+          <field>
+            <int>[!"num:i($numAllChannels)"!]</int>
+          </field>
+          <field>
+            <int>[!"num:i($numTxChannels)"!]</int>
+          </field>
+          [!ENDIF!]
+
+
+
+
+        </field> <!-- CanTp_ConfigLayout.RootCfg -->
+
+        <!-- CanTp_ConfigLayout.RxNPduLookupTable -->
+        <field>
+          <field>
+            <int>0</int>
+          </field>
+          [!VAR "num" = "0"!]
+          [!FOR "I"="0" TO "$numRxNPdus - 1"!]
+          [!VAR "num"="$num + count(CanTpConfig/*[1]/CanTpChannel/*/CanTpRxNSdu/*[CanTpRxNPdu/CanTpRxNPduId = $I]) + count(CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[node:exists(CanTpRxFcNPdu) and (CanTpRxFcNPdu/CanTpRxFcNPduId = $I)])"!]
+          <field>
+            <int>[!"num:i($num)"!]</int>
+          </field>
+          [!ENDFOR!]
+        </field> <!-- CanTp_ConfigLayout.RxNPduLookupTable -->
+
+        [!IF "num:i($numRxNSdus + count(CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[node:exists(CanTpRxFcNPdu)])) > 0"!]
+        <field>
+          [!VAR "idx"="1"!]
+          [!FOR "I"="0" TO "$numRxNPdus - 1"!]
+            [!VAR "total"!][!CALL "getNumRxNPdusById", "pduId"="num:i($I)"!][!ENDVAR!]
+            [!VAR "now"="1"!]
+            [!LOOP "CanTpConfig/*[1]/CanTpChannel/*/CanTpRxNSdu/*[CanTpRxNPdu/CanTpRxNPduId = $I]"!]
+              <field>
+                <field>
+                  [!IF "$now < $total"!]
+                  <int>[!"num:i($idx)"!]</int>
+                  [!ELSE!]
+                  <int>0</int>
+                  [!ENDIF!]
+                </field>
+                <field>
+                  <int>[!CALL "getRxNSduIdByNSduRef", "nSduRef"="as:path(.)"!]</int>
+                </field>
+                [!IF "CanTpRxAddressingFormat = 'CANTP_STANDARD'"!]
+                <field>
+                  <int>[!"$CANTP_STANDARD"!]</int>
+                </field>
+                <field>
+                  <int>0</int>
+                </field>
+                [!ELSEIF "CanTpRxAddressingFormat = 'CANTP_EXTENDED'"!]
+                <field>
+                  <int>[!"$CANTP_EXTENDED"!]</int>
+                </field>
+                <field>
+                  <int>[!"num:i(CanTpNSa/CanTpNSa)"!]</int>
+                </field>
+                [!ELSEIF "CanTpRxAddressingFormat = 'CANTP_NORMALFIXED'"!]
+                 <field>
+                  <int>[!"$CANTP_NORMALFIXED"!]</int>
+                </field>
+                <field>
+                 [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpGenericConnectionSupport = 'false'"!]
+                 <int>[!"num:i(CanTpNSa/CanTpNSa)"!]</int>
+                 [!ELSE!]
+                 <int>0</int>
+                 [!ENDIF!]
+                </field>
+                [!ELSE!]
+                <field>
+                  <int>[!"$CANTP_MIXED"!]</int>
+                </field>
+                <field>
+                  <int>[!"num:i(CanTpNAe/CanTpNAe)"!]</int>
+                </field>
+                [!ENDIF!]
+                <field>
+                  <int>[!"$CANTP_PDU_DIR_RECEIVE"!]</int>
+                </field>
+              </field>
+              [!VAR "now"="$now + 1"!]
+              [!VAR "idx"="$idx + 1"!]
+            [!ENDLOOP!]
+            [!LOOP "CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[node:exists(CanTpRxFcNPdu) and (CanTpRxFcNPdu/CanTpRxFcNPduId = $I)]"!]
+            <field>
+              <field>
+                [!IF "$now < $total"!]
+                <int>[!"num:i($idx)"!]</int>
+                [!ELSE!]
+                <int>0</int>
+                [!ENDIF!]
+              </field>
+              <field>
+                <int>[!CALL "getTxNSduIdByNSduRef", "nSduRef"="as:path(.)"!]</int>
+              </field>
+              [!IF "CanTpTxAddressingFormat = 'CANTP_STANDARD'"!]
+              <field>
+                <int>[!"$CANTP_STANDARD"!]</int>
+              </field>
+              <field>
+                <int>0</int>
+              </field>
+              [!ELSEIF "CanTpTxAddressingFormat = 'CANTP_EXTENDED'"!]
+              <field>
+                <int>[!"$CANTP_EXTENDED"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i(CanTpNSa/CanTpNSa)"!]</int>
+              </field>
+              [!ELSEIF "CanTpTxAddressingFormat = 'CANTP_NORMALFIXED'"!]
+              <field>
+                <int>[!"$CANTP_NORMALFIXED"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i(CanTpNSa/CanTpNSa)"!]</int>
+              </field>
+              [!ELSE!]
+              <field>
+                <int>[!"$CANTP_MIXED"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i(CanTpNAe/CanTpNAe)"!]</int>
+              </field>
+              [!ENDIF!]
+              <field>
+                <int>[!"$CANTP_PDU_DIR_TRANSMIT"!]</int>
+              </field>
+            </field>
+            [!VAR "now"="$now + 1"!]
+            [!VAR "idx"="$idx + 1"!]
+            [!ENDLOOP!]
+          [!ENDFOR!]
+        </field>
+        [!ENDIF!]
+
+        [!IF "$numRxNSdus > 0"!]
+        <field>  <!-- CanTp_ConfigLayout.RxNSduConfig -->
+           [!FOR "I"="0" TO "$numRxNSdus - 1"!]
+           [!VAR "pduRef"!][!CALL "getRxNSduRefByNSduId", "nSduId"="$I"!][!ENDVAR!]
+           [!SELECT "as:ref($pduRef)"!]
+           <field>
+             <field>
+               [!IF "node:exists(CanTpNar)"!]
+               <int>[!CALL "calcNAbcRsValue", "value"="CanTpNar", "name"="'N_Ar'", "direction"="'Rx'"!]</int>
+               [!ELSE!]
+               <int>0</int>
+               [!ENDIF!]
+             </field>
+             <field>
+               <int>[!CALL "calcNbrValue", "value"="CanTpNbr", "name"="'N_Br'", "direction"="'Rx'"!]</int>
+             </field>
+             [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpNbrWaitRepeatedSupport = 'true'"!]
+             <field>
+               [!IF "node:exists(CanTpNbrWaitRepeated)"!]
+               <int>[!CALL "calcNbrValue", "value"="CanTpNbrWaitRepeated", "name"="'N_Br_WT'", "direction"="'Rx'"!]</int>
+               [!ELSE!]
+               <int>0</int>
+               [!ENDIF!]
+             </field>
+             [!ENDIF!]
+             <field>
+               [!IF "node:exists(CanTpNcr)"!]
+               <int>[!CALL "calcNAbcRsValue", "value"="CanTpNcr", "name"="'N_Cr'", "direction"="'Rx'"!]</int>
+               [!ELSE!]
+               <int>0</int>
+               [!ENDIF!]
+             </field>
+             [!IF "node:exists(CanTpTxFcNPdu)"!]
+             <field>
+               <int>[!"CanTpTxFcNPdu/CanTpTxFcNPduConfirmationPduId"!]</int>
+             </field>
+             [!SELECT "as:modconf('CanIf')[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()/CanTpTxFcNPdu/CanTpTxFcNPduRef][1]"!]
+             <field>
+               <int>[!"CanIfTxPduId"!]</int>
+             </field>
+             [!ENDSELECT!]
+             [!ELSE!]
+             <field>
+               <int>[!"$CANTP_FC_FRAME_NOT_USED"!]</int>
+             </field>
+             <field>
+               <int>[!"$CANTP_FC_FRAME_NOT_USED"!]</int>
+             </field>
+             [!ENDIF!]
+             <field>
+              <int>[!"as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[PduRSrcPdu/PduRSrcPduRef = node:current()/CanTpRxNSduRef][1]/PduRSrcPdu/PduRSourcePduHandleId"!]
+              </int>
+             </field>
+             <field>
+               <int>[!"CanTpRxNPdu/CanTpRxNPduId"!]</int>
+             </field>
+             [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpDynIdSupport = 'true'"!]
+               [!VAR "currentMetadataSetId" = "65535"!]
+               [!VAR "currentMetadataGetId" = "65535"!]
+               [!VAR "currentMetadataSetFcId" = "65535"!]
+               [!IF "(CanTpRxAddressingFormat = 'CANTP_NORMALFIXED') and (node:exists(as:ref(CanTpRxNSduRef)/MetaDataTypeRef))"!]
+                 [!IF "(node:exists(as:ref(as:ref(CanTpRxNSduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = 'SOURCE_ADDRESS_16'])) and
+                 (node:exists(as:ref(as:ref(CanTpRxNSduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = 'TARGET_ADDRESS_16']))"!]
+                   [!VAR "currentMetadataSetId" = "num:i(as:ref(CanTpRxNSduRef)/PduId)"!]
+                 [!ENDIF!]
+
+                 [!IF "node:exists(as:ref(as:ref(CanTpRxNPdu/CanTpRxNPduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = 'CAN_ID_32'])"!]
+                   [!VAR "currentMetadataGetId" = "num:i(as:ref(CanTpRxNPdu/CanTpRxNPduRef)/PduId)"!]
+                 [!ENDIF!]
+                 [!IF "(node:exists(CanTpTxFcNPdu)) and
+                       (node:exists(as:ref(as:ref(CanTpTxFcNPdu/CanTpTxFcNPduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = 'CAN_ID_32']))"!]
+                   [!VAR "currentMetadataSetFcId" = "num:i(as:ref(CanTpTxFcNPdu/CanTpTxFcNPduRef)/PduId)"!]
+                 [!ENDIF!]
+               [!ENDIF!]
+             <field>
+               <int>[!"num:i($currentMetadataSetId)"!]</int> <!-- MetadataULPduId -->
+             </field>
+             <field>
+               <int>[!"num:i($currentMetadataGetId)"!]</int> <!-- MetadataLLPduId -->
+             </field>
+             <field>
+               <int>[!"num:i($currentMetadataSetFcId)"!]</int> <!-- MetadataLLFcPduId -->
+             </field>
+             [!ENDIF!]
+
+             [!VAR "chId"!][!CALL "getChanIdByChanRef", "chanRef"="node:path(../..)"!][!ENDVAR!]
+             [!WS "0"!][!/* if the channel is a full duplex channel, the Rx N-SDU is assigned to the Rx part of the channel(ID + Nr. of Tx channels)*/!]
+             [!IF "../../CanTpChannelMode = 'CANTP_MODE_FULL_DUPLEX'"!]
+               [!VAR "chId"="$chId + $numTxChannels"!]
+             [!ENDIF!]
+             <field>
+                <int>[!"num:i($chId)"!]</int>
+             </field>
+             
+             [!IF "not(node:exists(as:modconf('CanTp')[1]/CanTpGeneral/CanTpMaxParallelTxChannels))"!]
+             <field>
+                <int>[!CALL "getTxChannel", "RxNSdu" = "."!]</int> <!-- Tx_Channel -->
+             </field>
+             [!ENDIF!]
+
+             <field>
+               [!IF "CanTpRxAddressingFormat = 'CANTP_STANDARD'"!]
+               <int>[!"$CANTP_STANDARD"!]</int>
+               [!ELSEIF "CanTpRxAddressingFormat = 'CANTP_EXTENDED'"!]
+               <int>[!"$CANTP_EXTENDED"!]</int>
+               [!ELSEIF "CanTpRxAddressingFormat = 'CANTP_NORMALFIXED'"!]
+               <int>[!"$CANTP_NORMALFIXED"!]</int>
+               [!ELSE!]
+               <int>[!"$CANTP_MIXED"!]</int>
+               [!ENDIF!]
+             </field>
+             <field>
+               [!IF "CanTpRxTaType = 'CANTP_PHYSICAL'"!]
+               <int>[!"$CANTP_PHYSICAL"!]</int>
+               [!ELSE!]
+               <int>[!"$CANTP_FUNCTIONAL"!]</int>
+               [!ENDIF!]
+             </field>
+             <field>
+               [!IF "CanTpRxPaddingActivation = 'CANTP_OFF'"!]
+               <int>[!"$CANTP_OFF"!]</int>
+               [!ELSEIF "CanTpRxPaddingActivation = 'CANTP_ON'"!]
+               <int>[!"$CANTP_ON"!]</int>
+               [!ELSE!]
+               <int>[!"$CANTP_ON_CAN_CAN_FD"!]</int>
+               [!ENDIF!]
+             </field>
+               [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpFlexibleDataRateSupport = 'true'"!]
+                 [!IF "node:exists(node:current()/CanTpTxFcNPdu)"!]
+                   [!SELECT "as:modconf('CanIf')[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()/CanTpTxFcNPdu/CanTpTxFcNPduRef][1]"!]
+             <field>
+                    [!IF "CanIfTxPduCanIdType = 'STANDARD_CAN'"!]
+               <int>[!"$CANTP_TX_STANDARD_CAN"!]</int>
+                    [!ELSEIF "CanIfTxPduCanIdType = 'EXTENDED_CAN'"!]
+               <int>[!"$CANTP_TX_EXTENDED_CAN"!]</int>
+                    [!ELSEIF "CanIfTxPduCanIdType = 'STANDARD_FD_CAN'"!]
+               <int>[!"$CANTP_TX_STANDARD_FD_CAN"!]</int>
+                    [!ELSE!]
+               <int>[!"$CANTP_TX_EXTENDED_FD_CAN"!]</int>
+                    [!ENDIF!]
+             </field>
+                   [!ENDSELECT!]
+                 [!ELSE!]
+             <field>
+               <int>[!"$CANTP_TX_INVALID_CANID"!]</int>
+             </field>
+                 [!ENDIF!]
+               [!ENDIF!]
+             <field>
+               [!IF "CanTpRxAddressingFormat = 'CANTP_STANDARD'"!]
+               <int>0</int>
+               [!ELSEIF "CanTpRxAddressingFormat = 'CANTP_EXTENDED'"!]
+               <int>[!"num:i(CanTpNTa/CanTpNTa)"!]</int>
+               [!ELSEIF "CanTpRxAddressingFormat = 'CANTP_NORMALFIXED'"!]
+                 <int>[!"num:i(CanTpNTa/CanTpNTa)"!]</int>
+               [!ELSE!]
+               <int>[!"num:i(CanTpNAe/CanTpNAe)"!]</int>
+               [!ENDIF!]
+             </field>
+             <field>
+               [!IF "node:exists(CanTpRxWftMax)"!]
+               <int>[!"num:i(CanTpRxWftMax)"!]</int>
+               [!ELSE!]
+               <int>0</int>
+               [!ENDIF!]
+             </field>
+             <field>
+               [!IF "node:exists(CanTpBs)"!]
+               <int>[!"num:i(CanTpBs)"!]</int>
+               [!ELSE!]
+               <int>0</int>
+               [!ENDIF!]
+             </field>
+             <field>
+               [!IF "../../CanTpChannelMode = 'CANTP_MODE_FULL_DUPLEX'"!]
+               <int>[!"$CANTP_MODE_FULL_DUPLEX"!]</int>
+               [!ELSE!]
+               <int>[!"$CANTP_MODE_HALF_DUPLEX"!]</int>
+               [!ENDIF!]
+             </field>
+             <field>
+               [!IF "node:exists(CanTpSTmin)"!]
+               <int>[!CALL "calcSTmin", "value"="CanTpSTmin"!]</int>
+               [!ELSE!]
+               <int>0</int>
+               [!ENDIF!]
+             </field>
+             <field>
+               [!CALL "getRxPduLengthDependentOfPadding", "RxNPduRef" = "CanTpRxNPdu/CanTpRxNPduRef", "Padding" = "node:value(CanTpRxPaddingActivation)", "AddressingFormat" = "node:value(CanTpRxAddressingFormat)", "TaType" = "node:value(CanTpRxTaType)"!]
+               <int>[!"$PduLengthValue"!]</int> <!-- NPduMaxLength -->
+             </field>
+             [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpNbrWaitRepeatedSupport = 'true'"!]
+             <field>
+               [!IF "node:exists(CanTpNbrWaitRepeated)"!]
+               <int>1</int>
+               [!ELSE!]
+               <int>0</int>
+               [!ENDIF!]
+             </field>
+             [!ENDIF!]
+           </field>
+           [!ENDSELECT!]
+           [!ENDFOR!]
+        </field>  <!-- CanTp_ConfigLayout.RxNSduConfig -->
+        [!ENDIF!]
+
+        [!IF "$numTxNSdus > 0"!]
+        <field>  <!-- CanTp_ConfigLayout.TxNSduConfig -->
+          [!FOR "I"="0" TO "$numTxNSdus - 1"!]
+          [!VAR "pduRef"!][!CALL "getTxNSduRefByNSduId", "nSduId"="$I"!][!ENDVAR!]
+          [!SELECT "as:ref($pduRef)"!]
+          <field>
+            <field>
+              <int>[!CALL "calcNAbcRsValue", "value"="CanTpNas", "name"="'N_As'", "direction"="'Tx'"!]</int>
+            </field>
+            <field>
+              [!IF "node:exists(CanTpNbs)"!]
+              <int>[!CALL "calcNAbcRsValue", "value"="CanTpNbs", "name"="'N_Bs'", "direction"="'Tx'"!]</int>
+              [!ELSE!]
+              <int>0</int>
+              [!ENDIF!]
+            </field>
+            <field>
+              <int>[!CALL "calcNAbcRsValue", "value"="CanTpNcs", "name"="'N_Cs'", "direction"="'Tx'"!]</int>
+            </field>
+            <field>
+              [!IF "node:exists(CanTpRxFcNPdu)"!]
+              <int>[!"CanTpRxFcNPdu/CanTpRxFcNPduId"!]</int>
+              [!ELSE!]
+              <int>[!"$CANTP_FC_FRAME_NOT_USED"!]</int>
+              [!ENDIF!]
+            </field>
+            <field>
+              <int>[!"CanTpTxNPdu/CanTpTxNPduConfirmationPduId"!]</int>
+            </field>
+            [!VAR "txAddrFormat"="CanTpTxAddressingFormat"!]
+            [!WS "0"!][!/* NOTE: this will have to be reworked when multiple configuration sets are supported by the CanIf:
+            */!][!SELECT "as:modconf('CanIf')[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()/CanTpTxNPdu/CanTpTxNPduRef][1]"!]
+            <!-- !LINKSTO CanTp.EB.InvalidCanIdMask,1 -->
+            [!IF "$txAddrFormat = 'CANTP_NORMALFIXED' and node:exists(CanIfTxPduCanIdMask)"!]
+              [!IF "bit:and(bit:not(num:i(CanIfTxPduCanIdMask)), 131071) != num:i(131071)"!]
+                [!ERROR!] CanIfTxPduCanIdMask must not overwrite the TA and/or the SA for [!"node:name(.)"!].[!ENDERROR!]
+              [!ENDIF!]
+            [!ENDIF!]
+            <field>
+              <int>[!"CanIfTxPduId"!]</int>
+            </field>
+            [!ENDSELECT!]
+            <field>
+              <int>[!"as:modconf('PduR')[1]/PduRRoutingTables/*[1]/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef = node:current()/CanTpTxNSduRef][1]/PduRDestPduHandleId"!]</int>
+            </field>
+            [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpDynIdSupport = 'true'"!]
+               [!VAR "currentMetadataSetId" = "65535"!]
+               [!VAR "currentMetadataGetId" = "65535"!]
+               [!VAR "currentMetadataGetFcId" = "65535"!]
+               [!IF "(CanTpTxAddressingFormat = 'CANTP_NORMALFIXED') and (node:exists(as:ref(CanTpTxNSduRef)/MetaDataTypeRef))"!]
+                 [!IF "(node:exists(as:ref(as:ref(CanTpTxNSduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = 'SOURCE_ADDRESS_16'])) and
+                 (node:exists(as:ref(as:ref(CanTpTxNSduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = 'TARGET_ADDRESS_16']))"!]
+                   [!VAR "currentMetadataGetId" = "num:i(as:ref(CanTpTxNSduRef)/PduId)"!]
+                 [!ENDIF!]
+
+                 [!IF "node:exists(as:ref(as:ref(CanTpTxNPdu/CanTpTxNPduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = 'CAN_ID_32'])"!]
+                   [!VAR "currentMetadataSetId" = "num:i(as:ref(CanTpTxNPdu/CanTpTxNPduRef)/PduId)"!]
+                 [!ENDIF!]
+                 [!IF "(node:exists(CanTpRxFcNPdu)) and
+                       (node:exists(as:ref(as:ref(CanTpRxFcNPdu/CanTpRxFcNPduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = 'CAN_ID_32']))"!]
+                   [!VAR "currentMetadataGetFcId" = "num:i(as:ref(CanTpRxFcNPdu/CanTpRxFcNPduRef)/PduId)"!]
+                 [!ENDIF!]
+               [!ENDIF!]
+             <field>
+               <int>[!"num:i($currentMetadataGetId)"!]</int> <!-- MetadataULPduId -->
+             </field>
+             <field>
+               <int>[!"num:i($currentMetadataSetId)"!]</int> <!-- MetadataLLPduId -->
+             </field>
+             <field>
+               <int>[!"num:i($currentMetadataGetFcId)"!]</int> <!-- MetadataLLFcPduId -->
+             </field>
+             [!ENDIF!]
+
+            <field>
+              <int>[!CALL "getChanIdByChanRef", "chanRef"="node:path(../..)"!]</int>
+            </field>
+            
+             [!IF "not(node:exists(as:modconf('CanTp')[1]/CanTpGeneral/CanTpMaxParallelRxChannels))"!]
+             <field>
+               <int>[!CALL "getRxChannel", "TxNSdu" = "."!]</int> <!-- Rx_Channel -->
+            </field>
+             [!ENDIF!]
+
+            <field>
+              [!IF "CanTpTxAddressingFormat = 'CANTP_STANDARD'"!]
+              <int>[!"$CANTP_STANDARD"!]</int>
+              [!ELSEIF "CanTpTxAddressingFormat = 'CANTP_EXTENDED'"!]
+              <int>[!"$CANTP_EXTENDED"!]</int>
+              [!ELSEIF "CanTpTxAddressingFormat = 'CANTP_NORMALFIXED'"!]
+              <int>[!"$CANTP_NORMALFIXED"!]</int>
+              [!ELSE!]
+              <int>[!"$CANTP_MIXED"!]</int>
+              [!ENDIF!]
+            </field>
+            <field>
+              [!IF "CanTpTxTaType = 'CANTP_PHYSICAL'"!]
+              <int>[!"$CANTP_PHYSICAL"!]</int>
+              [!ELSE!]
+              <int>[!"$CANTP_FUNCTIONAL"!]</int>
+              [!ENDIF!]
+            </field>
+            <field>
+              [!IF "CanTpTxPaddingActivation = 'CANTP_OFF'"!]
+              <int>[!"$CANTP_OFF"!]</int>
+              [!ELSEIF "CanTpTxPaddingActivation = 'CANTP_ON'"!]
+              <int>[!"$CANTP_ON"!]</int>
+              [!ELSE!]
+              <int>[!"$CANTP_ON_CAN_CAN_FD"!]</int>
+              [!ENDIF!]
+            </field>
+               [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpFlexibleDataRateSupport = 'true'"!]
+                 [!SELECT "as:modconf('CanIf')[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()/CanTpTxNPdu/CanTpTxNPduRef][1]"!]
+            <field>
+               [!IF "CanIfTxPduCanIdType = 'STANDARD_CAN'"!]
+               <int>[!"$CANTP_TX_STANDARD_CAN"!]</int>
+               [!ELSEIF "CanIfTxPduCanIdType = 'EXTENDED_CAN'"!]
+               <int>[!"$CANTP_TX_EXTENDED_CAN"!]</int>
+               [!ELSEIF "CanIfTxPduCanIdType = 'STANDARD_FD_CAN'"!]
+               <int>[!"$CANTP_TX_STANDARD_FD_CAN"!]</int>
+               [!ELSE!]
+               <int>[!"$CANTP_TX_EXTENDED_FD_CAN"!]</int>
+               [!ENDIF!]
+            </field>
+                [!ENDSELECT!]
+              [!ENDIF!]
+            <field>
+              [!IF "CanTpTxAddressingFormat = 'CANTP_STANDARD'"!]
+              <int>0</int>
+              [!ELSEIF "CanTpTxAddressingFormat = 'CANTP_EXTENDED'"!]
+              <int>[!"num:i(CanTpNTa/CanTpNTa)"!]</int>
+              [!ELSEIF "CanTpTxAddressingFormat = 'CANTP_NORMALFIXED'"!]
+                [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpGenericConnectionSupport = 'false'"!]
+                <int>[!"num:i(CanTpNTa/CanTpNTa)"!]</int>
+                [!ELSE!]
+                <int>0</int>
+                [!ENDIF!]
+              [!ELSE!]
+              <int>[!"num:i(CanTpNAe/CanTpNAe)"!]</int>
+              [!ENDIF!]
+            </field>
+            [!IF "as:modconf('CanTp')[1]/CanTpGeneral/CanTpDynIdSupport = 'true'"!]
+            <field>
+            [!IF "CanTpTxAddressingFormat = 'CANTP_NORMALFIXED'"!]
+            <int>[!"num:i(CanTpNSa/CanTpNSa)"!]</int>
+            [!ELSE!]
+            <int>0</int>
+            [!ENDIF!]
+            </field>
+            [!ENDIF!]
+            <field>
+              [!IF "../../CanTpChannelMode = 'CANTP_MODE_FULL_DUPLEX'"!]
+              <int>[!"$CANTP_MODE_FULL_DUPLEX"!]</int>
+              [!ELSE!]
+              <int>[!"$CANTP_MODE_HALF_DUPLEX"!]</int>
+              [!ENDIF!]
+            </field>
+            <field>
+              [!CALL "getTxPduLengthDependentOfPadding", "TxNPduRef" = "CanTpTxNPdu/CanTpTxNPduRef", "Padding" = "node:value(CanTpTxPaddingActivation)", "AddressingFormat" = "node:value(CanTpTxAddressingFormat)", "TaType" = "node:value(CanTpTxTaType)"!]
+              <int>[!"$PduLengthValue"!]</int> <!-- NPduMaxLength -->
+            </field>
+            <field>
+              [!IF "CanTpTc = 'true'"!]
+              <int>1</int>
+              [!ELSE!]
+              <int>0</int>
+              [!ENDIF!]
+            </field>
+          </field>
+          [!ENDSELECT!]
+          [!ENDFOR!]
+        </field> <!-- CanTp_ConfigLayout.TxNSduConfig -->
+        [!ENDIF!]
+
+        [!IF "$numTxNSdus > 0"!]
+        [!IF "CanTpGeneral/CanTpGptUsageEnable = 'true'"!]
+        <field>
+          [!FOR "I"="0" TO "$numTxChannels - 1"!]
+          [!VAR "userId"!][!CALL "getChanRefByChanId", "chanId"="$I"!][!ENDVAR!]
+          [!SELECT "node:ref($userId)"!]
+          <field>
+            [!IF "CanTpSTminTimeoutHandling = 'Gpt'"!]
+            <int>[!"CanTpGptChannelId"!]</int>
+            [!ELSE!]
+            <int>255</int>
+            [!ENDIF!]
+          </field>
+          [!ENDSELECT!]
+          [!ENDFOR!]
+        </field> <!-- CanTp_ConfigLayout.GptChannel -->
+        [!ENDIF!]
+        [!ENDIF!]
+
+        [!IF "$numTxNSdus > 0"!]
+        <field>
+          [!FOR "I"="0" TO "$numTxChannels - 1"!]
+          [!VAR "chanRef"!][!CALL "getChanRefByChanId", "chanId"="$I"!][!ENDVAR!]
+          [!SELECT "node:ref($chanRef)"!]
+          <field>
+             [!IF "CanTpSTminTimeoutHandling = 'CanTpMainFunction'"!]
+             <field>
+               <int>[!"num:i(as:modconf('CanTp')[1]/CanTpConfig/*[1]/CanTpMainFunctionPeriod*1000000000)"!]</int>
+             </field>
+             <field>
+               <int>1</int>
+             </field>
+             [!ELSE!]
+             <field>
+               <int>[!"num:i(CanTpGptChannelResolution)"!]</int>
+             </field>
+             <field>
+               <int>0</int>
+             </field>
+             [!ENDIF!]
+          </field>
+          [!ENDSELECT!]
+          [!ENDFOR!]
+        </field> <!-- CanTp_ConfigLayout.MfCtrConfig -->
+        [!ENDIF!]
+
+        [!IF "not(node:exists(as:modconf('CanTp')[1]/CanTpGeneral/CanTpMaxParallelTxChannels))"!]
+        [!IF "$numTxConfNPdus > 0"!]
+        <field>
+          [!FOR "I"="0" TO "$numTxConfNPdus - 1"!]
+          <field>
+          <field>
+          [!IF "count(CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[CanTpTxNPdu/CanTpTxNPduConfirmationPduId = $I]) = 1"!]
+          [!SELECT "CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[CanTpTxNPdu/CanTpTxNPduConfirmationPduId = $I]"!]
+          <int>[!CALL "getChanIdByChanRef", "chanRef"="node:path(../..)"!]</int>
+          [!ENDSELECT!]
+          [!ELSE!]
+          [!IF "($numTxChannels > 256)"!]
+          <int>[!"$CANTP_FC_FRAME_NOT_USED"!]</int>
+          [!ELSE!]
+          <int>[!"$CANTP_FC_FRAME_NOT_USED_UINT8"!]</int>
+          [!ENDIF!]
+          [!ENDIF!]
+          </field>
+          <field>
+          [!IF "count(CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[CanTpTxNPdu/CanTpTxNPduConfirmationPduId = $I]) = 1"!]
+          [!IF "count(CanTpConfig/*[1]/CanTpChannel/*/CanTpRxNSdu/*[CanTpTxFcNPdu/CanTpTxFcNPduConfirmationPduId = $I]) = 1"!]
+          [!SELECT "CanTpConfig/*[1]/CanTpChannel/*/CanTpRxNSdu/*[CanTpTxFcNPdu/CanTpTxFcNPduConfirmationPduId = $I]"!]
+          [!VAR "chId"!][!CALL "getChanIdByChanRef", "chanRef"="node:path(../..)"!][!ENDVAR!]
+          [!IF "../../CanTpChannelMode = 'CANTP_MODE_FULL_DUPLEX'"!]
+          [!VAR "chId"="$chId + $numTxChannels"!]
+          [!ENDIF!]
+          <int>[!"num:i($chId)"!]</int>
+          [!ENDSELECT!]
+          [!ELSE!]
+          [!SELECT "CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[CanTpTxNPdu/CanTpTxNPduConfirmationPduId = $I]"!]
+          [!IF "((($numAllChannels * 2) - ($numAllChannels - $numFullDuplexChannels) - 1) > 255)"!]
+          <int>[!"$CANTP_FC_FRAME_NOT_USED"!]</int>
+          [!ELSE!]
+          <int>[!"$CANTP_FC_FRAME_NOT_USED_UINT8"!]</int>
+          [!ENDIF!]
+          [!ENDSELECT!]
+          [!ENDIF!]
+          [!ELSEIF "count(CanTpConfig/*[1]/CanTpChannel/*/CanTpRxNSdu/*[CanTpTxFcNPdu/CanTpTxFcNPduConfirmationPduId = $I]) = 1"!]
+          [!SELECT "CanTpConfig/*[1]/CanTpChannel/*/CanTpRxNSdu/*[CanTpTxFcNPdu/CanTpTxFcNPduConfirmationPduId = $I]"!]
+          [!VAR "chId"!][!CALL "getChanIdByChanRef", "chanRef"="node:path(../..)"!][!ENDVAR!]
+          [!IF "../../CanTpChannelMode = 'CANTP_MODE_FULL_DUPLEX'"!]
+          [!VAR "chId"="$chId + $numTxChannels"!]
+          [!ENDIF!]
+          <int>[!"num:i($chId)"!]</int>
+          [!ENDSELECT!]
+          [!ELSE!]
+          [!ERROR!] No channel found for TxConfirmation PduId [!"$I"!].[!ENDERROR!]
+          [!ENDIF!]
+          </field>
+          </field>
+          [!ENDFOR!]
+        </field> <!-- CanTp_ConfigLayout.TxNPduToTpChannel -->
+        [!ENDIF!]
+        [!ENDIF!]
+
+      </instance> <!-- CanTp_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>
+
+[!ENDCODE!]

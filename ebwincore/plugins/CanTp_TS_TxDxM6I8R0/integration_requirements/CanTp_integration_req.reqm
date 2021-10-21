@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.CanTp.EB_INTREQ_CanTp_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      Limitation on multiple invocations of functions
+      The module postpones invocations of <code>CanTp_RxIndication</code>,
+      <code>CanTp_TxConfirmation</code> or the Gpt callback function in case that the
+      channel is occupied to handle a previous call of these functions. In this case the incoming
+      call is postponed. In case of multiple calls on an occupied channel only the last
+      call is stored and all previous pending calls are discarded.
+     </description>
+     <rationale>
+      API functions have to occupy the CanTp Channel for consistent operations. During execution
+      the API function might get interrupted. Especially the three functions
+      <code>CanTp_RxIndication</code>, <code>CanTp_TxConfirmation</code> and the
+      Gpt callback function are relevant because they are most likely called in interrupt mode.
+      The CanTp addresses this issue. One incoming call of
+      <code>CanTp_RxIndication</code>, <code>CanTp_TxConfirmation</code>
+      and the Gpt callback function per channel are stored and resolved at the end of the
+      initial API function call. In the unlikely event of multiple calls take place while the
+      channel is occupied. The last incoming frame is stored. Discarded frames segmented
+      messages are detected through the sequence number check provided for this type of
+      frames.
+     </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>lim.CanTp.EB_INTREQ_CanTp_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      Limitation on API <code>CanTp_CancelReceive</code> and
+      <code>CanTp_CancelTransmit</code>
+      The API services <code>CanTp_CancelReceive</code> and
+      <code>CanTp_CancelTransmit</code> do not cancel an
+      ongoing reception/transmission of a message if the API call interrupts
+      data processing. In this case the APIs signalize the disability to
+      cancel the communication by returning <code>E_NOT_OK</code>.
+
+      For a successful receive cancellation following preconditions must be fulfilled:<pre>
+      - Related N-SDU is in state of reception.
+      - Receive cancellation is applied to a segmented message.
+      - Channel is not locked.
+      - CanTp is not waiting for the last consecutive frame.</pre>
+
+      Channel is not waiting for a TX confirmation response from lower layer.
+
+      For a successful transmit cancellation following preconditions must be fulfilled:<pre>
+      - Related N-SDU is in state of transmission.
+      - Channel is not locked.</pre>
+
+      Channel is not waiting for a TX confirmation response from lower layer.
+      
+      Channel is not waiting for a flow control message.
+      </description>
+      <rationale>
+      To ensure internal data consistency of a communication channel it is
+      advisable to wait with the cancellation until the data handling
+      mechanism frees (unlocks) the channel. A storage of the cancellation
+      event to process it after the channel unlock is not possible because
+      the API service shall return immediately with the correct return status
+      which is not yet known.
+     </rationale>
+      
+    </specobject>
+     <specobject>
+      <id>lim.CanTp.EB_INTREQ_CanTp_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      The effect of CanTpGeneral/CanTpMainFunctionPeriod
+      on the accuracy of the callback functions
+
+      If CanTpSTminTimeoutHandling is configured to
+      <code>CanTpMainFunction</code>, the module uses an internal counter to
+      trigger the callback routine used for the STmin delay.
+      Note that the accuracy of this method depends highly on the time between subsequent
+      <code>CanTp_MainFunction</code> calls as specified in
+      CanTpGeneral/CanTpMainFunctionPeriod. This value is also used to
+      calculate the counter values for the <code>CanTp_MainFunction</code> timer.
+     </description>
+     <rationale/>
+      
+    </specobject>
+    <specobject>
+      <id>lim.CanTp.EB_INTREQ_CanTp_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      The reinitialization process must not interrupt other module functions
+      If reinitialization of the module is required, the call of
+      <code>CanTp_Init</code> must not interrupt other module functions.
+     </description>
+     <rationale>
+     The reinitialization process resets all internal variables. Continuing and interrupted
+     module function after reinitialization can lead to undefined module behavior.
+     </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>lim.CanTp.EB_INTREQ_CanTp_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      <code>CanTp_Init()</code> shall not be preempted by any other module API calls.
+      It needs to be ensured that the function call <code>CanTp_Init()</code> is not
+      preempted by any other module API calls.
+     </description>
+     <rationale>
+     During the call of <code>CanTp_Init()</code> global variables and pointers get
+     initialized. It is easy for the integrator to avoid this preemption, thus no data protection
+     mechanism has been implemented for function <code>CanTp_Init()</code>.
+     </rationale>
+      
+    </specobject>
+  </specobjects>
+</specdocument>

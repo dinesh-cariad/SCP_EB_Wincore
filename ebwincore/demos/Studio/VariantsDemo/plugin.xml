@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!-- the EcuC module defining the AUTOSAR standard parameters and EB specific for the variant configuration -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="EcuC_VariantsDemo_ModuleId"
+             name="EcuC_VariantsDemo Module">
+
+    <module id="EcuC_VariantsDemo"
+            label="EcuC Variant Configuration"
+            mandatory="false"
+            allowMultiple="false"
+            description="Demo module for post-build selectable variant handling"
+            copyright="(c) 2015 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="4"
+            specVersionMinor="6"
+            specVersionPatch="1"
+            relVersionMajor="4"
+            relVersionMinor="4"
+            relVersionPatch="0"
+            categoryType="EcuC"
+            categoryLayer="Communication Services"
+            categoryCategory="Com Services"
+            categoryComponent="ECUC">
+      <ecuType target="WINDOWS" derivate="Win32X86"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="EcuC_VariantsDemo_ConfigId"
+             name="EcuC_VariantsDemo Configuration">
+    <configuration moduleId="EcuC_VariantsDemo">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/EcuC_PBV.xdm" type="xdm"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/EcuC_PBV/EcuC"/>
+      </data>
+
+      <editor id="EcuC_VariantsDemo_EditorId"
+              label="Default"
+              tooltip="EcuC incl. PostbuildVariant Configuration">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/EcuC_PBV/EcuC"/>
+          <parameter name="title" value="EcuC"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <!-- this extension point needs to be defined and point to the configuratin parameters for the Loadable and the Selectable use case -->
+  <extension
+      point="dreisoft.tresos.autosar2.api.plugin.postbuildSetup"
+      id="demos.Studio.VariantsDemo">
+    <configuration
+         activeLoadableRef="ASPath:/EcuC_PBV/EcuC/EcucSelectedLoadableVariant/EcucSelectedLoadableRef"
+         activeSelectableRef="ASPath:/EcuC_PBV/EcuC/EcucPostBuildVariants/EcucSelectedPostBuildVariantRef"
+         selectableRefs="ASPath:/EcuC_PBV/EcuC/EcucPostBuildVariants/EcucPostBuildVariantRef">
+     </configuration>
+  </extension>
+
+  <!-- an example generator which generates all code-templates within a directory
+       the code-templates do all have access to the name of the generated variant
+	   but the name of the generated file cannot be influenced directly - if required, renaming a file can e.g. be done by a script run as post-generator
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="EcuC_VariantsDemo_Gen_Template">
+    <generator moduleId="EcuC_VariantsDemo"
+               id="EcuC_VariantsDemo_Gen_TemplateId"
+               modes="generate,Template_withPostRename"
+               class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator">
+      <parameter name="mode_type" mode="Template_withPostRename" value="generate"/>
+
+      <parameter name="templates" value="pbvariants_gen/template"/>
+
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+    </generator>
+  </extension>
+  <!-- this post-generator just calls an ant script which renames the file created by the TemplateBasedCodeGenerator defined above
+       otherwise the next run of the TemplateBasedCodeGenerator for another variant would overwrite the file -->
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+             id="EcuC_VariantsDemo_Gen_Template_MoveFile">
+    <generator moduleId="EcuC_VariantsDemo"
+               id="EcuC_VariantsDemo_Gen_TemplateId_MoveFile"
+               class="dreisoft.tresos.generator.ng.api.NGGenerator"
+               modes="generate,Template_withPostRename"
+               step="post">
+      <!-- Specify the ant build script as parameter to the NGGenerator. -->
+      <parameter name="buildfile"  value="pbvariants_gen/template_ant/ant_generator.xml"/>
+
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+    </generator>
+  </extension>
+
+  <!-- an example generator (a so-called "external generator") which gets the currently generated variant as a parameter
+       in this way he can e.g. calculate prefixes for the code or the name of the generated files
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="EcuC_VariantsDemo_Gen_External">
+    <generator moduleId="EcuC_VariantsDemo"
+               id="EcuC_VariantsDemo_Gen_ExternalId"
+               modes="generate,External_outputWithPostfix"
+               class="dreisoft.tresos.autosar2.generator.ExternalGenerator">
+      <parameter name="generateAllModules" value="false"/>
+      <parameter name="contentType" value="asc:4.2.1"/>
+      <!-- Generator variable ${postBuildVariant} that stores the short-name of the currently built post-build variant.
+        Is used to postfix the filename of the generated files. Variable not available in legacy
+        mode.-->
+      <parameter name="commandline" value="${pluginPath}\pbvariants_gen\external\CodeGenerator.bat ${outputDir}\VariantsTestExternal_${postBuildVariant}.txt ${postBuildVariant}"/>
+
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+    </generator>
+  </extension>
+
+  <!-- an example NGGenerator which calls a common ant-script
+       within the ant-script it is also possible to call tresos Studio generators
+	   in the example-script, a single code-template file is generated with a custom file-name (depending on the variants name)
+  -->
+  <extension
+         point="dreisoft.tresos.generator.api.plugin.generator"
+         id="EcuC_VariantsDemo_Gen_NG">
+      <generator
+            class="dreisoft.tresos.generator.ng.api.NGGenerator"
+            id="EcuC_VariantsDemo_Gen_NGId"
+            modes="generate,NG_PostfixAndMove"
+            moduleId="EcuC_VariantsDemo">
+
+          <!-- Specify the ant build script as parameter to the NGGenerator. -->
+          <parameter name="buildfile" value="pbvariants_gen/ng/ant_generator.xml"/>
+
+          <!-- only having this parameter set to true, a generator is called once for each variant! -->
+          <parameter name="variantAware" value="true"/>
+      </generator>
+   </extension>
+
+
+  <!-- just a module containing some variant-aware parameters -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="EB_VariantsDemo_ModuleId"
+             name="EB_VariantsDemo Module">
+
+    <module id="EB_VariantsDemo"
+            label="Sample module for variants"
+            mandatory="false"
+            allowMultiple="false"
+            description="Demo module for post-build selectable variant handling"
+            copyright="(c) 2015 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="4"
+            specVersionMinor="6"
+            specVersionPatch="1"
+            relVersionMajor="4"
+            relVersionMinor="4"
+            relVersionPatch="0"
+            categoryType="Variant"
+            categoryLayer="Communication Services"
+            categoryCategory="Com Services"
+            categoryComponent="Variant">
+      <ecuType target="WINDOWS" derivate="Win32X86"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="EB_VariantsDemo_ConfigId"
+             name="EB_VariantsDemo Module Configuration">
+    <configuration moduleId="EB_VariantsDemo">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/VariantsDemo.xdm" type="xdm"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/EB/VariantsDemo"/>
+      </data>
+
+      <editor id="EB_VariantsDemo_EditorId"
+              label="Default"
+              tooltip="Variants Demo">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/EB/VariantsDemo"/>
+          <parameter name="title" value="Variant"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+</plugin>

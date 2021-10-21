@@ -1,0 +1,1404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+[!AUTOSPACING!]
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+  [!/* do not generate this file if RTE is not used */!]
+  [!SKIPFILE "(WdgMGeneral/WdgMRteUsage = 'false') or not(node:exists(WdgMGeneral/WdgMServiceAPI))"!][!//
+  [!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and  WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+  [!VAR "swComponentTypePackageName" = "'ComponentTypes'"!][!//
+  [!VAR "swcImplementationPackageName" = "'Implementations'"!][!//
+  [!VAR "swcImplementationDataTypesPackageName" = "'Datatypes'"!][!//
+  [!ELSE!][!//
+  [!VAR "swComponentTypePackageName" = "'SwComponentTypes'"!][!//
+  [!VAR "swcImplementationPackageName" = "'SwcImplementations'"!][!//
+  [!VAR "swcImplementationDataTypesPackageName" = "'ImplementationDataTypes'"!][!//
+  [!ENDIF!][!//
+  [!VAR "MULTICORE_ENABLED" = "node:exists(as:modconf('WdgM')[1]/WdgMGeneral/WdgMGeneralMulticore/WdgMNumberOfCores) and (as:modconf('WdgM')[1]/WdgMGeneral/WdgMGeneralMulticore/WdgMNumberOfCores > 1)"!][!//
+  [!IF "$MULTICORE_ENABLED"!][!//
+  [!VAR "MULTICORE_INFIX" = "'CORE_'"!][!//
+  [!VAR "MULTICORE_NUM_CORES" = "node:value(as:modconf('WdgM')[1]/WdgMGeneral/WdgMGeneralMulticore/WdgMNumberOfCores)"!][!//
+  [!VAR "WDGM_MASTER_CORE_ID" = "node:value(as:modconf('WdgM')[1]/WdgMGeneral/WdgMGeneralMulticore/WdgMMasterCoreId)"!][!//
+  [!ELSE!][!//
+  [!VAR "MULTICORE_INFIX" = "''"!][!//
+  [!VAR "MULTICORE_NUM_CORES" = "1"!][!//
+  [!VAR "WDGM_MASTER_CORE_ID" = "'0'"!][!//
+  [!ENDIF!][!//
+  <AR-PACKAGES>
+    <AR-PACKAGE> <!-- AUTOSAR_WdgM -->
+      <SHORT-NAME>AUTOSAR_WdgM</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE> <!-- SwComponentTypes/ComponentTypes -->
+          <SHORT-NAME>[!"$swComponentTypePackageName"!]</SHORT-NAME>
+          <ELEMENTS>
+[!FOR "index_i" = "0" TO "$MULTICORE_NUM_CORES - 1"!][!//
+[!IF "$MULTICORE_ENABLED"!][!//
+[!VAR "SW_COMPONENT_NAME" = "concat('WdgM_', $MULTICORE_INFIX, num:i($index_i))"!][!//
+[!VAR "RE_NAME_SUFFIX" = "concat('_CORE_', num:i($index_i))"!][!//
+[!ELSE!][!//
+[!VAR "SW_COMPONENT_NAME" = "'WdgM'"!][!//
+[!VAR "RE_NAME_SUFFIX" = "''"!][!//
+[!ENDIF!][!//
+            <SERVICE-SW-COMPONENT-TYPE>
+              <SHORT-NAME>[!"$SW_COMPONENT_NAME"!]</SHORT-NAME>
+              <PORTS>
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ServiceAPI = 'true')"!]
+<!-- Provide AUTOSAR 3.2 service -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+  [!/* global mode port */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>WdgM_ASR32_globalMode</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_GlobalMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!/* ports for alive supervision per SE */!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>alive_ASR32_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_AliveSupervision/UpdateAliveCounter</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+    [!IF "node:exists(../../WdgMServiceAPI/WdgMEnableASR32ActivateAliveSupervisionAPI)"!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_AliveSupervision/ActivateAliveSupervision</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+    [!ENDIF!]
+    [!IF "node:exists(../../WdgMServiceAPI/WdgMEnableASR32DeactivateAliveSupervisionAPI)"!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_AliveSupervision/DeactivateAliveSupervision</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+    [!ENDIF!]
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_AliveSupervision</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!/* individual mode port per SE */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>mode_ASR32_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_IndividualMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR40ServiceAPI = 'true')"!]
+<!-- Provide AUTOSAR 4.0 service -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+  [!/* global mode port */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>WdgM_ASR40_globalMode</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_GlobalMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!/* ports for alive supervision per SE */!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>alive_ASR40_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_AliveSupervision/UpdateAliveCounter</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_AliveSupervision/CheckpointReached</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_AliveSupervision</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!/* individual mode port per SE */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>mode_ASR40_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_IndividualMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR43ServiceAPI = 'true')"!]
+<!-- Provide AUTOSAR 4.3 service -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+  [!/* global mode port */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>WdgM_ASR43_globalMode</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>WdgM_ASR43_globalSupervision</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/GetFirstExpiredSEID</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/GetGlobalStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/GetMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/PerformReset</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!IF "not(node:exists(WdgMGeneral/WdgMSupervisorCallouts/WdgMGetExpectedWdgMModeCallout))"!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/SetMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ENDIF!]
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!/* ports for local supervision per CP */!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+  [!VAR "SEName" = "@name"!]
+    [!LOOP "WdgMCheckpoint/*"!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>localSupervision_ASR43_[!"$SEName"!]_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalSupervision/CheckpointReached</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalSupervision</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+    [!ENDLOOP!]
+  [!/* Local Supervision Status per SE */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>localSupervisionStatus_ASR43_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalSupervisionStatus/GetLocalStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalSupervisionStatus</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!/* individual mode port per SE */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>mode_ASR43_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_32'"!]
+<!-- Provide AUTOSAR 3.2 as default service -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+  [!/* global mode port */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>globalMode</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!/* ports for alive supervision per SE */!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>alive_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/UpdateAliveCounter</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+    [!IF "node:exists(../../WdgMServiceAPI/WdgMEnableASR32ActivateAliveSupervisionAPI)"!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/ActivateAliveSupervision</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+    [!ENDIF!]
+    [!IF "node:exists(../../WdgMServiceAPI/WdgMEnableASR32DeactivateAliveSupervisionAPI)"!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/DeactivateAliveSupervision</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+    [!ENDIF!]
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!/* individual mode port per SE */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>mode_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_IndividualMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_40'"!]
+  <!-- Provide AUTOSAR 4.0 as default service -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+  [!/* global mode port */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>globalMode</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]              
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!/* ports for alive supervision per SE */!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>alive_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/UpdateAliveCounter</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/CheckpointReached</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!/* individual mode port per SE */!]
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>mode_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_IndividualMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_43'"!]
+<!-- Provide AUTOSAR 4.3 as default service -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+  [!/* global mode port */!]
+                [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00150,1 -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>globalMode</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_91002,1 -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>globalSupervision</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/GetFirstExpiredSEID</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/GetGlobalStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/GetMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/PerformReset</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!IF "not(node:exists(WdgMGeneral/WdgMSupervisorCallouts/WdgMGetExpectedWdgMModeCallout))"!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/SetMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ENDIF!]
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!/* ports for local supervision per CP */!]
+  [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00146,1 -->
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+  [!VAR "SEName" = "@name"!]
+    [!LOOP "WdgMCheckpoint/*"!]
+                [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00147,1 -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>localSupervision_[!"$SEName"!]_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalSupervision/CheckpointReached</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalSupervision</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+    [!ENDLOOP!]
+  [!/* Local Supervision Status per SE */!]
+                [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_91003,1 -->
+                [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00148,1 -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>localSupervisionStatus_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalSupervisionStatus/GetLocalStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalSupervisionStatus</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!/* individual mode port per SE */!]
+                [!// <!-- !LINKSTO WdgM.ASR43.SWS_WdgM_00149,1 -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>mode_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+              </PORTS>
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]</SHORT-NAME>
+                  <DATA-TYPE-MAPPING-REFS>
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ServiceAPI = 'true')"!]
+<!-- Provide AUTOSAR 3.2 DataTypeMappings -->
+                    <DATA-TYPE-MAPPING-REF DEST="DATA-TYPE-MAPPING-SET">/AUTOSAR_WdgM/ASR32/ImplementationDataTypes/WdgM_ASR32_DataTypeMappingSet</DATA-TYPE-MAPPING-REF>
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR40ServiceAPI = 'true')"!]
+<!-- Provide AUTOSAR 4.0 DataTypeMappings -->
+                    <DATA-TYPE-MAPPING-REF DEST="DATA-TYPE-MAPPING-SET">/AUTOSAR_WdgM/ASR40/ImplementationDataTypes/WdgM_ASR40_DataTypeMappingSet</DATA-TYPE-MAPPING-REF>
+
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR43ServiceAPI = 'true')"!]
+<!-- Provide AUTOSAR 4.3 DataTypeMappings -->
+                    <DATA-TYPE-MAPPING-REF DEST="DATA-TYPE-MAPPING-SET">/AUTOSAR_WdgM/ASR43/ImplementationDataTypes/WdgM_ASR43_DataTypeMappingSet</DATA-TYPE-MAPPING-REF>
+
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'NONE'"!]
+<!-- Provide default DataTypeMappings -->
+                    <DATA-TYPE-MAPPING-REF DEST="DATA-TYPE-MAPPING-SET">/AUTOSAR_WdgM/[!"$swcImplementationDataTypesPackageName"!]/WdgMDataTypeMappingSet</DATA-TYPE-MAPPING-REF>
+[!ENDIF!]
+                  </DATA-TYPE-MAPPING-REFS>
+                  <EVENTS>
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ServiceAPI = 'true')"!]
+<!-- Provide AUTOSAR 3.2 service -->
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_UpdateAliveCounter_SE_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR32_UpdateAliveCounter</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_ASR32_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_AliveSupervision/UpdateAliveCounter</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+    [!IF "node:exists(../../WdgMServiceAPI/WdgMEnableASR32ActivateAliveSupervisionAPI)"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_ActAliveSuperv_SE_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR32_ActivateAliveSupervision</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_ASR32_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_AliveSupervision/ActivateAliveSupervision</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+    [!ENDIF!]
+    [!IF "node:exists(../../WdgMServiceAPI/WdgMEnableASR32DeactivateAliveSupervisionAPI)"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_DeactAliveSuperv_SE_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR32_DeactivateAliveSupervision</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_ASR32_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_AliveSupervision/DeactivateAliveSupervision</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+    [!ENDIF!]
+  [!ENDIF!]  
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR40ServiceAPI = 'true')"!]
+<!-- Provide AUTOSAR 4.0 service -->
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_UpdateAliveCounter_SE_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR40_UpdateAliveCounter</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_ASR40_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_AliveSupervision/UpdateAliveCounter</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_CheckpointReached_SE_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR40_CheckpointReached</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_ASR40_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_AliveSupervision/CheckpointReached</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR43ServiceAPI = 'true')"!]
+<!-- Provide AUTOSAR 4.3 service -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR43_GetFirstExpiredSEID</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR43_GetFirstExpiredSEID</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR43_globalSupervision</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/GetFirstExpiredSEID</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR43_GetGlobalStatus</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR43_GetGlobalStatus</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR43_globalSupervision</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/GetGlobalStatus</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR43_GetMode</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR43_GetMode</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR43_globalSupervision</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/GetMode</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR43_PerformReset</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR43_PerformReset</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR43_globalSupervision</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/PerformReset</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!IF "not(node:exists(WdgMGeneral/WdgMSupervisorCallouts/WdgMGetExpectedWdgMModeCallout))"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR43_SetMode</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR43_SetMode</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR43_globalSupervision</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalSupervision/SetMode</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+  [!VAR "SEName" = "@name"!]
+    [!LOOP "WdgMCheckpoint/*"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR43_CheckpointReached_[!"$SEName"!]_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR43_CheckpointReached</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/localSupervision_ASR43_[!"$SEName"!]_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalSupervision/CheckpointReached</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+    [!ENDLOOP!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR43_GetLocalStatus_SE_[!"$SEName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ASR43_GetLocalStatus</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/localSupervisionStatus_ASR43_[!"$SEName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalSupervisionStatus/GetLocalStatus</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'NONE'"!]
+<!-- Provide default service -->
+    [!IF "WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_43'"!]
+      [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetFirstExpiredSEID</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_GetFirstExpiredSEID</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/globalSupervision</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/GetFirstExpiredSEID</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetGlobalStatus</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_GetGlobalStatus</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/globalSupervision</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/GetGlobalStatus</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetMode</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_GetMode</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/globalSupervision</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/GetMode</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_PerformReset</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_PerformReset</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/globalSupervision</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/PerformReset</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!IF "not(node:exists(WdgMGeneral/WdgMSupervisorCallouts/WdgMGetExpectedWdgMModeCallout))"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SetMode</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_SetMode</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/globalSupervision</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalSupervision/SetMode</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+      [!ENDIF!]
+    [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+    [!IF "../../WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'AUTOSAR_43'"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_UpdateAliveCounter_SE_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_UpdateAliveCounter</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/UpdateAliveCounter</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+        [!IF "../../WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_40'"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_CheckpointReached_SE_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_CheckpointReached</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/CheckpointReached</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+        [!ENDIF!]
+    [!ENDIF!]
+    [!IF "../../WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_43'"!]
+    [!VAR "SEName" = "@name"!]
+        [!LOOP "WdgMCheckpoint/*"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_CheckpointReached_[!"$SEName"!]_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_CheckpointReached</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/localSupervision_[!"$SEName"!]_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalSupervision/CheckpointReached</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+        [!ENDLOOP!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetLocalStatus_SE_[!"$SEName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_GetLocalStatus</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/localSupervisionStatus_[!"$SEName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalSupervisionStatus/GetLocalStatus</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+    [!ENDIF!]
+    [!IF "../../WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_32'"!]
+      [!IF "node:exists(../../WdgMServiceAPI/WdgMEnableASR32ActivateAliveSupervisionAPI)"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ActAliveSuperv_SE_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_ActivateAliveSupervision</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/ActivateAliveSupervision</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+      [!ENDIF!]
+      [!IF "node:exists(../../WdgMServiceAPI/WdgMEnableASR32DeactivateAliveSupervisionAPI)"!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_DeactAliveSuperv_SE_[!"name(.)"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]/RE_DeactivateAliveSupervision</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_WdgM/PortInterfaces/WdgM_AliveSupervision/DeactivateAliveSupervision</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+      [!ENDIF!]
+    [!ENDIF!]
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+                  </EVENTS>
+                  <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+                  <PORT-API-OPTIONS>
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ServiceAPI = 'true')"!]
+<!-- Port API options for AUTOSAR 3.2 -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR32_globalMode</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>PORTARG_ASR32_SE_[!"name(.)"!]</SHORT-LABEL>
+                              <VALUE>[!"num:i(WdgMSupervisedEntityId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR32/ImplementationDataTypes/WdgM_ASR32_SupervisedEntityIdType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_ASR32_[!"name(.)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_ASR32_[!"name(.)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR40ServiceAPI = 'true')"!]
+<!-- Port API options for AUTOSAR 4.0 -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR40_globalMode</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>PORTARG_ASR40_SE_[!"name(.)"!]</SHORT-LABEL>
+                              <VALUE>[!"num:i(WdgMSupervisedEntityId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR40/ImplementationDataTypes/WdgM_ASR40_SupervisedEntityIdType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_ASR40_[!"name(.)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_ASR40_[!"name(.)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR43ServiceAPI = 'true')"!]
+<!-- Port API options for AUTOSAR 4.3 -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR43_globalMode</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+  [!VAR "SEName" = "@name"!]
+  [!VAR "SEID" = "num:i(WdgMSupervisedEntityId)"!]
+    [!LOOP "WdgMCheckpoint/*"!]
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>PORTARG_ASR43_SE_[!"$SEName"!]</SHORT-LABEL>
+                              <VALUE>[!"$SEID"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR43/ImplementationDataTypes/WdgM_ASR43_SupervisedEntityIdType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>PORTARG_ASR43_CP_[!"name(.)"!]</SHORT-LABEL>
+                              <VALUE>[!"num:i(WdgMCheckpointId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR43/ImplementationDataTypes/WdgM_ASR43_CheckpointIdType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/localSupervision_ASR43_[!"$SEName"!]_[!"name(.)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+    [!ENDLOOP!]
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>PORTARG_ASR43_SE_STATUS_[!"$SEName"!]</SHORT-LABEL>
+                              <VALUE>[!"$SEID"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ASR43/ImplementationDataTypes/WdgM_ASR43_SupervisedEntityIdType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/localSupervisionStatus_ASR43_[!"$SEName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_ASR43_[!"name(.)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'NONE'"!]
+<!-- Port API options for default service -->
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/globalMode</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+    [!IF "../../WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'AUTOSAR_43'"!]
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>PORTARG_SE_[!"name(.)"!]</SHORT-LABEL>
+                              <VALUE>[!"num:i(WdgMSupervisedEntityId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/[!"$swcImplementationDataTypesPackageName"!]/WdgM_SupervisedEntityIdType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/alive_[!"name(.)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+    [!ENDIF!]
+    [!IF "../../WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_43'"!]
+    [!VAR "SEName" = "@name"!]
+    [!VAR "SEID" = "num:i(WdgMSupervisedEntityId)"!]
+     [!LOOP "WdgMCheckpoint/*"!]
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>PORTARG_SE_[!"$SEName"!]</SHORT-LABEL>
+                              <VALUE>[!"$SEID"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ImplementationDataTypes/WdgM_SupervisedEntityIdType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>PORTARG_CP_[!"name(.)"!]</SHORT-LABEL>
+                              <VALUE>[!"num:i(WdgMCheckpointId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ImplementationDataTypes/WdgM_CheckpointIdType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/localSupervision_[!"$SEName"!]_[!"name(.)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+      [!ENDLOOP!]
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <SHORT-LABEL>PORTARG_SE_STATUS_[!"$SEName"!]</SHORT-LABEL>
+                              <VALUE>[!"$SEID"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_WdgM/ImplementationDataTypes/WdgM_SupervisedEntityIdType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/localSupervisionStatus_[!"$SEName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+    [!ENDIF!]
+                    <!-- switch functions must be accessible via function pointer -->
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_[!"name(.)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+                  </PORT-API-OPTIONS>
+                  <RUNNABLES>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Main</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <MODE-ACCESS-POINTS>
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ServiceAPI = 'true')"!]
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                        <MODE-ACCESS-POINT>
+                          <MODE-GROUP-IREF>
+                            <P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                              <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR32_globalMode</CONTEXT-P-PORT-REF>
+                              <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_GlobalMode/currentMode</TARGET-MODE-GROUP-REF>
+                            </P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-ACCESS-POINT>
+  [!ENDIF!]                      
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                        <MODE-ACCESS-POINT>
+                          <MODE-GROUP-IREF>
+                            <P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                              <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_ASR32_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                              <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_IndividualMode/currentMode</TARGET-MODE-GROUP-REF>
+                            </P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-ACCESS-POINT>
+  [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR40ServiceAPI = 'true')"!]
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                        <MODE-ACCESS-POINT>
+                          <MODE-GROUP-IREF>
+                            <P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                              <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR40_globalMode</CONTEXT-P-PORT-REF>
+                              <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_GlobalMode/currentMode</TARGET-MODE-GROUP-REF>
+                            </P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-ACCESS-POINT>
+  [!ENDIF!]                      
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                        <MODE-ACCESS-POINT>
+                          <MODE-GROUP-IREF>
+                            <P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                              <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_ASR40_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                              <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_IndividualMode/currentMode</TARGET-MODE-GROUP-REF>
+                            </P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-ACCESS-POINT>
+  [!ENDIF!]                      
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR43ServiceAPI = 'true')"!]
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                        <MODE-ACCESS-POINT>
+                          <MODE-GROUP-IREF>
+                            <P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                              <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR43_globalMode</CONTEXT-P-PORT-REF>
+                              <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalMode/currentMode</TARGET-MODE-GROUP-REF>
+                            </P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-ACCESS-POINT>
+  [!ENDIF!]                      
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                        <MODE-ACCESS-POINT>
+                          <MODE-GROUP-IREF>
+                            <P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                              <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_ASR43_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                              <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalMode/currentMode</TARGET-MODE-GROUP-REF>
+                            </P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-ACCESS-POINT>
+  [!ENDIF!]                      
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'NONE'"!]
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                        <MODE-ACCESS-POINT>
+                          <MODE-GROUP-IREF>
+                            <P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                              <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/globalMode</CONTEXT-P-PORT-REF>
+                              <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalMode/currentMode</TARGET-MODE-GROUP-REF>
+                            </P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-ACCESS-POINT>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+    [!IF "../../WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'AUTOSAR_43'"!]
+                        <MODE-ACCESS-POINT>
+                          <MODE-GROUP-IREF>
+                            <P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                              <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                              <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/PortInterfaces/WdgM_IndividualMode/currentMode</TARGET-MODE-GROUP-REF>
+                            </P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-ACCESS-POINT>
+    [!ELSE!]
+                        <MODE-ACCESS-POINT>
+                          <MODE-GROUP-IREF>
+                            <P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                              <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                              <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalMode/currentMode</TARGET-MODE-GROUP-REF>
+                            </P-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-ACCESS-POINT>
+    [!ENDIF!]
+  [!ENDIF!]                      
+  [!ENDLOOP!]
+[!ENDIF!]
+                      </MODE-ACCESS-POINTS>
+                      <MODE-SWITCH-POINTS>
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ServiceAPI = 'true')"!]
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                        <MODE-SWITCH-POINT>
+                          <SHORT-NAME>MSP_ASR32_globalMode</SHORT-NAME>
+                          <MODE-GROUP-IREF>
+                            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR32_globalMode</CONTEXT-P-PORT-REF>
+                            <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_GlobalMode/currentMode</TARGET-MODE-GROUP-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-SWITCH-POINT>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                        <MODE-SWITCH-POINT>
+                          <SHORT-NAME>MSP_ASR32_mode_[!"name(.)"!]</SHORT-NAME>
+                          <MODE-GROUP-IREF>
+                            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_ASR32_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                            <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR32/PortInterfaces/WdgM_ASR32_IndividualMode/currentMode</TARGET-MODE-GROUP-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-SWITCH-POINT>
+  [!ENDIF!]                      
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR40ServiceAPI = 'true')"!]
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                        <MODE-SWITCH-POINT>
+                          <SHORT-NAME>MSP_ASR40_globalMode</SHORT-NAME>
+                          <MODE-GROUP-IREF>
+                            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR40_globalMode</CONTEXT-P-PORT-REF>
+                            <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_GlobalMode/currentMode</TARGET-MODE-GROUP-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-SWITCH-POINT>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                        <MODE-SWITCH-POINT>
+                          <SHORT-NAME>MSP_ASR40_mode_[!"name(.)"!]</SHORT-NAME>
+                          <MODE-GROUP-IREF>
+                            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_ASR40_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                            <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR40/PortInterfaces/WdgM_ASR40_IndividualMode/currentMode</TARGET-MODE-GROUP-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-SWITCH-POINT>
+  [!ENDIF!]                      
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR43ServiceAPI = 'true')"!]
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                        <MODE-SWITCH-POINT>
+                          <SHORT-NAME>MSP_ASR43_globalMode</SHORT-NAME>
+                          <MODE-GROUP-IREF>
+                            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/WdgM_ASR43_globalMode</CONTEXT-P-PORT-REF>
+                            <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_GlobalMode/currentMode</TARGET-MODE-GROUP-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-SWITCH-POINT>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+                        <MODE-SWITCH-POINT>
+                          <SHORT-NAME>MSP_ASR43_mode_[!"name(.)"!]</SHORT-NAME>
+                          <MODE-GROUP-IREF>
+                            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_ASR43_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                            <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/ASR43/PortInterfaces/WdgM_ASR43_LocalMode/currentMode</TARGET-MODE-GROUP-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-SWITCH-POINT>
+  [!ENDIF!]                      
+  [!ENDLOOP!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'NONE'"!]
+  [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]   
+                        <MODE-SWITCH-POINT>
+                          <SHORT-NAME>MSP_globalMode</SHORT-NAME>
+                          <MODE-GROUP-IREF>
+                            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/globalMode</CONTEXT-P-PORT-REF>
+                            <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/PortInterfaces/WdgM_GlobalMode/currentMode</TARGET-MODE-GROUP-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-SWITCH-POINT>
+  [!ENDIF!]
+  [!LOOP "WdgMGeneral/WdgMSupervisedEntity/*"!]
+  [!IF "num:i(node:value(WdgMSupervisedEntityCoreId)) = num:i($index_i)"!]
+    [!IF "../../WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'AUTOSAR_43'"!]
+                        <MODE-SWITCH-POINT>
+                          <SHORT-NAME>MSP_mode_[!"name(.)"!]</SHORT-NAME>
+                          <MODE-GROUP-IREF>
+                            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                            <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/PortInterfaces/WdgM_IndividualMode/currentMode</TARGET-MODE-GROUP-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-SWITCH-POINT>
+    [!ELSE!]
+                        <MODE-SWITCH-POINT>
+                          <SHORT-NAME>MSP_mode_[!"name(.)"!]</SHORT-NAME>
+                          <MODE-GROUP-IREF>
+                            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/mode_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                            <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_WdgM/PortInterfaces/WdgM_LocalMode/currentMode</TARGET-MODE-GROUP-REF>
+                          </MODE-GROUP-IREF>
+                        </MODE-SWITCH-POINT>
+    [!ENDIF!] 
+  [!ENDIF!]                      
+  [!ENDLOOP!]
+[!ENDIF!]
+                      </MODE-SWITCH-POINTS>
+[!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]                    
+                      <SYMBOL>WdgM_MainFunction</SYMBOL>
+[!ELSE!]
+                      <SYMBOL>WdgM_1_CORE_[!"num:i($index_i)"!]_MainFunction</SYMBOL>
+[!ENDIF!]
+                    </RUNNABLE-ENTITY>
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ServiceAPI = 'true')"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_UpdateAliveCounter</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR32_Rte_UpdateAliveCounter[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ActivateAliveSupervisionAPI)"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_ActivateAliveSupervision</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR32_Rte_ActivateAliveSupervision[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32DeactivateAliveSupervisionAPI)"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_DeactivateAliveSupervision</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR32_Rte_DeactivateAliveSupervision[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR40ServiceAPI = 'true')"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_UpdateAliveCounter</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR40_Rte_UpdateAliveCounter[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_CheckpointReached</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>CheckpointID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR40_Rte_CheckpointReached[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and (WdgMGeneral/WdgMServiceAPI/WdgMEnableASR43ServiceAPI = 'true')"!]
+    [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR43_GetFirstExpiredSEID</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR43_Rte_GetFirstExpiredSEID</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR43_GetGlobalStatus</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>Status</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR43_Rte_GetGlobalStatus</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR43_GetMode</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>Mode</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR43_Rte_GetMode</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR43_PerformReset</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR43_Rte_PerformReset</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!IF "not(node:exists(WdgMGeneral/WdgMSupervisorCallouts/WdgMGetExpectedWdgMModeCallout))"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR43_SetMode</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>Mode</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+[!IF "WdgMGeneral/WdgMBSWCompatibilityMode = 'AUTOSAR_40'"!]
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>CallerID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+[!ENDIF!]
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR43_Rte_SetMode</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+    [!ENDIF!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR43_CheckpointReached</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>CheckpointID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR43_Rte_CheckpointReached[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR43_GetLocalStatus</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>Status</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_ASR43_Rte_GetLocalStatus[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "node:exists(WdgMGeneral/WdgMServiceAPI) and WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'NONE'"!]
+  [!IF "WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'AUTOSAR_43'"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_UpdateAliveCounter</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_Rte_UpdateAliveCounter[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!]
+  [!IF "WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI != 'AUTOSAR_32'"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_CheckpointReached</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>CheckpointID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_Rte_CheckpointReached[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!]
+  [!IF "WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_43'"!]
+    [!IF "num:i($index_i) = num:i($WDGM_MASTER_CORE_ID)"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetFirstExpiredSEID</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_Rte_GetFirstExpiredSEID</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetGlobalStatus</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>Status</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_Rte_GetGlobalStatus</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetMode</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>Mode</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_Rte_GetMode</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_PerformReset</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_Rte_PerformReset</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!IF "not(node:exists(WdgMGeneral/WdgMSupervisorCallouts/WdgMGetExpectedWdgMModeCallout))"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetMode</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>Mode</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+[!IF "WdgMGeneral/WdgMBSWCompatibilityMode = 'AUTOSAR_40'"!]
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>CallerID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+[!ENDIF!]
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_Rte_SetMode</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+    [!ENDIF!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetLocalStatus</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>Status</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_Rte_GetLocalStatus[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!]
+  [!IF "WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_32'"!]
+    [!IF "node:exists(WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32ActivateAliveSupervisionAPI)"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ActivateAliveSupervision</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_Rte_ActivateAliveSupervision[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+    [!ENDIF!]
+    [!IF "node:exists(WdgMGeneral/WdgMServiceAPI/WdgMEnableASR32DeactivateAliveSupervisionAPI)"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_DeactivateAliveSupervision</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>SEID</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>WdgM_Rte_DeactivateAliveSupervision[!"$RE_NAME_SUFFIX"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+    [!ENDIF!]
+  [!ENDIF!]
+[!ENDIF!]
+                  </RUNNABLES>
+                  <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </SERVICE-SW-COMPONENT-TYPE>
+[!ENDFOR!]
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_WdgM</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>[!"$swcImplementationPackageName"!]</SHORT-NAME>
+          <ELEMENTS>
+[!FOR "index_i" = "0" TO "$MULTICORE_NUM_CORES - 1"!][!//
+[!IF "$MULTICORE_ENABLED"!][!//
+[!VAR "SW_COMPONENT_NAME" = "concat('WdgM_', $MULTICORE_INFIX, num:i($index_i))"!][!//
+[!ELSE!][!//
+[!VAR "SW_COMPONENT_NAME" = "'WdgM'"!][!//
+[!ENDIF!][!//
+            <SWC-IMPLEMENTATION>
+              <SHORT-NAME>SwcImplementation_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>WdgMCode</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>Resources</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                    <MEMORY-SECTION>
+                        <SHORT-NAME>CODE</SHORT-NAME>
+                        <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                    </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>6.1.39</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_WdgM/[!"$swComponentTypePackageName"!]/[!"$SW_COMPONENT_NAME"!]/SwcInternalBehavior_[!"$MULTICORE_INFIX"!][!"num:i($index_i)"!]</BEHAVIOR-REF>
+            </SWC-IMPLEMENTATION>
+[!ENDFOR!]
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

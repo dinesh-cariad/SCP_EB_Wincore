@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+
+    <specobject>
+      <id>KeyM.Req.Integration_KeyMInit</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        KeyM_Init() shall be called during the start-up procedure of the ECU before any
+        other API of the module is called.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_KeyMDeinit</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        KeyM_Deinit() shall be called during the shutdown procedure of the ECU.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_StartupNvMRead</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the use of NvM storage is enabled by setting the parameter KeyMCryptoKeyStorage
+        of at least one KeyMCryptoKey to KEYM_STORAGE_IN_NVM, the KeyM_Init() shall be
+        called after the NvM module is initialized.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_StartupDet</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the use of Det is enabled by setting the parameter KeyMDevErrorDetect,
+        the KeyM_Init() shall be called after the Det module is initialized.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_StartupCsm</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the Csm is used, e.g. for verifying the signature parsed from a certificate,
+        the KeyM_Init() shall be called after the Csm module is initialized.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_MainFunc</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the KeyM_MainFunction() shall be used instead of the KeyM_MainBackgroundFunction(),
+        i.e. KeyMBackgroundEnabled has been configured with FALSE, it shall be configured for cyclic
+        execution according to the configured KeyMMainFunctionPeriod, e.g. by mapping it to
+        an appropriate task in the Rte configuration.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_MainBackgroundFunc</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the KeyM_MainBackgroundFunction() shall be used instead of the default KeyM_MainFunction(),
+        i.e. KeyMBackgroundEnabled has been configured with TRUE, it shall be configured for execution
+        in a background task that only is executed when the CPU is idle, e.g. by using the Rte configuration.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_CsmSignatureVerifyJob</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The Csm job referenced via parameter KeyMCertCsmSignatureVerifyJobRef shall be a Csm job
+        referencing a primitive CsmSignatureVerify.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_CsmSignatureVerifyKey</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The Csm job referenced via parameter KeyMCertCsmSignatureVerifyJobRef shall be a Csm job
+        referencing a Csm key containing the key element CRYPTO_KE_SIGNATURE_KEY.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_CsmSignatureVerifyCbk</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the Csm job referenced via parameter KeyMCertCsmSignatureVerifyJobRef is asynchronous,
+        it shall reference a Csm callback with enabled parameter CsmCallbackFunc set to
+        the provided KeyM function KeyM_CsmSignatureVerifyCallback.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_CsmSignatureVerifyCbk_OtherVendor</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The KeyM provided callback function KeyM_CsmSignatureVerifyCallback() considers the EB deviation to SWS_Csm_00970.
+        This means that the API parameter of KeyM_CsmSignatureVerifyCallback() differ from the Csm SWS.
+        If the KeyM is used with a Csm from a different vendor, an appropriate callback function, with the according API,
+        has to be provided. And it has to be ensured that the Csm is configured for this particular callback function
+        instead of the KeyM_CsmSignatureVerifyCallback function.
+        See also https://bugzilla.autosar.org/show_bug.cgi?id=76940.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_CsmJobPublicKey</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        When calling KeyM_VerifyCertificate(), if the certificate has been successfully verified,
+        the parsed public key is stored into the Csm job,
+        that is referenced via parameter KeyMCertCsmSignatureVerifyJobRef, by calling Csm_KeyElementSet().
+        If an error occurs while writing, there is no possibility to inform the application about it.
+        The particular certificate still has a status KEYM_CERTIFICATE_VALID. The parsed public key
+        can be retrieved by KeyM_CertElementGet() correctly. But the key element CRYPTO_KE_SIGNATURE_KEY in the
+        corresponding Csm job is not correct. This does not affect the KeyM, as the next verification
+        request will redo the verification process. But if this key element shall be used in another
+        context, e.g. inside the Crypto Stack, then this issue shall be considered. A solution could be
+        to compare the retrieved parsed public key against the content of the related key element before
+        using it.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_KeyMCertStorageCryptoKeyRef</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The KeyM crypto key referenced via parameter KeyMCertStorageCryptoKeyRef shall be an
+        individual KeyM crypto key only referenced in one KeyM certificate.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_KeyMCryptoKeyMaxLength</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the parameter KeyMCryptoKeyStorage is set to KEYM_STORAGE_IN_NVM, the value of
+        parameter KeyMCryptoKeyMaxLength shall have the same size as the configured NvM block
+        referenced via KeyMNvmBlockDescriptorRef.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>KeyM.Req.Integration_KeyMNvMMaxRetries</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the parameter KeyMCryptoKeyStorage is set to KEYM_STORAGE_IN_NVM, the configured
+        NvM block referenced via KeyMNvmBlockDescriptorRef shall be configured with a maximum
+        number of read (NvMMaxNumOfReadRetries) and write (NvMMaxNumOfWriteRetries) retries
+        in the NvM. The KeyM polls the error status after requesting a NvM read or write operation
+        and awaits feedback to continue processing.
+      </description>
+      
+    </specobject>
+
+  </specobjects>
+</specdocument>

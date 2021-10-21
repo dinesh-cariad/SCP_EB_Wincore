@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.CanSM.EB_INTREQ_CanSM_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      
+      The CanSM state machine is incompatible to a CanTrcv strictly implemented according to the
+      requirements of the CanTrcv SWS for the purpose of making a transition to state
+      <code>COMM_NO_COMMUNICATION</code> if partial network is enabled.
+     </description>
+      <rationale>During a transition towards state <code>COMM_NO_COMMUNICATION</code>
+      (refer to Figure 7-3) the CanSM calls <code>CanIf_CheckTrcvWakeFlag</code>
+      [CANSM458] and waits for the callback function <code>CanSM_CheckTransceiverWakeFlagIndication</code>
+      [CANSM460].
+      Contrary to the requirements in the CanSM SWS the CanTrcv SWS [CanTrcv224] demands the callback only
+      for the case that a wakeup was detected.
+      To ensure correct functionality the CanTrcv must invoke <code>CanIf_CheckTrcvWakeFlagIndication</code> in any case.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>lim.CanSM.EB_INTREQ_CanSM_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      
+        The threshold that switches from Bus-Off Recovery L1 to L2 was implemented in such a way that
+        the actual time was a 1 less than the configured parameter in CanSM configuration. After the
+        implementation, the time spent waiting to swith to L2 is now equal to the configured parameter.
+      </description>
+      <rationale>The behaviour was that L2 was reached a MainFunction call earlier than expected.
+        The fix was meant to bring the expectation of the user, configured in the CanSM configuration
+        into actual sequence of events.
+      </rationale>
+    </specobject>
+  </specobjects>
+</specdocument>

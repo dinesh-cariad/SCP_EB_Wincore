@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+   Plug-in with demos for the EB tresos Studio Public API.
+ -->
+ 
+  <!--
+    Standard module definition extension point
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+         id="GCDemo6_TS_T00D0M0I0R0"
+         name="Guided Config Demo6 Module Extension">
+
+    <module id="GCDemo6_TS_T00D0M0I0R0"
+            label="GCDemo6_TS_T00D0M0I0R0"
+            mandatory="false"
+            allowMultiple="false"
+            description="Description here"
+            copyright="(c) Elektrobit Automotive"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            relVersionMajor="2"
+            relVersionMinor="1"
+            relVersionPatch="0"
+            categoryType="GCDemo6"
+            categoryLayer="Examples"
+            categoryCategory="Demo"
+            categoryComponent="ECUC">
+       <ecuType target="Demo" derivate="GuidedConfig"/>
+    </module>
+   </extension>
+
+   <!--
+    extension point defining the schema and data structure of the module
+   -->
+   <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+              id="GCDemo6_TS_T00D0M0I0R0ConfExt"
+              name="GCDemo6_TS_T00D0M0I0R0 Config Extension">
+       <configuration moduleId="GCDemo6_TS_T00D0M0I0R0">
+
+         <!-- schema definition -->
+           <schema>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+               <resource value="config/GCDemo6_TS_T00D0M0I0R0.xdm"
+                         type="xdm"/>
+           </schema>
+
+           <!-- data definition -->
+           <data>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+               <schemaNode path="ASPath:/TS_T00D0M0I0R0/GCDemo6"/>
+           </data>
+
+           <!-- generic editor definition -->
+           <editor id="GCDemo6_TS_T00D0M0I0R0Editor"
+                   label="GCDemo6_TS_T00D0M0I0R0"
+                   tooltip="Editor for the GCDemo6_TS_T00D0M0I0R0Editor module">
+               <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+                 <parameter name="schema" value="ASPath:/TS_T00D0M0I0R0/GCDemo6"/>
+                 <parameter name="title" value="GCDemo6_TS_T00D0M0I0R0Editor editor"/>
+               </class>
+           </editor>
+       </configuration>
+   </extension>
+ 
+   <!--
+    This module definition is used for the Demo6Backend.doIsAvailable() method.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+         id="GCDemo6_Activator"
+         name="Guided Config Demo6 Module Extension">
+
+    <module id="GCDemo6_Activator"
+            label="GCDemo6_Activator"
+            mandatory="false"
+            allowMultiple="false"
+            description="Description here"
+            copyright="(c) Elektrobit Automotive"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            relVersionMajor="2"
+            relVersionMinor="1"
+            relVersionPatch="0"
+            categoryType="GCDemo6Activator"
+            categoryLayer="Examples"
+            categoryCategory="Demo"
+            categoryComponent="ECUC">
+       <ecuType target="Demo" derivate="GuidedConfig"/>
+    </module>
+   </extension>
+ 
+
+  <!--***************************************************************
+    DEMO 6
+    Not available wizard
+  ***************************************************************-->
+  <extension
+         point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+      <guidedconfigwizard id="guidedDemo6">
+         <backend class="dreisoft.tresos.guidedconfig.demo6.Demo6Backend"/>
+         <gui class="dreisoft.tresos.guidedconfig.demo6.Demo6Page"/>
+      </guidedconfigwizard>
+  </extension>
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.trigger">
+     <trigger>
+        <sidebar
+              categoryId="Demos"
+              id="guidedDemo6"
+              undoRedo="false"
+              wizardId="guidedDemo6"
+              wizardType="dialog">
+           <visibility>
+                 <with variable="ECUConfigContext.moduleType.GCDemo6">
+                    <equals value="true"/>
+                 </with>
+           </visibility>
+           <display
+                 label="Demo6/Needs module GCDemo6_Activator"
+                 tooltip="Demo6 needs module GCDemo6_Activator">
+           </display>
+        </sidebar>
+     </trigger>
+  </extension>
+
+</plugin>

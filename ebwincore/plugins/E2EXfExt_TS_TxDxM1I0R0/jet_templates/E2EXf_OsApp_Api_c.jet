@@ -1,0 +1,203 @@
+<%@ jet package="eb.tresos.e2exf.generated.jet" class="E2EXf_OsApp_Api_c" skeleton="File.skeleton"
+        imports="
+                java.util.Collection
+                eb.tresos.xfrm.api.generator.FlagSet
+                eb.tresos.e2exf.generator.intermediate.Model
+                eb.tresos.e2exf.generator.intermediate.Profile
+                eb.tresos.e2exf.generator.intermediate.ProfileName
+                eb.tresos.e2exf.generator.intermediate.Transformer
+                eb.tresos.e2exf.generator.intermediate.TransformerFlags
+                eb.tresos.e2exf.generator.intermediate.GeneratorPartitionHandler
+                eb.tresos.e2exf.generator.intermediate.profileconfig.ConfigInitElements
+                "
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+    final Model model = (Model)context.gen.getVariable( Model.ARG_NAME, Model.class, null );
+    final Collection<Profile> configuredProfiles = model.getConfiguredProfiles();
+    final GeneratorPartitionHandler partitionHandler = model.getGeneratorPartitionHandler();
+    final String memSecInfix = partitionHandler.getPartitionInfix().toUpperCase();
+%>
+<%@ include file="head.c.inc" %>
+
+/*==================[includes]==============================================*/
+
+#include <E2E_SM.h>              /* E2E State Machine */
+<%for(Profile profile : configuredProfiles) {
+    if(model.getNumberOfTransformersPerPartition(profile, false) > 0) {
+%>
+#include <E2E_<%= profile.getMappedName() %>.h>             /* E2E Profile <%= profile.getMappedName() %> */
+<% } } %>
+#include <E2E_E2EXf_Stc.h>           /* Static definitions of constants and types */
+#include <E2EXf<%= partitionHandler.getPartitionInfix() %>_PartitionApi.h>       /* Generated partition API */
+
+/*==================[macros]================================================*/
+
+#if (defined E2EXF_EB_PARTITION_INITFUNC_NAME) /* to prevent double declaration */
+#error E2EXF_EB_PARTITION_INITFUNC_NAME already defined
+#endif /* if (defined E2EXF_EB_PARTITION_INITFUNC_NAME) */
+
+#define E2EXF_EB_PARTITION_INITFUNC_NAME E2EXf<%= partitionHandler.getPartitionInfix() %>_PartitionInit
+
+#if (defined E2EXF_EB_PARTITION_DEINITFUNC_NAME) /* to prevent double declaration */
+#error E2EXF_EB_PARTITION_DEINITFUNC_NAME already defined
+#endif /* if (defined E2EXF_EB_PARTITION_DEINITFUNC_NAME) */
+
+#define E2EXF_EB_PARTITION_DEINITFUNC_NAME E2EXf<%= partitionHandler.getPartitionInfix() %>_PartitionDeInit
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+#define E2EXF<%= memSecInfix %>_START_SEC_VAR_CLEARED_ASIL_D_UNSPECIFIED
+#include <E2EXf_MemMap.h>
+
+<% for(Profile profile : configuredProfiles) {
+
+    for (final Transformer transformer : model.getTransformersWithProfile(profile, false)) {
+        final FlagSet<TransformerFlags> flags = transformer.getFlags();
+        final String name = transformer.getName();
+        final boolean isReceiver = flags.contains(TransformerFlags.INVERSE);
+        final boolean inPlace = flags.contains(TransformerFlags.IN_PLACE);
+%>
+/** \brief Define state variable for <%= inPlace ? "in-place" : "out-of-place" %> <%= isReceiver ? "inverse " : "" %>transformer */
+E2EXF_DEF_XFSTATEVAR_<%= isReceiver ? "INVXF" : "XF" %>_<%= profile.getMappedName() %>_<%= inPlace ? "INPLACE" : "OUTOFPLACE" %>(<%= name %>);
+
+<% } %>
+<% } %>
+#define E2EXF<%= memSecInfix %>_STOP_SEC_VAR_CLEARED_ASIL_D_UNSPECIFIED
+#include <E2EXf_MemMap.h>
+
+#define E2EXF<%= memSecInfix %>_START_SEC_VAR_INIT_ASIL_D_8
+#include <E2EXf_MemMap.h>
+
+/** \brief Define variable holding the initialization state of a dedicated partition */
+E2EXF_DEF_VAR_PARTITIONINITSTATE;
+
+#define E2EXF<%= memSecInfix %>_STOP_SEC_VAR_INIT_ASIL_D_8
+#include <E2EXf_MemMap.h>
+
+#define E2EXF_START_SEC_CONFIG_DATA_UNSPECIFIED
+#include <E2EXf_MemMap.h>
+
+<% for(Profile profile : configuredProfiles) {
+       for (final Transformer transformer : model.getTransformersWithProfile(profile, false)) {
+            final FlagSet<TransformerFlags> flags = transformer.getFlags();
+            final String name = transformer.getName();
+            final boolean isReceiver = flags.contains(TransformerFlags.INVERSE);
+            final boolean inPlace = flags.contains(TransformerFlags.IN_PLACE);
+            final ConfigInitElements profileConfigElements = transformer.getProfileConfigInitElements();
+            final ConfigInitElements smConfigElements = transformer.getSmConfigInitElements();
+%>
+/** \brief Define configuration data for <%= inPlace ? "in-place" : "out-of-place" %> <%= isReceiver ? "inverse " : "" %>transformer */
+E2EXF_DEF_CFG_<%= isReceiver ? "INVXF" : "XF" %>_<%= profile.getMappedName() %>_<%= inPlace ? "INPLACE" : "OUTOFPLACE" %>(<%= name %>) =
+{
+    { /* E2E_<%= profile.getMappedName() %>Config */
+<%      stringBuffer.append(NL).append(profileConfigElements.getFormattedElementListOutput(2, NL)); %>
+    },
+<%      if(isReceiver) { %>
+    { /* E2E_SMConfig */
+<%      stringBuffer.append(NL).append(smConfigElements.getFormattedElementListOutput(2, NL)); %>
+    },
+<%      } %>
+    { /* E2E_PXXConfig */
+        <%= transformer.getUpperHeaderBitsToShift() %>U, /* UpperHeaderBitsToShift */
+        <%= transformer.getBufferHeaderLength() %>U, /* HeaderLength */
+        <% if (ProfileName.PROFILE_01.toString().equals(profile.getName()) || ProfileName.PROFILE_02.toString().equals(profile.getName())) {%>
+        <%= transformer.getProfileBehaviorStringRepresentation() %> /* ProfileBehavior */
+            <% } else { %>
+        TRUE /* unused value of ProfileBehavior */<% } %>
+    }
+};
+
+<% }} %>
+<% 
+   for (final Transformer transformer : model.getTransformersWithProfile(null, true)) {
+        final FlagSet<TransformerFlags> flags = transformer.getFlags();
+        final String name = transformer.getName();
+        final boolean isReceiver = flags.contains(TransformerFlags.INVERSE);
+        final boolean inPlace = flags.contains(TransformerFlags.IN_PLACE);
+%>
+<%      if(isReceiver) { %>
+/** \brief Define configuration data for <%= inPlace ? "in-place" : "out-of-place" %> inverse transformer with disabled end-to-end check */
+E2EXF_DEF_CFG_INVXF_NO_CHECK_<%= inPlace ? "INPLACE" : "OUTOFPLACE" %>(<%= name %>) =
+{
+    { /* E2E_PXXConfig */
+        <%= transformer.getUpperHeaderBitsToShift() %>U, /* UpperHeaderBitsToShift */
+        <%= transformer.getBufferHeaderLength() %>U, /* HeaderLength */
+        TRUE /* unused value of ProfileBehavior */
+    }
+};
+
+<%}}%>
+#define E2EXF_STOP_SEC_CONFIG_DATA_UNSPECIFIED
+#include <E2EXf_MemMap.h>
+
+/*==================[external function definitions]=========================*/
+
+#define E2EXF_START_SEC_CODE
+#include <E2EXf_MemMap.h>
+
+/** \brief Define initialization function for all transformers of this partition */
+E2EXF_DEF_FUNC_PARTITIONINIT_START
+<% for(Profile profile : configuredProfiles) {
+    for (final Transformer transformer : model.getTransformersWithProfile(profile, false)) {
+        final FlagSet<TransformerFlags> flags = transformer.getFlags();
+        final String name = transformer.getName();
+        final boolean isReceiver = flags.contains(TransformerFlags.INVERSE);
+        final boolean inPlace = flags.contains(TransformerFlags.IN_PLACE);
+%>
+E2EXF_INIT_XFSTATEVAR_<%= isReceiver ? "INVXF" : "XF" %>_<%= profile.getMappedName() %>_<%= inPlace ? "INPLACE" : "OUTOFPLACE" %>(<%= name %>);
+<% } %>
+<% } %>
+E2EXF_DEF_FUNC_PARTITIONINIT_STOP
+
+/** \brief Define de-initialization function for all transformers of this partition */
+E2EXF_DEF_FUNC_PARTITIONDEINIT
+
+<% for(Profile profile : configuredProfiles) {
+
+    for (final Transformer transformer : model.getTransformersWithProfile(profile, false)) {
+        final FlagSet<TransformerFlags> flags = transformer.getFlags();
+        final String name = transformer.getName();
+        final boolean isReceiver = flags.contains(TransformerFlags.INVERSE);
+        final boolean inPlace = flags.contains(TransformerFlags.IN_PLACE);
+%>
+/** \brief Define transformer function for <%= inPlace ? "in-place" : "out-of-place" %> <%= isReceiver ? "inverse " : "" %>transformer */
+E2EXF_DEF_FUNC_<%= isReceiver ? "INVXF" : "XF" %>_<%= profile.getMappedName() %>_<%= inPlace ? "INPLACE" : "OUTOFPLACE" %>(<%= name %>)
+
+<% } %>
+<% } %>
+<%
+    for (final Transformer transformer : model.getTransformersWithProfile(null, true)) {
+        final FlagSet<TransformerFlags> flags = transformer.getFlags();
+        final String name = transformer.getName();
+        final boolean isReceiver = flags.contains(TransformerFlags.INVERSE);
+        final boolean inPlace = flags.contains(TransformerFlags.IN_PLACE);
+%>
+/** \brief Define transformer function for <%= inPlace ? "in-place" : "out-of-place" %> inverse transformer with disabled end-to-end check */
+E2EXF_DEF_FUNC_<%= isReceiver ? "INVXF" : "XF" %>_NO_CHECK_<%= inPlace ? "INPLACE" : "OUTOFPLACE" %>(<%= name %>)
+
+<% } %>
+#define E2EXF_STOP_SEC_CODE
+#include <E2EXf_MemMap.h>
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.c.inc" %>

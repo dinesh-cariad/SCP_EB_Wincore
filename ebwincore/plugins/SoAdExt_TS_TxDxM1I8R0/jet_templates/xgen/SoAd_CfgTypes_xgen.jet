@@ -1,0 +1,25 @@
+<%@ jet package="dreisoft.tresos.soad.generated.jet" class="SoAd_CfgTypes_xgen" skeleton="File_xgen.skeleton" %>
+<%@ include file="head.xgen.inc" %>
+
+
+<%
+    JavaGenContext context = getJavaGenContext(argument, stringBuffer);
+    if(context != null) {
+        CDSGenFile cdsGenFile = getCSDGenFile(context);
+
+        final PreCompileData preCompileData = (PreCompileData)context.gen.getVariable( PreCompileData.ARG_NAME,
+                                                                         PreCompileData.class,
+                                                                         null );
+        final PostBuildData postBuildData = (PostBuildData)context.gen.getVariable(PostBuildData.ARG_NAME,
+                                                                       PostBuildData.class,
+                                                                       null );
+%>
+        <!-- This is the precompile-time configuration of the module. -->
+        <configuration class="PreCompile">
+            <?artifact generate="yes" <%@ include file="preCompileConfigData.xgen.inc" %>
+        </configuration> <!-- precompile -->
+<%
+        context.cds.endFile(cdsGenFile);
+    }
+%>
+<%@ include file="foot.xgen.inc" %>

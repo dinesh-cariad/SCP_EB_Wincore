@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xs:schema targetNamespace="http://www.elektrobit.com/2013/xgen" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns="http://www.elektrobit.com/2013/xgen" xmlns:x="http://www.elektrobit.com/2013/xgen" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xi="http://www.w3.org/2001/XInclude" xmlns:xml="http://www.w3.org/XML/1998/namespace">
+
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd" />
+
+  <xs:element name="xgen" type="xgen.type">
+    <!-- Type names must be globally unique -->
+    <xs:key name="any-type.id">
+      <xs:selector xpath=".//x:type|.//x:base-type" />
+      <xs:field xpath="@name" />
+    </xs:key>
+    <!-- Global variable names must be unique -->
+    <xs:key name="instance.id">
+      <xs:selector xpath=".//x:configuration/x:instance" />
+      <xs:field xpath="@name" />
+    </xs:key>
+    <!-- Symbol definitions must be unique -->
+    <xs:key name="symbol.id">
+      <xs:selector xpath=".//x:symbol-def" />
+      <xs:field xpath="@name" />
+    </xs:key>
+    <!-- All types must refer to either another type or a base type -->
+    <xs:key name="usable-type.id">
+      <xs:selector xpath=".//x:type" />
+      <xs:field xpath="@name" />
+    </xs:key>
+    <xs:keyref name="type.ref" refer="usable-type.id">
+      <xs:selector xpath=".//x:type/x:reference|.//x:instance" />
+      <xs:field xpath="@type" />
+    </xs:keyref>
+    <xs:key name="usable-basetype.id">
+      <xs:selector xpath=".//x:base-type" />
+      <xs:field xpath="@name" />
+    </xs:key>
+    <xs:keyref name="basetype.ref" refer="usable-basetype.id">
+      <xs:selector xpath=".//x:type/x:basetype-ref" />
+      <xs:field xpath="@type" />
+    </xs:keyref>
+  </xs:element>
+
+  <xs:simpleType name="identifier.type">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="[a-zA-Z_][a-zA-Z0-9_]*" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="C-type.type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="char"/>
+      <xs:enumeration value="short"/>
+      <xs:enumeration value="short int"/>
+      <xs:enumeration value="int"/>
+      <xs:enumeration value="long"/>
+      <xs:enumeration value="long int"/>
+      <xs:enumeration value="long long"/>
+      <xs:enumeration value="long long int"/>
+      <xs:enumeration value="float"/>
+      <xs:enumeration value="double"/>
+      <xs:enumeration value="long double"/>
+      <xs:enumeration value="nearpointer"/>
+      <xs:enumeration value="farpointer"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="element.type">
+    <xs:complexContent>
+      <xs:extension base="root.type">
+        <xs:sequence>
+          <xs:element name="comment" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="parameter" type="property.type" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="comment" type="xs:string" use="optional" />
+        <xs:attribute name="misra-deviations" type="xs:string" use="optional" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="configuration-class.type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="PostBuild" />
+      <xs:enumeration value="PreCompile" />
+      <xs:enumeration value="LinkTime" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="variable.type">
+    <xs:complexContent>
+      <xs:extension base="element.type">
+        <xs:sequence maxOccurs="1" minOccurs="0">
+          <xs:element name="compiler-abstraction" type="compiler-abstraction.type"/>
+        </xs:sequence>
+        <xs:attribute use="required" name="name" type="identifier.type" />
+        <xs:attribute use="required" name="type" type="identifier.type" />
+        <xs:attribute use="optional" name="count" type="xs:positiveInteger" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="instance.type">
+    <xs:complexContent>
+      <xs:extension base="variable.type">
+        <xs:sequence>
+          <xs:group ref="values.group" minOccurs="0" maxOccurs="unbounded" />
+          <xs:element name="include-instance" type="include-instance.type" minOccurs="0" maxOccurs="unbounded" />
+        </xs:sequence>
+        <xs:attribute name="address" type="xs:nonNegativeInteger" use="optional" default="0" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="type.type">
+    <xs:complexContent>
+      <xs:extension base="element.type">
+        <xs:group ref="types.group" maxOccurs="1" minOccurs="1" />
+        <xs:attribute use="required" name="name" type="identifier.type" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="reference-type.type">
+    <xs:complexContent>
+      <xs:extension base="element.type">
+        <xs:sequence>
+          <xs:element name="compiler-abstraction" type="compiler-abstraction.type" maxOccurs="1" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute use="required" name="type" type="identifier.type" />
+
+        <xs:attribute use="optional" name="count" type="xs:positiveInteger" />
+
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="struct-type.type">
+    <xs:complexContent>
+      <xs:extension base="element.type">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="unbounded" name="member" type="variable.type" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="configuration.type">
+    <xs:complexContent>
+      <xs:extension base="element.type">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="type" type="type.type" />
+          <xs:element name="symbol-def" type="symbol.type"/>
+          <xs:element name="base-type" type="base-type.type"/>
+          <xs:element name="struct-properties" type="structured-properties.type" maxOccurs="1" minOccurs="0" />
+          <xs:element name="array-properties" type="structured-properties.type" maxOccurs="1" minOccurs="0" />
+          <xs:element name="memory-section" type="memory-section.type" />
+        </xs:choice>
+        <xs:attribute use="required" name="class" type="configuration-class.type" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="module.type">
+    <xs:complexContent>
+      <xs:extension base="element.type">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="configuration" type="configuration.type">
+            <xs:key name="parameter.id">
+              <xs:selector xpath="x:parameter" />
+              <xs:field xpath="@name" />
+            </xs:key>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="identifier.type" use="required" />
+        <xs:attribute name="version" type="xs:string" use="optional" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="xgen.type">
+    <xs:complexContent>
+      <xs:extension base="element.type">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="module" type="module.type" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="field.type">
+    <xs:complexContent>
+      <xs:extension base="element.type">
+        <xs:group ref="values.group" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:group name="values.group">
+    <xs:choice>
+      <xs:element name="field" maxOccurs="unbounded" type="field.type" />
+      <xs:element name="int" type="xs:integer" />
+      <xs:element name="symbol" type="identifier.type"/>
+      <xs:element name="member-count" type="reference.type"/>
+      <xs:element name="ref" type="reference.type" />
+    </xs:choice>
+  </xs:group>
+
+  <xs:group name="types.group">
+    <xs:choice>
+      <xs:element name="reference" type="reference-type.type" />
+      <xs:element name="struct" type="struct-type.type">
+        <!-- member names must be unique within a struct -->
+        <xs:key name="member.id">
+          <xs:selector xpath="x:member" />
+          <xs:field xpath="@name" />
+        </xs:key>
+      </xs:element>
+      <xs:element name="basetype-ref" type="basetype-ref.type"/>
+    </xs:choice>
+  </xs:group>
+
+  <xs:complexType name="base-type.type">
+    <xs:complexContent>
+      <xs:extension base="element.type">
+        <xs:attribute name="name" type="C-type.type" use="required" />
+        <xs:attribute name="size" type="xs:positiveInteger" use="required" />
+        <xs:attribute name="alignment" type="xs:positiveInteger" use="required" />
+        <xs:attribute name="atomic-access" type="xs:boolean" use="required" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="structured-properties.type">
+    <xs:complexContent>
+      <xs:extension base="root.type">
+        <xs:sequence>
+          <xs:element name="minimum-alignment" maxOccurs="unbounded" minOccurs="1">
+            <xs:complexType>
+              <xs:attribute name="up-to-size" type="xs:positiveInteger" use="optional" />
+              <xs:attribute name="value" type="xs:positiveInteger" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="reference.type">
+    <xs:complexContent>
+      <xs:extension base="root.type">
+        <xs:sequence maxOccurs="1" minOccurs="0">
+          <xs:choice minOccurs="1" maxOccurs="1">
+            <xs:element name="instance-ref" type="instance-reference.type"/>
+            <xs:element name="struct-field" type="struct-field-reference.type"/>
+          </xs:choice>
+          <xs:choice maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="struct-field" type="struct-field-reference.type"/>
+            <xs:element name="array-field" type="array-field-reference.type"/>
+          </xs:choice>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="instance-reference.type">
+    <xs:complexContent>
+      <xs:extension base="root.type">
+        <xs:attribute name="name" type="identifier.type" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="struct-field-reference.type">
+    <xs:complexContent>
+      <xs:extension base="root.type">
+        <xs:attribute name="name" type="identifier.type" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="array-field-reference.type">
+    <xs:complexContent>
+      <xs:extension base="root.type">
+        <xs:attribute name="index" type="xs:nonNegativeInteger" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="compiler-abstraction.type">
+    <xs:complexContent>
+      <xs:extension base="root.type">
+        <xs:choice>
+          <xs:element name="var">
+            <xs:complexType>
+              <xs:attribute name="memory-class" type="identifier.type" use="required"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="const">
+            <xs:complexType>
+              <xs:attribute name="memory-class" type="identifier.type" use="required"/>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ref2cfg">
+            <xs:complexType />
+          </xs:element>
+          <xs:element name="ref2var">
+            <xs:complexType />
+          </xs:element>
+        </xs:choice>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="property.type">
+    <xs:complexContent>
+      <xs:extension base="root.type">
+        <xs:choice>
+          <xs:element name="boolean-value" type="xs:boolean"/>
+          <xs:element name="integer-value" type="xs:integer"/>
+          <xs:element name="string-value" type="xs:string"/>
+          <xs:element name="symbolic-value" type="identifier.type"/>
+          <xs:element name="parameter" type="property-reference.type"/>
+          <xs:element name="reference-value" type="reference.type"/>
+        </xs:choice>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="symbol.type">
+    <xs:complexContent>
+      <xs:extension base="property.type">
+        <xs:attribute name="prefix" type="xs:string" use="optional"/>
+        <xs:attribute name="suffix" type="xs:string" use="optional"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="root.type">
+    <xs:attribute ref="xml:base" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="basetype-ref.type">
+    <xs:attribute name="type" type="C-type.type" use="required" />
+    <xs:attribute name="signed" type="xs:boolean" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="memory-section.type">
+    <xs:complexContent>
+      <xs:extension base="element.type">
+        <xs:sequence>
+          <xs:element name="instance" type="instance.type" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="identifier.type" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="include-instance.type">
+    <xs:attribute name="module" type="identifier.type" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="property-reference.type">
+    <xs:attribute name="reference" type="xs:string"/>
+  </xs:complexType>
+</xs:schema>

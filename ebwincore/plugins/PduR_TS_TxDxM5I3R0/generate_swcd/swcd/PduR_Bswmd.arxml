@@ -1,0 +1,2410 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+[!AUTOSPACING!][!//
+[!MACRO "PduRGetMaxPartitionDestId"!][!NOCODE!]
+[!IF "asc_PduR:isCrossCoreMatrixModule(name(.)) = 'true'"!][!//
+[!VAR "MAX_PARTITION_DEST_ID"="$MAX_PARTITION_SRC_ID"!][!//
+[!ELSE!][!//
+[!VAR "MAX_PARTITION_DEST_ID"="0"!][!//
+[!ENDIF!][!//
+[!ENDNOCODE!][!ENDMACRO!]
+[!MACRO "PduRGetCrossCoreMatrixStringSuffix"!][!NOCODE!]
+[!IF "(asc_PduR:isCrossCoreMatrixModule(name(.)) = 'true')"!][!//
+[!VAR "CROSS_CORE_MATRIX_SUFFIX"="concat($PARTITION_SRC_IDX, "_", $PARTITION_DEST_IDX)"!][!//
+[!ELSE!][!//
+[!VAR "CROSS_CORE_MATRIX_SUFFIX"="$PARTITION_SRC_IDX"!][!//
+[!ENDIF!][!//
+[!ENDNOCODE!][!ENDMACRO!]
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-2-1_STRICT_COMPACT.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_PduR</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleDescriptions</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-DESCRIPTION>
+              <SHORT-NAME>PduR</SHORT-NAME>
+              <!-- !LINKSTO PduR.ASR40.PDUR0778,1 -->
+              <MODULE-ID>51</MODULE-ID>
+              <PROVIDED-ENTRYS>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_Init</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <!-- The PduR module does not have scheduled functions -->
+[!IF "(PduRGeneral/PduRMultiCoreSupport = 'true')"!][!//
+                <!-- If Multicore functionality -->
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRLowerModule = 'true') and (./PduRCommunicationInterface = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_[!"$BSW_MODULES_NAME"!]IfLLDummy</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRUpperModule = 'true') and (./PduRCommunicationInterface = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!IF "(./PduRTriggertransmit = 'true')"!][!//
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!IF "(./PduRTxConfirmation = 'true')"!][!//
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!][!//
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_[!"$BSW_MODULES_NAME"!]IfULDummy</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRLowerModule = 'true') and (./PduRTransportProtocol = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_[!"$BSW_MODULES_NAME"!]TpLLDummy</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRUpperModule = 'true') and (./PduRTransportProtocol = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_[!"$BSW_MODULES_NAME"!]TpULDummy</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDLOOP!]
+[!ENDIF!][!//
+              </PROVIDED-ENTRYS>
+[!IF "(PduRGeneral/PduRMultiCoreSupport = 'true')"!][!//
+              <PROVIDED-CLIENT-SERVER-ENTRYS>
+                <!-- If Multicore functionality -->
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRLowerModule = 'true') and (./PduRCommunicationInterface = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRUpperModule = 'true') and (./PduRCommunicationInterface = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!IF "(./PduRTriggertransmit = 'true')"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!IF "(./PduRTxConfirmation = 'true')"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRLowerModule = 'true') and (./PduRTransportProtocol = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!IF "(./PduRCancelTransmit = 'true')"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!IF "(./PduRChangeParameterRequestApi = 'true')"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!IF "(./PduRCancelReceive = 'true')"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRUpperModule = 'true') and (./PduRTransportProtocol = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>pcse[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!][!//
+              </PROVIDED-CLIENT-SERVER-ENTRYS>
+              <REQUIRED-CLIENT-SERVER-ENTRYS>
+                <!-- If Multicore functionality -->
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRLowerModule = 'true') and (./PduRCommunicationInterface = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRUpperModule = 'true') and (./PduRCommunicationInterface = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!IF "(./PduRTriggertransmit = 'true')"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!IF "(./PduRTxConfirmation = 'true')"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRLowerModule = 'true') and (./PduRTransportProtocol = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!IF "(./PduRCancelTransmit = 'true')"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!IF "(./PduRChangeParameterRequestApi = 'true')"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!IF "(./PduRCancelReceive = 'true')"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRUpperModule = 'true') and (./PduRTransportProtocol = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!][!//
+              </REQUIRED-CLIENT-SERVER-ENTRYS>
+[!ENDIF!][!//
+              <INTERNAL-BEHAVIORS>
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_0</SHORT-NAME>
+[!IF "(PduRGeneral/PduRTpGatewaySupport = 'true') or (PduRGeneral/PduRIfGatewaySupport = 'true') or
+  (PduRGeneral/PduRMulticastLoTpToUpSupport = 'true') or (PduRGeneral/PduRMulticastUpToLoTpSupport = 'true')"!][!//
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_PDUR_EXCLUSIVE_AREA_0</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+[!IF "(PduRGeneral/PduRMultiCoreSupport = 'true')"!][!//
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_PDUR_EXCLUSIVE_AREA_1</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_PDUR_EXCLUSIVE_AREA_2</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+[!ENDIF!][!//
+[!IF "(PduRGeneral/PduRRoutingPathGroupSupport = 'true')"!][!//
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_PDUR_EXCLUSIVE_AREA_3</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+[!ENDIF!][!//
+                  </EXCLUSIVE-AREAS>
+[!ENDIF!][!//
+                  <ENTITYS>
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>PduR_Init</SHORT-NAME>
+[!IF "(PduRGeneral/PduRTpGatewaySupport = 'true') or (PduRGeneral/PduRIfGatewaySupport = 'true') or
+  (PduRGeneral/PduRMulticastLoTpToUpSupport = 'true') or (PduRGeneral/PduRMulticastUpToLoTpSupport = 'true')"!][!//
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_PduR/BswModuleDescriptions/PduR/InternalBehavior_0/SCHM_PDUR_EXCLUSIVE_AREA_0</CAN-ENTER-EXCLUSIVE-AREA-REF>
+[!IF "(PduRGeneral/PduRMultiCoreSupport = 'true')"!][!//
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_PduR/BswModuleDescriptions/PduR/InternalBehavior_0/SCHM_PDUR_EXCLUSIVE_AREA_1</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_PduR/BswModuleDescriptions/PduR/InternalBehavior_0/SCHM_PDUR_EXCLUSIVE_AREA_2</CAN-ENTER-EXCLUSIVE-AREA-REF>
+[!ENDIF!][!//
+[!IF "(PduRGeneral/PduRRoutingPathGroupSupport = 'true')"!][!//
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_PduR/BswModuleDescriptions/PduR/InternalBehavior_0/SCHM_PDUR_EXCLUSIVE_AREA_3</CAN-ENTER-EXCLUSIVE-AREA-REF>
+[!ENDIF!][!//
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+[!ENDIF!][!//
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_Init</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                  </ENTITYS>
+                </BSW-INTERNAL-BEHAVIOR>
+[!IF "(PduRGeneral/PduRMultiCoreSupport = 'true')"!][!//
+[!VAR "MAX_PARTITION_SRC_ID"="PduRGeneral/PduRPartitionCount  - 1"!][!//
+                <!-- If Multicore functionality -->
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRLowerModule = 'true') and (./PduRCommunicationInterface = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+[!CALL "PduRGetMaxPartitionDestId"!][!//
+[!FOR "PARTITION_SRC_IDX" = "0" TO "$MAX_PARTITION_SRC_ID"!][!//
+[!FOR "PARTITION_DEST_IDX" = "0" TO "$MAX_PARTITION_DEST_ID"!][!//
+[!IF "not(($MAX_PARTITION_DEST_ID > "0") and ($PARTITION_SRC_IDX = $PARTITION_DEST_IDX))"!][!//
+[!CALL "PduRGetCrossCoreMatrixStringSuffix"!][!//
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>IntBeh[!"$BSW_MODULES_NAME"!]IfLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+                  <INTERNAL-TRIGGERING-POINTS>
+                    <BSW-INTERNAL-TRIGGERING-POINT>
+                      <SHORT-NAME>tp[!"$BSW_MODULES_NAME"!]Dummy</SHORT-NAME>
+                    </BSW-INTERNAL-TRIGGERING-POINT>
+                  </INTERNAL-TRIGGERING-POINTS>
+                  <ENTITYS>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>se[!"$BSW_MODULES_NAME"!]Dummy</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <CALL-POINTS>
+                        <BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</CALLED-ENTRY-REF>
+                        </BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                      </CALL-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_[!"$BSW_MODULES_NAME"!]IfLLDummy</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task0</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task1</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task2</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>IntBeh[!"$BSW_MODULES_NAME"!]IfLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+                  <ENTITYS>
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+[!ENDIF!][!//
+[!ENDFOR!]
+[!ENDFOR!]
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRUpperModule = 'true') and (./PduRCommunicationInterface = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+[!CALL "PduRGetMaxPartitionDestId"!][!//
+[!FOR "PARTITION_SRC_IDX" = "0" TO "$MAX_PARTITION_SRC_ID"!][!//
+[!FOR "PARTITION_DEST_IDX" = "0" TO "$MAX_PARTITION_DEST_ID"!][!//
+[!IF "not(($MAX_PARTITION_DEST_ID > "0") and ($PARTITION_SRC_IDX = $PARTITION_DEST_IDX))"!][!//
+[!CALL "PduRGetCrossCoreMatrixStringSuffix"!][!//
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>IntBeh[!"$BSW_MODULES_NAME"!]IfULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+                  <INTERNAL-TRIGGERING-POINTS>
+                    <BSW-INTERNAL-TRIGGERING-POINT>
+                      <SHORT-NAME>tp[!"$BSW_MODULES_NAME"!]Dummy</SHORT-NAME>
+                    </BSW-INTERNAL-TRIGGERING-POINT>
+                  </INTERNAL-TRIGGERING-POINTS>
+                  <ENTITYS>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>se[!"$BSW_MODULES_NAME"!]Dummy</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <CALL-POINTS>
+                        <BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</CALLED-ENTRY-REF>
+                        </BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+[!IF "(./PduRTriggertransmit = 'true')"!][!//
+                        <BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</CALLED-ENTRY-REF>
+                        </BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!IF "(./PduRTxConfirmation = 'true')"!][!//
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>ascp[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!][!//
+                      </CALL-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_[!"$BSW_MODULES_NAME"!]IfULDummy</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task0</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task1</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task2</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>IntBeh[!"$BSW_MODULES_NAME"!]IfULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+                  <ENTITYS>
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!IF "(./PduRTriggertransmit = 'true')"!][!//
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!ENDIF!]
+[!IF "(./PduRTxConfirmation = 'true')"!][!//
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!ENDIF!][!//
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!IF "(./PduRTriggertransmit = 'true')"!][!//
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+[!IF "(./PduRTxConfirmation = 'true')"!][!//
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+[!ENDIF!][!//
+[!ENDFOR!]
+[!ENDFOR!]
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRLowerModule = 'true') and (./PduRTransportProtocol = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+[!CALL "PduRGetMaxPartitionDestId"!][!//
+[!FOR "PARTITION_SRC_IDX" = "0" TO "$MAX_PARTITION_SRC_ID"!][!//
+[!FOR "PARTITION_DEST_IDX" = "0" TO "$MAX_PARTITION_DEST_ID"!][!//
+[!IF "not(($MAX_PARTITION_DEST_ID > "0") and ($PARTITION_SRC_IDX = $PARTITION_DEST_IDX))"!][!//
+[!CALL "PduRGetCrossCoreMatrixStringSuffix"!][!//
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>IntBeh[!"$BSW_MODULES_NAME"!]TpLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+                  <INTERNAL-TRIGGERING-POINTS>
+                    <BSW-INTERNAL-TRIGGERING-POINT>
+                      <SHORT-NAME>tp[!"$BSW_MODULES_NAME"!]Dummy</SHORT-NAME>
+                    </BSW-INTERNAL-TRIGGERING-POINT>
+                  </INTERNAL-TRIGGERING-POINTS>
+                  <ENTITYS>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>se[!"$BSW_MODULES_NAME"!]Dummy</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <CALL-POINTS>
+                        <BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</CALLED-ENTRY-REF>
+                        </BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+[!IF "(./PduRCancelTransmit = 'true')"!][!//
+                        <BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</CALLED-ENTRY-REF>
+                        </BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!IF "(./PduRChangeParameterRequestApi = 'true')"!][!//
+                        <BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</CALLED-ENTRY-REF>
+                        </BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!IF "(./PduRCancelReceive = 'true')"!][!//
+                        <BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</CALLED-ENTRY-REF>
+                        </BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+                      </CALL-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_[!"$BSW_MODULES_NAME"!]TpLLDummy</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task0</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task1</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task2</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>IntBeh[!"$BSW_MODULES_NAME"!]TpLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+                  <ENTITYS>
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!IF "(./PduRCancelTransmit = 'true')"!][!//
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!ENDIF!]
+[!IF "(./PduRChangeParameterRequestApi = 'true')"!][!//
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!ENDIF!]
+[!IF "(./PduRCancelReceive = 'true')"!][!//
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!ENDIF!]
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!IF "(./PduRCancelTransmit = 'true')"!][!//
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+[!IF "(./PduRChangeParameterRequestApi = 'true')"!][!//
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+[!IF "(./PduRCancelReceive = 'true')"!][!//
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+[!ENDIF!][!//
+[!ENDFOR!]
+[!ENDFOR!]
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRUpperModule = 'true') and (./PduRTransportProtocol = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+[!CALL "PduRGetMaxPartitionDestId"!][!//
+[!FOR "PARTITION_SRC_IDX" = "0" TO "$MAX_PARTITION_SRC_ID"!][!//
+[!FOR "PARTITION_DEST_IDX" = "0" TO "$MAX_PARTITION_DEST_ID"!][!//
+[!IF "not(($MAX_PARTITION_DEST_ID > "0") and ($PARTITION_SRC_IDX = $PARTITION_DEST_IDX))"!][!//
+[!CALL "PduRGetCrossCoreMatrixStringSuffix"!][!//
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>IntBeh[!"$BSW_MODULES_NAME"!]TpULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+                  <INTERNAL-TRIGGERING-POINTS>
+                    <BSW-INTERNAL-TRIGGERING-POINT>
+                      <SHORT-NAME>tp[!"$BSW_MODULES_NAME"!]Dummy</SHORT-NAME>
+                    </BSW-INTERNAL-TRIGGERING-POINT>
+                  </INTERNAL-TRIGGERING-POINTS>
+                  <ENTITYS>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>se[!"$BSW_MODULES_NAME"!]Dummy</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <CALL-POINTS>
+                        <BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</CALLED-ENTRY-REF>
+                        </BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                        <BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</CALLED-ENTRY-REF>
+                        </BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>ascp[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                        <BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</CALLED-ENTRY-REF>
+                        </BSW-SYNCHRONOUS-SERVER-CALL-POINT>
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>ascp[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                      </CALL-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_[!"$BSW_MODULES_NAME"!]TpULDummy</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task0</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task1</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>itoe[!"$BSW_MODULES_NAME"!]Task2</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/se[!"$BSW_MODULES_NAME"!]Dummy</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]/tp[!"$BSW_MODULES_NAME"!]Dummy</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>IntBeh[!"$BSW_MODULES_NAME"!]TpULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+                  <ENTITYS>
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ce[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_PduR/BswModuleEntrys/PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>oie[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]/ce[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+[!ENDIF!][!//
+[!ENDFOR!]
+[!ENDFOR!]
+[!ENDLOOP!]
+[!ENDIF!][!//
+              </INTERNAL-BEHAVIORS>
+            </BSW-MODULE-DESCRIPTION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleEntrys</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_Init</SHORT-NAME>
+              <SERVICE-ID>01</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>UNSPECIFIED</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!IF "(PduRGeneral/PduRMultiCoreSupport = 'true')"!][!//
+            <!-- If Multicore functionality -->
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRLowerModule = 'true') and (./PduRCommunicationInterface = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTransmit</SHORT-NAME>
+              <SERVICE-ID>20</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>returnValue</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>TxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>PduInfoPtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduInfoType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_[!"$BSW_MODULES_NAME"!]IfLLDummy</SHORT-NAME>
+              <SERVICE-ID>99</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRUpperModule = 'true') and (./PduRCommunicationInterface = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+             <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfRxIndication</SHORT-NAME>
+              <SERVICE-ID>66</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>RxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>PduInfoPtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduInfoType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!IF "(./PduRTriggertransmit = 'true')"!][!//
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTriggerTransmit</SHORT-NAME>
+              <SERVICE-ID>65</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>returnValue</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>TxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>PduInfoPtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>INOUT</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduInfoType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+[!IF "(./PduRTxConfirmation = 'true')"!][!//
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonIfTxConfirmation</SHORT-NAME>
+              <SERVICE-ID>64</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>TxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!][!//
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_[!"$BSW_MODULES_NAME"!]IfULDummy</SHORT-NAME>
+              <SERVICE-ID>99</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRLowerModule = 'true') and (./PduRTransportProtocol = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTransmit</SHORT-NAME>
+              <SERVICE-ID>20</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>returnValue</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>TxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>PduInfoPtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduInfoType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelTransmit</SHORT-NAME>
+              <SERVICE-ID>74</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>returnValue</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>TxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpChangeParameter</SHORT-NAME>
+              <SERVICE-ID>75</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>returnValue</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>id</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>parameter</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/TPParameterType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>value</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpCancelReceive</SHORT-NAME>
+              <SERVICE-ID>76</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>returnValue</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>RxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_[!"$BSW_MODULES_NAME"!]TpLLDummy</SHORT-NAME>
+              <SERVICE-ID>99</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDLOOP!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true') and (./PduRUpperModule = 'true') and (./PduRTransportProtocol = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonStartOfReception</SHORT-NAME>
+              <SERVICE-ID>52</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>returnValue</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/BufReq_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>RxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>TpSduLength</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduLengthType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>BufferSizePtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>OUT</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduLengthType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyRxData</SHORT-NAME>
+              <SERVICE-ID>50</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>returnValue</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/BufReq_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>RxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>PduInfoPtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduInfoType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>BufferSizePtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>OUT</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduLengthType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpRxIndication</SHORT-NAME>
+              <SERVICE-ID>51</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>RxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>Result</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/NotifResultType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonCopyTxData</SHORT-NAME>
+              <SERVICE-ID>54</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>returnValue</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/BufReq_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>TxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>PduInfoPtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduInfoType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>RetryInfoPtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/RetryInfoType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>AvailableDataPtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>OUT</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduLengthType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_rcse[!"$BSW_MODULES_NAME"!]SkeletonTpTxConfirmation</SHORT-NAME>
+              <SERVICE-ID>55</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>TxPduId</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/PduIdType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>Result</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Comtype/ImplementationDataTypes/NotifResultType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>PduR_[!"$BSW_MODULES_NAME"!]TpULDummy</SHORT-NAME>
+              <SERVICE-ID>99</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDLOOP!]
+[!ENDIF!][!//
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_PduR</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Implementations</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_0</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::PduR.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::PduR_Api.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::PduR_Api_Depend.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::PduR_Api_Static.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::PduR_Internal_Static.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::PduR_Lcfg_Static.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::PduR_Trace.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::PduR_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::PduR_WrapASR32.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_DisableRouting.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_EnableRouting.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfRxIndicationDf.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfRxIndicationDfDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfRxIndicationDfMCoreDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfRxIndicationMcUpSbDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfRxIndicationNb.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfRxIndicationSb.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfRxIndicationSbDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfRxIndicationSbMCoreDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfRxIndicationTf.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfRxIndicationTfDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfTriggerTransmitSb.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfTriggerTransmitSbDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfTriggerTransmitTf.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfTriggerTransmitTfDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfTxConfirmationDf.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfTxConfirmationDfDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfTxConfirmationDfMCoreDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfTxConfirmationTf.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateIfTxConfirmationTfDynPyld.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateTp.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateTpCopyRxData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateTpCopyTxData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateTpRxIndication.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateTpStartOfReception.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateTpTxConfirmation.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GateTpUpReception.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericIfRxIndication.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericIfTransmit.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericIfTriggerTransmit.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericIfTxConfirmation.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericTpCancelReceive.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericTpCancelTransmit.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericTpChangeParameter.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericTpCopyRxData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericTpCopyTxData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericTpRxIndication.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericTpStartOfReception.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericTpTransmit.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GenericTpTxConfirmation.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GetConfigurationId.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_GetVersionInfo.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_Init.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_IsValidConfig.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_Merged.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_MultiIf.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_MultiIfRxIndication.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_MultiIfTriggerTransmit.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_MultiIfTxConfirmation.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_MultiTp.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_MultiTpCopyTxData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_MultiTpTransmit.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_MultiTpTxConfirmation.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_MultiUpIfTransmit.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_MultiUpMCoreIfTransmit.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_Nto1GateTpCopyRxData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_Nto1GateTpCopyTxData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_Nto1GateTpRxIndication.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_Nto1GateTpStartOfReception.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_Nto1GateTpTxConfirmation.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_RPathGroups.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::PduR_WrapASR32.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::PduR_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::PduR_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!IF "node:exists(as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection) and as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection = 'true'"!]
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE_CC_BLOCK</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!ENDIF!][!//
+<!-- Deactivated for the moment due to MemMap
+[!IF "(PduRGeneral/PduRMultiCoreSupport = 'true')"!]
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true')]"!]
+[!VAR "BSW_MODULES_NAME_UPPER_CASE"="text:toupper(as:name(.))"!][!//
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE_LOCAL</SHORT-NAME>
+                    <PREFIX-REF DEST="SECTION-NAME-PREFIX">/EB_PduR/Implementations/BswImplementation_0/ResourceConsumption/PDUR_[!"$BSW_MODULES_NAME_UPPER_CASE"!]</PREFIX-REF>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!ENDLOOP!]
+[!ENDIF!][!//
+-->
+                </MEMORY-SECTIONS>
+<!-- Deactivated for the moment due to MemMap
+[!IF "(PduRGeneral/PduRMultiCoreSupport = 'true')"!][!//
+                <SECTION-NAME-PREFIXS>
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true')]"!]
+[!VAR "BSW_MODULES_NAME_UPPER_CASE"="text:toupper(as:name(.))"!][!//
+                  <SECTION-NAME-PREFIX>
+                    <SHORT-NAME>PDUR_[!"$BSW_MODULES_NAME_UPPER_CASE"!]</SHORT-NAME>
+                    <SYMBOL>PDUR_[!"$BSW_MODULES_NAME_UPPER_CASE"!]</SYMBOL>
+                  </SECTION-NAME-PREFIX>
+[!ENDLOOP!][!//
+              </SECTION-NAME-PREFIXS>
+[!ENDIF!][!//
+-->
+              </RESOURCE-CONSUMPTION>
+              <!-- !LINKSTO PduR.ASR40.PDUR0778,1 --><!-- traced until AR-RELEASE-VERSION -->
+              <SW-VERSION>5.3.46</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_PduR/BswModuleDescriptions/PduR/InternalBehavior_0</BEHAVIOR-REF>
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM5I3R0/PduR</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+[!IF "(PduRGeneral/PduRMultiCoreSupport = 'true')"!][!//
+[!VAR "MAX_PARTITION_SRC_ID"="PduRGeneral/PduRPartitionCount  - 1"!][!//
+            <!-- Multicore functionality -->
+[!LOOP "PduRBswModules/*[(./PduRBswModuleIsEnabled = 'true')]"!]
+[!VAR "BSW_MODULES_NAME"="name(.)"!][!//
+[!IF "(./PduRLowerModule = 'true') and (./PduRCommunicationInterface = 'true')"!][!//
+[!CALL "PduRGetMaxPartitionDestId"!][!//
+[!FOR "PARTITION_SRC_IDX" = "0" TO "$MAX_PARTITION_SRC_ID"!][!//
+[!FOR "PARTITION_DEST_IDX" = "0" TO "$MAX_PARTITION_DEST_ID"!][!//
+[!IF "not(($MAX_PARTITION_DEST_ID > "0") and ($PARTITION_SRC_IDX = $PARTITION_DEST_IDX))"!][!//
+[!CALL "PduRGetCrossCoreMatrixStringSuffix"!][!//
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>Impl_PduR_[!"$BSW_MODULES_NAME"!]_IfLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Impl_EBTest</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption_EBTest</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!IF "node:exists(as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection) and as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection = 'true'"!]
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE_CC_BLOCK</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!ENDIF!][!//
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>5.3.46</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>[!"$BSW_MODULES_NAME"!]_IfLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</VENDOR-API-INFIX>
+            </BSW-IMPLEMENTATION>
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>Impl_PduR_[!"$BSW_MODULES_NAME"!]_IfLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Impl_EBTest</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption_EBTest</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!IF "node:exists(as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection) and as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection = 'true'"!]
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE_CC_BLOCK</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!ENDIF!][!//
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>5.3.46</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>[!"$BSW_MODULES_NAME"!]_IfLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</VENDOR-API-INFIX>
+            </BSW-IMPLEMENTATION>
+[!ENDIF!][!//
+[!ENDFOR!]
+[!ENDFOR!]
+[!ENDIF!][!//
+[!IF "(./PduRUpperModule = 'true') and (./PduRCommunicationInterface = 'true')"!][!//
+[!CALL "PduRGetMaxPartitionDestId"!][!//
+[!FOR "PARTITION_SRC_IDX" = "0" TO "$MAX_PARTITION_SRC_ID"!][!//
+[!FOR "PARTITION_DEST_IDX" = "0" TO "$MAX_PARTITION_DEST_ID"!][!//
+[!IF "not(($MAX_PARTITION_DEST_ID > "0") and ($PARTITION_SRC_IDX = $PARTITION_DEST_IDX))"!][!//
+[!CALL "PduRGetCrossCoreMatrixStringSuffix"!][!//
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>Impl_PduR_[!"$BSW_MODULES_NAME"!]_IfULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Impl_EBTest</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption_EBTest</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!IF "node:exists(as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection) and as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection = 'true'"!]
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE_CC_BLOCK</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!ENDIF!][!//
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>5.3.46</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>[!"$BSW_MODULES_NAME"!]_IfULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</VENDOR-API-INFIX>
+            </BSW-IMPLEMENTATION>
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>Impl_PduR_[!"$BSW_MODULES_NAME"!]_IfULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Impl_EBTest</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption_EBTest</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!IF "node:exists(as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection) and as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection = 'true'"!]
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE_CC_BLOCK</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!ENDIF!][!//
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>5.3.46</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]IfULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>[!"$BSW_MODULES_NAME"!]_IfULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</VENDOR-API-INFIX>
+            </BSW-IMPLEMENTATION>
+[!ENDIF!][!//
+[!ENDFOR!]
+[!ENDFOR!]
+[!ENDIF!][!//
+[!IF "(./PduRLowerModule = 'true') and (./PduRTransportProtocol = 'true')"!][!//
+[!CALL "PduRGetMaxPartitionDestId"!][!//
+[!FOR "PARTITION_SRC_IDX" = "0" TO "$MAX_PARTITION_SRC_ID"!][!//
+[!FOR "PARTITION_DEST_IDX" = "0" TO "$MAX_PARTITION_DEST_ID"!][!//
+[!IF "not(($MAX_PARTITION_DEST_ID > "0") and ($PARTITION_SRC_IDX = $PARTITION_DEST_IDX))"!][!//
+[!CALL "PduRGetCrossCoreMatrixStringSuffix"!][!//
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>Impl_PduR_[!"$BSW_MODULES_NAME"!]_TpLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Impl_EBTest</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption_EBTest</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!IF "node:exists(as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection) and as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection = 'true'"!]
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE_CC_BLOCK</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!ENDIF!][!//
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>5.3.46</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>[!"$BSW_MODULES_NAME"!]_TpLLClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</VENDOR-API-INFIX>
+            </BSW-IMPLEMENTATION>
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>Impl_PduR_[!"$BSW_MODULES_NAME"!]_TpLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Impl_EBTest</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption_EBTest</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!IF "node:exists(as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection) and as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection = 'true'"!]
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE_CC_BLOCK</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!ENDIF!][!//
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>5.3.46</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>[!"$BSW_MODULES_NAME"!]_TpLLServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</VENDOR-API-INFIX>
+            </BSW-IMPLEMENTATION>
+[!ENDIF!][!//
+[!ENDFOR!]
+[!ENDFOR!]
+[!ENDIF!][!//
+[!IF "(./PduRUpperModule = 'true') and (./PduRTransportProtocol = 'true')"!][!//
+[!CALL "PduRGetMaxPartitionDestId"!][!//
+[!FOR "PARTITION_SRC_IDX" = "0" TO "$MAX_PARTITION_SRC_ID"!][!//
+[!FOR "PARTITION_DEST_IDX" = "0" TO "$MAX_PARTITION_DEST_ID"!][!//
+[!IF "not(($MAX_PARTITION_DEST_ID > "0") and ($PARTITION_SRC_IDX = $PARTITION_DEST_IDX))"!][!//
+[!CALL "PduRGetCrossCoreMatrixStringSuffix"!][!//
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>Impl_PduR_[!"$BSW_MODULES_NAME"!]_TpULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Impl_EBTest</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption_EBTest</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!IF "node:exists(as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection) and as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection = 'true'"!]
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE_CC_BLOCK</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!ENDIF!][!//
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>5.3.46</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>[!"$BSW_MODULES_NAME"!]_TpULClient[!"$CROSS_CORE_MATRIX_SUFFIX"!]</VENDOR-API-INFIX>
+            </BSW-IMPLEMENTATION>
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>Impl_PduR_[!"$BSW_MODULES_NAME"!]_TpULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Impl_EBTest</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption_EBTest</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!IF "node:exists(as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection) and as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMMapIsValidFunctionToMemSection = 'true'"!]
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE_CC_BLOCK</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+[!ENDIF!][!//
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>5.3.46</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_PduR/BswModuleDescriptions/PduR/IntBeh[!"$BSW_MODULES_NAME"!]TpULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>[!"$BSW_MODULES_NAME"!]_TpULServer[!"$CROSS_CORE_MATRIX_SUFFIX"!]</VENDOR-API-INFIX>
+            </BSW-IMPLEMENTATION>
+[!ENDIF!][!//
+[!ENDFOR!]
+[!ENDFOR!]
+[!ENDIF!][!//
+[!ENDLOOP!]
+[!ENDIF!][!//
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

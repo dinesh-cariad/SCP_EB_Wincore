@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+    ** \brief AUTOSAR LinSM_TS_TxDxM3I4R0 plugin
+    ** \project AUTOSAR Standard Core
+    ** \file plugin.xdm
+    **
+    ** Copyright 2010 by Elektrobit Automotive GmbH
+    ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+    ** unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="LinSM_TS_TxDxM3I4R0_ModuleId"
+             name="LinSM_TS_TxDxM3I4R0 Module">
+    <module id="LinSM_TS_TxDxM3I4R0"
+            label="LinSM"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-LINStack: AUTOSAR LinSM module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="3"
+            swVersionMinor="4"
+            swVersionPatch="19"
+            swVersionSuffix="B439717"
+            specVersionMajor="1"
+            specVersionMinor="3"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="LinSM"
+            categoryLayer="Communication Services"
+            categoryCategory="LIN"
+            categoryComponent="ECUC">
+      <cluster name="Lin Stack"/>
+    </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="LinSM_TS_TxDxM3I4R0_ConfigId"
+             name="LinSM_TS_TxDxM3I4R0 Configuration">
+    <configuration moduleId="LinSM_TS_TxDxM3I4R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/LinSM.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM3I4R0/LinSM"/>
+      </data>
+
+      <editor id="LinSM_TS_TxDxM3I4R0_EditorId"
+              label="Default"
+              tooltip="ACG-LINStack: AUTOSAR LinSM module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM3I4R0/LinSM"/>
+          <parameter name="title" value="LinSM"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_LinSM_TS_TxDxM3I4R0"
+           moduleId="LinSM_TS_TxDxM3I4R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.LinSMTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_LinSM_TS_TxDxM3I4R0"
+        name="LinSM service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="LinSM" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/LinSM_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.LinSM_TS_TxDxM3I4R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="LinSM_TS_TxDxM3I4R0_GeneratorId"
+             name="LinSM_TS_TxDxM3I4R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="LinSM_TS_TxDxM3I4R0_TemplateBasedCodeGeneratorId"
+               moduleId="LinSM_TS_TxDxM3I4R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+
+  <!-- Adjacent Layer Handle Id Policy-->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="LinSMCopyLinSMScheduleIndexFromLinIfLinIfScheduleTableIndex_LinSM"
+    name="LinSM/LinSMScheduleIndex"
+    desc="ASR 4.0 LinSM Copy LinSMScheduleIndex Handle Id from LinIf LinIfScheduleTableIndex">
+        <operationclass class="dreisoft.tresos.hidwiz.api.HandleIdCopyPushOperation">
+            <parameter name="moduleId" value="LinSM_TS_TxDxM3I4R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM3I4R0/ELEMENTS/LinSM/LinSMConfigSet/LinSMConfigSet/LinSMChannel/LinSMChannel/LinSMSchedule/LinSMSchedule"/>
+            <parameter name="idPath" value="LinSMScheduleIndex"/>
+            <parameter name="sourceIdRefPath" value="LinSMScheduleIndexRef"/>
+            <parameter name="sourceIdPath" value="LinIfScheduleTableIndex"/>
+            <parameter name="order" value="450"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.LinSM_TS_TxDxM3I4R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.0"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+</plugin>

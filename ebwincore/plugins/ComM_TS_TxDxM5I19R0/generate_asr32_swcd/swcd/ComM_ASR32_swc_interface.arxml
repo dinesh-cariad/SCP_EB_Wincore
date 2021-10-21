@@ -1,0 +1,1580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+[!AUTOSPACING!]
+<AUTOSAR xmlns="http://autosar.org/3.2.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/3.2.2 AUTOSAR_STRICT_COMPACT.xsd">
+[!IF "not(node:exists(as:modconf('ComM')[1]/ComMConfigSet/*[1]))"!][!//
+[!ERROR "Configuration not exist!"!][!//
+[!ENDIF!][!//
+[!/* do not generate this file if RTE is not used */!]
+[!SKIPFILE "ComMGeneral/ComMRteUsage = 'false'"!]
+[!// find maximum number of users for a channel
+[!VAR "maxNumUsersPerChannel"="0"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+<!-- Number of users of a channel is calculated by adding number of users directly mapped to a channel +
+     (Number of users mapped to a channel via pnc - Number of users directly mapped to a channel) -->
+[!VAR "numUserOfCh"="num:i(count(ComMUserPerChannel/*/ComMUserChannel)+count(node:difference(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[(node:ref(.)/ComMChannelId=node:current()/ComMChannelId)]/../../ComMUserPerPnc/*),node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[./ComMChannelId=node:current()/ComMChannelId]/ComMUserPerChannel/*/ComMUserChannel))))"!][!//
+[!ELSE!][!//
+[!VAR "numUserOfCh"="num:i(count(ComMUserPerChannel/*/ComMUserChannel))"!]
+[!ENDIF!][!//
+[!IF "$numUserOfCh > $maxNumUsersPerChannel"!]
+  [!VAR "maxNumUsersPerChannel"= "$numUserOfCh"!]
+[!ENDIF!]
+[!ENDLOOP!]
+  <TOP-LEVEL-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_ComM</SHORT-NAME>
+      <SUB-PACKAGES>
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR32ServiceAPI = 'true'"!]
+        <!-- Provide AUTOSAR 3.2 service interface -->
+        <AR-PACKAGE> <!-- ASR32 -->
+          <SHORT-NAME>ASR32</SHORT-NAME>
+          <SUB-PACKAGES>
+            <AR-PACKAGE> <!-- CompuMethods -->
+              <SHORT-NAME>CompuMethods</SHORT-NAME>
+              <ELEMENTS>
+                <COMPU-METHOD>
+                  <SHORT-NAME>ComM_ASR32_ModeTypeValues</SHORT-NAME>
+                  <CATEGORY>TEXTTABLE</CATEGORY>
+                  <COMPU-INTERNAL-TO-PHYS>
+                    <COMPU-SCALES>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NO_COMMUNICATION</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>SILENT_COMMUNICATION</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>FULL_COMMUNICATION</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                    </COMPU-SCALES>
+                  </COMPU-INTERNAL-TO-PHYS>
+                </COMPU-METHOD>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- DataTypes -->
+              <SHORT-NAME>Datatypes</SHORT-NAME>
+              <ELEMENTS>
+                <INTEGER-TYPE>
+                  <SHORT-NAME>ComM_ASR32_ModeType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_ComM/ASR32/CompuMethods/ComM_ASR32_ModeTypeValues</COMPU-METHOD-REF>
+                  </SW-DATA-DEF-PROPS>
+                  <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                  <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                </INTEGER-TYPE>
+                <INTEGER-TYPE>
+                  <SHORT-NAME>ComM_ASR32_InhibitionStatusType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+                  </SW-DATA-DEF-PROPS>
+                  <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                  <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                </INTEGER-TYPE>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- ModeDeclarationGroups -->
+              <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+              <ELEMENTS>
+                <MODE-DECLARATION-GROUP>
+                  <SHORT-NAME>ComM_ASR32_Mode</SHORT-NAME>
+                  <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_ComM/ASR32/ModeDeclarationGroups/ComM_ASR32_Mode/NO_COMMUNICATION</INITIAL-MODE-REF>
+                  <MODE-DECLARATIONS>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>NO_COMMUNICATION</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>SILENT_COMMUNICATION</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>FULL_COMMUNICATION</SHORT-NAME>
+                    </MODE-DECLARATION>
+                  </MODE-DECLARATIONS>
+                </MODE-DECLARATION-GROUP>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- PortInterfaces -->
+              <SHORT-NAME>PortInterfaces</SHORT-NAME>
+              <ELEMENTS>
+                <!-- Interface ComM_CurrentMode -->
+                <SENDER-RECEIVER-INTERFACE>
+                  <SHORT-NAME>ComM_ASR32_CurrentMode</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <MODE-GROUPS>
+                    <MODE-DECLARATION-GROUP-PROTOTYPE>
+                      <SHORT-NAME>currentMode</SHORT-NAME>
+                      <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_ComM/ASR32/ModeDeclarationGroups/ComM_ASR32_Mode</TYPE-TREF>
+                    </MODE-DECLARATION-GROUP-PROTOTYPE>
+                  </MODE-GROUPS>
+                </SENDER-RECEIVER-INTERFACE>
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>ComM_ASR32_UserRequest</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <!-- Operation RequestComMode -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>RequestComMode</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>ComMode</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR32/Datatypes/ComM_ASR32_ModeType</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/E_MODE_LIMITATION</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation GetCurrentComMode -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>GetCurrentComMode</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>ComMode</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR32/Datatypes/ComM_ASR32_ModeType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation GetMaxComMode -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>GetMaxComMode</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>ComMode</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR32/Datatypes/ComM_ASR32_ModeType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation GetRequestedMode -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>GetRequestedMode</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>ComMode</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR32/Datatypes/ComM_ASR32_ModeType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                  </OPERATIONS>
+                  <!-- Possible Errors -->
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_MODE_LIMITATION</SHORT-NAME>
+                      <ERROR-CODE>2</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+                <!-- Interface ComM_ECUModeLimitation -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>ComM_ASR32_ECUModeLimitation</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <!-- Operation LimitECUToNoComMode -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>LimitECUToNoComMode</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation ReadInhibitCounter -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>ReadInhibitCounter</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>CounterValue</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint16</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation ResetInhibitCounter -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>ResetInhibitCounter</SHORT-NAME>
+                      <ARGUMENTS/>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation SetECUGroupClassification -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>SetECUGroupClassification</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR32/Datatypes/ComM_ASR32_InhibitionStatusType</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                  </OPERATIONS>
+                  <!-- Possible Errors -->
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+                <!-- Interface ComM_ChannelLimitation -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>ComM_ASR32_ChannelLimitation</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <!-- Operation LimitChannelToNoComMode -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>LimitChannelToNoComMode</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation GetInhibitionStatus -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>GetInhibitionStatus</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR32/Datatypes/ComM_ASR32_InhibitionStatusType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                  </OPERATIONS>
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+                <!-- Interface ComM_ChannelWakeup -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>ComM_ASR32_ChannelWakeup</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>PreventWakeUp</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelWakeup/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation GetInhibitionStatus -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>GetInhibitionStatus</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR32/Datatypes/ComM_ASR32_InhibitionStatusType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelWakeup/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                  </OPERATIONS>
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+              </ELEMENTS>
+            </AR-PACKAGE>
+          </SUB-PACKAGES>
+        </AR-PACKAGE>
+[!ENDIF!]
+
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR40ServiceAPI = 'true'"!]
+        <!-- Provide AUTOSAR 4.0 service interface -->
+        <AR-PACKAGE> <!-- ASR40 -->
+          <SHORT-NAME>ASR40</SHORT-NAME>
+          <SUB-PACKAGES>
+            <AR-PACKAGE> <!-- CompuMethods -->
+              <SHORT-NAME>CompuMethods</SHORT-NAME>
+              <ELEMENTS>
+                <COMPU-METHOD>
+                  <SHORT-NAME>ComM_ASR40_ModeTypeValues</SHORT-NAME>
+                  <CATEGORY>TEXTTABLE</CATEGORY>
+                  <COMPU-INTERNAL-TO-PHYS>
+                    <COMPU-SCALES>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>COMM_NO_COMMUNICATION</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>COMM_SILENT_COMMUNICATION</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>COMM_FULL_COMMUNICATION</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                    </COMPU-SCALES>
+                  </COMPU-INTERNAL-TO-PHYS>
+                </COMPU-METHOD>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- Datatypes -->
+              <SHORT-NAME>Datatypes</SHORT-NAME>
+              <!--
+                 We do not use AUTOSAR 4.0.3 package name here for the sake of consistency, since for
+                 the ServiceComponentType we _HAVE_ to use the AUTSOAR 3.2.1 package name unless 4.0.3
+                 has been selected as default (i.e., we _CANNOT_ replicate the ServiceComponentType for
+                 each activated version (e.g., one for 3.2.2 and one for 4.0.3)
+              -->
+              <ELEMENTS>
+                <!-- Type definitions -->
+                <INTEGER-TYPE>
+                  <SHORT-NAME>ComM_ASR40_ModeType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_ComM/ASR40/CompuMethods/ComM_ASR40_ModeTypeValues</COMPU-METHOD-REF>
+                  </SW-DATA-DEF-PROPS>
+                  <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                  <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                </INTEGER-TYPE>
+                <INTEGER-TYPE>
+                  <SHORT-NAME>ComM_ASR40_UserHandleType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+                  </SW-DATA-DEF-PROPS>
+                  <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                  <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+                </INTEGER-TYPE>
+                <INTEGER-TYPE>
+                  <SHORT-NAME>ComM_ASR40_InhibitionStatusType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+                  </SW-DATA-DEF-PROPS>
+                  <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                  <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                </INTEGER-TYPE>
+                <ARRAY-TYPE>
+                  <SHORT-NAME>ComM_ASR40_InternalHandleArrayType</SHORT-NAME>
+                  <CATEGORY>ARRAY</CATEGORY>
+                  <ELEMENT>
+                    <SHORT-NAME>handleArrayElement</SHORT-NAME>
+                    <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                    <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_UserHandleType</TYPE-TREF>
+[!IF "$maxNumUsersPerChannel != 0"!]
+                    <MAX-NUMBER-OF-ELEMENTS>[!"$maxNumUsersPerChannel"!]</MAX-NUMBER-OF-ELEMENTS>
+[!ELSE!][!//
+                    <MAX-NUMBER-OF-ELEMENTS>1</MAX-NUMBER-OF-ELEMENTS>
+[!ENDIF!]
+                  </ELEMENT>
+                </ARRAY-TYPE>
+                <RECORD-TYPE>
+                  <SHORT-NAME>ComM_ASR40_UserHandleArrayType</SHORT-NAME>
+                  <CATEGORY>STRUCTURE</CATEGORY>
+                  <ELEMENTS>
+                    <RECORD-ELEMENT>
+                      <SHORT-NAME>numberOfRequesters</SHORT-NAME>
+                      <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                    </RECORD-ELEMENT>
+                    <RECORD-ELEMENT>
+                      <SHORT-NAME>handleArray</SHORT-NAME>
+                      <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                      <TYPE-TREF DEST="ARRAY-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_InternalHandleArrayType</TYPE-TREF>
+                     </RECORD-ELEMENT>
+                  </ELEMENTS>
+                </RECORD-TYPE>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- ConstantSpecifications -->
+              <SHORT-NAME>ConstantSpecifications</SHORT-NAME>
+              <ELEMENTS>
+                <CONSTANT-SPECIFICATION>
+                  <SHORT-NAME>ComM_ConstantSpecification_0</SHORT-NAME>
+                  <VALUE>
+                    <RECORD-SPECIFICATION>
+                      <SHORT-NAME>ComM_ASR40_InitConst_UserHandleArray</SHORT-NAME>
+                      <ELEMENTS>
+                        <INTEGER-LITERAL>
+                          <SHORT-NAME>numberOfRequesters</SHORT-NAME>
+                          <VALUE>0</VALUE>
+                        </INTEGER-LITERAL>
+                        <ARRAY-SPECIFICATION>
+                          <SHORT-NAME>handleArray</SHORT-NAME>
+                          <ELEMENTS>
+[!IF "$maxNumUsersPerChannel != 0"!]
+[!FOR "i" = "0" TO "$maxNumUsersPerChannel - 1"!]
+                            <INTEGER-LITERAL>
+                              <SHORT-NAME>handleArrayElement_[!"$i"!]</SHORT-NAME>
+                              <VALUE>0</VALUE>
+                            </INTEGER-LITERAL>
+[!ENDFOR!]
+[!ELSE!][!//
+                            <INTEGER-LITERAL>
+                              <SHORT-NAME>handleArrayElement_0</SHORT-NAME>
+                              <VALUE>0</VALUE>
+                            </INTEGER-LITERAL>
+[!ENDIF!]
+                          </ELEMENTS>
+                        </ARRAY-SPECIFICATION>
+                      </ELEMENTS>
+                    </RECORD-SPECIFICATION>
+                  </VALUE>
+                </CONSTANT-SPECIFICATION>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- ModeDeclarationGroups -->
+              <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+              <ELEMENTS>
+                <MODE-DECLARATION-GROUP>
+                  <SHORT-NAME>ComM_ASR40_Mode</SHORT-NAME>
+                  <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_ComM/ASR40/ModeDeclarationGroups/ComM_ASR40_Mode/COMM_NO_COMMUNICATION</INITIAL-MODE-REF>
+                  <MODE-DECLARATIONS>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>COMM_NO_COMMUNICATION</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>COMM_SILENT_COMMUNICATION</SHORT-NAME>
+                    </MODE-DECLARATION>
+                    <MODE-DECLARATION>
+                      <SHORT-NAME>COMM_FULL_COMMUNICATION</SHORT-NAME>
+                    </MODE-DECLARATION>
+                  </MODE-DECLARATIONS>
+                </MODE-DECLARATION-GROUP>
+              </ELEMENTS>
+            </AR-PACKAGE>
+            <AR-PACKAGE> <!-- PortInterfaces -->
+              <SHORT-NAME>PortInterfaces</SHORT-NAME>
+              <ELEMENTS>
+                <!-- Interface ComM_CurrentMode -->
+                <SENDER-RECEIVER-INTERFACE>
+                  <SHORT-NAME>ComM_ASR40_CurrentMode</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <MODE-GROUPS>
+                    <MODE-DECLARATION-GROUP-PROTOTYPE>
+                      <SHORT-NAME>currentMode</SHORT-NAME>
+                      <TYPE-TREF
+                        DEST="MODE-DECLARATION-GROUP">/AUTOSAR_ComM/ASR40/ModeDeclarationGroups/ComM_ASR40_Mode</TYPE-TREF>
+                    </MODE-DECLARATION-GROUP-PROTOTYPE>
+                  </MODE-GROUPS>
+                </SENDER-RECEIVER-INTERFACE>
+
+                <!-- Interface ComM_UserRequest -->
+                <CLIENT-SERVER-INTERFACE>
+                <SHORT-NAME>ComM_ASR40_UserRequest</SHORT-NAME>
+                <IS-SERVICE>true</IS-SERVICE>
+                <OPERATIONS>
+                  <!-- Operation RequestComMode -->
+                  <OPERATION-PROTOTYPE>
+                    <SHORT-NAME>RequestComMode</SHORT-NAME>
+                    <ARGUMENTS>
+                      <ARGUMENT-PROTOTYPE>
+                        <SHORT-NAME>ComMode</SHORT-NAME>
+                        <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_ModeType</TYPE-TREF>
+                        <DIRECTION>IN</DIRECTION>
+                      </ARGUMENT-PROTOTYPE>
+                    </ARGUMENTS>
+                    <POSSIBLE-ERROR-REFS>
+                      <POSSIBLE-ERROR-REF
+                        DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      <POSSIBLE-ERROR-REF
+                        DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/E_MODE_LIMITATION</POSSIBLE-ERROR-REF>
+                    </POSSIBLE-ERROR-REFS>
+                  </OPERATION-PROTOTYPE>
+                  <!-- Operation GetCurrentComMode -->
+                  <OPERATION-PROTOTYPE>
+                    <SHORT-NAME>GetCurrentComMode</SHORT-NAME>
+                    <ARGUMENTS>
+                      <ARGUMENT-PROTOTYPE>
+                        <SHORT-NAME>ComMode</SHORT-NAME>
+                        <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_ModeType</TYPE-TREF>
+                        <DIRECTION>OUT</DIRECTION>
+                      </ARGUMENT-PROTOTYPE>
+                    </ARGUMENTS>
+                    <POSSIBLE-ERROR-REFS>
+                      <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                    </POSSIBLE-ERROR-REFS>
+                  </OPERATION-PROTOTYPE>
+                  <!-- Operation GetCurrentPNCComMode -->
+                  <!-- !LINKSTO ComM.EB.Interface.ComM_UserRequest.Operation.GetCurrentPNCComMode,1 -->
+                  <OPERATION-PROTOTYPE>
+                    <SHORT-NAME>GetCurrentPNCComMode</SHORT-NAME>
+                    <ARGUMENTS>
+                      <ARGUMENT-PROTOTYPE>
+                        <SHORT-NAME>ComMode</SHORT-NAME>
+                        <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_ModeType</TYPE-TREF>
+                        <DIRECTION>OUT</DIRECTION>
+                      </ARGUMENT-PROTOTYPE>
+                    </ARGUMENTS>
+                    <POSSIBLE-ERROR-REFS>
+                      <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/E_MULTIPLE_PNC_ASSIGNED</POSSIBLE-ERROR-REF>
+                      <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/E_NO_PNC_ASSIGNED</POSSIBLE-ERROR-REF>
+                    </POSSIBLE-ERROR-REFS>
+                  </OPERATION-PROTOTYPE>
+                  <!-- Operation GetMaxComMode -->
+                  <OPERATION-PROTOTYPE>
+                    <SHORT-NAME>GetMaxComMode</SHORT-NAME>
+                    <ARGUMENTS>
+                      <ARGUMENT-PROTOTYPE>
+                        <SHORT-NAME>ComMode</SHORT-NAME>
+                        <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_ModeType</TYPE-TREF>
+                        <DIRECTION>OUT</DIRECTION>
+                      </ARGUMENT-PROTOTYPE>
+                    </ARGUMENTS>
+                    <POSSIBLE-ERROR-REFS>
+                      <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                    </POSSIBLE-ERROR-REFS>
+                  </OPERATION-PROTOTYPE>
+                  <!-- Operation GetRequestedComMode -->
+                  <OPERATION-PROTOTYPE>
+                    <SHORT-NAME>GetRequestedComMode</SHORT-NAME>
+                    <ARGUMENTS>
+                      <ARGUMENT-PROTOTYPE>
+                        <SHORT-NAME>ComMode</SHORT-NAME>
+                        <TYPE-TREF
+                          DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_ModeType</TYPE-TREF>
+                        <DIRECTION>OUT</DIRECTION>
+                      </ARGUMENT-PROTOTYPE>
+                    </ARGUMENTS>
+                    <POSSIBLE-ERROR-REFS>
+                      <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                    </POSSIBLE-ERROR-REFS>
+                  </OPERATION-PROTOTYPE>
+                </OPERATIONS>
+                <!-- Possible Errors -->
+                <POSSIBLE-ERRORS>
+                  <APPLICATION-ERROR>
+                    <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                    <ERROR-CODE>1</ERROR-CODE>
+                  </APPLICATION-ERROR>
+                  <APPLICATION-ERROR>
+                    <SHORT-NAME>E_MODE_LIMITATION</SHORT-NAME>
+                    <ERROR-CODE>2</ERROR-CODE>
+                  </APPLICATION-ERROR>
+                  <APPLICATION-ERROR>
+                    <SHORT-NAME>E_MULTIPLE_PNC_ASSIGNED</SHORT-NAME>
+                    <ERROR-CODE>3</ERROR-CODE>
+                  </APPLICATION-ERROR>
+                  <APPLICATION-ERROR>
+                    <SHORT-NAME>E_NO_PNC_ASSIGNED</SHORT-NAME>
+                    <ERROR-CODE>4</ERROR-CODE>
+                  </APPLICATION-ERROR>
+                </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+
+                <!-- Interface ComM_CurrentChannelRequest -->
+                <SENDER-RECEIVER-INTERFACE>
+                  <SHORT-NAME>ComM_ASR40_CurrentChannelRequest</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <DATA-ELEMENTS>
+                    <DATA-ELEMENT-PROTOTYPE>
+                      <SHORT-NAME>fullComRequestors</SHORT-NAME>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                      </SW-DATA-DEF-PROPS>
+                      <TYPE-TREF DEST="RECORD-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_UserHandleArrayType</TYPE-TREF>
+                    </DATA-ELEMENT-PROTOTYPE>
+                  </DATA-ELEMENTS>
+                </SENDER-RECEIVER-INTERFACE>
+
+                <!-- Interface ComM_ECUModeLimitation -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>ComM_ASR40_ECUModeLimitation</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <!-- Operation LimitECUToNoComMode -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>LimitECUToNoComMode</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation ReadInhibitCounter -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>ReadInhibitCounter</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>CounterValue</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint16</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation ResetInhibitCounter -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>ResetInhibitCounter</SHORT-NAME>
+                      <ARGUMENTS/>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation SetECUGroupClassification -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>SetECUGroupClassification</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_InhibitionStatusType</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                  </OPERATIONS>
+                  <!-- Possible Errors -->
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+
+                <!-- Interface ComM_ChannelLimitation -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>ComM_ASR40_ChannelLimitation</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <!-- Operation LimitChannelToNoComMode -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>LimitChannelToNoComMode</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation GetInhibitionStatus -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>GetInhibitionStatus</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_InhibitionStatusType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                  </OPERATIONS>
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+
+                <!-- Interface ComM_ChannelWakeup -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>ComM_ASR40_ChannelWakeup</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>PreventWakeUp</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelWakeup/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                    <!-- Operation GetInhibitionStatus -->
+                    <OPERATION-PROTOTYPE>
+                      <SHORT-NAME>GetInhibitionStatus</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-PROTOTYPE>
+                          <SHORT-NAME>Status</SHORT-NAME>
+                          <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_InhibitionStatusType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelWakeup/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </OPERATION-PROTOTYPE>
+                  </OPERATIONS>
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+              </ELEMENTS>
+            </AR-PACKAGE>
+          </SUB-PACKAGES>
+        </AR-PACKAGE>
+
+[!ENDIF!]
+
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_32'"!]
+        <!-- Provide AUTOSAR 3.2 service interface as default -->
+        <AR-PACKAGE> <!-- CompuMethods -->
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>ComM_ModeTypeValues</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>NO_COMMUNICATION</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>SILENT_COMMUNICATION</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>FULL_COMMUNICATION</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- DataTypes -->
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+          <ELEMENTS>
+            <INTEGER-TYPE>
+              <SHORT-NAME>ComM_ModeType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_ComM/CompuMethods/ComM_ModeTypeValues</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>ComM_UserHandleType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+             </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>ComM_InhibitionStatusType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+            </INTEGER-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- ModeDeclarationGroups -->
+          <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+          <ELEMENTS>
+            <MODE-DECLARATION-GROUP>
+              <SHORT-NAME>ComMMode</SHORT-NAME>
+              <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_ComM/ModeDeclarationGroups/ComMMode/NO_COMMUNICATION</INITIAL-MODE-REF>
+              <MODE-DECLARATIONS>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>NO_COMMUNICATION</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>SILENT_COMMUNICATION</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>FULL_COMMUNICATION</SHORT-NAME>
+                </MODE-DECLARATION>
+              </MODE-DECLARATIONS>
+            </MODE-DECLARATION-GROUP>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- PortInterfaces -->
+          <SHORT-NAME>PortInterfaces</SHORT-NAME>
+          <ELEMENTS>
+            <!-- Interface ComM_CurrentMode -->
+            <SENDER-RECEIVER-INTERFACE>
+              <SHORT-NAME>ComM_CurrentMode</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <MODE-GROUPS>
+                <MODE-DECLARATION-GROUP-PROTOTYPE>
+                  <SHORT-NAME>currentMode</SHORT-NAME>
+                  <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_ComM/ModeDeclarationGroups/ComMMode</TYPE-TREF>
+                </MODE-DECLARATION-GROUP-PROTOTYPE>
+              </MODE-GROUPS>
+            </SENDER-RECEIVER-INTERFACE>
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>ComM_UserRequest</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <!-- Operation RequestComMode -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>RequestComMode</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>ComMode</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/Datatypes/ComM_ModeType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_MODE_LIMITATION</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation GetCurrentComMode -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>GetCurrentComMode</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>ComMode</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/Datatypes/ComM_ModeType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation GetMaxComMode -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>GetMaxComMode</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>ComMode</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/Datatypes/ComM_ModeType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation GetRequestedMode -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>GetRequestedMode</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>ComMode</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/Datatypes/ComM_ModeType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+              </OPERATIONS>
+              <!-- Possible Errors -->
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_MODE_LIMITATION</SHORT-NAME>
+                  <ERROR-CODE>2</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+            <!-- Interface ComM_ECUModeLimitation -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>ComM_ECUModeLimitation</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <!-- Operation LimitECUToNoComMode -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>LimitECUToNoComMode</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation ReadInhibitCounter -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>ReadInhibitCounter</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>CounterValue</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint16</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation ResetInhibitCounter -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>ResetInhibitCounter</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation SetECUGroupClassification -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>SetECUGroupClassification</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/Datatypes/ComM_InhibitionStatusType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+              </OPERATIONS>
+              <!-- Possible Errors -->
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+            <!-- Interface ComM_ChannelLimitation -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>ComM_ChannelLimitation</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <!-- Operation LimitChannelToNoComMode -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>LimitChannelToNoComMode</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation GetInhibitionStatus -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>GetInhibitionStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/Datatypes/ComM_InhibitionStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+            <!-- Interface ComM_ChannelWakeup -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>ComM_ChannelWakeup</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>PreventWakeUp</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelWakeup/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation GetInhibitionStatus -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>GetInhibitionStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/Datatypes/ComM_InhibitionStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelWakeup/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+[!ENDIF!]
+
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_40'"!]
+        <!-- Provide AUTOSAR 4.0 service interface as default -->
+        <AR-PACKAGE> <!-- CompuMethods -->
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>ComM_ModeTypeValues</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>COMM_NO_COMMUNICATION</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>COMM_SILENT_COMMUNICATION</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>COMM_FULL_COMMUNICATION</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- ImplementationDataTypes -->
+          <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+          <!--
+            We use AUTOSAR 4.0.3 package name here since the AUTOSAR 4.0.3 SWC will look in this package
+          -->
+          <ELEMENTS>
+            <!-- Type definitions -->
+            <INTEGER-TYPE>
+              <SHORT-NAME>ComM_ModeType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_ComM/CompuMethods/ComM_ModeTypeValues</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>ComM_UserHandleType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+             </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>ComM_InhibitionStatusType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <ARRAY-TYPE>
+              <SHORT-NAME>ComM_InternalHandleArrayType</SHORT-NAME>
+              <CATEGORY>ARRAY</CATEGORY>
+              <ELEMENT>
+                <SHORT-NAME>handleArrayElement</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_UserHandleType</TYPE-TREF>
+[!IF "$maxNumUsersPerChannel != 0"!]
+                <MAX-NUMBER-OF-ELEMENTS>[!"$maxNumUsersPerChannel"!]</MAX-NUMBER-OF-ELEMENTS>
+[!ELSE!][!//
+                <MAX-NUMBER-OF-ELEMENTS>1</MAX-NUMBER-OF-ELEMENTS>
+[!ENDIF!]
+              </ELEMENT>
+            </ARRAY-TYPE>
+            <RECORD-TYPE>
+              <SHORT-NAME>ComM_UserHandleArrayType</SHORT-NAME>
+              <CATEGORY>STRUCTURE</CATEGORY>
+              <ELEMENTS>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>numberOfRequesters</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>handleArray</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="ARRAY-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_InternalHandleArrayType</TYPE-TREF>
+                 </RECORD-ELEMENT>
+              </ELEMENTS>
+            </RECORD-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- ConstantSpecifications -->
+          <SHORT-NAME>ConstantSpecifications</SHORT-NAME>
+          <ELEMENTS>
+            <CONSTANT-SPECIFICATION>
+            <SHORT-NAME>ComM_ConstantSpecification_0</SHORT-NAME>
+              <VALUE>
+                <RECORD-SPECIFICATION>
+                  <SHORT-NAME>ComM_InitConst_UserHandleArray</SHORT-NAME>
+                  <ELEMENTS>
+                    <INTEGER-LITERAL>
+                      <SHORT-NAME>numberOfRequesters</SHORT-NAME>
+                      <VALUE>0</VALUE>
+                    </INTEGER-LITERAL>
+                    <ARRAY-SPECIFICATION>
+                      <SHORT-NAME>handleArray</SHORT-NAME>
+                      <ELEMENTS>
+[!IF "$maxNumUsersPerChannel != 0"!]
+  [!FOR "i" = "0" TO "$maxNumUsersPerChannel - 1"!]
+                        <INTEGER-LITERAL>
+                          <SHORT-NAME>handleArrayElement_[!"$i"!]</SHORT-NAME>
+                          <VALUE>0</VALUE>
+                        </INTEGER-LITERAL>
+  [!ENDFOR!]
+[!ELSE!][!//
+                        <INTEGER-LITERAL>
+                          <SHORT-NAME>handleArrayElement_0</SHORT-NAME>
+                          <VALUE>0</VALUE>
+                        </INTEGER-LITERAL>
+[!ENDIF!]
+                      </ELEMENTS>
+                    </ARRAY-SPECIFICATION>
+                  </ELEMENTS>
+                </RECORD-SPECIFICATION>
+              </VALUE>
+            </CONSTANT-SPECIFICATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- ModeDeclarationGroups -->
+          <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+          <ELEMENTS>
+            <MODE-DECLARATION-GROUP>
+              <SHORT-NAME>ComMMode</SHORT-NAME>
+              <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_ComM/ModeDeclarationGroups/ComMMode/COMM_NO_COMMUNICATION</INITIAL-MODE-REF>
+              <MODE-DECLARATIONS>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>COMM_NO_COMMUNICATION</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>COMM_SILENT_COMMUNICATION</SHORT-NAME>
+                </MODE-DECLARATION>
+                <MODE-DECLARATION>
+                  <SHORT-NAME>COMM_FULL_COMMUNICATION</SHORT-NAME>
+                </MODE-DECLARATION>
+              </MODE-DECLARATIONS>
+            </MODE-DECLARATION-GROUP>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE> <!-- PortInterfaces -->
+          <SHORT-NAME>PortInterfaces</SHORT-NAME>
+          <ELEMENTS>
+            <!-- Interface ComM_CurrentMode -->
+            <SENDER-RECEIVER-INTERFACE>
+              <SHORT-NAME>ComM_CurrentMode</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <MODE-GROUPS>
+                <MODE-DECLARATION-GROUP-PROTOTYPE>
+                  <SHORT-NAME>currentMode</SHORT-NAME>
+                  <TYPE-TREF
+                    DEST="MODE-DECLARATION-GROUP">/AUTOSAR_ComM/ModeDeclarationGroups/ComMMode</TYPE-TREF>
+                </MODE-DECLARATION-GROUP-PROTOTYPE>
+              </MODE-GROUPS>
+            </SENDER-RECEIVER-INTERFACE>
+
+            <!-- Interface ComM_UserRequest -->
+            <CLIENT-SERVER-INTERFACE>
+            <SHORT-NAME>ComM_UserRequest</SHORT-NAME>
+            <IS-SERVICE>true</IS-SERVICE>
+            <OPERATIONS>
+              <!-- Operation RequestComMode -->
+              <OPERATION-PROTOTYPE>
+                <SHORT-NAME>RequestComMode</SHORT-NAME>
+                <ARGUMENTS>
+                  <ARGUMENT-PROTOTYPE>
+                    <SHORT-NAME>ComMode</SHORT-NAME>
+                    <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_ModeType</TYPE-TREF>
+                    <DIRECTION>IN</DIRECTION>
+                  </ARGUMENT-PROTOTYPE>
+                </ARGUMENTS>
+                <POSSIBLE-ERROR-REFS>
+                  <POSSIBLE-ERROR-REF
+                    DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  <POSSIBLE-ERROR-REF
+                    DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_MODE_LIMITATION</POSSIBLE-ERROR-REF>
+                </POSSIBLE-ERROR-REFS>
+              </OPERATION-PROTOTYPE>
+              <!-- Operation GetCurrentComMode -->
+              <OPERATION-PROTOTYPE>
+                <SHORT-NAME>GetCurrentComMode</SHORT-NAME>
+                <ARGUMENTS>
+                  <ARGUMENT-PROTOTYPE>
+                    <SHORT-NAME>ComMode</SHORT-NAME>
+                    <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_ModeType</TYPE-TREF>
+                    <DIRECTION>OUT</DIRECTION>
+                  </ARGUMENT-PROTOTYPE>
+                </ARGUMENTS>
+                <POSSIBLE-ERROR-REFS>
+                  <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                </POSSIBLE-ERROR-REFS>
+              </OPERATION-PROTOTYPE>
+              <!-- Operation GetCurrentPNCComMode -->
+              <!-- !LINKSTO ComM.EB.Interface.ComM_UserRequest.Operation.GetCurrentPNCComMode,1 -->
+              <OPERATION-PROTOTYPE>
+                <SHORT-NAME>GetCurrentPNCComMode</SHORT-NAME>
+                <ARGUMENTS>
+                  <ARGUMENT-PROTOTYPE>
+                    <SHORT-NAME>ComMode</SHORT-NAME>
+                    <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_ModeType</TYPE-TREF>
+                    <DIRECTION>OUT</DIRECTION>
+                  </ARGUMENT-PROTOTYPE>
+                </ARGUMENTS>
+                <POSSIBLE-ERROR-REFS>
+                  <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_MULTIPLE_PNC_ASSIGNED</POSSIBLE-ERROR-REF>
+                  <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_NO_PNC_ASSIGNED</POSSIBLE-ERROR-REF>
+                </POSSIBLE-ERROR-REFS>
+              </OPERATION-PROTOTYPE>
+              <!-- Operation GetMaxComMode -->
+              <OPERATION-PROTOTYPE>
+                <SHORT-NAME>GetMaxComMode</SHORT-NAME>
+                <ARGUMENTS>
+                  <ARGUMENT-PROTOTYPE>
+                    <SHORT-NAME>ComMode</SHORT-NAME>
+                    <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_ModeType</TYPE-TREF>
+                    <DIRECTION>OUT</DIRECTION>
+                  </ARGUMENT-PROTOTYPE>
+                </ARGUMENTS>
+                <POSSIBLE-ERROR-REFS>
+                  <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                </POSSIBLE-ERROR-REFS>
+              </OPERATION-PROTOTYPE>
+              <!-- Operation GetRequestedComMode -->
+              <OPERATION-PROTOTYPE>
+                <SHORT-NAME>GetRequestedComMode</SHORT-NAME>
+                <ARGUMENTS>
+                  <ARGUMENT-PROTOTYPE>
+                    <SHORT-NAME>ComMode</SHORT-NAME>
+                    <TYPE-TREF
+                      DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_ModeType</TYPE-TREF>
+                    <DIRECTION>OUT</DIRECTION>
+                  </ARGUMENT-PROTOTYPE>
+                </ARGUMENTS>
+                <POSSIBLE-ERROR-REFS>
+                  <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/E_NOT_OK</POSSIBLE-ERROR-REF>
+                </POSSIBLE-ERROR-REFS>
+              </OPERATION-PROTOTYPE>
+            </OPERATIONS>
+            <!-- Possible Errors -->
+            <POSSIBLE-ERRORS>
+              <APPLICATION-ERROR>
+                <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                <ERROR-CODE>1</ERROR-CODE>
+              </APPLICATION-ERROR>
+              <APPLICATION-ERROR>
+                <SHORT-NAME>E_MODE_LIMITATION</SHORT-NAME>
+                <ERROR-CODE>2</ERROR-CODE>
+              </APPLICATION-ERROR>
+              <APPLICATION-ERROR>
+                <SHORT-NAME>E_MULTIPLE_PNC_ASSIGNED</SHORT-NAME>
+                <ERROR-CODE>3</ERROR-CODE>
+              </APPLICATION-ERROR>
+              <APPLICATION-ERROR>
+                <SHORT-NAME>E_NO_PNC_ASSIGNED</SHORT-NAME>
+                <ERROR-CODE>4</ERROR-CODE>
+              </APPLICATION-ERROR>
+            </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+            <!-- Interface ComM_CurrentChannelRequest -->
+            <SENDER-RECEIVER-INTERFACE>
+              <SHORT-NAME>ComM_CurrentChannelRequest</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <DATA-ELEMENTS>
+                <DATA-ELEMENT-PROTOTYPE>
+                  <SHORT-NAME>fullComRequestors</SHORT-NAME>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS>
+                  <TYPE-TREF DEST="RECORD-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_UserHandleArrayType</TYPE-TREF>
+                </DATA-ELEMENT-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+
+            <!-- Interface ComM_ECUModeLimitation -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>ComM_ECUModeLimitation</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <!-- Operation LimitECUToNoComMode -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>LimitECUToNoComMode</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation ReadInhibitCounter -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>ReadInhibitCounter</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>CounterValue</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint16</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation ResetInhibitCounter -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>ResetInhibitCounter</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation SetECUGroupClassification -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>SetECUGroupClassification</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_InhibitionStatusType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+              </OPERATIONS>
+              <!-- Possible Errors -->
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+            <!-- Interface ComM_ChannelLimitation -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>ComM_ChannelLimitation</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <!-- Operation LimitChannelToNoComMode -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>LimitChannelToNoComMode</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation GetInhibitionStatus -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>GetInhibitionStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_InhibitionStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelLimitation/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+            <!-- Interface ComM_ChannelWakeup -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>ComM_ChannelWakeup</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>PreventWakeUp</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelWakeup/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+                <!-- Operation GetInhibitionStatus -->
+                <OPERATION-PROTOTYPE>
+                  <SHORT-NAME>GetInhibitionStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-PROTOTYPE>
+                      <SHORT-NAME>Status</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_InhibitionStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelWakeup/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </OPERATION-PROTOTYPE>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+[!ENDIF!]
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+  </TOP-LEVEL-PACKAGES>
+</AUTOSAR>

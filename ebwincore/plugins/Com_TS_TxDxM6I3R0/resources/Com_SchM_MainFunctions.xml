@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+
+    <mainFunction name="Com_MainFunctionTx">
+        <header value="Com.h" />
+        <cycleTime type="XPATH" value="as:modconf( 'Com' )[1]/ComConfig/*[1]/ComTimeBase/ComTxTimeBase" />
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150" />
+        <callBefore>
+            <mainFunction>Can_MainFunction_Write</mainFunction>
+            <mainFunction>FrIf_MainFunction</mainFunction>
+            <mainFunction>LinIf_MainFunction</mainFunction>
+            <mainFunction>Xcp_MainFunction</mainFunction>
+            <mainFunction>Spi_MainFunction_Handling</mainFunction>
+            <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>Can_MainFunction_BusOff</mainFunction>
+            <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+            <mainFunction>Can_MainFunction_Mode</mainFunction>
+            <mainFunction>CanTrcv_MainFunction</mainFunction>
+            <mainFunction>Can_MainFunction_Read</mainFunction>
+            <mainFunction>Com_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+            <mainFunction>Dcm_MainFunction</mainFunction>
+            <mainFunction>CanTp_MainFunction</mainFunction>
+            <mainFunction>FrTp_MainFunction</mainFunction>
+        </callAfter>
+    </mainFunction>
+
+    <mainFunction name="Com_MainFunctionRx">
+        <header value="Com.h" />
+        <cycleTime type="XPATH" value="as:modconf( 'Com' )[1]/ComConfig/*[1]/ComTimeBase/ComRxTimeBase" />
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150" />
+        <callBefore>
+            <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+            <mainFunction>Dcm_MainFunction</mainFunction>
+            <mainFunction>CanTp_MainFunction</mainFunction>
+            <mainFunction>FrTp_MainFunction</mainFunction>
+            <mainFunction>Com_MainFunctionTx</mainFunction>
+            <mainFunction>Can_MainFunction_Write</mainFunction>
+            <mainFunction>FrIf_MainFunction</mainFunction>
+            <mainFunction>LinIf_MainFunction</mainFunction>
+            <mainFunction>Xcp_MainFunction</mainFunction>
+            <mainFunction>Spi_MainFunction_Handling</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>Can_MainFunction_BusOff</mainFunction>
+            <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+            <mainFunction>Can_MainFunction_Mode</mainFunction>
+            <mainFunction>CanTrcv_MainFunction</mainFunction>
+            <mainFunction>Can_MainFunction_Read</mainFunction>
+            <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        </callAfter>
+    </mainFunction>
+
+    <mainFunction name="Com_MainFunctionRouteSignals">
+        <enable type="XPATH" value="as:modconf( 'Com' )[1]/ComGeneral/VendorSpecific/ComSignalGwEnable = 'true'" />
+        <header value="Com.h" />
+        <cycleTime type="XPATH" value="as:modconf( 'Com' )[1]/ComConfig/*[1]/ComTimeBase/ComGwTimeBase" />
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150" />
+        <callBefore>
+            <mainFunction>Dcm_MainFunction</mainFunction>
+            <mainFunction>CanTp_MainFunction</mainFunction>
+            <mainFunction>FrTp_MainFunction</mainFunction>
+            <mainFunction>IpduM_MainFunctionTx</mainFunction>
+            <mainFunction>Com_MainFunctionTx</mainFunction>
+            <mainFunction>Can_MainFunction_Write</mainFunction>
+            <mainFunction>FrIf_MainFunction</mainFunction>
+            <mainFunction>LinIf_MainFunction</mainFunction>
+            <mainFunction>Xcp_MainFunction</mainFunction>
+            <mainFunction>Spi_MainFunction_Handling</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>Can_MainFunction_BusOff</mainFunction>
+            <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+            <mainFunction>Can_MainFunction_Mode</mainFunction>
+            <mainFunction>CanTrcv_MainFunction</mainFunction>
+            <mainFunction>Can_MainFunction_Read</mainFunction>
+            <mainFunction>Com_MainFunctionRx</mainFunction>
+            <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        </callAfter>
+    </mainFunction>
+
+</schm:mainFunctions>

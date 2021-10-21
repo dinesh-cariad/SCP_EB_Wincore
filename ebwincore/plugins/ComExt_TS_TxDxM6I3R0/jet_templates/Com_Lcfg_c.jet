@@ -1,0 +1,652 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_Lcfg_c"
+        imports="dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            dreisoft.tresos.com.generator.Com_ConfigLayoutType
+            java.util.HashSet
+            java.util.LinkedHashSet
+            java.io.IOException
+            dreisoft.tresos.com.generator.ComCfgDataModel
+            dreisoft.tresos.com.generated.operationstatus.GeneratorOperationStatus
+            dreisoft.tresos.com.generator.ComMainfunctionRxType
+            dreisoft.tresos.com.generator.ComMainfunctionTxType" %>
+<%
+    JavaGenContext context = null;
+    try
+    {
+        context = JavaGenContext.get( argument, stringBuffer );
+    }
+    catch( IOException e )
+    {
+        e.printStackTrace();
+        return "";
+    }
+
+    boolean comGenerationSuccessful = !context.gen.isVerifying();
+
+    ComCfgDataModel comCfgDataModel = (ComCfgDataModel) context.gen.getVariable("comCfgDataModel", ComCfgDataModel.class, null);
+
+    // get post-build data model
+    Com_ConfigLayoutType comPBCfgDataModel = (Com_ConfigLayoutType) context.gen.getVariable("comPBCfgDataModel", Com_ConfigLayoutType.class, null);
+
+    String sequenceSeperator;
+
+    HashSet<String> alreadyGeneratedCallouts = new LinkedHashSet<String>();
+    alreadyGeneratedCallouts.add("Com_EB_TxDMDummyCbk");
+%>
+
+<%@ include file="head.c.inc" %>
+
+/* MISRA-C:2012 Deviation List
+ *
+ *
+ * MISRAC2012-1) Deviated Rule: 11.5 (advisory)
+ * A conversion should not be performed from pointer to
+ * void into pointer to object.
+ *
+ * Reason:
+ * The memory routines are optimized for dealing with aligned
+ * memory sections.
+ *
+ *
+ * MISRAC2012-2) Deviated Rule: 8.5 (Required)
+ * An external object or function shall be declared once in one and only one file.
+ *
+ * Reason:
+ * The callout and callback functions are declared within the file since
+ * the header files which declare the functions are in general not known.
+ *
+ */
+
+/*==================[inclusions]============================================*/
+
+#include <Com_Lcfg.h>
+#include <Com_Lcfg_Static.h>
+#include <TSAutosar.h>
+
+/* start data section declaration */
+#define COM_START_SEC_VAR_CLEARED_UNSPECIFIED
+#include <Com_MemMap.h>
+
+/**
+ * Internal memory statically allocated upon link-time. Size depends on
+ * post build configuration. Memory requirements of post build configuration
+ * must be smaller than COM_RAM_SIZE_MAX in order to avoid buffer
+ * overflows. Memory is aligned to the most stringent alignment requirement
+ * of any simple data type available on the respective platform, e.g. uint32.
+ */
+STATIC TS_DefMaxAlignedByteArray(Com_DataMem, COM, VAR_CLEARED, COM_DATA_MEM_SIZE);
+
+/* stop data section declaration */
+#define COM_STOP_SEC_VAR_CLEARED_UNSPECIFIED
+#include <Com_MemMap.h>
+
+
+
+/* start data section declaration */
+#define COM_START_SEC_CONST_UNSPECIFIED
+#include <Com_MemMap.h>
+
+/**
+ * Pointer to statically allocated RAM.
+ */
+/* Deviation MISRAC2012-1 <+3> */
+CONSTP2VAR(uint8, COM_CONST, COM_VAR_CLEARED) Com_gDataMemPtr =
+  (P2VAR(uint8, COM_CONST, COM_VAR_CLEARED))
+  ((P2VAR(void, COM_CONST, COM_VAR_CLEARED)) Com_DataMem);
+
+/* stop data section declaration */
+#define COM_STOP_SEC_CONST_UNSPECIFIED
+#include <Com_MemMap.h>
+
+
+
+#define COM_START_SEC_APPL_CODE
+#include <Com_MemMap.h>
+
+/* receive callouts */
+<%
+    for ( String callout : comPBCfgDataModel.getRxIPDUCallOuts())
+    {
+        if (alreadyGeneratedCallouts.contains(callout))
+        {
+%>
+/* extern FUNC(boolean, COM_APPL_CODE) <%= callout %>
+(
+  PduIdType ID,
+  P2CONST(PduInfoType, AUTOMATIC, COM_APPL_DATA) PduInfoPtr
+); (extern declaration already generated) */
+<%
+        }
+        else
+        {
+%>
+/* Deviation MISRAC2012-2 */
+extern FUNC(boolean, COM_APPL_CODE) <%= callout %>
+(
+  PduIdType ID,
+  P2CONST(PduInfoType, AUTOMATIC, COM_APPL_DATA) PduInfoPtr
+);
+<%
+            alreadyGeneratedCallouts.add(callout);
+        }
+    }
+%>
+
+/* send callouts */
+<%
+    for ( String callout : comPBCfgDataModel.getTxIPDUCallOuts())
+    {
+        if (alreadyGeneratedCallouts.contains(callout))
+        {
+%>
+/* extern FUNC(boolean, COM_APPL_CODE) <%= callout %>
+(
+  PduIdType ID,
+  P2VAR(PduInfoType, AUTOMATIC, COM_VAR_CLEARED) PduInfoPtr
+); (extern declaration already generated) */
+<%
+        }
+        else
+        {
+%>
+/* Deviation MISRAC2012-2 */
+extern FUNC(boolean, COM_APPL_CODE) <%= callout %>
+(
+  PduIdType ID,
+  P2VAR(PduInfoType, AUTOMATIC, COM_VAR_CLEARED) PduInfoPtr
+);
+<%
+            alreadyGeneratedCallouts.add(callout);
+        }
+    }
+%>
+
+/* TX acknowledge callbacks */
+<%
+    for (String notification : comPBCfgDataModel.getSigTxAckNotifications())
+    {
+        if (alreadyGeneratedCallouts.contains(notification))
+        {
+%>
+/* extern FUNC(void, COM_APPL_CODE) <%= notification %>(void); (extern declaration already generated)*/
+<%
+        }
+        else
+        {
+%>
+/* Deviation MISRAC2012-2 */
+extern FUNC(void, COM_APPL_CODE) <%= notification %>(void);
+<%
+            alreadyGeneratedCallouts.add(notification);
+        }
+    }
+%>
+
+/* TX timeout callbacks */
+<%
+    for (String notification : comPBCfgDataModel.getSigTxTOutNotifications())
+    {
+        if (alreadyGeneratedCallouts.contains(notification))
+        {
+%>
+/* extern FUNC(void, COM_APPL_CODE) <%= notification %>(void); (extern declaration already generated)*/
+<%
+        }
+        else
+        {
+%>
+/* Deviation MISRAC2012-2 */
+extern FUNC(void, COM_APPL_CODE) <%= notification %>(void);
+<%
+            alreadyGeneratedCallouts.add(notification);
+        }
+    }
+%>
+
+/* TX error callbacks */
+<%
+    for (String notification : comPBCfgDataModel.getSigTxErrNotifications())
+    {
+        if (alreadyGeneratedCallouts.contains(notification))
+        {
+%>
+/* extern FUNC(void, COM_APPL_CODE) <%= notification %>(void); (extern declaration already generated)*/
+<%
+        }
+        else
+        {
+%>
+/* Deviation MISRAC2012-2 */
+extern FUNC(void, COM_APPL_CODE) <%= notification %>(void);
+<%
+            alreadyGeneratedCallouts.add(notification);
+        }
+    }
+%>
+
+/* RX timeout callbacks */
+<%
+    for (String notification : comPBCfgDataModel.getSigRxTOutNotifications())
+    {
+        if (alreadyGeneratedCallouts.contains(notification))
+        {
+%>
+/* extern FUNC(void, COM_APPL_CODE) <%= notification %>(void); (extern declaration already generated)*/
+<%
+        }
+        else
+        {
+%>
+/* Deviation MISRAC2012-2 */
+extern FUNC(void, COM_APPL_CODE) <%= notification %>(void);
+<%
+            alreadyGeneratedCallouts.add(notification);
+        }
+    }
+%>
+
+/* RX acknowledge callbacks */
+<%
+    for (String notification : comPBCfgDataModel.getSigRxAckNotifications())
+    {
+        if (alreadyGeneratedCallouts.contains(notification))
+        {
+%>
+/* extern FUNC(void, COM_APPL_CODE) <%= notification %>(void); (extern declaration already generated)*/
+<%
+        }
+        else
+        {
+%>
+/* Deviation MISRAC2012-2 */
+extern FUNC(void, COM_APPL_CODE) <%= notification %>(void);
+<%
+            alreadyGeneratedCallouts.add(notification);
+        }
+    }
+%>
+
+#define COM_STOP_SEC_APPL_CODE
+#include <Com_MemMap.h>
+<%
+    if (!comCfgDataModel.isComTimeBaseEnabled())
+    {
+%>
+
+
+/* start data section declaration */
+#define COM_START_SEC_CODE
+#include <Com_MemMap.h>
+
+/*------------------[Com_Main_Funcs_Rx]-----------------------------------*/
+
+<%
+        int comRxMainFuncIdx = 0;
+
+        if ( comPBCfgDataModel.getComRxMainFunctions().get() != null )
+        {
+            for (ComMainfunctionRxType rxMainFunction : comPBCfgDataModel.getComRxMainFunctions().get())
+            {
+%>
+/**
+ * \brief <%= rxMainFunction.getMainfunctionName() %>
+ * - handles Rx I-Pdus and the related signals and signal groups which are
+ * mapped to the function.
+ *
+ * This function implements the functionality of Com_MainFunctionRx() for the mapped I-Pdus only.
+ * Preconditions:
+ * - COM must be initialized
+ *
+ * \param[in] None
+ *
+ *
+ * \ServiceID{0x18}
+ * \Reentrancy{Non re-entrant}
+ * \Synchronicity{Synchronous}
+ */
+
+FUNC(void, COM_CODE) <%= rxMainFunction.getMainfunctionName() %>(void)
+{
+
+    Com_MainFunctionRx_Generic(<%= comRxMainFuncIdx %>U);
+
+}
+<%
+                ++comRxMainFuncIdx;
+            }
+        }
+%>
+
+/*------------------[Com_Main_Funcs_Tx]-----------------------------------*/
+
+<%
+        int comTxMainFuncIdx = 0;
+
+        if ( comPBCfgDataModel.getComTxMainFunctions().get() != null )
+        {
+            for (ComMainfunctionTxType txMainFunction : comPBCfgDataModel.getComTxMainFunctions().get())
+            {
+%>
+/**
+ * \brief <%= txMainFunction.getMainfunctionName() %>
+ * - handles Tx I-Pdus and the related signals and signal groups which are
+ * mapped to the function.
+ *
+ * This function implements the functionality of Com_MainFunctionTx() for the mapped I-Pdus only.
+ * Preconditions:
+ * - COM must be initialized
+ *
+ * \param[in] None
+ *
+ *
+ * \ServiceID{0x19}
+ * \Reentrancy{Non re-entrant}
+ * \Synchronicity{Synchronous}
+ */
+
+FUNC(void, COM_CODE) <%= txMainFunction.getMainfunctionName() %>(void)
+{
+
+    Com_MainFunctionTx_Generic(<%= comTxMainFuncIdx %>U);
+
+}
+<%
+                ++comTxMainFuncIdx;
+            }
+        }
+%>
+
+<%
+        if (comCfgDataModel.isComMultSignalGwEnable())
+        {
+%>
+/*------------------[Com_Main_Funcs_Route]--------------------------------*/
+<%
+            comRxMainFuncIdx = 0;
+
+            if ( comPBCfgDataModel.getComRxMainFunctions().get() != null )
+            {
+                for (ComMainfunctionRxType rxMainFunction : comPBCfgDataModel.getComRxMainFunctions().get())
+                {
+                    comTxMainFuncIdx = 0;
+%>
+
+/**
+ * \brief Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>
+ * - handles source related part for signal gateway
+ * for source I-Pdus which are assigned to Rx main function <%= rxMainFunction.getMainfunctionName() %>
+ *
+ * This function copies values of the gated source I-Pdus to a signal gateway shadow buffer
+ * Preconditions:
+ * - COM must be initialized
+ * - must not be interrupted by or interrupt
+<%
+                    for (ComMainfunctionTxType txMainFunction : comPBCfgDataModel.getComTxMainFunctions().get())
+                    {
+%>
+ *   Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>_Dest_<%= txMainFunction.getMainfunctionName() %>()
+<%
+                    }
+%>
+ *
+ * \param[in] None
+ *
+ *
+ * \ServiceID{0x1A}
+ * \Reentrancy{Non re-entrant}
+ * \Synchronicity{Synchronous}
+ */
+FUNC(void, COM_CODE) Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>(void)
+{
+
+    Com_MainFunctionRouteSignals_Src_Generic(<%= comRxMainFuncIdx %>U);
+
+}
+<%
+                    for (ComMainfunctionTxType txMainFunction : comPBCfgDataModel.getComTxMainFunctions().get())
+                    {
+%>
+
+/**
+ * \brief Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>_Dest_<%= txMainFunction.getMainfunctionName() %>
+ * - handles destination related part for
+ * signal gateway for source I-Pdus which are assigned to Rx main function <%= rxMainFunction.getMainfunctionName() %>
+ * and destination I-Pdus which are assigned to Tx main function <%= txMainFunction.getMainfunctionName() %>
+ *
+ * This function copies values from the source signal gateway shadow buffer to the destination
+ * I-Pdus which are assigned to Tx main function with the Id ComMainFunctionsTx_Idx
+ * Preconditions:
+ * - COM must be initialized
+ * - must not be interrupted by or interrupt Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>()
+ *
+ * \param[in] None
+ *
+ *
+ * \ServiceID{0x1A}
+ * \Reentrancy{Non re-entrant}
+ * \Synchronicity{Synchronous}
+ */
+FUNC(void, COM_CODE) Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>_Dest_<%= txMainFunction.getMainfunctionName() %>(void)
+{
+
+    Com_MainFunctionRouteSignals_Src_Dest_Generic(<%= comRxMainFuncIdx %>U, <%= comTxMainFuncIdx %>U);
+
+}
+<%
+                        ++comTxMainFuncIdx;
+                    }
+                    ++comRxMainFuncIdx;
+                }
+            }
+        }
+%>
+
+/* stop data section declaration */
+#define COM_STOP_SEC_CODE
+#include <Com_MemMap.h>
+
+
+<%
+    }
+%>
+
+#define COM_START_SEC_CONFIG_DATA_UNSPECIFIED
+#include <Com_MemMap.h>
+
+
+#if (COM_CALL_OUT_FUNC_PTR_ARRAY_SIZE_MAX != COM_INDEX_NONE)
+#if (COM_TX_CALL_OUT_FUNC_PTR_ARRAY_SIZE > 0)
+/* send callouts */
+CONSTP2VAR(Com_TxCalloutType, AUTOMATIC, COM_APPL_CODE) Com_TxCallouts[COM_TX_CALL_OUT_FUNC_PTR_ARRAY_SIZE] =
+{
+<%
+    sequenceSeperator = " &";
+    for ( String callout : comPBCfgDataModel.getTxIPDUCallOuts())
+    {
+%>
+    <%= sequenceSeperator + callout %>
+<%
+        sequenceSeperator = ",&";
+    }
+%>
+};
+#else /* (COM_CALL_OUT_FUNC_PTR_ARRAY_SIZE > 0) */
+CONSTP2VAR(Com_TxCalloutType, AUTOMATIC, COM_APPL_CODE) Com_TxCallouts[1] =
+{
+    NULL_PTR
+};
+#endif /* (COM_CALL_OUT_FUNC_PTR_ARRAY_SIZE > 0) */
+
+
+#if (COM_RX_CALL_OUT_FUNC_PTR_ARRAY_SIZE > 0)
+/* receive callouts */
+CONSTP2VAR(Com_RxCalloutType, AUTOMATIC, COM_APPL_CODE) Com_RxCallouts[COM_RX_CALL_OUT_FUNC_PTR_ARRAY_SIZE] =
+{
+<%
+    sequenceSeperator = " &";
+    for ( String callout : comPBCfgDataModel.getRxIPDUCallOuts())
+    {
+%>
+    <%= sequenceSeperator + callout %>
+<%
+        sequenceSeperator = ",&";
+    }
+%>
+};
+#else /* (COM_RX_CALL_OUT_FUNC_PTR_ARRAY_SIZE > 0) */
+CONSTP2VAR(Com_RxCalloutType, AUTOMATIC, COM_APPL_CODE) Com_RxCallouts[1] =
+{
+    NULL_PTR
+};
+#endif /* (COM_RX_CALL_OUT_FUNC_PTR_ARRAY_SIZE > 0) */
+#endif /* (COM_CALL_OUT_FUNC_PTR_ARRAY_SIZE_MAX != COM_INDEX_NONE) */
+
+
+#if (COM_CBK_TX_ACK_PTR_ARRAY_SIZE_MAX != COM_INDEX_NONE)
+#if (COM_CBK_TX_ACK_PTR_ARRAY_SIZE > 0)
+CONSTP2VAR(Com_CbkTxAck_Type, AUTOMATIC, COM_RTE_CODE) Com_CbkTxAck_Array[COM_CBK_TX_ACK_PTR_ARRAY_SIZE] =
+{
+<%
+    sequenceSeperator = " &";
+    for (String notification : comPBCfgDataModel.getSigTxAckNotifications())
+    {
+%>
+    <%= sequenceSeperator + notification %>
+<%
+        sequenceSeperator = ",&";
+    }
+%>
+};
+#else /* (COM_CBK_TX_ACK_PTR_ARRAY_SIZE > 0) */
+CONSTP2VAR(Com_CbkTxAck_Type, AUTOMATIC, COM_RTE_CODE) Com_CbkTxAck_Array[1] =
+{
+    NULL_PTR
+};
+#endif /* (COM_CBK_TX_ACK_PTR_ARRAY_SIZE > 0) */
+#endif /* (COM_CBK_TX_ACK_PTR_ARRAY_SIZE_MAX != COM_INDEX_NONE) */
+
+
+#if (COM_CBK_TX_T_OUT_ARRAY_SIZE_MAX != COM_INDEX_NONE)
+#if (COM_CBK_TX_T_OUT_ARRAY_SIZE > 0)
+CONSTP2VAR(Com_CbkTxTOut_Type, AUTOMATIC, COM_RTE_CODE) Com_CbkTxTOut_Array[COM_CBK_TX_T_OUT_ARRAY_SIZE] =
+{
+<%
+    sequenceSeperator = " &";
+    for ( String notification : comPBCfgDataModel.getSigTxTOutNotifications())
+    {
+%>
+    <%= sequenceSeperator + notification %>
+<%
+        sequenceSeperator = ",&";
+    }
+%>
+};
+#else /* (COM_CBK_TX_T_OUT_ARRAY_SIZE > 0) */
+CONSTP2VAR(Com_CbkTxTOut_Type, AUTOMATIC, COM_RTE_CODE) Com_CbkTxTOut_Array[1] =
+{
+    NULL_PTR
+};
+#endif /* (COM_CBK_TX_T_OUT_ARRAY_SIZE > 0) */
+#endif /* (COM_CBK_TX_T_OUT_ARRAY_SIZE_MAX != COM_INDEX_NONE) */
+
+
+#if (COM_CBK_TX_ERR_PTR_ARRAY_SIZE_MAX != COM_INDEX_NONE)
+#if (COM_CBK_TX_ERR_PTR_ARRAY_SIZE > 0)
+CONSTP2VAR(Com_CbkTxErr_Type, AUTOMATIC, COM_RTE_CODE) Com_CbkTxErr_Array[COM_CBK_TX_ERR_PTR_ARRAY_SIZE] =
+{
+<%
+    sequenceSeperator = " &";
+    for ( String notification : comPBCfgDataModel.getSigTxErrNotifications())
+    {
+%>
+    <%= sequenceSeperator + notification %>
+<%
+        sequenceSeperator = ",&";
+    }
+%>
+};
+#else /* (COM_CBK_TX_ERR_PTR_ARRAY_SIZE > 0) */
+CONSTP2VAR(Com_CbkTxErr_Type, AUTOMATIC, COM_RTE_CODE) Com_CbkTxErr_Array[1] =
+{
+    NULL_PTR
+};
+#endif /* (COM_CBK_TX_ERR_PTR_ARRAY_SIZE > 0) */
+#endif /* (COM_CBK_TX_ERR_PTR_ARRAY_SIZE_MAX != COM_INDEX_NONE) */
+
+
+#if (COM_CBK_RX_ACK_PTR_ARRAY_SIZE_MAX != COM_INDEX_NONE)
+#if (COM_CBK_RX_ACK_PTR_ARRAY_SIZE > 0)
+CONSTP2VAR(Com_CbkRxAck_Type, AUTOMATIC, COM_RTE_CODE) Com_CbkRxAck_Array[COM_CBK_RX_ACK_PTR_ARRAY_SIZE] =
+{
+<%
+    sequenceSeperator = " &";
+    for (String notification : comPBCfgDataModel.getSigRxAckNotifications())
+    {
+%>
+    <%= sequenceSeperator + notification %>
+<%
+        sequenceSeperator = ",&";
+    }
+%>
+};
+#else /* (COM_CBK_RX_ACK_PTR_ARRAY_SIZE > 0)) */
+CONSTP2VAR(Com_CbkRxAck_Type, AUTOMATIC, COM_RTE_CODE) Com_CbkRxAck_Array[1] =
+{
+    NULL_PTR
+};
+#endif /* (COM_CBK_RX_ACK_PTR_ARRAY_SIZE > 0)) */
+#endif /* (COM_CBK_RX_ACK_PTR_ARRAY_SIZE_MAX != COM_INDEX_NONE) */
+
+
+#if (COM_CBK_RX_T_OUT_ARRAY_SIZE_MAX != COM_INDEX_NONE)
+#if (COM_CBK_RX_T_OUT_ARRAY_SIZE > 0)
+CONSTP2VAR(Com_CbkRxTOut_Type, AUTOMATIC, COM_RTE_CODE) Com_CbkRxTOut_Array[COM_CBK_RX_T_OUT_ARRAY_SIZE] =
+{
+<%
+    sequenceSeperator = " &";
+    for ( String notification : comPBCfgDataModel.getSigRxTOutNotifications())
+    {
+%>
+    <%= sequenceSeperator + notification %>
+<%
+        sequenceSeperator = ",&";
+    }
+%>
+};
+#else /* (COM_CBK_RX_T_OUT_ARRAY_SIZE > 0) */
+CONSTP2VAR(Com_CbkRxTOut_Type, AUTOMATIC, COM_RTE_CODE) Com_CbkRxTOut_Array[1] =
+{
+    NULL_PTR
+};
+#endif /* (COM_CBK_RX_T_OUT_ARRAY_SIZE > 0) */
+#endif /* (COM_CBK_RX_T_OUT_ARRAY_SIZE_MAX != COM_INDEX_NONE) */
+
+
+#define COM_STOP_SEC_CONFIG_DATA_UNSPECIFIED
+#include <Com_MemMap.h>
+
+
+/* start data section declaration */
+#define COM_START_SEC_CONST_32
+#include <Com_MemMap.h>
+
+/**
+ * Variable holding link-time configuration
+ */
+CONST(uint32, COM_CONST) Com_LcfgSignature = COM_LCFG_SIGNATURE;
+
+/* stop data section declaration */
+#define COM_STOP_SEC_CONST_32
+#include <Com_MemMap.h>
+
+/** @} doxygen end group definition */
+<%@ include file="foot.c.inc" %>
+<%
+    if (comGenerationSuccessful == true)
+    {
+        context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE( "Com_Lcfg.c" ) );
+    }
+    else
+    {
+        return "";
+    }
+%>

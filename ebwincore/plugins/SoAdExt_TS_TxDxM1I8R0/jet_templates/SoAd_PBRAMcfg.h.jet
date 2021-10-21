@@ -1,0 +1,57 @@
+<%@ jet package="dreisoft.tresos.soad.generated.jet" class="SoAd_PBRAMcfg_h" skeleton="File.skeleton"
+        imports="dreisoft.tresos.soad.generator.output.postbuild.PostBuildData
+            dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+
+    final PostBuildData data = (PostBuildData)context.gen.getVariable( PostBuildData.ARG_NAME,
+                                                                       PostBuildData.class,
+                                                                       null );
+    final String includeGuardName = getIncludeGuardName( context );
+%>
+<%@ include file="head.h.inc" %>
+
+/*==================[includes]==============================================*/
+
+/*==================[macros]================================================*/
+
+#if (defined SOAD_DATA_MEM_SIZE) /* To prevent double definition */
+#error SOAD_DATA_MEM_SIZE already defined!
+#endif /* (defined SOAD_DATA_MEM_SIZE) */
+
+/**
+ * Size of internal SoAd data in units of bytes (static memory
+ * allocation) - Memory required by post-build config must at most equal
+ * to this constant
+ */
+#define SOAD_DATA_MEM_SIZE <%= data.getMemorySizeInBytes() %>U
+
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

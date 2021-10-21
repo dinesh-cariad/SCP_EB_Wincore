@@ -1,0 +1,369 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_Lcfg_h"
+        imports="dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            dreisoft.tresos.com.generator.ComLCfgDataModel
+            dreisoft.tresos.com.generator.Com_ConfigLayoutType
+            java.io.IOException
+            dreisoft.tresos.datamodel2.api.model.DCtxt
+            dreisoft.tresos.com.generator.ComCfgDataModel
+            dreisoft.tresos.com.generator.input.entity.Cache
+            dreisoft.tresos.com.generated.operationstatus.GeneratorOperationStatus
+            dreisoft.tresos.com.generator.ComMainfunctionRxType
+            dreisoft.tresos.com.generator.ComMainfunctionTxType
+            dreisoft.tresos.com.generator.constants.Constants
+            dreisoft.tresos.com.tools.FileGeneratorHelper" %>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    DCtxt comDCtxt = context.gen.getModuleConfigurationDCtxtVariable( "Com" );
+    boolean comGenerationSuccessful = !context.gen.isVerifying();
+    final String includeGuardName = "COM_LCFG_H";
+    long comPBRAMSize;
+
+    ComLCfgDataModel comLCfgDataModel = new ComLCfgDataModel(comDCtxt);
+    Cache cache = (Cache) context.gen.getVariable("Com.cache", Cache.class, null);
+    ComCfgDataModel comCfgDataModel = (ComCfgDataModel) context.gen.getVariable("comCfgDataModel", ComCfgDataModel.class, null);
+    Com_ConfigLayoutType comPBCfgDataModel = (Com_ConfigLayoutType) context.gen.getVariable("comPBCfgDataModel", Com_ConfigLayoutType.class, null);
+
+    context.gen.setVariable("comLCfgDataModel", comLCfgDataModel);
+
+    // if maximum PB RAM size if given => use it; otherwise use required size
+    if (comCfgDataModel.getComDataMemSize() > 0) {
+        comPBRAMSize = comCfgDataModel.getComDataMemSize();
+    }
+    else {
+        comPBRAMSize = comPBCfgDataModel.getRequiredPBRAMSize();
+    }
+
+%>
+<%@ include file="head.h.inc" %>
+
+<%
+if (!comCfgDataModel.isComTimeBaseEnabled())
+{
+%>
+/* mgcc62 Deviation List
+ *
+ * MGCC62-1) Deviated Rule: redundant-decls
+ * warning: redundant redeclaration of 'Com_MainFunctionTx_X' [-Wredundant-decls]
+ *
+ * Reason:
+ * AUTOSAR declares Com_MainFunctionTx also in SchM_Com.h
+ *
+ * MGCC62-2) Deviated Rule: redundant-decls
+ * warning: redundant redeclaration of 'Com_MainFunctionRouteSignals_Src_Com_MainFunctionRx_X' [-Wredundant-decls]
+ *
+ * Reason:
+ * AUTOSAR declares Com_MainFunctionRouteSignals also in SchM_Com.h
+ *
+ * MGCC62-3) Deviated Rule: redundant-decls
+ * warning: redundant redeclaration of 'Com_MainFunctionRouteSignals_Src_Com_MainFunctionRx_X_Dest_Com_MainFunctionTx_X' [-Wredundant-decls]
+ *
+ * Reason:
+ * AUTOSAR declares Com_MainFunctionRouteSignals also in SchM_Com.h
+ *
+ * MGCC62-4) Deviated Rule: redundant-decls
+ * warning: redundant redeclaration of 'Com_MainFunctionRx_X' [-Wredundant-decls]
+ *
+ * Reason:
+ * AUTOSAR declares Com_MainFunctionRx also in SchM_Com.h
+ */
+<%
+}
+%>
+
+/*==================[includes]==============================================*/
+
+#include <TSAutosar.h>         /* EB specific standard types */
+#include <Com_Api.h>           /* Module interface */
+#include <Com_Callout.h>
+#include <Com_Cbk.h>
+#include <Com_Cfg.h>
+
+<%
+    for(String variant : cache.PostBuildVariants)
+    {
+%>
+#include <<%= Constants.MODULE_NAME + Constants.GENERATED_FILE_NAME_SEPARATOR + variant + Constants.GENERATED_FILE_NAME_SEPARATOR + Constants.LINK_TIME_FILE_NAME_INFIX + ".h" %>>
+<%
+    }
+%>
+
+/*==================[macros]================================================*/
+
+/**
+ * Size of internal Com data in units of bytes (static memory allocation).
+ * Memory required by post-build configuration must be smaller than this constant.
+ */
+<% if( cache.isVariantHandlingEnabled() ) 
+    { 
+%>
+/* --------------------------- [START] <%= Constants.COM_DATA_MEM_SIZE %> ---------------------------*/
+<%= FileGeneratorHelper.defineComDataMemSizeDeterminationMacro(cache.PostBuildVariants, NL) %>
+/* --------------------------- [END] <%= Constants.COM_DATA_MEM_SIZE %> ---------------------------*/
+
+<%  }
+    else 
+    {
+%>
+#define <%= Constants.COM_DATA_MEM_SIZE + " " + comPBRAMSize %>
+<%   
+    }
+%>
+
+#if (COM_RAM_SIZE_MAX < COM_DATA_MEM_SIZE)
+#error (COM_RAM_SIZE_MAX < COM_DATA_MEM_SIZE)
+#endif /* #if (COM_RAM_SIZE_MAX < COM_DATA_MEM_SIZE) */
+
+
+#if (defined COM_TX_CALL_OUT_FUNC_PTR_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_CALL_OUT_FUNC_PTR_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_CALL_OUT_FUNC_PTR_ARRAY_SIZE) */
+
+/** \brief Define COM_TX_CALL_OUT_FUNC_PTR_ARRAY_SIZE */
+#define COM_TX_CALL_OUT_FUNC_PTR_ARRAY_SIZE <%= comPBCfgDataModel.getTxIPDUCallOuts().size() %>U
+
+#if (defined COM_RX_CALL_OUT_FUNC_PTR_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_CALL_OUT_FUNC_PTR_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_CALL_OUT_FUNC_PTR_ARRAY_SIZE) */
+
+/** \brief Define COM_RX_CALL_OUT_FUNC_PTR_ARRAY_SIZE */
+#define COM_RX_CALL_OUT_FUNC_PTR_ARRAY_SIZE <%= comPBCfgDataModel.getRxIPDUCallOuts().size() %>U
+
+
+#if (defined COM_CBK_TX_ACK_PTR_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_CBK_TX_ACK_PTR_ARRAY_SIZE already defined
+#endif /* if (defined COM_CBK_TX_ACK_PTR_ARRAY_SIZE) */
+
+/** \brief Define COM_CBK_TX_ACK_PTR_ARRAY_SIZE */
+#define COM_CBK_TX_ACK_PTR_ARRAY_SIZE <%= comPBCfgDataModel.getSigTxAckNotifications().size() %>U
+
+
+#if (defined COM_CBK_RX_ACK_PTR_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_CBK_RX_ACK_PTR_ARRAY_SIZE already defined
+#endif /* if (defined COM_CBK_RX_ACK_PTR_ARRAY_SIZE) */
+
+/** \brief Define COM_CBK_RX_ACK_PTR_ARRAY_SIZE */
+#define COM_CBK_RX_ACK_PTR_ARRAY_SIZE <%= comPBCfgDataModel.getSigRxAckNotifications().size() %>U
+
+
+#if (defined COM_CBK_TX_T_OUT_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_CBK_TX_T_OUT_ARRAY_SIZE already defined
+#endif /* if (defined COM_CBK_TX_T_OUT_ARRAY_SIZE) */
+
+/** \brief Define COM_CBK_TX_T_OUT_ARRAY_SIZE */
+#define COM_CBK_TX_T_OUT_ARRAY_SIZE <%= comPBCfgDataModel.getSigTxTOutNotifications().size() %>U
+
+
+#if (defined COM_CBK_RX_T_OUT_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_CBK_RX_T_OUT_ARRAY_SIZE already defined
+#endif /* if (defined COM_CBK_RX_T_OUT_ARRAY_SIZE) */
+
+/** \brief Define COM_CBK_RX_T_OUT_ARRAY_SIZE */
+#define COM_CBK_RX_T_OUT_ARRAY_SIZE <%= comPBCfgDataModel.getSigRxTOutNotifications().size() %>U
+
+
+#if (defined COM_CBK_TX_ERR_PTR_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_CBK_TX_ERR_PTR_ARRAY_SIZE already defined
+#endif /* if (defined COM_CBK_TX_ERR_PTR_ARRAY_SIZE) */
+
+/** \brief Define COM_CBK_TX_ERR_PTR_ARRAY_SIZE */
+#define COM_CBK_TX_ERR_PTR_ARRAY_SIZE <%= comPBCfgDataModel.getSigTxErrNotifications().size() %>U
+
+
+#if (defined COM_LCFG_SIGNATURE) /* To prevent double declaration */
+#error COM_LCFG_SIGNATURE already defined
+#endif /* if (defined COM_LCFG_SIGNATURE) */
+
+/** \brief Define COM_LCFG_SIGNATURE */
+#define COM_LCFG_SIGNATURE <%= FileGeneratorHelper.makeHexStringRepresentation( cache.properties.signatures.linktimeSignature ) %>U
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+<%
+if (!comCfgDataModel.isComTimeBaseEnabled())
+{ %>
+/* start data section declaration */
+#define COM_START_SEC_CODE
+#include <Com_MemMap.h>
+
+/*------------------[Com_Main_Funcs_Rx]-----------------------------------*/
+
+<%
+    if ( comPBCfgDataModel.getComRxMainFunctions().get() != null )
+    {
+        for (ComMainfunctionRxType rxMainFunction : comPBCfgDataModel.getComRxMainFunctions().get())
+        {
+
+%>
+/**
+ * \brief <%= rxMainFunction.getMainfunctionName() %>
+ * - handles Rx I-Pdus and the related signals and signal groups which are
+ * mapped to the function.
+ *
+ * This function implements the functionality of Com_MainFunctionRx() for the mapped I-Pdus only.
+ * Preconditions:
+ * - COM must be initialized
+ *
+ * \param[in] None
+ *
+ *
+ * \ServiceID{0x18}
+ * \Reentrancy{Non re-entrant}
+ * \Synchronicity{Synchronous}
+ */
+/* Deviation MGCC62-4 */
+extern FUNC(void, COM_CODE) <%= rxMainFunction.getMainfunctionName() %>(void);
+<%
+        }
+    }
+%>
+
+/*------------------[Com_Main_Funcs_Tx]-----------------------------------*/
+
+<%
+    if ( comPBCfgDataModel.getComTxMainFunctions().get() != null )
+    {
+        for (ComMainfunctionTxType txMainFunction : comPBCfgDataModel.getComTxMainFunctions().get())
+        {
+%>
+/**
+ * \brief <%= txMainFunction.getMainfunctionName() %>
+ * - handles Tx I-Pdus and the related signals and signal groups which are
+ * mapped to the function.
+ *
+ * This function implements the functionality of Com_MainFunctionTx() for the mapped I-Pdus only.
+ * Preconditions:
+ * - COM must be initialized
+ *
+ * \param[in] None
+ *
+ *
+ * \ServiceID{0x19}
+ * \Reentrancy{Non re-entrant}
+ * \Synchronicity{Synchronous}
+ */
+/* Deviation MGCC62-1 */
+extern FUNC(void, COM_CODE) <%= txMainFunction.getMainfunctionName() %>(void);
+<%
+        }
+    }
+%>
+
+<%
+    if (comCfgDataModel.isComMultSignalGwEnable())
+    {
+%>
+/*------------------[Com_Main_Funcs_Route]--------------------------------*/
+<%
+        if ( comPBCfgDataModel.getComRxMainFunctions().get() != null )
+            {
+                for (ComMainfunctionRxType rxMainFunction : comPBCfgDataModel.getComRxMainFunctions().get())
+                {
+%>
+
+/**
+ * \brief Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>
+ * - handles source related part for signal gateway
+ * for source I-Pdus which are assigned to Rx main function <%= rxMainFunction.getMainfunctionName() %>
+ *
+ * This function copies values of the gated source I-Pdus to a signal gateway shadow buffer
+ * Preconditions:
+ * - COM must be initialized
+ * - must not be interrupted by or interrupt
+<%
+                if ( comPBCfgDataModel.getComTxMainFunctions().get() != null )
+                {
+                    for (ComMainfunctionTxType txMainFunction : comPBCfgDataModel.getComTxMainFunctions().get())
+                    {
+%>
+ *   Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>_Dest_<%= txMainFunction.getMainfunctionName() %>()
+<%
+                    }
+                }
+%>
+ *
+ * \param[in] None
+ *
+ *
+ * \ServiceID{0x1A}
+ * \Reentrancy{Non re-entrant}
+ * \Synchronicity{Synchronous}
+ */
+/* Deviation MGCC62-3 */
+extern FUNC(void, COM_CODE) Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>(void);
+<%
+                if ( comPBCfgDataModel.getComTxMainFunctions().get() != null )
+                {
+                    for (ComMainfunctionTxType txMainFunction : comPBCfgDataModel.getComTxMainFunctions().get())
+                    {
+%>
+
+/**
+ * \brief Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>_Dest_<%= txMainFunction.getMainfunctionName() %>
+ * - handles destination related part for
+ * signal gateway for source I-Pdus which are assigned to Rx main function <%= rxMainFunction.getMainfunctionName() %>
+ * and destination I-Pdus which are assigned to Tx main function <%= txMainFunction.getMainfunctionName() %>
+ *
+ * This function copies values from the source signal gateway shadow buffer to the destination
+ * I-Pdus which are assigned to Tx main function with the Id ComMainFunctionsTx_Idx
+ * Preconditions:
+ * - COM must be initialized
+ * - must not be interrupted by or interrupt Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>()
+ *
+ * \param[in] None
+ *
+ *
+ * \ServiceID{0x1A}
+ * \Reentrancy{Non re-entrant}
+ * \Synchronicity{Synchronous}
+ */
+/* Deviation MGCC62-4 */
+extern FUNC(void, COM_CODE) Com_MainFunctionRouteSignals_Src_<%= rxMainFunction.getMainfunctionName() %>_Dest_<%= txMainFunction.getMainfunctionName() %>(void);
+<%
+                    }
+                }
+            }
+        }
+    }
+%>
+
+
+/* stop data section declaration */
+#define COM_STOP_SEC_CODE
+#include <Com_MemMap.h>
+<%
+}
+%>
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>
+<%
+if (comGenerationSuccessful == true)
+{
+    context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE( "Com_Lcfg.h" ) );
+}
+else {
+    return "";
+}
+
+%>

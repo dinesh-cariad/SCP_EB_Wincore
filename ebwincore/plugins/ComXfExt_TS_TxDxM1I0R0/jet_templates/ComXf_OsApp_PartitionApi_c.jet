@@ -1,0 +1,139 @@
+<%@ jet package="eb.tresos.comxf.generated.jet" class="ComXf_OsApp_PartitionApi_c" skeleton="File.skeleton"
+    imports="dreisoft.tresos.lib2.api.util.Pair
+             eb.tresos.comxf.generator.intermediate.TransformationFunction
+             eb.tresos.comxf.generator.intermediate.PrimitiveDataElement
+             eb.tresos.comxf.generator.output.PrimitiveElementGetter
+             eb.tresos.comxf.generator.intermediate.GeneratorPartitionHandler
+             eb.tresos.comxf.generator.output.NameGenerator
+             java.util.List"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final Model model = (Model)context.gen.getVariable( Model.ARG_NAME, Model.class, null );
+    final GeneratorPartitionHandler partitionHandler = model.getGeneratorPartitionHandler();
+%>
+<%@ include file="head.c.inc" %>
+
+
+/*==================[includes]==============================================*/
+
+#include <ComXf<%= partitionHandler.getPartitionInfix() %>_PartitionApi.h>        /* Generated module API */
+#include <ComXf_Int.h>        /* Internal functions and types */
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+#define COMXF_START_SEC_CODE
+#include <ComXf_MemMap.h>
+
+<% if (!partitionHandler.getTransformationFunctions(partitionHandler.getPartitionName()).isEmpty()) { %>
+/*------------- C O M   b a s e d   s e r i a l i z a t i o n --------------*/
+<% } %>
+
+<% for (final TransformationFunction function : partitionHandler.getTransformationFunctions(partitionHandler.getPartitionName())) { %>
+<% PrimitiveElementGetter getter = new PrimitiveElementGetter(function.getData());
+   final List<Pair<String, PrimitiveDataElement>> elementList = getter.getPrimitiveElements(); %>
+FUNC(uint8, COMXF_CODE) <%= function.getName() %>
+(
+   P2VAR(uint8, AUTOMATIC, COMXF_APPL_DATA) buffer,
+   P2VAR(uint16, AUTOMATIC, COMXF_APPL_DATA) bufferLength,
+   P2CONST(<%= function.getDataTypename() %>, AUTOMATIC, COMXF_APPL_DATA) <%= NameGenerator.DATAELEMENTROOTNAME %>
+)
+{
+    uint8 retval = E_OK;
+
+    DBG_<%= function.getName() %>_ENTRY(buffer, bufferLength, <%= NameGenerator.DATAELEMENTROOTNAME %>);
+
+#if (COMXF_DEV_ERROR_DETECT == STD_ON)
+    ComXf_EB_CheckInput(buffer, bufferLength, <%= NameGenerator.DATAELEMENTROOTNAME %>, &retval);
+    if (retval == E_OK)
+#endif /* (COMXF_DEV_ERROR_DETECT == STD_ON) */
+    {
+        *bufferLength = Com_ComXf_TxPrepareBuffer(buffer, ComConf_ComSignalGroup_<%= function.getSignalGroupName() %>, TRUE);
+
+        <% for(Pair<String, PrimitiveDataElement> x : elementList) { 
+             final String pathToTheElement = x.getFirst();
+             final PrimitiveDataElement element = x.getLast();
+        %>
+        ComXf_EB_Write_Signal (buffer, &<%= NameGenerator.DATAELEMENTROOTNAME %><%= pathToTheElement %>, &retval, ComConf_ComGroupSignal_<%= element.getSignalName() %>, ComConf_ComSignalGroup_<%= function.getSignalGroupName() %>);
+        <% } %>
+    }
+
+    DBG_<%= function.getName() %>_EXIT(buffer, bufferLength, <%= NameGenerator.DATAELEMENTROOTNAME %>, retval);
+
+    return retval;
+}
+<% } %>
+
+<% if (!partitionHandler.getInvTransformationFunctions(partitionHandler.getPartitionName()).isEmpty()) { %>
+/*----------- C O M   b a s e d   d e s e r i a l i z a t i o n ------------*/
+<% } %>
+
+<% for (final TransformationFunction function : partitionHandler.getInvTransformationFunctions(partitionHandler.getPartitionName())) { %>
+<% PrimitiveElementGetter getter = new PrimitiveElementGetter(function.getData());
+   final List<Pair<String, PrimitiveDataElement>> elementList = getter.getPrimitiveElements(); %>
+FUNC(uint8, COMXF_CODE) <%= function.getName() %>
+(
+   P2CONST(uint8, AUTOMATIC, COMXF_APPL_DATA) buffer,
+   uint16 bufferLength,
+   P2VAR(<%= function.getDataTypename() %>, AUTOMATIC, COMXF_APPL_DATA) <%= NameGenerator.DATAELEMENTROOTNAME %>
+)
+{
+    uint8 retval = E_OK;
+
+    DBG_<%= function.getName() %>_ENTRY(buffer, bufferLength, <%= NameGenerator.DATAELEMENTROOTNAME %>);
+
+    if((buffer == NULL_PTR) && (bufferLength == 0U))
+    {
+        retval = E_NO_DATA;
+    }
+    else
+    {
+#if (COMXF_DEV_ERROR_DETECT == STD_ON)
+        ComXf_EB_Inv_CheckInput(buffer, bufferLength, <%= NameGenerator.DATAELEMENTROOTNAME %>, &retval, ComConf_ComSignalGroup_<%= function.getSignalGroupName() %>);
+        if (retval == E_OK)
+#endif /* (COMXF_DEV_ERROR_DETECT == STD_ON) */
+        {
+            <% for(Pair<String, PrimitiveDataElement> x : elementList) {
+                 final String pathToTheElement = x.getFirst();
+                 final PrimitiveDataElement element = x.getLast();
+            %>
+            ComXf_EB_Read_Signal (buffer, &<%= NameGenerator.DATAELEMENTROOTNAME %><%= pathToTheElement %>, &retval, ComConf_ComGroupSignal_<%= element.getSignalName() %>, ComConf_ComSignalGroup_<%= function.getSignalGroupName() %>);
+            <% } %>
+        }
+    }
+
+    DBG_<%= function.getName() %>_EXIT(buffer, bufferLength, <%= NameGenerator.DATAELEMENTROOTNAME %>, retval);
+
+    return retval;
+}
+<% } %>
+
+#define COMXF_STOP_SEC_CODE
+#include <ComXf_MemMap.h>
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.c.inc" %>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+    AUTOSAR SomeIpTp_TS_TxDxM1I0R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+
+    <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="SomeIpTp_TS_TxDxM1I0R0_ModuleId"
+             name="SomeIpTp_TS_TxDxM1I0R0 Module">
+    <module id="SomeIpTp_TS_TxDxM1I0R0"
+            label="SomeIpTp"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-IPStack: AUTOSAR SomeIpTp module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="0"
+            swVersionPatch="28"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="3"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="3"
+            relVersionPatch="0"
+            categoryType="SomeIpTp"
+            categoryLayer="Communication Services"
+            categoryCategory="Ethernet"
+            categoryComponent="ECUC">
+      <cluster name="Ethernet Stack"/>
+    </module>
+  </extension>
+
+
+  
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="SomeIpTp_TS_TxDxM1I0R0_ConfigId"
+             name="SomeIpTp_TS_TxDxM1I0R0 Configuration">
+    <configuration moduleId="SomeIpTp_TS_TxDxM1I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/SomeIpTp.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM1I0R0/SomeIpTp"/>
+      </data>
+
+      <editor id="SomeIpTp_TS_TxDxM1I0R0_EditorId"
+              label="Default"
+              tooltip="ACG-IPStack: AUTOSAR SomeIpTp module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM1I0R0/SomeIpTp"/>
+          <parameter name="title" value="SomeIpTp"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+  
+      <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_SomeIpTp_TS_TxDxM1I0R0"
+           moduleId="SomeIpTp_TS_TxDxM1I0R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.SomeIpTpTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+  
+  
+      <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="SomeIpTp_TS_TxDxM1I0R0_GeneratorId"
+             name="SomeIpTp_TS_TxDxM1I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="SomeIpTp_TS_TxDxM1I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="SomeIpTp_TS_TxDxM1I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+  
+  
+  
+      <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="SomeIpTp_TS_TxDxM1I0R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+
+  
+
+  <!-- handle id calculator for SomeIpTpRxNPduHandleId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="SomeIpTpRxNPduHandleId_SomeIpTp_TS_TxDxM1I0R0"
+    name="SomeIpTp/SomeIpTpRxNPduHandleId"
+    desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="SomeIpTp_TS_TxDxM1I0R0"/>
+        <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I0R0/ELEMENTS/SomeIpTp/SomeIpTpChannel/SomeIpTpChannel/SomeIpTpRxNSdu/SomeIpTpRxNSdu/SomeIpTpRxNPdu"/>
+        <parameter name="idPath" value="SomeIpTpRxNPduHandleId"/>
+        <parameter name="zbcGroups" value="false"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.SomeIpTp_TS_TxDxM1I0R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.3"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for SomeIpTpTxNSduHandleId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="SomeIpTpTxNSduHandleId_SomeIpTp_TS_TxDxM1I0R0"
+    name="SomeIpTp/SomeIpTpTxNSduHandleId"
+    desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="SomeIpTp_TS_TxDxM1I0R0"/>
+        <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I0R0/ELEMENTS/SomeIpTp/SomeIpTpChannel/SomeIpTpChannel/SomeIpTpTxNSdu/SomeIpTpTxNSdu"/>
+        <parameter name="idPath" value="SomeIpTpTxNSduHandleId"/>
+        <parameter name="zbcGroups" value="false"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.SomeIpTp_TS_TxDxM1I0R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.3"/>
+          </with>
+        </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for SomeIpTpTxNPduHandleId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="SomeIpTpTxNPduHandleId_SomeIpTp_TS_TxDxM1I0R0"
+    name="SomeIpTp/SomeIpTpTxNPduHandleId"
+    desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="SomeIpTp_TS_TxDxM1I0R0"/>
+        <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I0R0/ELEMENTS/SomeIpTp/SomeIpTpChannel/SomeIpTpChannel/SomeIpTpTxNSdu/SomeIpTpTxNSdu/SomeIpTpTxNPdu"/>
+        <parameter name="idPath" value="SomeIpTpTxNPduHandleId"/>
+        <parameter name="zbcGroups" value="false"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.SomeIpTp_TS_TxDxM1I0R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.3"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+</plugin>

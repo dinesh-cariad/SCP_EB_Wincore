@@ -1,0 +1,121 @@
+<?xml version='1.0'?>
+
+<!-- EB_Automotive_Configuration_File -->
+
+<datamodel version="3.0"
+  xmlns="http://www.tresos.de/_projects/DataModel2/08/root.xsd"
+  xmlns:a="http://www.tresos.de/_projects/DataModel2/08/attribute.xsd"
+  xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd"
+  xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar"
+    xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd"
+    xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_TxDxM1I9R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="EthIfRecConfigurationEthTSyn" type="AR-ELEMENT" value="MODULE-CONFIGURATION">
+            <d:ctr type="MODULE-CONFIGURATION">
+              <a:a name="DEF" value="ASPath:/TS_TxDxM1I9R0/EthIf"/>
+              <d:ctr name="EthIfConfigSet" type="IDENTIFIABLE">
+                <d:lst name="EthIfController" type="MAP">
+                  <d:ctr name="EthIfController_0" type="IDENTIFIABLE">
+                    <d:var name="EthIfCtrlIdx" type="INTEGER" value="0">
+                      <a:a name="IMPORTER_INFO" value="@DEF"/>
+                    </d:var>
+                    <d:ref name="EthIfPhysControllerRef" type="REFERENCE" 
+                           value="ASPath:/EthIf/EthIf/EthIfConfigSet/EthIfPhysController_0"/>
+                  </d:ctr>
+                </d:lst>
+                <d:lst name="EthIfFrameOwnerConfig" type="MAP">
+                  <d:ctr name="EthIfFrameOwnerConfig_PTP"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfFrameType" type="INTEGER" value="35063"/>
+                    <d:var name="EthIfOwner" type="INTEGER" value="0">
+                    </d:var>
+                  </d:ctr>
+                  <d:ctr name="EthIfFrameOwnerConfig_IPv4"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfFrameType" type="INTEGER" value="2048">
+                    </d:var>
+                    <d:var name="EthIfOwner" type="INTEGER" value="1"/>
+                  </d:ctr>
+                  <d:ctr name="EthIfFrameOwnerConfig_IPv6"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfFrameType" type="INTEGER" value="34525">
+                    </d:var>
+                    <d:var name="EthIfOwner" type="INTEGER" value="2"/>
+                  </d:ctr>
+                  <d:ctr name="EthIfFrameOwnerConfig_ARP"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfFrameType" type="INTEGER" value="2054">
+                    </d:var>
+                    <d:var name="EthIfOwner" type="INTEGER" value="3"/>
+                  </d:ctr>
+                </d:lst>
+                <d:lst name="EthIfPhysController" type="MAP">
+                  <d:ctr name="EthIfPhysController_0" type="IDENTIFIABLE">
+                    <d:var name="EthIfPhysControllerIdx" type="INTEGER" 
+                           value="0"/>
+                  </d:ctr>
+                </d:lst>
+                <d:lst name="EthIfRxIndicationConfig" type="MAP">
+                  <d:ctr name="EthIfRxIndicationConfig_PTP"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfRxIndicationFunction"
+                      type="FUNCTION-NAME" value="EthTSyn_RxIndication"/>
+                  </d:ctr>
+                  <d:ctr name="EthIfRxIndicationConfig_IPv4"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfRxIndicationFunction"
+                      type="FUNCTION-NAME" value="TcpIp_RxIndication">
+                    </d:var>
+                  </d:ctr>
+                  <d:ctr name="EthIfRxIndicationConfig_IPv6"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfRxIndicationFunction"
+                      type="FUNCTION-NAME" value="TcpIp_RxIndication">
+                    </d:var>
+                  </d:ctr>
+                  <d:ctr name="EthIfRxIndicationConfig_ARP"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfRxIndicationFunction"
+                      type="FUNCTION-NAME" value="TcpIp_RxIndication">
+                    </d:var>
+                  </d:ctr>
+                </d:lst>
+                <d:lst name="EthIfTrcvLinkStateChgConfig" type="MAP">
+                  <d:ctr name="EthIfTrcvLinkStateChgConfig_EthSM"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfTrcvLinkStateChgFunction"
+                      type="FUNCTION-NAME" value="EthSM_TrcvLinkStateChg">
+                    </d:var>
+                  </d:ctr>
+                  <d:ctr name="EthIfTrcvLinkStateChgConfig_EthTSyn"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfTrcvLinkStateChgFunction"
+                      type="FUNCTION-NAME"
+                      value="EthTSyn_TrcvLinkStateChg"/>
+                  </d:ctr>
+                </d:lst>
+                <d:lst name="EthIfTxConfirmationConfig" type="MAP">
+                  <d:ctr name="EthIfTxConfirmationConfig_PTP"
+                    type="IDENTIFIABLE">
+                    <d:var name="EthIfTxConfirmationFunction"
+                      type="FUNCTION-NAME" value="EthTSyn_TxConfirmation"/>
+                  </d:ctr>
+                </d:lst>
+              </d:ctr>
+              <d:ctr name="EthIfGeneral" type="IDENTIFIABLE">
+                <d:lst name="EthIfPublicCddHeaderFile">
+                  <d:var type="STRING" value="EthTSyn_Cbk.h"/>
+                </d:lst>
+              </d:ctr>
+            </d:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

@@ -1,0 +1,53 @@
+<%@ jet package="eb.tresos.comxf.generated.jet" class="ComXf_Cfg_h" skeleton="File.skeleton"
+		imports="eb.tresos.xfrm.api.generator.intermediate.BufferLengthType"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final Model model = (Model)context.gen.getVariable( Model.ARG_NAME, Model.class, null );
+    final String includeGuardName = getIncludeGuardName( context );
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+
+#include <Std_Types.h>           /* EB specific standard types */
+
+/*==================[macros]================================================*/
+
+<%= defineMacro( "COMXF_VERSION_INFO_API",
+        model.isVersionInfoApiEnabled(),
+        "This macro specifies if the ComXf_GetVersionInfo API is enabled by XfrmVersionInfoApi.", NL ) %>
+
+<%= defineMacro( "COMXF_DEV_ERROR_DETECT",
+        model.isDevErrorDetectionEnabled(),
+        "This macro specifies if the Development Error Detection and Notification is enabled according to configuration parameter XfrmDevErrorDetect.", NL ) %>
+
+<%= defineMacro( "COMXF_XFRMBUFFERLENGTHTYPE_ISUINT32",
+        BufferLengthType.UINT32 == model.getBufferLengthType(), 
+        "Type of buffer length (uint32 or uint16) according to configuration parameter XfrmBufferLengthType.", NL ) %>
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

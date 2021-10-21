@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+      <guidedconfigwizard
+            id="plugin.SelectableWizard.Autosar.wizard">
+         <backend
+               class="eb.tresos.postbuildselectable.PBSelectableBackend">
+         </backend>
+         <gui
+               class="eb.tresos.postbuildselectable.gui.BlankPage">
+         </gui>
+      </guidedconfigwizard>
+   </extension>
+   <extension
+         point="dreisoft.tresos.guidedconfig.api.plugin.trigger">
+      <trigger>
+         <autoconfigure
+               id="plugin.SelectableWizard.Autosar.wizard"
+               wizardId="plugin.SelectableWizard.Autosar.wizard">
+            <visibility></visibility>
+            <display
+                  icon="icons/synced.gif"
+                  label="Copy ECU Configuration to variant projects"
+                  tooltip="If this project is configured as variant-master-project in base module, this wizard will copy the config to all variant-plugins">
+            </display>
+         </autoconfigure>
+      </trigger>
+   </extension>
+
+</plugin>

@@ -1,0 +1,267 @@
+License
+-------
+This copy of "Strawberry Perl" is distributed according to the "Artistic License 1.0", see LICENSE.txt
+
+Distribution
+------------
+The Standard Version of "Strawberry Perl" can be found at http://www.strawberryperl.com .
+
+Compared to the Standard Version, in this copy of "Strawberry Perl" following changes have been made:
+- move of perl.exe, perl5.24.0.exe, perl524.dll, libgcc_s_sjlj-1.dll, libstdc++-6.dll, libwinpthread-1.dll from folder perl\bin to base directory
+- move of Win32.xs.dll from folder perl\lib\auto\Win32 to base directory
+- move of Perl modules from perl\lib and perl\vendor\lib to base directory
+- removal of folders "licenses", "cpan", "c", "win32" from base directory
+- removal of files "DISTRIBUTIONS.txt", "relocation.txt" from base directory
+- removal of Perl modules/packages:
+-- _charnames.pm
+-- aliased.pm
+-- Algorithm
+-- Alient
+-- Alt
+-- AnyDBM_File.pm
+-- Apache
+-- App
+-- AppConfig, AppConfig.pm
+-- Archive
+-- arybase.pm
+-- Attribute
+-- attributes.pm
+-- Authen
+-- autodie, autodie.pm
+-- AutoLoader.pm
+-- AutoSplit.pm
+-- autouse.pm
+-- B, B.pm
+-- bareword
+-- base.pm
+-- Benchmark.pm
+-- BerkeleyDB, BerkeleyDB.pm, BerkeleyDB.pod
+-- bigint.pm
+-- bignum.pm
+-- bigrat.pm
+-- blib.pm
+-- Bundle
+-- Bytes, bytes.pm
+-- bytes_heavy.pl
+-- Capture
+-- CGI, CGI.pm
+-- CGI.pm
+-- charnames.pm
+-- Class
+-- Clone, Clone.pm
+-- common
+-- Compress
+-- Config, Config.pod
+-- Context
+-- Convert
+-- CORE, CORE.pod
+-- CPAN, CPAN.pm
+-- CPANPLUS, CPANPLUS.pm
+-- Crypt
+-- Data
+-- Date
+-- DateTime.pm
+-- DateTimePP.pm
+-- DateTimePPExtra.pm
+-- DB.pm
+-- DBD
+-- DBI, DBI.pm
+-- DBIx
+-- DBM
+-- dbixs_rev.pl
+-- DBM_Filter, DBM_Filter.pm
+-- DB_File.pm
+-- DDP.pm
+-- deprecate.pm
+-- Devel
+-- diagnostics.pm
+-- Digest, Digest.pm
+-- DirHandle.pm
+-- Dist
+-- Dumpvalue.pm
+-- dumpvar.pl
+-- Email
+-- Encode, Encode.pm
+-- encoding, encoding.pm
+-- English.pm
+-- enum.pm
+-- Errno.pm
+-- Eval
+-- Excel
+-- Exception
+-- experimental.pm
+-- ExtUtils
+-- Fatal.pm
+-- FCGI.pm
+-- Fcntl.pm
+-- feature.pm
+-- FFI
+-- fields.pm
+-- File
+-- FileCache.pm
+-- FileHandle.pm
+-- filetest.pm
+-- Filter
+-- FindBin.pm
+-- GD, GD.pm
+-- GDBM_File.pm
+-- Getopt
+-- Graphics
+-- Hash
+-- HTTP
+-- Hook
+-- HTML
+-- HTTP
+-- I18N
+-- if.pm
+-- Imager, Imager.pm
+-- Import
+-- inc
+-- indirect.pm
+-- integer.pm
+-- IO, IO.pm
+-- IPC
+-- JSON
+-- JSON.pm
+-- less.pm
+-- Lexical
+-- lib, lib.pm
+-- List
+-- local
+-- Locale, locale.pm
+-- Log
+-- LWP, LWP.pm
+-- lwpcook.pod
+-- lwptut.pod
+-- Mail
+-- Math
+-- Memoize, Memoize.pm
+-- metaclass.pm
+-- Method
+-- MIME
+-- mkconsts.pl
+-- Modern
+-- Module
+-- Mojo, Mojo.pm
+-- Mojolicious, Mojolicious.pm
+-- MojoX
+-- Moo, Moo.pm
+-- Moose, Moose.pm
+-- MooseX
+-- MooX
+-- Mozilla
+-- MRO, mro.pm
+-- multidimensional.pm
+-- namespace
+-- NDBM_File.pm
+-- Net
+-- NEXT.pm
+-- Number
+-- O.pm
+-- Object
+-- ODBM_File.pm
+-- ojo.pm
+-- ok.pm
+-- OLE, OLE.pm
+-- oo.pm
+-- oose.pm
+-- Opcode.pm
+-- open.pm
+-- OpenGL, OpenGL.pm, OpenGL.pod
+-- ops.pm
+-- overload, overload.pm
+-- overloading.pm
+-- Package
+-- PAR, PAR.pm
+-- Params
+-- parent.pm
+-- Parse
+-- Path
+-- Perl
+-- perl5db.pl
+-- perldoc.pod
+-- perlfaq.pm
+-- perlfaq.pod
+-- perlfaq1.pod
+-- perlfaq2.pod
+-- perlfaq3.pod
+-- perlfaq4.pod
+-- perlfaq5.pod
+-- perlfaq6.pod
+-- perlfaq7.pod
+-- perlfaq8.pod
+-- perlfaq9.pod
+-- perlglossary.pod
+-- PerlIO, PerlIO.pm
+-- perllocal.pod
+-- pip.pm
+-- PkgConfig.pm
+-- pler.pm
+-- Pod
+-- POD2
+-- pods
+-- POSIX.pm
+-- POSIX.pod
+-- PPI, PPI.pm
+-- PPM, PPM.pm, ppm.xml
+-- Probe
+-- qd.pl
+-- re.pm
+-- Role
+-- Safe.pm
+-- Scalar
+-- scan.pl
+-- Scope
+-- SDBM_File.pm
+-- Search
+-- SelectSaver.pm
+-- SelfLoader.pm
+-- sigtrap.pm
+-- SOAP
+-- Socket.pm
+-- Socket6.pm
+-- Sort, sort.pm
+-- Spiffy, Spiffy.pm, Spiffy.pod
+-- Spreadsheet
+-- SQL
+-- StackTrace
+-- Storable.pm
+-- strictures.pm
+-- String
+-- Sub
+-- subs.pm
+-- Symbol.pm
+-- Syntax, syntax.pm
+-- Sys
+-- TAP
+-- Task
+-- Template, Template.pm
+-- Term
+-- Test, Test.pm
+-- Text
+-- Thread, Thread.pm
+-- threads, threads.pm
+-- Throwable, Throwable.pm
+-- Tie
+-- Time
+-- Tree
+-- Try
+-- Types
+-- Unicode
+-- unicore
+-- UNIVERSAL.pm
+-- URI, URI.pm
+-- User
+-- utf8.pm
+-- utf8_heavy.pl
+-- V.pm
+-- Variable
+-- version, version.pm
+-- version.pod
+-- vmsish.pm
+-- Win32
+-- Win32API
+-- WWW
+-- XML
+-- XSLoader.pm
+-- YAML, YAML.pm, YAML.pod

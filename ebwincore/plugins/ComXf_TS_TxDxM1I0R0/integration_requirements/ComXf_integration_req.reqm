@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+
+    <specobject>
+      <id>ComXf.EB.IntReq.RequiresCom01</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>2</version>
+      <description>
+      
+      
+      
+      The EB Com module shall be initialized before the invocation of <code>ComXf_Init()</code> and
+      de-initialized only after <code>ComXf_DeInit()</code> returned.
+      This behaviour only applies if a least one non safety related BSW entry is configured
+      within the XfrmImplementationMapping of the ComXf module.
+      </description>
+      <rationale>
+      The EB ComXf module requires the usage of Autocore Com module (reference to product description:
+      ASCPD-288) if a least one non safety related BSW entry is configured within the
+      XfrmImplementationMapping of the ComXf module. For these non safety related BSW entries the EB ComXf
+      module uses the post-build configuration and library APIs of the EB Com module. It eases the
+      implementation of the module. The configuration of the ComXf module and the Com module have to be
+      consistent regarding the configuration of signal groups, which is ensured if the same configuration
+      is used.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>ComXf.EB.IntReq.InitRoutines</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        
+        
+        
+        <code>ComXf_Init()</code> and <code>ComXf_DeInit()</code> must not be
+        invoked from the context of a safe application.
+      </description>
+      <rationale>
+        Different transformations might be mapped to different partitions.
+        Any module-wide de-/initialization routine shall de-/initialize only
+        non-safety relevant data.
+        Partitions containing safetly relevant transformations shall provide
+        their own individual de-/initialization routine (if needed).
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>ComXf.EB.IntReq.RequiresE2E01</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      
+      If only safety related BSW entries are configured within the XfrmImplementationMapping
+      of the ComXf module, no de-/initialization of the ComXf module is required.
+      </description>
+      <rationale>
+      The EB ComXf module requires the usage of Autocore E2E library if a least one safety related BSW entry
+      is configured within the XfrmImplementationMapping of the ComXf module. For these safety related BSW entries
+      the EB ComXf module uses library macros of the EB E2E library and the system configuration itself. This means no
+      usage of the post-build configuration and library APIs of the EB Com module applies.
+      Nevertheless, the configuration of signal groups within the system configuration (for the ComXf module)
+      and the Com module have to be consistent.
+      </rationale>
+    </specobject>
+
+    
+
+    <specobject>
+      <id>ComXf.EB.IntReq.EB_INTREQ_Com_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      
+        Restrictions to prevent race conditions in Com's Tx-path.
+
+        The Com module exhibits several race conditions in its transmission path that can
+        cause inconsistent and/or mutilated data to be transmitted. The transmission of an
+        I-PDU can be triggered by a Tx-signal API if the I-PDU has a direct part
+        (transmission mode is DIRECT or MIXED).
+        The Tx-signal APIs are <code>Com_SendSignal()</code>,
+        <code>Com_SendDynSignal()</code>, <code>Com_SendSignalGroup()</code>, and
+        <code>Com_SendSignalGroupArray()</code>. The Tx-signal APIs have write access to
+        the Com-internal I-PDU buffer. Note that (the internal implementations of) these
+        APIs are also used in context of <code>Com_MainFunctionRouteSignals()</code>.
+        Additionally the transmission of an I-PDU can be triggered in context of
+        <code>Com_MainFunctionTx()</code>, <code>Com_TriggerIPDUSend()</code>, or
+        <code>Com_IpduGroupControl()</code>, or <code>Com_SwitchIpduTxMode</code>.
+        Triggering of a transmission in general requires the read access to the
+        Com-internal I-PDU buffer by the Com lower layers.
+        Depending on the implementation of a Tx-callout (<code>ComIPduCallout</code> and
+        <code>ComIPduTriggerTransmitCallout</code>), it requires read and/or write
+        access to the Com-internal I-PDU buffer. The callouts are invoked when a
+        transmission is triggered.
+        Depending on the underlying bus system, the API
+        <code>Com_TriggerTransmit()</code> is invoked, which requires read access to the
+        Com-internal I-PDU buffer.
+        A race occurs when an ongoing transmission (access to the Com-internal I-PDU
+        buffer by Com lower layer and Com callout) is interrupted by an invocation of a
+        Tx-signal API. A race occurs when an ongoing transmission is interrupted by an API
+        which triggers another transmission for the same I-PDU and a configured Com callout
+        changes data.
+        This behavior leads to the following cases:<pre>
+          - An I-PDU has a direct part. It also has a call to a Tx-signal API to
+            a signal/signal group, in which one of the following transfer properties
+            is interrupted by another Tx-signal API call of a signal of the very
+            same I-PDU: <code>TRIGGERED</code>,
+            <code>TRIGGERED_ON_CHANGE</code>,
+            <code>TRIGGERED_ON_CHANGE_WITHOUT_REPETITION</code>, or
+            <code>TRIGGERED_WITHOUT_REPETITION</code>.
+          - A call to a Tx-signal API for a signal/signal group that belongs to
+            the I-PDU interrupts a call to one of the following APIs of the very
+            same I-PDU: <code>Com_TriggerIPDUSend()</code>,
+                        <code>Com_IpduGroupControl()</code>,
+                        <code>Com_SwitchIpduTxMode()</code>, or
+                        <code>Com_TriggerTransmit()</code>.
+          - A call to a Tx-signal API interrupts a call to
+                        <code>Com_MainFunctionTx()</code>.
+          - A callout uses the data of the I-PDU for a calculation (e.g. to
+            calculate a CRC) and a call to Tx-signal API interrupts the sending of
+            the I-PDU.</pre>
+        With a call to <code>Com_SendDynSignal()</code> not only the content of an I-PDU
+        may change, but also the length of the I-PDU.
+
+        Work-around
+        To prevent inconsistencies in the I-PDU, ensure the following:<pre>
+          - A call to a Tx-signal API that triggers a transmission does not
+            interrupt a call to a Tx-signal API for signals which belong to the same
+            I-PDU.
+          - A call to a Tx-signal API does not interrupt one of the following
+            APIs: <code>Com_TriggerIPDUSend()</code>,
+                  <code>Com_SwitchIpduTxMode()</code>, or
+                  <code>Com_TriggerTransmit()</code>.
+          - A call to a Tx-signal API does not interrupt
+                  <code>Com_MainFunctionTx()</code>.
+          - Additionally, if a callout is configured that modifies I-PDU data:
+            Ensure that the APIs:
+                  <code>Com_TriggerIPDUSend()</code>and
+                  <code>Com_SwitchIpduTxMode()</code> and
+                  <code>Com_TriggerTransmit()</code> and
+                  <code>Com_MainFunctionTx()</code>
+            do not interrupt each other for the very same I-PDU.</pre>
+      </description>
+      <rationale>
+        This issue could be avoided if you lock the PDU buffer or use expensive double
+        buffers. However if you lock the PDU buffer while the callout function or the
+        <code>PduR_ComTransmit</code> function is called, it leads to an undefined
+        locking time. It is not acceptable to disable interrupts for too long. Therefore a
+        usage restriction has been defined in the work-around section to avoid race
+        conditions.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>ComXf.EB.IntReq.EB_INTREQ_Com_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      
+        The access to the shadow buffer of a signal group is not protected.
+        Therefore restrictions apply to the mutually possible preemptions.<pre>
+        - On the Tx-side: A call to <code>Com_UpdateShadowSignal()</code> shall
+          not get interrupted by <code>Com_SendSignalGroup()</code> for the signal
+          group to which the group signal belongs to.
+        - On the Rx side: A call to <code>Com_ReceiveShadowSignal()</code> shall
+          not get interrupted by <code>Com_ReceiveSignalGroup()</code> for the
+          signal group to which the group signal belongs to.</pre>
+      </description>
+      <rationale>
+        Restriction on allowed mutual preemptions.
+
+       Work-around:<pre>
+        - Ensure that <code>Com_SendSignalGroup()</code> does not interrupt
+          <code>Com_UpdateShadowSignal()</code> for the signal group to which
+          the group signal belongs to.
+        - Ensure that <code>Com_ReceiveSignalGroup()</code> does not interrupt
+          <code>Com_ReceiveShadowSignal()</code> for the signal group to which
+          the group signal belongs to.</pre>
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>ComXf.EB.IntReq.EB_INTREQ_Com_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        
+        
+        
+        Limitation on Com signals/signal groups with update-bits.
+
+        AUTOSAR COM SWS specifies that signals/signal groups with update-bits which have
+        not been updated shall be discarded. However, if after an update of an I-PDU the
+        value of a signal changes from e.g. x to y without the update bit is set, a call to
+        <code>Com_ReceiveSignal()/Com_ReceiveSignalGroup()-Com_ReceiveGroupSignal()</code>
+        returns the changed value (i.e. y) and not the last received value (i.e. x). Note:
+        It is very unlikely that the receiver receives an updated value without the
+        update-bit set. Because at sender side, the sender always sets the update-bit in
+        case a new value is transmitted. The value of a signal/signal group only changes
+        when the <code>Com_SendSignal()/Com_SendSignalGroup()</code> is invoked which sets
+        the update-bit. An impact may only occur if the value on the sender is changed while
+        the update-bit is not set. If this conditions occur this has no impact on the
+        following use-cases:<pre>
+          - For applications (SWCs), at least if the EB-optimization
+            <code>DirectReadFromCom</code> in Rte is not used. Since the Rte
+            reads the value from the Com module only if it is notified by the Com
+            module. This does not happen when the update-bit is not set. Also it
+            writes the received value into a buffer and reads requests from the
+            application and uses the value of the buffer.
+          - For applications which only use Com APIs when
+            <code>ComNotification</code> is received.</pre>
+
+        However, this conditions may have an impact on the following use-case:
+        Applications, which directly use the Com APIs, usually get the correct value, since
+        the value of a signal usually does not change without setting the update-bit. If you
+        use the Com APIs without <code>ComNotification</code>, changed values may be read
+        that have no update-bit set. The following work-around is only applicable in this
+        case.
+        Work-around for signals of type U/SINT8/16/32
+        Configure a filter (<code>ComFilterAlgorithm</code>) <code>NEW_IS_WITHIN</code>,
+        with the parameters [ComFilterMin,
+        ComFilterMax] = maximum possible value range.
+      </description>
+      <rationale>
+        This limitation allows a more efficient implementation and for the application
+        usually the behavior does not change.
+        Requirements: - COM324
+      </rationale>
+    </specobject>
+
+  </specobjects>
+</specdocument>

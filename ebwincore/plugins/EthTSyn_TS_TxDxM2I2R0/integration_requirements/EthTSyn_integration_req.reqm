@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.EthTSyn.EB_INTREQ_EthTSyn_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The reinitialization process shall not interrupt other module functions.
+        If reinitialization of the module is required, the call of
+        <code>EthTSyn_Init()</code> shall not interrupt other module functions.
+      </description>
+      <rationale>
+        The reinitialization process resets all internal variables. Continuing an interrupted
+        module function after reinitialization can lead to undefined module behavior.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.EthTSyn.EB_INTREQ_EthTSyn_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        <code>EthTSyn_RxIndication()</code> and
+        <code>EthTSyn_TxConfirmation()</code> shall not preempt each other.
+        The module functions <code>EthTSyn_RxIndication()</code> and
+        <code>EthTSyn_TxConfirmation()</code> shall not preempt each other.
+      </description>
+      <rationale>
+        A preemption of these two function can be easily avoided during integration.
+        This limitation allows to reduce the number of interrupt locks to protect shared variables
+        and therefore increases the module performance.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.EthTSyn.EB_INTREQ_EthTSyn_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        <code>EthTSyn_TxConfirmation()</code> shall be non reentrant
+        The module functions <code>EthTSyn_TxConfirmation()</code> shall not interrupt
+        itself.
+      </description>
+      <rationale>
+        This preemption can be easily avoided during integration. This limitation
+        allows to reduce the number of interrupt locks to protect shared variables and therefore
+        increases the module performance.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.EthTSyn.EB_INTREQ_EthTSyn_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        <code>EthTSyn_MainFunction</code> must not preempt or be preempted by
+        <code>EthIf_MainFunctionRx/Tx()</code>.
+        The integrator must assure that <code>EthIf_MainFunctionRx/Tx()</code> can not
+        preempt <code>EthTSyn_MainFunction()</code>. The
+        integrator also must assure that <code>EthTSyn_MainFunction()</code> does not preempt
+        <code>EthIf_MainFunctionRx/Tx()</code>.
+      </description>
+      <rationale>
+        This limitation reduces code size and execution time by eliminating the need for extensive
+        use of exclusive areas.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.EthTSyn.EB_INTREQ_EthTSyn_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Invalid value for BufIdx.
+        <code>EthTSyn_TxConfirmation()</code> shall not be called parameter BufIdx set to
+        0xFFFFFFFFU.
+      </description>
+      <rationale>
+        0xFFFFFFFFU is used as invalid value internally. If Eth_BufIdxType is below uint32, this
+        limitation is always fulfilled.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.EthTSyn.EB_INTREQ_EthTSyn_0006</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        VLAN tags in synchronization frames require custom switch behavior to compensate the
+        switch processing delay equal to IEEE 802.1AS time aware switches. This is necessary to
+        reach the same synchronization accuracy.
+      </description>
+      <rationale>
+        IEEE 802.1AS does not allow the usage of VLAN tags and therefore, time aware switches
+        following this standard can not be used. Not time aware switches block the default
+        IEEE 802.1AS MAC address and decrease synchronization accuracy if another MAC address is
+        used.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.EthTSyn.EB_INTREQ_EthTSyn_0007</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If bridge is used over switch and TimeSecured Sub-TLV is received from GTM, the slave port
+        and all master ports where the Sync Follow-Up frame is forwarded need to have the same
+        flags configured in EthTSynCrcFlagsRxValidated as the GTM where the Sync Follow-Up
+        originated.
+      </description>
+      <rationale>
+        Not using the same configuration for all ports shall result in different CRC, therefore
+        the Sync Follow-Up frame shall be dropped.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.EthTSyn.EB_INTREQ_EthTSyn_0008</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the time synchronization over Ethernet is used, there should be maximum one slave per TimeDomain.
+      </description>
+      <rationale>
+        Possible scenarios:
+        If a master is configured and no slave -&gt; the master is the GTM for that TimeDomain.
+        If a slave and multiple masters are configured for a TimeDomain -&gt; the ECU is a gateway.
+        The slave is used to receive the time from the GTM. The masters will send this time to all other nodes
+        from that TimeDomain.
+        If just slave is configured the TimeDomain shall synchronize with the received time from GTM.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.EthTSyn.EB_INTREQ_EthTSyn_0009</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the time synchronization over Ethernet is used with multiple configuration variants,
+        EthTSynVariantHandlingIsUsed parameter must be set to TRUE in order to manual update the
+        maximum number of slaves(e.g.EthTSyNumberOfConfiguredSlaves please check the description of EthTSyNumberOfConfiguredSlaves
+        to see how to configure).
+        Also if the Time measurement with Switches feature is used, parameter EthTSynMaxNumberOfSwtPorts
+        must be updated as well (please check the description of EthTSyNumberOfConfiguredSlaves
+        to see how to configure).
+      </description>
+      <rationale>
+        Is not possible to access values of a different variant.
+        In Tresos documentation, chapter 5.7.7:
+        By intention, it is not possible to programmatically switch between the different variants.
+        It is also not possible to access values of a different variant.
+        The reason behind this is the concept that every code always only works on one consistent variant.
+        For example a code generator shall always only generate code for one, the currently selected variant.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.EthTSyn.EB_INTREQ_EthTSyn_0010</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        EthTSyn_Init() shall never be called with NULL_PTR.
+      </description>
+      <rationale>
+        EthTSyn uses PostBuild selectable and therefore a valid configuration needs to be provided via EthTSyn_Init() function.
+      </rationale>
+    </specobject>
+  </specobjects>
+</specdocument>

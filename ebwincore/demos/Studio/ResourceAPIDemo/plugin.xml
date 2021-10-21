@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+   Plug-in with demos for the EB tresos Studio Public API.
+ -->
+
+  <!--***************************************************************
+    ResourceAPIDemo
+    Using a GuidedConfig dialog for showcasing use cases of the Resource API, e.g.
+    - load resource(s)
+    - merge resource
+    - store resource
+    - convert resource
+  ***************************************************************-->
+  
+  
+  <extension
+         point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+      <guidedconfigwizard id="ResourceAPIDemo" basePath="icons">
+         <backend class="dreisoft.tresos.demo.resource.DemoBackend"/>
+         <gui class="dreisoft.tresos.demo.resource.DemoPage"/>
+      </guidedconfigwizard>
+  </extension>
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.trigger">
+     <trigger>
+        <sidebar
+              categoryId="Demos"
+              id="ResourceAPIDemo"
+              wizardId="ResourceAPIDemo"
+              wizardType="dialog">
+           <visibility/>
+           <display
+                 label="ResourceAPIDemo Dialog"
+                 tooltip="ResourceAPIDemo Dialog">
+           </display>
+        </sidebar>
+     </trigger>
+  </extension>
+
+</plugin>

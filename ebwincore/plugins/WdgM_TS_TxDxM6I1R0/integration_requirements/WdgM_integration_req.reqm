@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.WdgM.EB_INTREQ_WdgM_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>If the <code>WdgM_PerformReset</code> API can interrupt the <code>WdgM_MainFunction</code>,
+        the Watchdog Manager may postpone the update of the Watchdog triggering
+        conditions to <parameter>0</parameter> by one main function cycle due to race conditions.
+      </description>
+      <rationale>Existing race condition in case <code>WdgM_PerformReset</code> interrupt has higher priority
+        than <code>WdgM_MainFunction</code>.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.WdgM.EB_INTREQ_WdgM_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>If the WdgM is integrated in an environment where the individual applications are allocated
+        to different partitions, then the general parameter
+        <parameter>WdgMPartitioningEnabled</parameter> must be enabled.
+        The WdgM then makes use of the memory section
+        <code>WDGM_START/STOP_SEC_SHARED_VAR_CLEARED_UNSPECIFIED</code> which is required for the access
+        to the shared graph data (Logical Supervision)
+        in the context of different applications / Supervised Entities.
+        The integrity of the shared data is ensured by holding all values double inverse.
+
+        Therefore, the integrator must configure this section to be globally accessable
+        (write and readably) from all partitions.
+      </description>
+      <rationale>This version of the WdgM module is tailored for the use in a single core environment where the
+        shared memory approach is more efficient than splitting the memory among the different
+        partitions.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.WdgM.EB_INTREQ_WdgM_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      If mode swich is done synchronous (<parameter>WdgMSetModeSynchron</parameter>
+      is set to TRUE) then the API <code>WdgM_SetMode</code>
+      should not be preempt by <code>WdgM_DeInit</code>.
+      </description>
+      <rationale>Both APIs are setting the watchdog to a specific mode.
+      The preemtion of <code>WdgM_SetMode</code> by <code>WdgM_DeInit</code> may lead to inconsistency
+        in the watchdog mode.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.WdgM.EB_INTREQ_WdgM_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>If mode swich is done synchronous (<parameter>WdgMSetModeSynchron</parameter>
+        is set to TRUE) and the <code>WdgM_SetMode</code> API can interrupt the <code>WdgM_CheckpointReached</code>,
+        the Watchdog Manager may postpone the evaluation of the Supervised Entyty results if it
+        is not used in the new mode until it is activated again in a new mode, due to race conditions.
+      </description>
+      <rationale>Existing race condition in case <code>WdgM_SetMode</code> interrupt has higher priority
+        than <code>WdgM_CheckpointReached</code>.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.WdgM.EB_INTREQ_WdgM_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>If mode swich is done synchronous (<parameter>WdgMSetModeSynchron</parameter>
+        is set to TRUE) and the <code>WdgM_MainFunction</code> API can interrupt the <code>WdgM_SetMode</code>,
+        the Watchdog Manager may evaluate results of the Supervised Entities from the old mode and
+        the new mode, until the next main function, due to race conditions.
+      </description>
+      <rationale>Existing race condition in case <code>WdgM_MainFunction</code> interrupt has higher priority
+        than <code>WdgM_CheckpointReached</code>.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.WdgM.EB_INTREQ_WdgM_0006</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>If mode swich is done synchronous (<parameter>WdgMSetModeSynchron</parameter>
+        is set to TRUE) then <code>WdgM_SetMode</code> should not interrupt the <code>WdgM_MainFunction</code>.
+      </description>
+      <rationale><parameter>WdgMFailedAliveSupervisionRefCycle</parameter> of a Supervised Entity
+                which is not used in the new mode when <code>WdgM_SetMode</code> is called
+                may have a value of 1 instead of 0 when the Supervised Enity is reactivated in a new mode.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.WdgM.EB_INTREQ_WdgM_0007</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>If legacy symbolic names (from AUTOSAR versions 3.x or lower than 4.0.3 ) are used then the
+        macro WDGM_PROVIDE_LEGACY_SYMBOLIC_NAMES shall be defined before including the WdgM header file.
+      </description>
+      <rationale>The usage of legacy symbolic names is discouraged, but for backwards compatibility the usage of
+        these symbolic names is provided. Recommendation is to go for AUTOSAR 4.0.3 symbolic names
+        (See TPS_ECUC_02108 from AUTOSAR_TPS_ECUConfiguration.pdf) and not enable the macro.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.WdgM.EB_INTREQ_WdgM_0008</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>If AUTROSAR 4.3 service is used then the swcd arxml files are generated only for
+      the generate_swcd command in Tresos.
+      </description>
+      <rationale>generate_asr32_swcd is used in projects where AUTOSAR 3.2 model is used and 
+      generate_asr40_swcd is the same as generate_swcd.
+      </rationale>
+    </specobject>
+  </specobjects>
+</specdocument>

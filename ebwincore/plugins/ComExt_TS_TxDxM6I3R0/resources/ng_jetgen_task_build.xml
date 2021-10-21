@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="tresos" default="all" basedir=".">
+    <!-- To get the values of generator variables from the CodeGeneratorContext (also accessible
+       with JavaGenContext.gen) you can use Ant task ng.getgeneratorvar. The following example
+       shows how to obtain the current output directory where the files are generated to. The
+       value of attribute "name" is the name of the variable in the context and the attribute
+       property specifies the name of the resulting Ant property.
+    -->
+    <ng.getgeneratorvar name="outputDir" property="outputDirProp" />
+    <!-- Generator variable that stores the short-name of the currently built post-build variant.
+    Will be used to postfix the filename of the generated files. Variable not available in legacy
+    mode.-->
+    <ng.getgeneratorvar name="postBuildVariant" property="postBuildVariantProp"/>
+
+    <target name="all" depends="dest, test.if.variant.is.selected, generate.variant.files">
+        <ng.property name="xpathName2UpProp" xpath="name(../..)"/>
+
+    </target>
+
+    <target name="dest">
+        <!-- NOTE: Do not change the order, since this is essential -->
+        <!-- generate the pre-compile time config header file -->
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_Cfg_h" file="include/Com_Cfg.h"/>
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_xgen" file="xgen/Com${postBuildVariantProp}.xgen"/>
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_Types_xgen" file="xgen/Com_Types.xgen"/>
+        <!-- generate the post-build time config source file -->
+        <!-- generate the link time config header file -->
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_Lcfg_h" file="include/Com_Lcfg.h"/>
+        <!-- generate the post-build time config header file -->
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_PBcfg_Int_h" file="include/Com_PBcfg_Int.h"/>
+        <!-- generate the link time config source file -->
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_Lcfg_c" file="src/Com_Lcfg.c"/>
+        <!-- generate the API config header file -->
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_SymbolicNames_PBcfg_h" file="include/Com_SymbolicNames_PBcfg.h"/>
+
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_GenApi_h" file="include/Com_GenApi.h"/>
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_GenApi_c" file="src/Com_GenApi.c"/>
+
+    </target>
+
+    <target name="test.if.variant.is.selected">
+        <condition property="variant.selected">
+          <length string="${postBuildVariantProp}" when="greater" length="0"/>
+        </condition>
+
+    </target>
+
+    <target name="generate.variant.files"
+        if="variant.selected"
+        depends="test.if.variant.is.selected">
+
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_VARIANT_Lcfg_h" file="include/Com_${postBuildVariantProp}_Lcfg.h"/>
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_SymbolicNames_VARIANT_PBcfg_h" file="include/Com_SymbolicNames_${postBuildVariantProp}_PBcfg.h"/>
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_PBcfg_h_common" file="include/Com_PBcfg.h"/>
+        <ng.jetgen class="dreisoft.tresos.com.generated.jet.Com_PBcfg_c_common" file="src/Com_PBcfg.c"/>
+
+    </target>
+</project>

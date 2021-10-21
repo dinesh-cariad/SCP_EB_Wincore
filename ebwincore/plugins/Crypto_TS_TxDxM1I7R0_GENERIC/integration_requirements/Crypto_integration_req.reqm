@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="dev">
+    <specobject>
+      <id>Crypto.Req.Integration_CryptoInit</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Crypto_Init() shall be called during the start-up procedure of the ECU before any
+        other API of the module is called.
+      </description>
+      <rationale>
+      </rationale>
+      
+     </specobject>
+
+     <specobject>
+      <id>Crypto.Req.Integration_StartupNvMRead</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the use of a NvM block is enabled by setting the parameter CryptoKeyElementPersist,
+        the Crypto_Init() shall be called after the NvM module is initialized and the NvM_ReadAll
+        job is successfully completed. If your application does not enable NvMSelectBlockForReadAll
+        for persistent key elements, ensure that the corresponding blocks are read before the
+        Crypto module is initialized.
+      </description>
+      <rationale>The Crypto module does not call NvM_ReadBlock() to load key element values
+        during startup.
+      </rationale>
+      
+     </specobject>
+     <specobject>
+      <id>Crypto.Req.Integration_CertificateVerify_Primitive</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The primitive that shall be used to verify the certificate shall be configured and referenced in the driver object.
+      </description>
+      <rationale>
+        Certificate verify uses a primitive to verify the signature of the certificate. For this the integrator shall reference
+        that particular primitive in the driver object.
+      </rationale>
+      
+     </specobject>
+     <specobject>
+      <id>Crypto.Req.Integration_CertificateVerify_CurrentDate</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the optional key element CryptoKeyElement_CRYPTO_KE_CERTIFICATE_CURRENT_TIME (KeyElementId 19U) is contained in the certicate key type, the current time
+        verification is turned on. It is up to the integrator to set a valid current date before verifing the certificate. The date format for the key element is <emphasis>YYMMDD</emphasis>.
+        For example 4th of Feburary 2001 would be formated as 000100020004 (6 bytes).
+      </description>
+      <rationale>
+        The key element CryptoKeyElement_CRYPTO_KE_CERTIFICATE_CURRENT_TIME (KeyElementId 19U) contains the current date. During certificate verification, this
+        date is used to verify whether the current time is within the effective and expiry date of the certificate that is being verified. Therefore the current date
+        must be set by the integrator before a certificate is verified.
+      </rationale>
+      
+     </specobject>
+     <specobject>
+      <id>Crypto.Req.Integration_CertificateParse_NeededKeyElements</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the certificate management is used, the key holding the certificate data shall at least have the following key elements:
+
+        CRYPTO_KE_CERTIFICATE_DATA (KeyElementId 0U),
+        CRYPTO_KE_CERTIFICATE_SIGNATURE (KeyElementId 28U),
+        CRYPTO_KE_CERTIFICATE_SUBJECT (KeyElementId 26U),
+        CRYPTO_KE_CERTIFICATE_SUBJECT_PUBLIC_KEY (KeyElementId 1U),
+        CRYPTO_KE_CERTIFICATE_SIGNATURE_ALGORITHM (KeyElementId 22U),
+        CRYPTO_KE_CERTIFICATE_PARSING_FORMAT (KeyElementId 18U),
+        CRYPTO_KE_CERTIFICATE_VALIDITY_NOT_AFTER (KeyElementId 25U),
+        CRYPTO_KE_CERTIFICATE_VALIDITY_NOT_BEFORE (KeyElementId 24U),
+        CRYPTO_KE_CERTIFICATE_CURRENT_TIME (KeyElementId 19U) (optional).
+      </description>
+      <rationale>
+        To successfully parse a certificate, the above mentioned key elements are needed. Key elements CRYPTO_KE_CERTIFICATE_DATA, and CRYPTO_KE_CERTIFICATE_PARSING_FORMAT are needed as input for
+        the certificate parse operation, while the others are used to store the information retrieved from the certificated.
+        Please note that CRYPTO_KE_CERTIFICATE_CURRENT_TIME (KeyElementId 19U) is an optional key element which needs to be handled by the integrator.
+      </rationale>
+      
+     </specobject>
+     <specobject>
+      <id>Crypto.Req.Integration_CertificateParse_KeyElements</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the certificate management is used, the key elements CRYPTO_KE_CERTIFICATE_DATA,
+        CRYPTO_KE_CERTIFICATE_SIGNATURE, CRYPTO_KE_CERTIFICATE_SUBJECT  and
+        CRYPTO_KE_CERTIFICATE_SUBJECT_PUBLIC_KEY should be configured large enough for all the certificates.
+      </description>
+      <rationale>
+        Since different certificates will use the same key types and key elements, the individual key elements
+        <emphasis>must</emphasis> be large enough for all the certificates.
+      </rationale>
+      
+     </specobject>
+     <specobject>
+      <id>Crypto.Req.Integration_CertificateParse_ParseFormatCVC</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the provided CV certificate is base64 encoded, the key element CRYPTO_KE_CERTIFICATE_PARSING_FORMAT shall be set to 0x08U (CRYPTO_KE_FORMAT_BIN_CERT_CVC).
+      </description>
+      <rationale>
+        The CV certificate may be passed as plain text or as base64 encoded. If the provided certificate is base64 encoded, then the key element CRYPTO_KE_CERTIFICATE_PARSING_FORMAT
+        shall be set to 0x08U (CRYPTO_KE_FORMAT_BIN_CERT_CVC). This allows the API to decode the certificate from base64 before processing it. For a CV certificate passed as plain
+        text,  CRYPTO_KE_CERTIFICATE_PARSING_FORMAT shall be set to 0x00 (default initial value of the CRYPTO_KE_CERTIFICATE_PARSING_FORMAT key element).
+      </rationale>
+      
+     </specobject>
+     <specobject>
+      <id>Crypto.Req.Integration_CertificateParse_ParseFormatCVCPlainText</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the key element CRYPTO_KE_CERTIFICATE_PARSING_FORMAT is set to 0x00U (default initial value of the CRYPTO_KE_CERTIFICATE_PARSING_FORMAT key element), the provided certificate
+        shall be considered to be in plain text, and no base64 decoding would be performed.
+      </description>
+      <rationale>
+        In order to make sure that the certificates are interpreted correctly, key element CRYPTO_KE_CERTIFICATE_PARSING_FORMAT is used. Since, the certificates are only CV certificates,
+        key element CRYPTO_KE_CERTIFICATE_PARSING_FORMAT is used to denote their format i.e base64 encoded or plain text.
+      </rationale>
+      
+     </specobject>
+     <specobject>
+      <id>Crypto.Req.Integration_CertificateParse_SignatureAlgorithm</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+       If using certificate management, key element CRYPTO_KE_CERTIFICATE_SIGNATURE_ALGORITHM must be configured. Certificate parse function returns
+       E_NOT_OK is this key element is not configured.
+      </description>
+      <rationale>
+       This enables quick access of the signature algorithm during certificate verification.
+      </rationale>
+      
+     </specobject>
+
+     <specobject>
+      <id>Crypto.Req.Integration_IntGCM</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The additional authenticated data(AAD) must be provided with and only with the first call of Update.
+      </description>
+      <rationale>
+        The additional authenticated data must be processed before the plaintext/cyphertext is received.
+      </rationale>
+      
+     </specobject>
+     <specobject>
+      <id>Crypto.Req.Integration_BuildForMultiInstances</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The build process must not consider source files from the Crypto plugin folder, but instead shall consider the <emphasis>output</emphasis>
+        directory, particularly the <emphasis>output\generated\instance\include</emphasis> and the <emphasis>output\generated\instance\src</emphasis>
+        directories.
+      </description>
+      <rationale>The source files in the Crypto plugin folder are prepared for multiple instantiation. They will be copied, processed and renamed during project's
+        generation. For further information please see the Crypto module user's guide.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_CompilerCfgForMultiInstances</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In case multiple instances of the Crypto module are used, all required memory and pointer classes as specified by AUTOSAR (e.g. CRYPTO_&lt;vi&gt;_&lt;ai&gt;_CODE, CRYPTO_&lt;vi&gt;_&lt;ai&gt;_APPL_DATA, etc.) have to be provided by the integrator.
+        To simplify this process, appropriate template files <emphasis>Compiler_CfgExt_Crypto_&lt;vi&gt;_&lt;ai&gt;.template.h</emphasis> per Crypto module instance are provided in <emphasis>output\generated\templates</emphasis>.
+        It is up to the integrator either to merge/include all these files into <emphasis>Compiler_Cfg.h</emphasis> or to include all of them in one <emphasis>Compiler_CfgExt.h</emphasis> file that can be included in <emphasis>Compiler_Cfg.h</emphasis> by defining the macro COMPILERCFG_EXTENSION_FILE in the build process.
+      </description>
+      <rationale>The proposed process is specified in AUTOSAR_SWS_CompilerAbstraction specification. For further information on the usage of the  COMPILERCFG_EXTENSION_FILE macro see the Tresos documentation.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>Crypto.Req.Integration_KeyDerive</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the Key Derive is called with the Key Element CRYPTO_KEY_KEYDERIVATION_ALGORITHM set to NIST SP800-108 / KDF CounterMode with AES-128 CMAC, than the Key Elements CRYPTO_KEY_KEYDERIVATION_PASSWORD and CRYPTO_KEY_KEYDERIVATION_SALT shall also be set.
+      </description>
+      <rationale>The HMS needs as input parameter for NIST SP800-108 / KDF CounterMode with AES-128 CMAC the Salt and Password. The parameter iteration is ignored by the HSM.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_KeyDerivePassword</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The Key Element CRYPTO_KEY_KEYDERIVATION_PASSWORD shall be configured as a persistent key.
+      </description>
+      <rationale>The CRYPTO_KEY_KEYDERIVATION_PASSWORD is saved in the HSM.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_KeyDeriveSalt</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The Key Element CRYPTO_KEY_KEYDERIVATION_SALT shall be configured as a non persistent key.
+      </description>
+      <rationale>The CRYPTO_KEY_KEYDERIVATION_SALT is saved local in the Crypto Driver, since the HSM does not provide an interface to save the Salt.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>Crypto.Req.Integration_CMACkeyPreCalc</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In order to make use of the optimization regarding the precalculation of expanded key, K1, and K2, there shall be three new key elements configured
+        for a MAC keytype. The sizes of these key elements shall be as follows: expanded key - 240U bytes, K1 - 16U bytes, K2 - 16U bytes.
+      </description>
+      <rationale>These elements will be calculated when the AES-CMAC key element of this MAC keytype is set.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_RandomSeedAlgorithm</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The keys used with the key management function Crypto_RandomSeed need to include a
+        CRYPTO_KE_RANDOM_ALGORITHM key element with the keyElementId 4 and keyElementSize 1.
+        To allow the Crypto_RandomSeed function to choose the correct seed function, this key
+        element has to be set to the random primitives algorithm id according to the following list:
+        0x00 CryptoPrimitive_SSG_Random
+        0x01 CryptoPrimitive_CTRDRBG_Random
+      </description>
+      <rationale>
+        The key management function RandomSeed is independent from the jobs and needs to be configured.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>Crypto.Req.Integration_RandomGenerateCTRDRBG</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The keys used with the RandomGenerate CTRDRBG primitve need to include a
+        CRYPTO_KE_RANDOM_SEED_COUNT key element with the keyElementId 1005 and keyElementSize 4.
+        This key element is used to keep track of the number of requests in the reseed counter and
+        will enable the RandomGenerate to indicate that a reseed is needed after the specified
+        2^32-1 requests. For details see NIST.SP.800-90Ar1.
+      </description>
+      <rationale>
+        The RandomGenerate needs to keep track of the number of requests for the same key (i.e. the same initial seed)
+        and return an indication in case it exceeds the reseed_interval of 2^32-1.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>Crypto.Req.Integration_KeyDeriveFunction</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The keys used with the key management function Crypto_xVIx_xAIx_KeyDerive need to include a
+        CRYPTO_KE_KEYDERIVATION_ALGORITHM key element with the keyElementId 15 and keyElementSize 1.
+        To allow the Crypto_xVIx_xAIx_KeyDerive function to choose the correct pseudorandom
+        function, this key element has to be set to the pseudorandom primitives algorithm id
+        according to the following list:
+        0x02 CryptoPrimitive_SHA256_HMAC_Mac_Generate
+        0x04 CryptoPrimitive_SHA2_256_Hash
+      </description>
+      <rationale>
+        The key management function Crypto_xVIx_xAIx_KeyDerive is independent from the jobs and
+        needs to be configured.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_KeyElementCopy_invalidKey</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The function Crypto_xVIx_xAIx_KeyElementCopy copies the source key element from the source key to the target key element of the target key even if the source key is currently invalid.
+        It is the task of the integrator to make sure that the key that the target key is set to valid after the key element is copied.
+        On the other hand the Crypto_xVIx_xAIx_KeyCopy function would not copy the key from source to destination if the source key is invalid. No processing would take place and E_NOT_OK would be returned.
+      </description>
+      <rationale>The usage of the Crypto_xVIx_xAIx_KeyElementCopy should not be limited by limiting the source keys to be valid keys only.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_SymKeyType</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>2</version>
+      <description>
+        The Crypto module defines Crypto_xVIx_xAIx_SymKeyType as Csm_SymKeyType if Csm_SymKeyType exists in Csm. It is however up to the integrator
+        to make sure that if it exists in the Csm, CsmSymKeyMaxLength is configured large enough to be used for all the keys in Crypto.
+      </description>
+      <rationale>If the user configures CsmSymKeyMaxLength in Csm, we should use the created data type Csm_SymKeyType, and the user should make sure
+      that it is properly configured.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_SymKeyType_KeyMaxLength</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If CsmSymKeyMaxLength is disabled, the Crypto module shall implement its internal typedef for Crypto_xVIx_xAIx_SymKeyType, using the
+        length of the largest configured key element with Id 1.
+      </description>
+      <rationale>If the Csm does not declare the Csm_SymKeyType, Crypto should declare independent internal Crypto_xVIx_xAIx_SymKeyType. This
+      shall avoid unnecessary dependence on Csm.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_SymKeyType_NoKey</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If no key is configured in the Crypto or no key is configured with an element that has Id 1, Crypto_xVIx_xAIx_SymKeyType shall not
+        be created. If CTRDRBG is configured (for random number generation), Crypto_xVIx_xAIx_SymKeyType would be created with
+        length 32 bytes.
+      </description>
+      <rationale>Since CTRDRBG needs a key for internal usage, Crypto_xVIx_xAIx_SymKeyType shall be created with minimum length 32 bytes.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_AsymPrivateKeyType</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>2</version>
+      <description>
+        The Crypto module defines Crypto_xVIx_xAIx_AsymPrivateKeyType as Csm_AsymPrivateKeyType if Csm_AsymPrivateKeyType exists in Csm. It is however up to the integrator
+        to make sure that if it exists in the Csm, CsmAsymPrivateKeyMaxLength is configured large enough to be used for all the keys in Crypto.
+      </description>
+      <rationale>If the user configures CsmAsymPrivateKeyMaxLength in Csm, we should use the created data type Csm_AsymPrivateKeyType, and the user should make sure
+      that it is properly configured.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_AsymPrivateKeyType_KeyMaxLength</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If Csm_AsymPrivateKeyType does not exist in Csm, a type Crypto_xVIx_xAIx_AsymPrivateKeyType shall be created in Crypto
+        module, using the length of the largest key element with Id 1, referenced in the keys.
+      </description>
+      <rationale>Define internal type if the type does not exist in Csm module.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_AsymPrivateKeyType_NoKey</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If no key is configured in the Crypto or no key is configured with an element that has Id 1, Crypto_xVIx_xAIx_AsymPrivateKeyType shall not
+        be created.
+      </description>
+      <rationale>Crypto_xVIx_xAIx_AsymPrivateKeyType is not needed if no key is configured and no primitive uses it.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_AsymPublicKeyType</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>2</version>
+      <description>
+        The Crypto module defines Crypto_xVIx_xAIx_AsymPublicKeyType as Csm_AsymPublicKeyType if Csm_AsymPublicKeyType exists in Csm. It is however up to the integrator
+        to make sure that if it exists in the Csm, CsmAsymPublicKeyMaxLength is configured large enough to be used for all the keys in Crypto.
+      </description>
+      <rationale>If the user configures CsmAsymPublicKeyMaxLength in Csm, we should use the created data type Csm_AsymPublicKeyType, and the user should make sure
+      that it is properly configured.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_AsymPublicKeyType_KeyMaxLength</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If Csm_AsymPublicKeyType does not exist in Csm, a type Crypto_xVIx_xAIx_AsymPublicKeyType shall be created in Crypto
+        module, using the length of the largest key element with Id 1, referenced in the keys.
+      </description>
+      <rationale>Define internal type if the type does not exist in Csm module.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_AsymPublicKeyType_NoKey</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If no key is configured in the Crypto or no key is configured with an element that has Id 1, Crypto_xVIx_xAIx_AsymPublicKeyType shall not
+        be created.
+      </description>
+      <rationale>Crypto_xVIx_xAIx_AsymPublicKeyType not needed if no key is configured and no primitive uses it.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_Signature_EdDSA</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The following configuration is required to use the Ed25519ph primitive for the SIGNATUREGENERATE/VERIFY service:
+        CryptoPrimitiveAlgorithmFamiliy CRYPTO_ALGOFAM_ED25519, CryptoPrimitiveAlgorithmMode CRYPTO_ALGOMODE_NOT_SET,
+        CryptoPrimitiveAlgorithmSecondaryFamiliy CRYPTO_ALGOFAM_SHA2_512.
+      </description>
+      <rationale>
+        The provided EdDSA primitive for SIGNATUREGENERATE/VERIFY is the implementation of the Ed25519ph. It is specified
+        in the Crypto_preconf.xdm file.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_RsaesOaepEncryptionKeyFormat</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        To use the RSA with Optimal Asymmetric Encryption Padding (RSAES-OAEP) encryption of the Crypto Driver correctly, the modulus and
+        the exponent of the public RSA key have to be DER-Encoded before they are stored inside the key element CRYPTO_KE_CIPHER_KEY.
+        The ASN.1 type of the encoded key shall be as follows:
+        RSAPublicKey ::= SEQUENCE { modulus INTEGER -- n, publicExponent INTEGER -- e }
+      </description>
+      <rationale>
+        Multiple elements are stored in one single key element. The DER-Encoding is used to be able to separate the elements in the Crypto Driver.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_RsaesOaepEncryptionAdditionalInput</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If an additional input A shall be used in the RSA with Optimal Asymmetric Encryption Padding (RSAES-OAEP) encryption, then it has to be stored as byte array in the key element CRYPTO_KE_ADDITIONAL_INPUT with id 1004U.
+      </description>
+      <rationale>
+        The additional input A is an optional parameter to the RSAES-OAEP algorithm. If the key element does not exist, the additional input A will be an empty string.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_RsaesOaepEncryptionRandomSeed</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        To use the RSA with Optimal Asymmetric Encryption Padding (RSAES-OAEP) encryption, a key element CRYPTO_KE_RANDOM_SEED_STATE is required in the key. This key element should be seeded before the first use by using the key management function Crypto_RandomSeed().
+      </description>
+      <rationale>
+        The AES-CTR_DRBG random number generator is used during the RSAES-OAEP encryption and needs a valid internal seed state to generate random numbers.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_RsaesOaepDecryptionKeyFormat</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        To use the RSA with Optimal Asymmetric Encryption Padding (RSAES-OAEP) decryption of the Crypto Driver correctly, the modulus and
+        the exponent of the private RSA key have to be DER-Encoded before they are stored inside the key element CRYPTO_KE_CIPHER_KEY.
+        The ASN.1 type of the encoded key shall be as follows:
+        RSAPrivateKey ::= SEQUENCE { modulus INTEGER -- n, privateExponent INTEGER -- d }
+      </description>
+      <rationale>
+        Multiple elements are stored in one single key element. The DER-Encoding is used to be able to separate the elements in the Crypto Driver.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_RsaesOaepDecryptionAdditionalInput</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If an additional input A shall be used in the RSA with Optimal Asymmetric Encryption Padding (RSAES-OAEP) decryption, then it has to be stored as byte array in the key element CRYPTO_KE_ADDITIONAL_INPUT with id 1004U.
+      </description>
+      <rationale>
+        The additional input A is an optional parameter to the RSAES-OAEP algorithm. If the key element does not exist, the additional input A will be an empty string.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_RsaSsaPkcs1V1_5SignatureGenerationKeyFormat</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        To use the RSASSA-PKCS1-v1_5 signature generation of the Crypto Driver correctly, the modulus and
+        the exponent of the private RSA key have to be DER-Encoded before they are stored inside the key element CRYPTO_KE_CIPHER_KEY.
+        The ASN.1 type of the encoded key shall be as follows:
+        RSAPrivateKey ::= SEQUENCE { modulus INTEGER -- n, privateExponent INTEGER -- d }
+      </description>
+      <rationale>
+        Multiple elements are stored in one single key element. The DER-Encoding is used to be able to separate the elements in the Crypto Driver.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_RsaSsaPkcs1V1_5SignatureVerificationKeyFormat</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        To use the RSASSA-PKCS1-v1_5 signature verification of the Crypto Driver correctly, the modulus and
+        the exponent of the public RSA key have to be DER-Encoded before they are stored inside the key element CRYPTO_KE_CIPHER_KEY.
+        The ASN.1 type of the encoded key shall be as follows:
+        RSAPublicKey ::= SEQUENCE { modulus INTEGER -- n, publicExponent INTEGER -- e }
+      </description>
+      <rationale>
+        Multiple elements are stored in one single key element. The DER-Encoding is used to be able to separate the elements in the Crypto Driver.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_RsaSsaPssSignatureVerificationKeyFormat</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        To use the RSASSA-PSS signature verification of the Crypto Driver correctly, the modulus and
+        the exponent of the public RSA key have to be DER-Encoded before they are stored inside the key element CRYPTO_KE_CIPHER_KEY.
+        The ASN.1 type of the encoded key shall be as follows:
+        RSAPublicKey ::= SEQUENCE { modulus INTEGER -- n, publicExponent INTEGER -- e }
+      </description>
+      <rationale>
+        Multiple elements are stored in one single key element. The DER-Encoding is used to be able to separate the elements in the Crypto Driver.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_ECDH_Algorithm</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        To use the ECDH key exchange of the Crypto Driver correctly, i.e. to choose between the x25519 and the NIST ECC elliptic curves,
+        the algorithm family has to be provided. Thus, the given key has to contain the key element CRYPTO_KE_KEYEXCHANGE_ALGORITHM
+        and it must be set to CRYPTO_ALGOFAM_ED25519 or to CRYPTO_ALGOFAM_ECCNIST accordingly.
+      </description>
+      <rationale>
+        After extending the ECDH key exchange for another elliptic curve, the differentiation of the concrete algorithm is required.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_ECDH_ECCNISTCurveConfig</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        To use the ECDH key exchange of the Crypto Driver correctly for use with NIST ECC elliptic curves,
+        the concrete elliptic curve has to be provided. Thus, the given key has to contain the key element CRYPTO_KE_KEYEXCHANGE_CURVE
+        (CryptoKeyElementId 30) and it must be set for secp256r1 (NIST P-256) or secp384r1 (NIST P-384). The configuration is
+        done by using the OID of the curves, secp256r1: 1.2.840.10045.3.1.1.7 and secp384r1: 1.3.132.0.34. The Crypto Driver uses the
+        DER encoded value of the OID. Therefore, CRYPTO_KE_KEYEXCHANGE_CURVE has to be set to '06 08 2a 86 48 ce 3d 03 01 07'
+        for secp256r1, and to '06 05 2b 81 04 00 22' for secp384r1.
+      </description>
+      <rationale>
+        The AUTOSAR SWS does not specify how to configure the curve to be chosen in key exchange with ECC NIST curves. A proposed
+        solution using the above configuration has been entered to https://jira.autosar.org/browse/AR-3030.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Crypto.Req.Integration_RandomGenerateStartup</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the first execution of the random generate service after reset should use its last internal seed state
+        generated before reset, the key element CRYPTO_KE_RANDOM_SEED_STATE in the provided key shall be made persistent.
+      </description>
+      <rationale>
+        The RANDOMGENERATE service stores its last generated internal seed state into CRYPTO_KE_RANDOM_SEED_STATE.
+        This value could be used instead of a constant initialization value that would lead to the same random numbers 
+        after every reset.
+      </rationale>
+      
+    </specobject>
+  </specobjects>
+</specdocument>

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+    ** \brief AUTOSAR EcuC_TS_TxDxM5I0R0 plugin
+    ** \project AUTOSAR Standard Core
+    ** \file plugin.xdm
+    **
+    ** Copyright 2010 by Elektrobit Automotive GmbH
+    ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+    ** unless expressly agreed to otherwise.
+  -->
+
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="EcuC_TS_TxDxM5I0R0_ModuleId"
+             name="EcuC_TS_TxDxM5I0R0 Module">
+    <module id="EcuC_TS_TxDxM5I0R0"
+            label="EcuC"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-Base: AUTOSAR EcuC module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="5"
+            swVersionMinor="0"
+            swVersionPatch="21"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="0"
+            specVersionPatch="3"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="EcuC"
+            categoryLayer="Communication Services"
+            categoryCategory="Com Services"
+            categoryComponent="ECUC">
+          </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="EcuC_TS_TxDxM5I0R0_ConfigId"
+             name="EcuC_TS_TxDxM5I0R0 Configuration">
+    <configuration moduleId="EcuC_TS_TxDxM5I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/EcuC.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM5I0R0/EcuC"/>
+      </data>
+
+      <editor id="EcuC_TS_TxDxM5I0R0_EditorId"
+              label="Default"
+              tooltip="ACG-Base: AUTOSAR EcuC module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM5I0R0/EcuC"/>
+          <parameter name="title" value="EcuC"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+    <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_EcuC_TS_TxDxM5I0R0"
+           moduleId="EcuC_TS_TxDxM5I0R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.EcuCTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+    <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="EcuC_TS_TxDxM5I0R0_GeneratorId"
+             name="EcuC_TS_TxDxM5I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="EcuC_TS_TxDxM5I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="EcuC_TS_TxDxM5I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+
+<!-- handle id calculator for PduId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="PduId_EcuC_TS_TxDxM5I0R0"
+    name="EcuC/PduId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="EcuC_TS_TxDxM5I0R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I0R0/ELEMENTS/EcuC/EcucPduCollection/Pdu/"/>
+            <parameter name="idPath" value="PduId"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.EcuC_TS_TxDxM5I0R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+          <equals value="4.0"/>
+          </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+  
+  <extension
+        point="dreisoft.tresos.autosar2.api.plugin.postbuildSetup"
+        id="autosar2.api.test.postbuildSetup.basic">
+     <configuration
+         activeLoadableRef="ASPath:/TS_TxDxM5I0R0/EcuC/EcucPostBuildVariants/ActiveLoadableVariantRef"
+         activeSelectableRef="ASPath:/TS_TxDxM5I0R0/EcuC/EcucPostBuildVariants/ActiveSelectableVariantRef"
+         selectableRefs="ASPath:/TS_TxDxM5I0R0/EcuC/EcucPostBuildVariants/EcucPostBuildVariantRef">
+     </configuration>
+  </extension>
+
+</plugin>

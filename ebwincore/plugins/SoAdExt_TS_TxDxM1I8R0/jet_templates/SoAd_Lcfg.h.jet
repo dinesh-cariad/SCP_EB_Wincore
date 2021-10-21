@@ -1,0 +1,131 @@
+<%@ jet package="dreisoft.tresos.soad.generated.jet" class="SoAd_Lcfg_h" skeleton="File.skeleton"
+        imports="dreisoft.tresos.soad.generator.output.linktime.LinkTimeData
+        	dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final String includeGuardName = getIncludeGuardName( context );
+%>
+<%@ include file="head.h.inc" %>
+
+/*
+ * Misra-C:2012 Deviations:
+ *
+ * MISRAC2012-1) Deviated Rule: 9.5 (required)
+ * Where designated initializers are used to initialize an array object
+ * the size of the array shall be specified explicitly.
+ *
+ * Reason:
+ * Link-Time Configuration: Function pointer array with variable size
+ * for configurable upper layer support
+ */
+
+
+/*==================[includes]==============================================*/
+
+#include <TSAutosar.h>
+#include <ComStack_Types.h>
+#include <SoAd_Cfg.h>
+#include <SoAd_Types.h>
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+#define SOAD_START_SEC_VAR_CLEARED_32
+#include <SoAd_MemMap.h>
+
+/* Deviation MISRAC2012-1 */
+extern VAR(uint32, SOAD_VAR_CLEARED) SoAd_Mem[];
+
+#define SOAD_STOP_SEC_VAR_CLEARED_32
+#include <SoAd_MemMap.h>
+
+
+/* start const section declaration */
+#define SOAD_START_SEC_CONST_8
+#include <SoAd_MemMap.h>
+
+/**
+ * API function pointer table size variable for modules with interface archetype
+ */
+extern CONST(uint8, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.IF_API_ARRAY_SIZE %>;
+
+/**
+ * API function pointer table size variable for modules with TP archetype
+ */
+extern CONST(uint8, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.TP_API_ARRAY_SIZE %>;
+
+/**
+ * API function pointer table size variable for modules that require notifications
+ */
+extern CONST(uint8, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.NOTIF_API_ARRAY_SIZE %>;
+
+/* stop const section declaration */
+#define SOAD_STOP_SEC_CONST_8
+#include <SoAd_MemMap.h>
+
+
+/* start data section declaration */
+#define SOAD_START_SEC_CONST_32
+#include <SoAd_MemMap.h>
+
+/* value used to validate post build configuration against link time configuration */
+extern CONST(uint32, SOAD_CONST) SoAd_LcfgSignature;
+
+/* stop data section declaration */
+#define SOAD_STOP_SEC_CONST_32
+#include <SoAd_MemMap.h>
+
+
+/* start const section declaration */
+#define SOAD_START_SEC_CONST_UNSPECIFIED
+#include <SoAd_MemMap.h>
+
+/**
+ * API function pointer table for modules with interface archetype
+ */
+/* Deviation MISRAC2012-1 */
+extern CONST(<%= LinkTimeData.IF_API_TYPE %>, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.IF_API_ARRAY %>[];
+
+/**
+ * API function pointer table for modules with TP archetype
+ */
+/* Deviation MISRAC2012-1 */
+extern CONST(<%= LinkTimeData.TP_API_TYPE %>, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.TP_API_ARRAY %>[];
+
+/**
+ * API function pointer table for modules that require notifications
+ */
+/* Deviation MISRAC2012-1 */
+extern CONST(<%= LinkTimeData.NOTIF_API_TYPE %>, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.NOTIF_API_ARRAY %>[];
+
+/* stop const section declaration */
+#define SOAD_STOP_SEC_CONST_UNSPECIFIED
+#include <SoAd_MemMap.h>
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

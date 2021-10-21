@@ -1,0 +1,1390 @@
+<?xml version='1.0'?>
+<datamodel version="7.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/16/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/16/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:cd="http://www.tresos.de/_projects/DataModel2/08/customdata.xsd" 
+         xmlns:f="http://www.tresos.de/_projects/DataModel2/14/formulaexpr.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd"  
+         xmlns:variant="http://www.tresos.de/_projects/DataModel2/11/variant.xsd">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_TxDxM2I0R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="CanTSyn" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="ADMIN-DATA" type="ADMIN-DATA">
+                <ad:ADMIN-DATA>
+                  <ad:LANGUAGE>EN</ad:LANGUAGE>
+                  <ad:DOC-REVISIONS>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>4.2.0</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>AUTOSAR</ad:ISSUED-BY>
+                      <ad:DATE>2011-11-09T11:36:22Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>2.0.8</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>Elektrobit Automotive GmbH</ad:ISSUED-BY>
+                      <ad:DATE>2021-07-14T23:59:59Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                  </ad:DOC-REVISIONS>
+                </ad:ADMIN-DATA>
+              </a:a>
+              <a:a name="DESC">
+                <a:v>&lt;html&gt;
+                    &lt;p&gt;
+                      Configuration of the CanTSyn (Time Synchronization Over CAN) module.
+                    &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+              </a:a>
+              <a:a name="LOWER-MULTIPLICITY" value="0"/>
+              <a:a name="POSTBUILDVARIANTSUPPORT" value="false"/>
+              <a:a name="RELEASE" value="asc:4.4"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <a:a name="UUID" value="ECUC:487e0b72-0f0e-45a4-a63a-0aa6a27da3be"/>
+              <v:var name="POST_BUILD_VARIANT_USED" type="BOOLEAN">
+                <a:a name="DESC" 
+                     value="Indicates whether a module implementation has or plans to have (i.e., introduced at link or post-build time) new post-build variation points."/>
+                <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                     type="IMPLEMENTATIONCONFIGCLASS">
+                  <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                </a:a>
+                <a:a name="LABEL" value="Post Build Variant Used"/>
+                <a:a name="ORIGIN" value="EB"/>
+                <a:a name="POSTBUILDVARIANTVALUE" value="false"/>
+                <a:a name="UUID" 
+                     value="ECUC:718509ca-6322-49f7-a8f4-f872e7bb54e5"/>
+                <a:a name="VISIBLE" value="false"/>
+                <a:da name="DEFAULT" value="false"/>
+                <a:da name="EDITABLE" value="false"/>
+                <a:da name="READONLY" value="TRUE"/>
+                <a:da name="TOOLTIP" 
+                      value="Indicates whether a module implementation has or plans to have (i.e., introduced at link or post-build time) new post-build variation points."/>
+              </v:var>
+              <v:var name="IMPLEMENTATION_CONFIG_VARIANT" type="ENUMERATION">
+                <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                     type="IMPLEMENTATIONCONFIGCLASS">
+                  <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                </a:a>
+                <a:a name="LABEL" value="Config Variant"/>
+                <a:da name="DEFAULT" value="VariantPreCompile"/>
+                <a:da name="RANGE" value="VariantPreCompile"/>
+              </v:var>
+              <v:ctr name="CanTSynGeneral" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                      &lt;p&gt;
+                        This container contains the general configuration parameters of the CanTSyn
+                        module.
+                      &lt;/p&gt;
+                    &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="UUID" 
+                     value="ECUC:02a0a14a-86e3-40a8-a811-a5cbc17c2aae"/>
+                <v:var name="CanTSynDevErrorDetect" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          Switch for enabling the development error detection.
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:20d72b9e-168f-496d-a253-7205a230ae2a"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTSynMainFunctionPeriod" type="FLOAT">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          Schedule period of the main function CanTSyn_MainFunction(). Unit: [s].
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6912c04d-042a-4186-94ef-d8a6c7a6d461"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=1000"/>
+                    <a:tst expr="&gt;0.0"/>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTSynVersionInfoApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Activates the CanTSyn_GetVersionInfo() API.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:d296ff0f-50b5-4d5e-9178-302ecdc22a86"/>
+                  <a:da name="DEFAULT" value="FALSE"/>
+                </v:var>
+                <v:var name="CanTSynTimeValidationSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            The CanTSyn shall support Time Validation, if CanTSynTimeValidationSupport set to TRUE.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="M4_ECUC_ORIGIN_ASRR19-11"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:d71500f2-b54b-4b27-95b3-af65760e9a00"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+              </v:ctr>
+              <v:lst name="CanTSynGlobalTimeDomain" type="MAP">
+                <a:da name="MIN" value="1"/>
+                <v:ctr name="CanTSynGlobalTimeDomain" type="IDENTIFIABLE">
+                  <a:a name="DESC" 
+                       value="EN: This represents the existence of a global time domain on CAN. The CanTSyn module can administrate several global time domains at the same time that in itself form a hierarchy of domains and sub-domains."/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="POSTBUILDCHANGEABLE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:e4a9aecb-0fe0-4597-9f3b-8f156d9ac964"/>
+                  <v:var name="CanTSynGlobalTimeDomainId" type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            The global time domain ID.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:f6ad8a08-a1be-4d15-9351-d5c855dd5461"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=31"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanTSynGlobalTimeNetworkSegmentId" 
+                         type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This represents the numerical identifier of the network on system level 
+                          scope where this Global Time has been communicated on.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="M4_ECUC_ORIGIN_ASRR20-11"/>
+                    <a:a name="POSTBUILDVARIANTMULTIPLICITY" value="false"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="false"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:a3887b8e-349c-4186-a052-52a35525071d"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="../CanTSynEnableTimeValidation=&apos;true&apos;"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=255"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanTSynGlobalTimeSecureTmacLength" 
+                         type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Represents the number of bytes for the used Truncated Message Authentication Code (TMAC). If 0, no message authentication will be used.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            TMAC is not supported.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:cd260a45-8c56-4526-a9eb-e8a6accac078"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="EDITABLE" value="false"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=16"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanTSynEnableTimeValidation" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              CanTSyn shall do time recording for TimeValidation for this Time Domain, if CanTSynEnableTimeValidation set to TRUE and CanTSynEnableTimeValidation of this time domain is set to TRUE.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="M4_ECUC_ORIGIN_ASRR19-11"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:7866d15f-33aa-4f33-af35-b598d87fee1c"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGeneral/CanTSynTimeValidationSupport"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst 
+                             expr="(node:value(.)=&apos;true&apos;) and (not(node:exists(node:ref(../CanTSynSynchronizedTimeBaseRef)/StbMTimeValidation)))" 
+                             true="If CanTSynEnableTimeValidation is enabled, make sure that StbMTimeValidation exists!"/>
+                      <a:tst 
+                             expr="(node:value(.)=&apos;false&apos;) and (node:exists(node:ref(../CanTSynSynchronizedTimeBaseRef)/StbMTimeValidation))" 
+                             true="If CanTSynEnableTimeValidation is not enabled, make sure that StbMTimeValidation does not exists!"/>
+                    </a:da>
+                  </v:var>
+                  <v:ctr name="CanTSynGlobalTimeFupDataIDList" 
+                         type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            The DataIDList for FUP messages ensures the identification of data elements due to CRC calculation process.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="UUID" 
+                         value="ECUC:abc1d52e-6df4-4042-8017-444e921ac4ec"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="node:isconsecutive(./CanTSynGlobalTimeFupDataIDListElement/*/CanTSynGlobalTimeFupDataIDListIndex, 0)" 
+                          false="CanTSynGlobalTimeFupDataIDListIndexs shall be 0-based and consecutive."/>
+                    <v:lst name="CanTSynGlobalTimeFupDataIDListElement" 
+                           type="MAP">
+                      <a:da name="MAX" value="16"/>
+                      <a:da name="MIN" value="16"/>
+                      <v:ctr name="CanTSynGlobalTimeFupDataIDListElement" 
+                             type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                Element of the DataIDList for FUP messages ensures the identification of data elements due to CRC calculation process.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="UUID" 
+                             value="ECUC:deb2e88e-f8a9-477f-acf5-7e27044cc69b"/>
+                        <v:var name="CanTSynGlobalTimeFupDataIDListIndex" 
+                               type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Index of the DataIDList for FUP messages ensures the identification of data elements due to CRC calculation process.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                          <a:a name="UUID" 
+                               value="ECUC:0252fc76-81cf-4537-9ee4-81a5c4bba99f"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&lt;=15"/>
+                            <a:tst expr="&gt;=0"/>
+                          </a:da>
+                        </v:var>
+                        <v:var name="CanTSynGlobalTimeFupDataIDListValue" 
+                               type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Value of the DataIDList for FUP messages ensures the identification of data elements due to CRC calculation process.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                          <a:a name="UUID" 
+                               value="ECUC:48586ce3-ee92-4c63-b162-197ade1807bb"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&lt;=255"/>
+                            <a:tst expr="&gt;=0"/>
+                          </a:da>
+                        </v:var>
+                      </v:ctr>
+                    </v:lst>
+                  </v:ctr>
+                  <v:ctr name="CanTSynGlobalTimeOfnsDataIDList" 
+                         type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            The DataIDList for OFNS messages ensures the identification of data elements due to CRC calculation process.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="UUID" 
+                         value="ECUC:dfb15310-255c-4300-8b18-a0358d7715d6"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="node:isconsecutive(./CanTSynGlobalTimeOfnsDataIDListElement/*/CanTSynGlobalTimeOfnsDataIDListIndex, 0)" 
+                          false="CanTSynGlobalTimeOfnsDataIDListIndexs shall be 0-based and consecutive."/>
+                    <v:lst name="CanTSynGlobalTimeOfnsDataIDListElement" 
+                           type="MAP">
+                      <a:da name="MAX" value="16"/>
+                      <a:da name="MIN" value="16"/>
+                      <v:ctr name="CanTSynGlobalTimeOfnsDataIDListElement" 
+                             type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              The DataIDList for OFNS messages ensures the identification of data elements due to CRC calculation process.
+                            &lt;/p&gt;
+                           &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="UUID" 
+                             value="ECUC:043eac8f-d650-4961-bcc7-e9333e5d08d5"/>
+                        <v:var name="CanTSynGlobalTimeOfnsDataIDListIndex" 
+                               type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                               &lt;p&gt;
+                                 The DataIDList for OFNS messages ensures the identification of data elements due to CRC calculation process.
+                               &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                          <a:a name="UUID" 
+                               value="ECUC:fdf8cdfc-7e96-45a9-a4df-69231bc76599"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&lt;=15"/>
+                            <a:tst expr="&gt;=0"/>
+                          </a:da>
+                        </v:var>
+                        <v:var name="CanTSynGlobalTimeOfnsDataIDListValue" 
+                               type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                               &lt;p&gt;
+                                 The DataIDList for OFNS messages ensures the identification of data elements due to CRC calculation process.
+                               &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                          <a:a name="UUID" 
+                               value="ECUC:4af36e4e-d14a-4c28-b314-7fb50d25f8cd"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&lt;=255"/>
+                            <a:tst expr="&gt;=0"/>
+                          </a:da>
+                        </v:var>
+                      </v:ctr>
+                    </v:lst>
+                  </v:ctr>
+                  <v:ctr name="CanTSynGlobalTimeOfsDataIDList" 
+                         type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            The DataIDList for OFS messages ensures the identification of data elements due to CRC calculation process.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="UUID" 
+                         value="ECUC:e4a4477c-b6df-4583-8a10-1e3998161b99"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="node:isconsecutive(./CanTSynGlobalTimeOfsDataIDListElement/*/CanTSynGlobalTimeOfsDataIDListIndex, 0)" 
+                          false="CanTSynGlobalTimeOfsDataIDListIndexs shall be 0-based and consecutive."/>
+                    <v:lst name="CanTSynGlobalTimeOfsDataIDListElement" 
+                           type="MAP">
+                      <a:da name="MAX" value="16"/>
+                      <a:da name="MIN" value="16"/>
+                      <v:ctr name="CanTSynGlobalTimeOfsDataIDListElement" 
+                             type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                Element of the DataIDList for FUP messages ensures the identification of data elements due to CRC calculation process.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="UUID" 
+                             value="ECUC:b7844e27-1032-4657-99db-2ac78efe1383"/>
+                        <v:var name="CanTSynGlobalTimeOfsDataIDListIndex" 
+                               type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Index of the DataIDList for OFS messages ensures the identification of data elements due to CRC calculation process.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                          <a:a name="UUID" 
+                               value="ECUC:2f032f6a-4a7f-4889-8caa-64ea7469d5db"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&lt;=15"/>
+                            <a:tst expr="&gt;=0"/>
+                          </a:da>
+                        </v:var>
+                        <v:var name="CanTSynGlobalTimeOfsDataIDListValue" 
+                               type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Value of the DataIDList for OFS messages ensures the identification of data elements due to CRC calculation process.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                          <a:a name="UUID" 
+                               value="ECUC:d1a8db01-fb51-4af5-a947-2733f1c1910d"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&lt;=255"/>
+                            <a:tst expr="&gt;=0"/>
+                          </a:da>
+                        </v:var>
+                      </v:ctr>
+                    </v:lst>
+                  </v:ctr>
+                  <v:ctr name="CanTSynGlobalTimeSyncDataIDList" 
+                         type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            The DataIDList for SYNC messages ensures the identification of data elements due to CRC calculation process.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="UUID" 
+                         value="ECUC:17dbc6e9-2139-482c-a18d-65f2aa7563a8"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="node:isconsecutive(./CanTSynGlobalTimeSyncDataIDListElement/*/CanTSynGlobalTimeSyncDataIDListIndex, 0)" 
+                          false="CanTSynGlobalTimeSyncDataIDListIndexs shall be 0-based and consecutive."/>
+                    <v:lst name="CanTSynGlobalTimeSyncDataIDListElement" 
+                           type="MAP">
+                      <a:da name="INVALID" type="XPath" 
+                            expr="node:isconsecutive(./CanTSynGlobalTimeSyncDataIDListElement/*/CanTSynGlobalTimeSyncDataIDListIndex, 0)" 
+                            false="CanTSynGlobalTimeSyncDataIDListIndexs shall be 0-based and consecutive."/>
+                      <a:da name="MAX" value="16"/>
+                      <a:da name="MIN" value="16"/>
+                      <v:ctr name="CanTSynGlobalTimeSyncDataIDListElement" 
+                             type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                Element of the DataIDList for SYNC messages ensures the identification of data elements due to CRC calculation process.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="UUID" 
+                             value="ECUC:2b135526-8dc8-4081-945d-6883ea7e6139"/>
+                        <v:var name="CanTSynGlobalTimeSyncDataIDListIndex" 
+                               type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Index for the DataIDList for SYNC messages ensures the identification of data elements due to CRC calculation process.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                          <a:a name="UUID" 
+                               value="ECUC:1e79e595-d2c7-412b-a23f-afa0763fb6f2"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&lt;=15"/>
+                            <a:tst expr="&gt;=0"/>
+                          </a:da>
+                        </v:var>
+                        <v:var name="CanTSynGlobalTimeSyncDataIDListValue" 
+                               type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Value of the DataIDList for SYNC messages ensures the identification of data elements due to CRC calculation process.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                          <a:a name="UUID" 
+                               value="ECUC:308d7e86-9415-4519-9698-d1773b851afe"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&lt;=255"/>
+                            <a:tst expr="&gt;=0"/>
+                          </a:da>
+                        </v:var>
+                      </v:ctr>
+                    </v:lst>
+                  </v:ctr>
+                  <v:ref name="CanTSynSynchronizedTimeBaseRef" type="REFERENCE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Mandatory reference to the required synchronized time-base.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5edfeb0d-45c7-42d0-8089-f0a608cbeeed"/>
+                    <a:da name="INVALID" type="XPath" expr="node:refvalid(.)" 
+                          false="Wrong/Missing reference. A valid reference is required."/>
+                    <a:da name="REF" 
+                          value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/StbM/StbMSynchronizedTimeBase"/>
+                  </v:ref>
+                  <v:ctr name="CanTSynGlobalTimeMaster" type="IDENTIFIABLE">
+                    <a:a name="DESC" 
+                         value="EN: Configuration of the global time master. Each global time domain is required to have exactly one global time master. This master may or may not exist on the configured ECU."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="UUID" 
+                         value="ECUC:cff9a851-6d70-4e41-a02c-77f9b7a76422"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <v:var name="CanTSynCyclicMsgResumeTime" type="FLOAT">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              Defines the time where the 1st regular cycle time based message
+                              transmission takes place, after an immediate transmission before. Unit: seconds
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:b498400e-64dc-4c5a-8491-0b185d152ea2"/>
+                      <a:da name="ENABLE" type="XPath" 
+                            expr="(./../CanTSynImmediateTimeSync = &apos;true&apos;)"/>
+                      <a:da name="INVALID" type="Range">
+                        <a:tst expr="&lt;=65535"/>
+                        <a:tst expr="&gt;=0.0"/>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanTSynGlobalTimeDebounceTime" type="FLOAT">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This represents the configuration of a TX debounce time for SYNC, FUP,
+                              OFS and OFNS messages compared to a message before with the same PDU. Unit: seconds
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:da name="ENABLE" value="true"/>
+                      <a:da name="INVALID" type="Multi">
+                        <mt:range>
+                          <mt:tst expr="&lt;=1000"/>
+                          <mt:tst expr="&gt;=0.0"/>
+                        </mt:range>
+                        <mt:xpath 
+                                  true="The value provided shall be greater than CanTSynMainFunctionPeriod." 
+                                  expr="(. &gt; 0) and not(. &gt;= ../../../../CanTSynGeneral/CanTSynMainFunctionPeriod)"/>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanTSynGlobalTimeTxCrcSecured" 
+                           type="ENUMERATION">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This represents the configuration of whether or not CRC is supported.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:688ff3f8-829d-4ffe-a058-d39f4094eb3b"/>
+                      <a:da name="ENABLE" value="true"/>
+                      <a:da name="INVALID" type="Multi">
+                        <mt:xpath>
+                          <mt:tst 
+                                  true="CanTSynGlobalTimeSyncDataIDList and CanTSynGlobalTimeFupDataIDList must be enabled for Time Domain with CRC support!" 
+                                  expr="(not(node:value(../../CanTSynGlobalTimeDomainId) &gt; 15)) and (node:value(.) = &apos;CRC_SUPPORTED&apos;) and ((not(node:exists(../../CanTSynGlobalTimeSyncDataIDList))) or (not(node:exists(../../CanTSynGlobalTimeFupDataIDList))))"/>
+                          <mt:tst 
+                                  true="CanTSynGlobalTimeOfsDataIDList and CanTSynGlobalTimeOfnsDataIDList must be enabled for Time Domain with CRC support!" 
+                                  expr="(node:value(../../CanTSynUseExtendedMsgFormat) = &apos;false&apos;) and (node:value(../../CanTSynGlobalTimeDomainId) &gt; 15) and (node:value(.) = &apos;CRC_SUPPORTED&apos;) and ((not(node:exists(../../CanTSynGlobalTimeOfsDataIDList))) or (not(node:exists(../../CanTSynGlobalTimeOfnsDataIDList))))"/>
+                          <mt:tst 
+                                  true="CanTSynGlobalTimeOfsDataIDList must be enabled for Time Domain with CRC support!" 
+                                  expr="(node:value(../../CanTSynUseExtendedMsgFormat) = &apos;true&apos;) and (node:value(../../CanTSynGlobalTimeDomainId) &gt; 15) and (node:value(.) = &apos;CRC_SUPPORTED&apos;) and ((not(node:exists(../../CanTSynGlobalTimeOfsDataIDList))))"/>
+                        </mt:xpath>
+                      </a:da>
+                      <a:da name="RANGE">
+                        <a:v>CRC_NOT_SUPPORTED</a:v>
+                        <a:v>CRC_SUPPORTED</a:v>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanTSynGlobalTimeTxPeriod" type="FLOAT">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This represents configuration of the TX period. Unit: seconds
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              &lt;b&gt;Note:&lt;/b&gt; If the value of this configuration parameter is 0 the
+                              cyclic transmission of SYNC and OFS messages is disabled.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              The immediate transmission if it is enabled with
+                              CanTSynImmediateTimeSync is not affected by the value of this
+                              parameter.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:6f787960-e6d3-4cd8-9be0-b8b8f1cfd6fa"/>
+                      <a:da name="DEFAULT" value="0.0"/>
+                      <a:da name="INVALID" type="Multi">
+                        <mt:range>
+                          <mt:tst expr="&lt;=1000"/>
+                          <mt:tst expr="&gt;=0.0"/>
+                        </mt:range>
+                        <mt:xpath>
+                          <mt:tst 
+                                  true="The value provided shall be greater than CanTSynMainFunctionPeriod." 
+                                  expr="(. &gt; 0) and not(. &gt;= ../../../../CanTSynGeneral/CanTSynMainFunctionPeriod) "/>
+                          <mt:tst 
+                                  true="The value provided must be greater than twice the value of CanTSynMasterConfirmationTimeout plus the value of CanTSynGlobalTimeDebounceTime." 
+                                  expr="(../CanTSynGlobalTimeTxPeriod != 0) and not(. &gt;= ((../CanTSynMasterConfirmationTimeout * 2.0) + ../CanTSynGlobalTimeDebounceTime))"/>
+                        </mt:xpath>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanTSynImmediateTimeSync" type="BOOLEAN">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              Enables/Disables the cyclic polling of StbM_GetTimeBaseUpdateCounter()
+                              within CanTSyn_MainFunction().
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:ebca5b87-af6f-48c1-9aa2-e82ad75f4a24"/>
+                      <a:da name="DEFAULT" value="false"/>
+                      <a:da name="INVALID" type="Multi">
+                        <mt:xpath 
+                                  true="Invalid configuration for the parameters CanTSynImmediateTimeSync and CanTSynGlobalTimeTxPeriod.                                         CanTSynImmediateTimeSync must be enabled or CanTSynGlobalTimeTxPeriod must be unequal to 0." 
+                                  expr="not(node:value(.) = &apos;true&apos;) and not(node:value(../CanTSynGlobalTimeTxPeriod) != 0.0)"/>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanTSynMasterConfirmationTimeout" type="FLOAT">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This represents the confirmation timeout after transmission of a SYNC
+                              message resp. OFS message. Unit: seconds.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:5134b771-783b-49e8-aa30-7b1c92f56e2a"/>
+                      <a:da name="DEFAULT" value="0.0"/>
+                      <a:da name="INVALID" type="Multi">
+                        <mt:range>
+                          <mt:tst expr="&lt;=1.0"/>
+                          <mt:tst expr="&gt;=0.0"/>
+                        </mt:range>
+                        <mt:xpath>
+                          <mt:tst 
+                                  true="The value provided shall be greater than CanTSynMainFunctionPeriod." 
+                                  expr="((. &gt; 0) and not(. &gt;= ../../../../CanTSynGeneral/CanTSynMainFunctionPeriod))"/>
+                          <mt:tst 
+                                  true="The value provided must be smaller than CanTSynGlobalTimeTxPeriod." 
+                                  expr="(../CanTSynGlobalTimeTxPeriod != 0) and (. &gt; ../CanTSynGlobalTimeTxPeriod)"/>
+                        </mt:xpath>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanTSynTxTmacCalculated" type="ENUMERATION">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter controls whether or not TMAC calculation shall be supported.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              TMAC is not supported.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:51dcf3bf-3943-43c9-9322-31324eda579a"/>
+                      <a:da name="DEFAULT" value="TMAC_NOT_CALCULATED"/>
+                      <a:da name="EDITABLE" value="false"/>
+                      <a:da name="ENABLE" value="false"/>
+                      <a:da name="RANGE">
+                        <a:v>TMAC_CALCULATED</a:v>
+                        <a:v>TMAC_NOT_CALCULATED</a:v>
+                      </a:da>
+                    </v:var>
+                    <v:ctr name="CanTSynGlobalTimeMasterPdu" 
+                           type="IDENTIFIABLE">
+                      <a:a name="DESC" 
+                           value="EN: This container encloses the configuration of the PDU that is supposed to contain the global time information."/>
+                      <a:a name="UUID" 
+                           value="ECUC:d5318374-9ff0-4dea-abdf-12e25c4fc4fd"/>
+                      <v:var name="CanTSynGlobalTimeMasterConfirmationHandleId" 
+                             type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This represents the handle ID of the PDU that contains the global time information.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                        <a:a name="UUID" 
+                             value="ECUC:19d98c8e-3bc0-4332-9f2f-53900e56fa17"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65535"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    false="CanTSynGlobalTimeMasterConfirmationHandleIds shall be 0-based consecutive!" 
+                                    expr="node:isconsecutive(as:modconf(&apos;CanTSyn&apos;)/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeMaster)]/CanTSynGlobalTimeMaster/CanTSynGlobalTimeMasterPdu/CanTSynGlobalTimeMasterConfirmationHandleId, 0)"/>
+                            <mt:tst 
+                                    true="If master synchronization and offset messages exist, offset messages shall follow synchronization messages and be consecutive!" 
+                                    expr="((          (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[(CanTSynGlobalTimeDomainId &gt;= 0 and not(CanTSynGlobalTimeDomainId &gt; 15)) and node:exists(CanTSynGlobalTimeMaster)])         ) &gt; 0                 and          (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[CanTSynGlobalTimeDomainId &gt;= 16 and node:exists(CanTSynGlobalTimeMaster)])         ) &gt; 0                ) and  not(node:isconsecutive(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeMaster) and CanTSynGlobalTimeDomainId &gt;= 16]/CanTSynGlobalTimeMaster/CanTSynGlobalTimeMasterPdu/CanTSynGlobalTimeMasterConfirmationHandleId,          (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[(CanTSynGlobalTimeDomainId &gt;= 0 and not(CanTSynGlobalTimeDomainId &gt; 15)) and node:exists(CanTSynGlobalTimeMaster)])         )                )))"/>
+                            <mt:tst 
+                                    true="All master Pdus used for offset messages shall be 0 based and consecutive!" 
+                                    expr="(( not(         (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[(CanTSynGlobalTimeDomainId &gt;= 0 and not(CanTSynGlobalTimeDomainId &gt; 15)) and node:exists(CanTSynGlobalTimeMaster)])         ) &gt; 0                ) and          (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[CanTSynGlobalTimeDomainId &gt;= 16 and node:exists(CanTSynGlobalTimeMaster)])         ) &gt; 0                ) and  not(node:isconsecutive(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeMaster) and CanTSynGlobalTimeDomainId &gt;= 16]/CanTSynGlobalTimeMaster/CanTSynGlobalTimeMasterPdu/CanTSynGlobalTimeMasterConfirmationHandleId, 0)))"/>
+                            <mt:tst 
+                                    true="All master Pdus used for synchronization messages shall be 0 based and consecutive!" 
+                                    expr="((          (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[(CanTSynGlobalTimeDomainId &gt;= 0 and not(CanTSynGlobalTimeDomainId &gt; 15)) and node:exists(CanTSynGlobalTimeMaster)])         ) &gt; 0                 and not(         (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[CanTSynGlobalTimeDomainId &gt;= 16 and node:exists(CanTSynGlobalTimeMaster)])         ) &gt; 0                )) and  not(node:isconsecutive(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeMaster) and (CanTSynGlobalTimeDomainId &gt;= 0 and not(CanTSynGlobalTimeDomainId &gt; 15))]/CanTSynGlobalTimeMaster/CanTSynGlobalTimeMasterPdu/CanTSynGlobalTimeMasterConfirmationHandleId, 0)))"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:ref name="CanTSynGlobalTimePduRef" type="REFERENCE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This represents the reference to the Pdu taken to transmit the global time information. The global time master of a global time domain acts as the sender of the Pdu while all the time slaves are supposed to receive the Pdu.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="UUID" 
+                             value="ECUC:6847e4d6-07d1-953f-4c6a-eb3652785f28"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:xpath>
+                            <mt:tst 
+                                    false="Wrong/Missing reference. A valid reference is required." 
+                                    expr="node:refvalid(.)"/>
+                            <mt:tst 
+                                    true="Every configured master and slave shall refer to a unique Pdu." 
+                                    expr="node:refvalid(.) and                                    (                                      count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeMaster)]/CanTSynGlobalTimeMaster/CanTSynGlobalTimeMasterPdu[CanTSynGlobalTimePduRef = node:current()]) != 1                                      or count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeSlave)]/CanTSynGlobalTimeSlave/CanTSynGlobalTimeSlavePdu[CanTSynGlobalTimePduRef = node:current()]) != 0                                    )"/>
+                            <mt:tst 
+                                    true="Referenced PDU must have PduLength equal to 16 when CanTSynUseExtendedMsgFormat is true." 
+                                    expr="node:refvalid(.) and ../../../CanTSynUseExtendedMsgFormat = &apos;true&apos; and not(as:ref(.)/PduLength = 16)"/>
+                          </mt:xpath>
+                        </a:da>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                      </v:ref>
+                    </v:ctr>
+                  </v:ctr>
+                  <v:ctr name="CanTSynGlobalTimeSlave" type="IDENTIFIABLE">
+                    <a:a name="DESC" 
+                         value="EN: Configuration of a global time slave. Each global time domain is required to have at least one time slave. The configured ECU may or may not represent a time slave."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="UUID" 
+                         value="ECUC:453b6e91-cb63-4fdc-b77d-2204844ed77a"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <v:var name="CanTSynGlobalTimeFollowUpTimeout" type="FLOAT">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Rx timeout for the follow-up message. This is only relevant for selected bus systems.
+                            A value of zero shall disable CanTSynGlobalTimeFollowUpTimeout.
+                            Unit:seconds
+                            Unit: [s]
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            &lt;b&gt;Note:&lt;/b&gt; This parameter is only relevant for configured CanTSyn
+                            slaves of this time domain. 
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:0d5073b6-c81e-4f08-9fb7-4638128c5801"/>
+                      <a:da name="DEFAULT" value="0.0"/>
+                      <a:da name="INVALID" type="Multi">
+                        <mt:range>
+                          <mt:tst expr="&lt;=65535"/>
+                          <mt:tst expr="&gt;=0.0"/>
+                        </mt:range>
+                        <mt:xpath 
+                                  true="The value provided shall be greater than CanTSynMainFunctionPeriod." 
+                                  expr="(. &gt; 0) and not(. &gt;= ../../../../CanTSynGeneral/CanTSynMainFunctionPeriod)"/>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanTSynGlobalTimeMinMsgGap" type="FLOAT">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This parameter represents the configuration of a minimum message gap time for received Timesync messages compared to a message before with the same PDU
+                          . If PDUs are received more often in between than this parameter allows, they shall be ignored.
+                            Unit: seconds
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            CanTSynGlobalTimeMinMsgGap is not supported.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:7b2803e8-2119-4836-8168-ba69e558ad79"/>
+                      <a:da name="DEFAULT" value="0.0"/>
+                      <a:da name="EDITABLE" value="false"/>
+                      <a:da name="ENABLE" value="false"/>
+                      <a:da name="INVALID" type="Range">
+                        <a:tst expr="&lt;=65535"/>
+                        <a:tst expr="&gt;=0.0"/>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanTSynRxCrcValidated" type="ENUMERATION">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              Definition of whether or not validation of the CRC is supported.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:7784397b-19ae-463b-a28c-5e41dba352aa"/>
+                      <a:da name="INVALID" type="Multi">
+                        <mt:xpath>
+                          <mt:tst 
+                                  true="CanTSynGlobalTimeSyncDataIDList and CanTSynGlobalTimeFupDataIDList must be enabled for Time Domain with CRC support!" 
+                                  expr="(not(node:value(../../CanTSynGlobalTimeDomainId) &gt; 15)) and ((node:value(.) = &apos;CRC_VALIDATED&apos;) or (node:value(.) = &apos;CRC_OPTIONAL&apos;)) and ((not(node:exists(../../CanTSynGlobalTimeSyncDataIDList))) or (not(node:exists(../../CanTSynGlobalTimeFupDataIDList))))"/>
+                          <mt:tst 
+                                  true="CanTSynGlobalTimeOfsDataIDList and CanTSynGlobalTimeOfnsDataIDList must be enabled for Time Domain with CRC support!" 
+                                  expr="(node:value(../../CanTSynUseExtendedMsgFormat) = &apos;false&apos;) and (node:value(../../CanTSynGlobalTimeDomainId) &gt; 15) and ((node:value(.) = &apos;CRC_VALIDATED&apos;) or (node:value(.) = &apos;CRC_OPTIONAL&apos;)) and ((not(node:exists(../../CanTSynGlobalTimeOfsDataIDList))) or (not(node:exists(../../CanTSynGlobalTimeOfnsDataIDList))))"/>
+                          <mt:tst 
+                                  true="CanTSynGlobalTimeOfsDataIDList must be enabled for Time Domain with CRC support!" 
+                                  expr="(node:value(../../CanTSynUseExtendedMsgFormat) = &apos;true&apos;) and (node:value(../../CanTSynGlobalTimeDomainId) &gt; 15) and ((node:value(.) = &apos;CRC_VALIDATED&apos;) or (node:value(.) = &apos;CRC_OPTIONAL&apos;)) and ((not(node:exists(../../CanTSynGlobalTimeOfsDataIDList))))"/>
+                        </mt:xpath>
+                      </a:da>
+                      <a:da name="RANGE">
+                        <a:v>CRC_IGNORED</a:v>
+                        <a:v>CRC_NOT_VALIDATED</a:v>
+                        <a:v>CRC_OPTIONAL</a:v>
+                        <a:v>CRC_VALIDATED</a:v>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanTSynRxTmacValidated" type="ENUMERATION">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter controls whether or not TMAC validation shall be supported.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              TMAC is not supported.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:0e828aa5-cf8a-4caf-8632-dd63c20d2e1b"/>
+                      <a:da name="DEFAULT" value="TMAC_NOT_VALIDATED"/>
+                      <a:da name="EDITABLE" value="false"/>
+                      <a:da name="ENABLE" value="false"/>
+                      <a:da name="RANGE">
+                        <a:v>TMAC_NOT_VALIDATED</a:v>
+                        <a:v>TMAC_VALIDATED</a:v>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanTSynGlobalTimeSequenceCounterJumpWidth" 
+                           type="INTEGER">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              The SequenceCounterJumpWidth specifies the maximum allowed gap of the Sequence Counter between two SYNC resp. two OFS messages.
+                              Unit: [s]
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              &lt;b&gt;Note:&lt;/b&gt; This parameter is only relevant for configured CanTSyn
+                              slaves of this time domain.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:e77f7729-6186-4ac0-9020-5d883541ea54"/>
+                      <a:da name="DEFAULT" value="1"/>
+                      <a:da name="INVALID" type="Range">
+                        <a:tst expr="&lt;=15"/>
+                        <a:tst expr="&gt;=1"/>
+                      </a:da>
+                    </v:var>
+                    <v:ctr name="CanTSynGlobalTimeSlavePdu" type="IDENTIFIABLE">
+                      <a:a name="DESC" 
+                           value="EN: This container encloses the configuration of the PDU that is supposed to contain the global time information."/>
+                      <a:a name="UUID" 
+                           value="ECUC:98a5703c-de7c-4eab-80aa-8f4df6f3eb46"/>
+                      <v:var name="CanTSynGlobalTimeSlaveHandleId" 
+                             type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This represents the handle ID of the PDU that contains the global time information.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                        <a:a name="UUID" 
+                             value="ECUC:f7af8e82-c061-4415-9619-25e5c1bccf67"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65535"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    false="CanTSynGlobalTimeSlaveHandleIds shall be 0-based consecutive!" 
+                                    expr="node:isconsecutive(as:modconf(&apos;CanTSyn&apos;)/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeSlave)]/CanTSynGlobalTimeSlave/CanTSynGlobalTimeSlavePdu/CanTSynGlobalTimeSlaveHandleId, 0)"/>
+                            <mt:tst 
+                                    true="If slave synchronization and offset messages exist, offset messages shall follow synchronization messages and be consecutive!" 
+                                    expr="((          (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[(CanTSynGlobalTimeDomainId &gt;= 0 and not(CanTSynGlobalTimeDomainId &gt; 15)) and node:exists(CanTSynGlobalTimeSlave)])         ) &gt; 0                 and          (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[CanTSynGlobalTimeDomainId &gt;= 16 and node:exists(CanTSynGlobalTimeSlave)])         ) &gt; 0                ) and  not(node:isconsecutive(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeSlave) and CanTSynGlobalTimeDomainId &gt;= 16]/CanTSynGlobalTimeSlave/CanTSynGlobalTimeSlavePdu/CanTSynGlobalTimeSlaveHandleId,          (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[(CanTSynGlobalTimeDomainId &gt;= 0 and not(CanTSynGlobalTimeDomainId &gt; 15)) and node:exists(CanTSynGlobalTimeSlave)])         )                )))"/>
+                            <mt:tst 
+                                    true="All slave Pdus use for offset messages shall be 0 based and consecutive!" 
+                                    expr="(( not(         (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[(CanTSynGlobalTimeDomainId &gt;= 0 and not(CanTSynGlobalTimeDomainId &gt; 15)) and node:exists(CanTSynGlobalTimeSlave)])         ) &gt; 0                ) and          (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[CanTSynGlobalTimeDomainId &gt;= 16 and node:exists(CanTSynGlobalTimeSlave)])         ) &gt; 0                ) and  not(node:isconsecutive(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeSlave) and CanTSynGlobalTimeDomainId &gt;= 16]/CanTSynGlobalTimeSlave/CanTSynGlobalTimeSlavePdu/CanTSynGlobalTimeSlaveHandleId, 0)))"/>
+                            <mt:tst 
+                                    true="All slave Pdus used for synchronization messages shall be 0 based and consecutive!" 
+                                    expr="((          (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[(CanTSynGlobalTimeDomainId &gt;= 0 and not(CanTSynGlobalTimeDomainId &gt; 15)) and node:exists(CanTSynGlobalTimeSlave)])         ) &gt; 0                 and not(         (           count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[CanTSynGlobalTimeDomainId &gt;= 16 and node:exists(CanTSynGlobalTimeSlave)])         ) &gt; 0                )) and  not(node:isconsecutive(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeSlave) and (CanTSynGlobalTimeDomainId &gt;= 0 and not(CanTSynGlobalTimeDomainId &gt; 15))]/CanTSynGlobalTimeSlave/CanTSynGlobalTimeSlavePdu/CanTSynGlobalTimeSlaveHandleId, 0)))"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:ref name="CanTSynGlobalTimePduRef" type="REFERENCE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This represents the reference to the Pdu taken to transmit the global time information. The global time master of a global time domain acts as the sender of the Pdu while all the time slaves are supposed to receive the Pdu.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="UUID" 
+                             value="ECUC:2bbbd19e-465d-9600-2136-67a1ed1c8571"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:xpath>
+                            <mt:tst 
+                                    false="Wrong/Missing reference. A valid reference is required." 
+                                    expr="node:refvalid(.)"/>
+                            <mt:tst 
+                                    true="Every configured master and slave shall refer to a unique Pdu." 
+                                    expr="node:refvalid(.) and                                      (                                       count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeMaster)]/CanTSynGlobalTimeMaster/CanTSynGlobalTimeMasterPdu[CanTSynGlobalTimePduRef = node:current()]) != 0                                       or count(as:modconf(&apos;CanTSyn&apos;)[1]/CanTSynGlobalTimeDomain/*[node:exists(CanTSynGlobalTimeSlave)]/CanTSynGlobalTimeSlave/CanTSynGlobalTimeSlavePdu[CanTSynGlobalTimePduRef = node:current()]) != 1                                      )"/>
+                            <mt:tst 
+                                    true="Referenced PDU must have PduLength equal to 16 when CanTSynUseExtendedMsgFormat is true." 
+                                    expr="node:refvalid(.) and ../../../CanTSynUseExtendedMsgFormat = &apos;true&apos; and not(as:ref(.)/PduLength = 16)"/>
+                          </mt:xpath>
+                        </a:da>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                      </v:ref>
+                    </v:ctr>
+                  </v:ctr>
+                  <v:var name="CanTSynUseExtendedMsgFormat" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Switches support for 16 Byte Timesync messages on or off (for CAN FD only)&lt;/p&gt;
+			                    &lt;ul&gt;
+                            &lt;li&gt;true: use 16 byte Timesync message formats (for CAN FD only).&lt;/li&gt;
+                            &lt;li&gt;false: use 8 byte Timesync message formats.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:e212434b-42cb-4ce2-96b1-4ac324375d34"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="EDITABLE" value="true"/>
+                  </v:var>
+                </v:ctr>
+              </v:lst>
+              <d:ref type="REFINED_MODULE_DEF" 
+                     value="ASPath:/AUTOSAR/EcucDefs/CanTSyn"/>
+              <v:ctr name="CommonPublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Common Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6"/>
+                <v:var name="ArMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1"/>
+                  <a:da name="DEFAULT" value="4"/>
+                </v:var>
+                <v:var name="ArMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70"/>
+                  <a:da name="DEFAULT" value="4"/>
+                </v:var>
+                <v:var name="ArPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="SwMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34"/>
+                  <a:da name="DEFAULT" value="2"/>
+                </v:var>
+                <v:var name="SwMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="SwPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a318d2d9-0e75-49da-ac43-e7e4e682e2f9"/>
+                  <a:da name="DEFAULT" value="8"/>
+                </v:var>
+                <v:var name="ModuleId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Numeric Module ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:78bc8362-080f-4253-b3da-804ab69a7154"/>
+                  <a:da name="DEFAULT" value="161"/>
+                </v:var>
+                <v:var name="VendorId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Vendor ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="Release" type="STRING_LABEL">
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Release Information"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89"/>
+                  <a:da name="DEFAULT" value=""/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="PublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="EB Published Information"/>
+                <a:a name="TAB" value="EB Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07"/>
+                <v:var name="PbcfgMSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Specifies whether or not the CanTSyn can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="PbcfgM support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+              </v:ctr>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

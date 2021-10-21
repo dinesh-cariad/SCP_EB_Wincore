@@ -1,0 +1,2790 @@
+[!AUTOSPACING!]
+[!/* Get the implementation DataType for SR Interface */!][!//
+[!MACRO "GetImplementationDataType", "InputDataType", "DataSize"!][!//
+[!VAR "DataType" = "text:tolower($InputDataType)"!][!//
+[!VAR "DataTypeSize" = "substring-after($DataType, 'uint')"!][!//
+[!IF "$DataSize > ($DataTypeSize div 8)"!]
+  <!-- !LINKSTO Dem.SRInterface.Array,1 -->
+  [!/* Generate data types for arrays */!][!//
+  [!VAR "ImplementationDataType" = "concat('/AUTOSAR_Dem/ImplementationDataTypes/Dem_DataArrayType_', $DataType, '_', name(.) ,'_Type')"!][!//
+[!ELSE!]
+  [!/* Generate primitive data types */!][!//
+  [!VAR "ImplementationDataType" = "concat('/AUTOSAR_Platform/ImplementationDataTypes/', $DataType)"!][!//
+[!ENDIF!]
+[!ENDMACRO!][!//
+[!//
+[!MACRO "Build_Body", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_Dem'", "EnableVersion" = "''"!]
+  [!IF "$InterfaceName != ''"!]
+    [!VAR "InterfacePrefix" = "concat('Dem_', $InterfaceName)"!]
+  [!ELSE!][!//
+    [!VAR "InterfacePrefix" = "''"!]
+  [!ENDIF!]
+        <AR-PACKAGE>
+          <SHORT-NAME>DataConstrs</SHORT-NAME>
+          <ELEMENTS>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit1,1 -->
+            <DATA-CONSTR>
+              <SHORT-NAME>CONSTR_[!"$InterfaceName"!]EventIdType</SHORT-NAME>
+              <DATA-CONSTR-RULES>
+                <DATA-CONSTR-RULE>
+                  <INTERNAL-CONSTRS>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">[!"num:max(DemConfigSet/*/DemEventParameter/*/DemEventId)"!]</UPPER-LIMIT>
+                  </INTERNAL-CONSTRS>
+                </DATA-CONSTR-RULE>
+             </DATA-CONSTR-RULES>
+            </DATA-CONSTR>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit2,1 -->
+            <DATA-CONSTR>
+              <SHORT-NAME>CONSTR_[!"$InterfaceName"!]EventStatusType</SHORT-NAME>
+              <DATA-CONSTR-RULES>
+                <DATA-CONSTR-RULE>
+                  <INTERNAL-CONSTRS>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                  </INTERNAL-CONSTRS>
+                </DATA-CONSTR-RULE>
+              </DATA-CONSTR-RULES>
+            </DATA-CONSTR>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit14,1 -->
+            <DATA-CONSTR>
+              <SHORT-NAME>CONSTR_[!"$InterfaceName"!]DebounceResetStatusType</SHORT-NAME>
+              <DATA-CONSTR-RULES>
+                <DATA-CONSTR-RULE>
+                  <INTERNAL-CONSTRS>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                  </INTERNAL-CONSTRS>
+                </DATA-CONSTR-RULE>
+              </DATA-CONSTR-RULES>
+            </DATA-CONSTR>
+
+             <!-- !LINKSTO Dem.ASR403.DTCOriginType,1 -->
+            <DATA-CONSTR>
+              <SHORT-NAME>CONSTR_[!"$InterfaceName"!]DTCOriginType</SHORT-NAME>
+              <DATA-CONSTR-RULES>
+                <DATA-CONSTR-RULE>
+                  <INTERNAL-CONSTRS>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+  [!IF "not(node:exists(DemGeneral/DemUserDefMemoryId))"!]
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+  [!ELSE!][!//
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">511</UPPER-LIMIT>
+  [!ENDIF!]
+                  </INTERNAL-CONSTRS>
+                </DATA-CONSTR-RULE>
+              </DATA-CONSTR-RULES>
+            </DATA-CONSTR>
+
+            <!-- !LINKSTO Dem.ASR431.SWS_Dem_00933,1 -->
+            <DATA-CONSTR>
+              <SHORT-NAME>CONSTR_[!"$InterfaceName"!]DTCFormatType</SHORT-NAME>
+              <DATA-CONSTR-RULES>
+                <DATA-CONSTR-RULE>
+                  <INTERNAL-CONSTRS>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+  [!IF "($BaseServiceAPIVersion = 'AUTOSAR_42') or (DemGeneral/DemServiceAPI/DemEnableASR42ServiceAPI = 'true')"!]
+                    <!-- extend type with J1939 as soon as any R4.2 interface is enabled to avoid wrapper-RE, no functional changes -->
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+  [!ELSE!][!//
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+  [!ENDIF!]
+                  </INTERNAL-CONSTRS>
+                </DATA-CONSTR-RULE>
+              </DATA-CONSTR-RULES>
+            </DATA-CONSTR>
+
+            <!-- !LINKSTO SWS_Dem_00942,1 -->
+            <DATA-CONSTR>
+              <SHORT-NAME>CONSTR_[!"$InterfaceName"!]InitMonitorReasonType</SHORT-NAME>
+              <DATA-CONSTR-RULES>
+                <DATA-CONSTR-RULE>
+                  <INTERNAL-CONSTRS>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                  </INTERNAL-CONSTRS>
+                </DATA-CONSTR-RULE>
+              </DATA-CONSTR-RULES>
+            </DATA-CONSTR>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit6,1 -->
+            <DATA-CONSTR>
+              <SHORT-NAME>CONSTR_[!"$InterfaceName"!]OperationCycleStateType</SHORT-NAME>
+              <DATA-CONSTR-RULES>
+                <DATA-CONSTR-RULE>
+                  <INTERNAL-CONSTRS>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                  </INTERNAL-CONSTRS>
+                </DATA-CONSTR-RULE>
+              </DATA-CONSTR-RULES>
+            </DATA-CONSTR>
+
+            <!-- !LINKSTO SWS_Dem_00930,1 -->
+            <DATA-CONSTR>
+              <SHORT-NAME>CONSTR_[!"$InterfaceName"!]IndicatorStatusType</SHORT-NAME>
+              <DATA-CONSTR-RULES>
+                <DATA-CONSTR-RULE>
+                  <INTERNAL-CONSTRS>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                  </INTERNAL-CONSTRS>
+                </DATA-CONSTR-RULE>
+              </DATA-CONSTR-RULES>
+            </DATA-CONSTR>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <ELEMENTS>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit2,1 -->
+            <COMPU-METHOD>
+              <SHORT-NAME>CM_[!"$InterfaceName"!]EventStatusType</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_EVENT_STATUS_PASSED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_EVENT_STATUS_FAILED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_EVENT_STATUS_PREPASSED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_EVENT_STATUS_PREFAILED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit14,1 -->
+            <COMPU-METHOD>
+              <SHORT-NAME>CM_[!"$InterfaceName"!]DebounceResetStatusType</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_DEBOUNCE_STATUS_FREEZE</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_DEBOUNCE_STATUS_RESET</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+
+            <COMPU-METHOD>
+              <SHORT-NAME>CM_[!"$InterfaceName"!]EventStatusExtendedType</SHORT-NAME>
+  [!NOCODE!]
+  [!/* with AUTOSAR_43 the CATEGORY value for EventStatusExtendedType shall be changed to BITFIELD_TEXTTABLE */!][!//
+  [!/* and for backward compatibility, CATEGORY value for AUTOSAR_42 and AUTOSAR_40 shall not be modified */!][!//
+  [!ENDNOCODE!]
+  [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+            <!-- !LINKSTO Dem.ASR431.SWS_Dem_00928,1 -->
+              <CATEGORY>BITFIELD_TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                  <COMPU-SCALES>
+                      <!-- bit 0: TestFailed -->
+                      <COMPU-SCALE>
+                          <SHORT-LABEL>DEM_UDS_STATUS_TF</SHORT-LABEL>
+                          <SYMBOL>DEM_UDS_STATUS_TF</SYMBOL>
+                          <MASK>0b00000001</MASK>
+                          <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00000001</LOWER-LIMIT>
+                          <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00000001</UPPER-LIMIT>
+                          <COMPU-CONST>
+                              <VT>DEM_UDS_STATUS_TF</VT>
+                          </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <!-- bit 1: TestFailedThisOperationCycle -->
+                      <COMPU-SCALE>
+                          <SHORT-LABEL>DEM_UDS_STATUS_TFTOC</SHORT-LABEL>
+                          <SYMBOL>DEM_UDS_STATUS_TFTOC</SYMBOL>
+                          <MASK>0b00000010</MASK>
+                          <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00000010</LOWER-LIMIT>
+                          <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00000010</UPPER-LIMIT>
+                          <COMPU-CONST>
+                              <VT>DEM_UDS_STATUS_TFTOC</VT>
+                          </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <!-- bit 2: PendingDTC -->
+                      <COMPU-SCALE>
+                          <SHORT-LABEL>DEM_UDS_STATUS_PDTC</SHORT-LABEL>
+                          <SYMBOL>DEM_UDS_STATUS_PDTC</SYMBOL>
+                          <MASK>0b00000100</MASK>
+                          <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00000100</LOWER-LIMIT>
+                          <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00000100</UPPER-LIMIT>
+                          <COMPU-CONST>
+                              <VT>DEM_UDS_STATUS_PDTC</VT>
+                          </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <!-- bit 3: ConfirmedDTC -->
+                      <COMPU-SCALE>
+                          <SHORT-LABEL>DEM_UDS_STATUS_CDTC</SHORT-LABEL>
+                          <SYMBOL>DEM_UDS_STATUS_CDTC</SYMBOL>
+                          <MASK>0b00001000</MASK>
+                          <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00001000</LOWER-LIMIT>
+                          <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00001000</UPPER-LIMIT>
+                          <COMPU-CONST>
+                              <VT>DEM_UDS_STATUS_CDTC</VT>
+                          </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <!-- bit 4: TestNotCompletedSinceLastClear -->
+                      <COMPU-SCALE>
+                          <SHORT-LABEL>DEM_UDS_STATUS_TNCSLC</SHORT-LABEL>
+                          <SYMBOL>DEM_UDS_STATUS_TNCSLC</SYMBOL>
+                          <MASK>0b00010000</MASK>
+                          <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00010000</LOWER-LIMIT>
+                          <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00010000</UPPER-LIMIT>
+                          <COMPU-CONST>
+                              <VT>DEM_UDS_STATUS_TNCSLC</VT>
+                          </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <!-- bit 5: TestFailedSinceLastClear -->
+                      <COMPU-SCALE>
+                          <SHORT-LABEL>DEM_UDS_STATUS_TFSLC</SHORT-LABEL>
+                          <SYMBOL>DEM_UDS_STATUS_TFSLC</SYMBOL>
+                          <MASK>0b00100000</MASK>
+                          <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00100000</LOWER-LIMIT>
+                          <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00100000</UPPER-LIMIT>
+                          <COMPU-CONST>
+                              <VT>DEM_UDS_STATUS_TFSLC</VT>
+                          </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <!-- bit 6: TestNotCompletedThisOperationCycle -->
+                      <COMPU-SCALE>
+                          <SHORT-LABEL>DEM_UDS_STATUS_TNCTOC</SHORT-LABEL>
+                          <SYMBOL>DEM_UDS_STATUS_TNCTOC</SYMBOL>
+                          <MASK>0b01000000</MASK>
+                          <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b01000000</LOWER-LIMIT>
+                          <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b01000000</UPPER-LIMIT>
+                          <COMPU-CONST>
+                              <VT>DEM_UDS_STATUS_TNCTOC</VT>
+                          </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <!-- bit 7: WarningIndicatorRequested -->
+                      <COMPU-SCALE>
+                          <SHORT-LABEL>DEM_UDS_STATUS_WIR</SHORT-LABEL>
+                          <SYMBOL>DEM_UDS_STATUS_WIR</SYMBOL>
+                          <MASK>0b10000000</MASK>
+                          <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b10000000</LOWER-LIMIT>
+                          <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b10000000</UPPER-LIMIT>
+                          <COMPU-CONST>
+                              <VT>DEM_UDS_STATUS_WIR</VT>
+                          </COMPU-CONST>
+                      </COMPU-SCALE>
+                  </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+  [!ELSE!]
+            <!-- !LINKSTO Dem.RteTypes_Implicit3,2 -->
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_UDS_STATUS_TF</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_UDS_STATUS_TFTOC</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_UDS_STATUS_PDTC</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">8</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">8</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_UDS_STATUS_CDTC</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">16</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">16</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_UDS_STATUS_TNCSLC</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">32</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">32</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_UDS_STATUS_TFSLC</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">64</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">64</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_UDS_STATUS_TNCTOC</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">128</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">128</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_UDS_STATUS_WIR</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+  [!ENDIF!]
+            </COMPU-METHOD>
+
+             <!-- !LINKSTO Dem.ASR403.DTCOriginType,1 -->
+            <COMPU-METHOD>
+              <SHORT-NAME>CM_[!"$InterfaceName"!]DTCOriginType</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_DTC_ORIGIN_PRIMARY_MEMORY</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_DTC_ORIGIN_MIRROR_MEMORY</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_DTC_ORIGIN_PERMANENT_MEMORY</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_DTC_ORIGIN_SECONDARY_MEMORY</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+  [!IF "node:exists(DemGeneral/DemUserDefMemoryId)"!]
+    [!VAR "DemDtcOriginUserDefMemoryId" = "num:integer(DemGeneral/DemUserDefMemoryId + 256)"!]
+  [!ELSE!]
+    [!VAR "DemDtcOriginUserDefMemoryId" = "num:integer(0)"!]
+  [!ENDIF!]
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">[!"$DemDtcOriginUserDefMemoryId"!]</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">[!"$DemDtcOriginUserDefMemoryId"!]</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_DTC_ORIGIN_USERDEFINED_MEMORY_MAPPED_TO_SECONDARY</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+
+            <COMPU-METHOD>
+              <SHORT-NAME>CM_[!"$InterfaceName"!]DebouncingStateType</SHORT-NAME>
+  [!NOCODE!]
+  [!/* with AUTOSAR_43 the CATEGORY value for DebouncingStateType shall be changed to BITFIELD_TEXTTABLE */!][!//
+  [!/* and for backward compatibility, CATEGORY value for DebouncingStateType in AUTOSAR_42 and AUTOSAR_40 shall not be modified */!][!//
+  [!ENDNOCODE!]
+  [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+            <!-- !LINKSTO Dem.ASR431.SWS_Dem_01000,1 -->
+              <CATEGORY>BITFIELD_TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                      <SHORT-LABEL>DEM_TEMPORARILY_DEFECTIVE</SHORT-LABEL>
+                      <SYMBOL>DEM_TEMPORARILY_DEFECTIVE</SYMBOL>
+                      <MASK>0b00000001</MASK>
+                      <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00000001</LOWER-LIMIT>
+                      <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00000001</UPPER-LIMIT>
+                      <COMPU-CONST>
+                          <VT>DEM_TEMPORARILY_DEFECTIVE</VT>
+                      </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                      <SHORT-LABEL>DEM_FINALLY_DEFECTIVE</SHORT-LABEL>
+                      <SYMBOL>DEM_FINALLY_DEFECTIVE</SYMBOL>
+                      <MASK>0b00000010</MASK>
+                      <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00000010</LOWER-LIMIT>
+                      <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00000010</UPPER-LIMIT>
+                      <COMPU-CONST>
+                          <VT>DEM_FINALLY_DEFECTIVE</VT>
+                      </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                      <SHORT-LABEL>DEM_TEMPORARILY_HEALED</SHORT-LABEL>
+                      <SYMBOL>DEM_TEMPORARILY_HEALED</SYMBOL>
+                      <MASK>0b00000100</MASK>
+                      <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00000100</LOWER-LIMIT>
+                      <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00000100</UPPER-LIMIT>
+                      <COMPU-CONST>
+                          <VT>DEM_TEMPORARILY_HEALED</VT>
+                      </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                      <SHORT-LABEL>DEM_TEST_COMPLETE</SHORT-LABEL>
+                      <SYMBOL>DEM_TEST_COMPLETE</SYMBOL>
+                      <MASK>0b00001000</MASK>
+                      <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00001000</LOWER-LIMIT>
+                      <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00001000</UPPER-LIMIT>
+                      <COMPU-CONST>
+                          <VT>DEM_TEST_COMPLETE</VT>
+                      </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                      <SHORT-LABEL>DEM_DTR_UPDATE</SHORT-LABEL>
+                      <SYMBOL>DEM_DTR_UPDATE</SYMBOL>
+                      <MASK>0b00010000</MASK>
+                      <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0b00010000</LOWER-LIMIT>
+                      <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0b00010000</UPPER-LIMIT>
+                      <COMPU-CONST>
+                          <VT>DEM_DTR_UPDATE</VT>
+                      </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+  [!ELSE!]
+            <!-- !LINKSTO Dem.RteTypes_Implicit15,1 -->
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_TEMPORARILY_DEFECTIVE</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_FINALY_DEFECTIVE</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_TEMPORARILY_HEALED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">8</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">8</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_TEST_COMPLETE</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">16</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">16</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_DTR_UPDATE</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+  [!ENDIF!]
+            </COMPU-METHOD>
+
+            <!-- !LINKSTO Dem.ASR431.SWS_Dem_00933,1 -->
+            <COMPU-METHOD>
+              <SHORT-NAME>CM_[!"$InterfaceName"!]DTCFormatType</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_DTC_FORMAT_OBD</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_DTC_FORMAT_UDS</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+  [!IF "($BaseServiceAPIVersion = 'AUTOSAR_42') or (DemGeneral/DemServiceAPI/DemEnableASR42ServiceAPI = 'true') or (DemGeneral/DemJ1939Support ='true')"!]
+                  <!-- extend type with J1939 as soon as any R4.2 interface is enabled to avoid wrapper-RE, no functional changes -->
+                  <COMPU-SCALE>
+                     <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                     <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                     <COMPU-CONST>
+                        <VT>DEM_DTC_FORMAT_J1939</VT>
+                     </COMPU-CONST>
+                  </COMPU-SCALE>
+  [!ENDIF!]
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+
+            <!-- !LINKSTO SWS_Dem_00942,1 -->
+            <COMPU-METHOD>
+              <SHORT-NAME>CM_[!"$InterfaceName"!]InitMonitorReasonType</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_INIT_MONITOR_CLEAR</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_INIT_MONITOR_RESTART</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  [!IF "DemGeneral/DemCallbackInitMForEReenabledSupport = 'true'"!]
+                  <!-- extend Dem_InitMonitorReasonType if configuration parameter DemCallbackInitMForEReenabledSupport is set to true -->
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_INIT_MONITOR_REENABLED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_INIT_MONITOR_STORAGE_REENABLED</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                [!ENDIF!]
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit6,1 -->
+            <COMPU-METHOD>
+              <SHORT-NAME>CM_[!"$InterfaceName"!]OperationCycleStateType</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_CYCLE_STATE_START</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_CYCLE_STATE_END</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+
+            <!-- !LINKSTO SWS_Dem_00930,1 -->
+            <COMPU-METHOD>
+              <SHORT-NAME>CM_[!"$InterfaceName"!]IndicatorStatusType</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_INDICATOR_OFF</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_INDICATOR_CONTINUOUS</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_INDICATOR_BLINKING</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_INDICATOR_BLINK_CONT</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_INDICATOR_SLOW_FLASH</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">5</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DEM_INDICATOR_FAST_FLASH</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit1,1 -->
+            <COMPU-METHOD>
+            <SHORT-NAME>CM_[!"$InterfaceName"!]EventIdType</SHORT-NAME>
+             <CATEGORY>TEXTTABLE</CATEGORY>
+               <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+  [!LOOP "node:order(DemConfigSet/*/DemEventParameter/*, 'DemEventId')"!]
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">[!"DemEventId"!]</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">[!"DemEventId"!]</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>DemConf_DemEventParameter_[!"name(.)"!]</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+  [!ENDLOOP!]
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+          <ELEMENTS>
+
+            <!-- definition of type definitions -->
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit1,1 -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]EventIdType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]EventIdType</COMPU-METHOD-REF>
+                    <DATA-CONSTR-REF DEST="DATA-CONSTR">[!"$TopLevelPackage"!]/DataConstrs/CONSTR_[!"$InterfaceName"!]EventIdType</DATA-CONSTR-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit2,1 -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]EventStatusType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]EventStatusType</COMPU-METHOD-REF>
+                    <DATA-CONSTR-REF DEST="DATA-CONSTR">[!"$TopLevelPackage"!]/DataConstrs/CONSTR_[!"$InterfaceName"!]EventStatusType</DATA-CONSTR-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit14,1 -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]DebounceResetStatusType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]DebounceResetStatusType</COMPU-METHOD-REF>
+                    <DATA-CONSTR-REF DEST="DATA-CONSTR">[!"$TopLevelPackage"!]/DataConstrs/CONSTR_[!"$InterfaceName"!]DebounceResetStatusType</DATA-CONSTR-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit3,2 -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]EventStatusExtendedType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]EventStatusExtendedType</COMPU-METHOD-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+  [!IF "$AsrVersion = 'AUTOSAR_42'"!]
+            <!-- R4.2 type definition (in addition to R4.0 standard type EventStatusExtendedType) -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]UdsStatusByteType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]EventStatusExtendedType</COMPU-METHOD-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_DebouncingStateType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]DebouncingStateType</COMPU-METHOD-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+  [!ENDIF!]
+            <!-- !LINKSTO Dem.ASR403.DTCOriginType,1 -->
+            <!-- moved from internal.arxml into interface.arxml, due to Autosar work-around regarding DcmIf -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]DTCOriginType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]DTCOriginType</COMPU-METHOD-REF>
+                    <DATA-CONSTR-REF DEST="DATA-CONSTR">[!"$TopLevelPackage"!]/DataConstrs/CONSTR_[!"$InterfaceName"!]DTCOriginType</DATA-CONSTR-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+            <!-- !LINKSTO Dem.ASR431.SWS_Dem_00933,1 -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]DTCFormatType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]DTCFormatType</COMPU-METHOD-REF>
+                    <DATA-CONSTR-REF DEST="DATA-CONSTR">[!"$TopLevelPackage"!]/DataConstrs/CONSTR_[!"$InterfaceName"!]DTCFormatType</DATA-CONSTR-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+            <!-- !LINKSTO SWS_Dem_00942,1 -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]InitMonitorReasonType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]InitMonitorReasonType</COMPU-METHOD-REF>
+                    <DATA-CONSTR-REF DEST="DATA-CONSTR">[!"$TopLevelPackage"!]/DataConstrs/CONSTR_[!"$InterfaceName"!]InitMonitorReasonType</DATA-CONSTR-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit6,1 -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]OperationCycleStateType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]OperationCycleStateType</COMPU-METHOD-REF>
+                    <DATA-CONSTR-REF DEST="DATA-CONSTR">[!"$TopLevelPackage"!]/DataConstrs/CONSTR_[!"$InterfaceName"!]OperationCycleStateType</DATA-CONSTR-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+            <!-- !LINKSTO Dem.RteTypes_Implicit7,1 -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]DTCStatusMaskType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+            <!-- !LINKSTO SWS_Dem_00930,1 -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]IndicatorStatusType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]IndicatorStatusType</COMPU-METHOD-REF>
+                    <DATA-CONSTR-REF DEST="DATA-CONSTR">[!"$TopLevelPackage"!]/DataConstrs/CONSTR_[!"$InterfaceName"!]IndicatorStatusType</DATA-CONSTR-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+[!/* GetEventExtendedDataRecord reports a full ED and GetEventFreezeFrameData can report a full FF
+ record thus the maximum value of Dem_MaxDataValueType is dependent on ED class as well as FF class.
+ An ED size can be derived from ED class by adding up all the ED record sizes.
+ A FF record size can be derived from FF class by adding up all the DID sizes.
+ See Dem.MaxDataValueType.RteType */!][!//
+  [!IF "(count(DemGeneral/DemExtendedDataClass/*) > 0) or (count(DemGeneral/DemFreezeFrameClass/*) > 0)"!]
+  [!VAR "MaxDataValueSize" = "0"!][!/* size of largest Extended data class / Freeze frame record */!][!//
+  [!LOOP "DemGeneral/DemExtendedDataClass/*"!]
+    [!VAR "EDSize" = "0"!]
+    [!LOOP "./DemExtendedDataRecordClassRef/*"!]
+      [!LOOP "as:ref(.)/DemDataElementClassRef/*"!]
+        [!VAR "EDSize" = "$EDSize + as:ref(.)/DemDataElementDataSize"!]
+      [!ENDLOOP!]
+    [!ENDLOOP!]
+    [!IF "$MaxDataValueSize < $EDSize"!]
+      [!VAR "MaxDataValueSize" = "$EDSize"!]
+    [!ENDIF!]
+  [!ENDLOOP!]
+  [!LOOP "DemGeneral/DemFreezeFrameClass/*"!]
+    [!VAR "FFSize" = "0"!]
+    [!LOOP "DemDidClassRef/*"!]
+      [!LOOP "as:ref(.)/DemDidDataElementClassRef/*"!]
+        [!VAR "FFSize" = "$FFSize + as:ref(.)/DemDataElementDataSize"!]
+      [!ENDLOOP!]
+    [!ENDLOOP!]
+    [!IF "$MaxDataValueSize < $FFSize"!]
+      [!VAR "MaxDataValueSize" = "$FFSize"!]
+    [!ENDIF!]
+  [!ENDLOOP!]
+  [!ELSE!][!//
+  [!VAR "MaxDataValueSize" = "1"!]
+  [!ENDIF!]
+            <!-- !LINKSTO Dem.MaxDataValueType.RteType,2, Dem.MaxDataValueType.NoRecords,2 -->
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]MaxDataValueType</SHORT-NAME>
+              <CATEGORY>ARRAY</CATEGORY>
+              <SUB-ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>Dem_MaxDataValueElement</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <ARRAY-SIZE>[!"num:integer($MaxDataValueSize)"!]</ARRAY-SIZE>
+                  <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              </SUB-ELEMENTS>
+            </IMPLEMENTATION-DATA-TYPE>
+
+  [!LOOP "DemGeneral/DemDataElementClass/*[. = 'DemExternalCSDataElementClass' and DemDataElementUsePort = 'true']"!]
+    [!VAR "SyncDataElement" = "name(.)"!]
+            <IMPLEMENTATION-DATA-TYPE>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+              <SHORT-NAME>Dem_[!"$InterfaceName"!]Data[!"$SyncDataElement"!]_ArrayType</SHORT-NAME>
+    [!ELSE!][!//
+              <SHORT-NAME>DataArrayType_[!"$InterfaceName"!][!"$SyncDataElement"!]</SHORT-NAME>
+    [!ENDIF!]
+              <CATEGORY>ARRAY</CATEGORY>
+              <SUB-ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>Dem_Data[!"$SyncDataElement"!]_ArrayElement</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <ARRAY-SIZE>[!"num:integer(DemDataElementDataSize)"!]</ARRAY-SIZE>
+                  <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              </SUB-ELEMENTS>
+            </IMPLEMENTATION-DATA-TYPE>
+  [!ENDLOOP!]
+
+  [!LOOP "DemGeneral/DemDataElementClass/*[. = 'DemExternalSRDataElementClass']"!]
+    [!VAR "DataTypeSize" = "(substring-after(./DemDataElementDataType, 'UINT')) div 8"!][!//
+    [!IF "(./DemDataElementDataSize > $DataTypeSize)"!]
+      [!VAR "ArraySize" = "num:integer((./DemDataElementDataSize + $DataTypeSize - 1) div $DataTypeSize)"!][!//
+      [!VAR "DataTypes" = "text:tolower(./DemDataElementDataType)"!][!//
+      [!VAR "ImplementationDataTypeName" = "concat('Dem_DataArrayType_', $DataTypes, '_', name(.), '_Type')"!][!//
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>[!"$ImplementationDataTypeName"!]</SHORT-NAME>
+              <CATEGORY>ARRAY</CATEGORY>
+              <SUB-ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>[!"$ImplementationDataTypeName"!]_Element</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <ARRAY-SIZE>[!"$ArraySize"!]</ARRAY-SIZE>
+                  <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF
+                          DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/[!"$DataTypes"!]</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              </SUB-ELEMENTS>
+            </IMPLEMENTATION-DATA-TYPE>
+    [!ENDIF!]
+  [!ENDLOOP!]
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>PortInterfaces</SHORT-NAME>
+          <ELEMENTS>
+
+            <!-- definition of interfaces -->
+  [!VAR "DiagnosticMonitor" = "concat($InterfacePrefix, 'DiagnosticMonitor')"!]
+            <!-- !LINKSTO Dem598,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$DiagnosticMonitor"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetEventStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatus</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventStatusType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticMonitor"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>ResetEventStatus</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticMonitor"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <!-- !LINKSTO SWS_Dem_00598,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>ResetEventDebounceStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DebounceResetStatus</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]DebounceResetStatusType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticMonitor"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>PrestoreFreezeFrame</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticMonitor"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>ClearPrestoredFreezeFrame</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticMonitor"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+  [!IF "DemGeneral/DemOBDSupport = 'true'"!]
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetEventDisabled</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticMonitor"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+  [!ENDIF!]
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!VAR "DiagnosticInfo" = "concat($InterfacePrefix, 'DiagnosticInfo')"!]
+            <!-- !LINKSTO Dem599,2 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$DiagnosticInfo"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventStatus</SHORT-NAME>
+                  <ARGUMENTS>
+  [!IF "$AsrVersion = 'AUTOSAR_42'"!]
+                    <!-- use R4.0 type- and parameter-names to avoid wrapper-RE, no functional changes -->
+  [!ENDIF!]
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatusExtended</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventStatusExtendedType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventFailed</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventFailed</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventTested</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventTested</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetDTCOfEvent</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTCFormat</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]DTCFormatType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTCOfEvent</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint32</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_NO_DTC_AVAILABLE</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetFaultDetectionCounter</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>FaultDetectionCounter</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/sint8</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+  [!NOCODE!]
+  [!/* With AUTOSAR_42 and AUTOSAR_43 the GetFaultDetectionCounter operation can also return DEM_E_NO_FDC_AVAILABLE */!][!//
+  [!/* however, for backwards compatibility issues, the return value DEM_E_NO_FDC_AVAILABLE is only listed for AUTOSAR_43 */!][!//
+  [!ENDNOCODE!]
+  [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_NO_FDC_AVAILABLE</POSSIBLE-ERROR-REF>
+  [!ENDIF!]
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+  [!NOCODE!]
+  [!/* GetEventFreezeFrameData and GetEventExtendedDataRecord are only used if for AUTOSAR_40 and AUTOSAR_42 */!][!//
+  [!ENDNOCODE!]
+  [!IF "$EnableVersion = ''"!]
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventFreezeFrameData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>RecordNumber</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>ReportTotalRecord</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DataId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DestBuffer</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]MaxDataValueType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+  [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+  [!ELSE!][!//
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_NODATAAVAILABLE</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_WRONG_RECORDNUMBER</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_WRONG_DIDNUMBER</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+  [!ENDIF!]
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventExtendedDataRecord</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>RecordNumber</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DestBuffer</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]MaxDataValueType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+  [!ENDIF!]
+  [!IF "$AsrVersion = 'AUTOSAR_42'"!]
+                <!-- Functionalities not implemented, only stub available. -->
+                <!-- !LINKSTO SWS_Dem_00730,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetDebouncingOfEvent</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DebouncingState</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_DebouncingStateType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <!-- !LINKSTO SWS_Dem_01190,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventExtendedDataRecordEx</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>RecordNumber</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DestBuffer</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>BufSize</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                      <DIRECTION>INOUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+    [!NOCODE!]
+    [!/* With AUTOSAR_43 following APPLICATION ERRORs are available for GetEventExtendedDataRecordEx */!][!//
+    [!ENDNOCODE!]
+    [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_BUFFER_TOO_SMALL</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_NO_SUCH_ELEMENT</POSSIBLE-ERROR-REF>
+    [!ELSE!]
+    [!NOCODE!]
+    [!/* With AUTOSAR_42 following APPLICATION ERRORs are available for GetEventExtendedDataRecordEx */!][!//
+    [!ENDNOCODE!]
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_NODATAAVAILABLE</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_WRONG_RECORDNUMBER</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_WRONG_BUFFERSIZE</POSSIBLE-ERROR-REF>
+    [!ENDIF!]
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <!-- !LINKSTO SWS_Dem_01191,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventFreezeFrameDataEx</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>RecordNumber</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DataId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DestBuffer</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>BufSize</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                      <DIRECTION>INOUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+    [!NOCODE!]
+    [!/* With AUTOSAR_43 following APPLICATION ERRORs are available for GetEventFreezeFrameDataEx */!][!//
+    [!ENDNOCODE!]
+    [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_BUFFER_TOO_SMALL</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_NO_SUCH_ELEMENT</POSSIBLE-ERROR-REF>
+    [!ELSE!]
+    [!NOCODE!]
+    [!/* With AUTOSAR_42 following APPLICATION ERRORs are available for GetEventFreezeFrameDataEx */!][!//
+    [!ENDNOCODE!]
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_NODATAAVAILABLE</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_WRONG_RECORDNUMBER</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_WRONG_DIDNUMBER</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DiagnosticInfo"!]/DEM_E_WRONG_BUFFERSIZE</POSSIBLE-ERROR-REF>
+    [!ENDIF!]
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+  [!ENDIF!]
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_NO_DTC_AVAILABLE</SHORT-NAME>
+  [!NOCODE!]
+  [!/* With AUTOSAR_40 and AUTOSAR_42 the value for DEM_E_NO_DTC_AVAILABLE is 2 */!][!//
+  [!/* With AUTOSAR_43 the value for DEM_E_NO_DTC_AVAILABLE is 10 */!][!//
+  [!ENDNOCODE!]
+  [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+                  <ERROR-CODE>10</ERROR-CODE>
+  [!ELSE!]
+                  <ERROR-CODE>2</ERROR-CODE>
+  [!ENDIF!]
+                </APPLICATION-ERROR>
+  [!NOCODE!]
+  [!/* With AUTOSAR_42 following APPLICATION ERRORs are available for DiagnosticInfo */!][!//
+  [!ENDNOCODE!]
+  [!IF "$AsrVersion = 'AUTOSAR_42' and $EnableVersion = ''"!]
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_NO_FDC_AVAILABLE</SHORT-NAME>
+                  <ERROR-CODE>3</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_WRONG_BUFFERSIZE</SHORT-NAME>
+                  <ERROR-CODE>21</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_NODATAAVAILABLE</SHORT-NAME>
+                  <ERROR-CODE>48</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_WRONG_RECORDNUMBER</SHORT-NAME>
+                  <ERROR-CODE>49</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_WRONG_DIDNUMBER</SHORT-NAME>
+                  <ERROR-CODE>50</ERROR-CODE>
+                </APPLICATION-ERROR>
+  [!ENDIF!]
+  [!NOCODE!]
+  [!/* With AUTOSAR_43 following APPLICATION ERRORs are available for DiagnosticInfo */!][!//
+  [!ENDNOCODE!]
+  [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_NO_FDC_AVAILABLE</SHORT-NAME>
+                  <ERROR-CODE>14</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_BUFFER_TOO_SMALL</SHORT-NAME>
+                  <ERROR-CODE>21</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_NO_SUCH_ELEMENT</SHORT-NAME>
+                  <ERROR-CODE>48</ERROR-CODE>
+                </APPLICATION-ERROR>
+  [!ENDIF!]
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!VAR "GeneralDiagnosticInfo" = "concat($InterfacePrefix, 'GeneralDiagnosticInfo')"!]
+            <!-- !LINKSTO Dem600,2 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$GeneralDiagnosticInfo"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+  [!IF "$AsrVersion = 'AUTOSAR_42'"!]
+                    <!-- use R4.0 type- and parameter-names to avoid wrapper-RE, no functional changes -->
+  [!ENDIF!]
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatusExtended</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventStatusExtendedType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventFailed</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventFailed</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventTested</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventTested</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetDTCOfEvent</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTCFormat</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]DTCFormatType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTCOfEvent</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint32</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_NO_DTC_AVAILABLE</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetFaultDetectionCounter</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>FaultDetectionCounter</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/sint8</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+  [!NOCODE!]
+  [!/* With AUTOSAR_42 and AUTOSAR_43 the GetFaultDetectionCounter operation can also return DEM_E_NO_FDC_AVAILABLE */!][!//
+  [!/* however, for backwards compatibility issues, the return value DEM_E_NO_FDC_AVAILABLE is only listed for AUTOSAR_43 */!][!//
+  [!ENDNOCODE!]
+  [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_NO_FDC_AVAILABLE</POSSIBLE-ERROR-REF>
+  [!ENDIF!]
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+  [!NOCODE!]
+  [!/* GetEventFreezeFrameData and GetEventExtendedDataRecord are only used if for AUTOSAR_40 and AUTOSAR_42 */!][!//
+  [!ENDNOCODE!]
+  [!IF "$EnableVersion = ''"!]
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventFreezeFrameData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>RecordNumber</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>ReportTotalRecord</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DataId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DestBuffer</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]MaxDataValueType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+  [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+  [!ELSE!][!//
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_NODATAAVAILABLE</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_WRONG_RECORDNUMBER</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_WRONG_DIDNUMBER</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+  [!ENDIF!]
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventExtendedDataRecord</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>RecordNumber</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DestBuffer</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]MaxDataValueType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+  [!ENDIF!]
+  [!IF "$AsrVersion = 'AUTOSAR_42'"!]
+                <!-- Functionalities not implemented, only stub available. -->
+                <!-- !LINKSTO SWS_Dem_00730,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetDebouncingOfEvent</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DebouncingState</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_DebouncingStateType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <!-- !LINKSTO SWS_Dem_01190,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventExtendedDataRecordEx</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>RecordNumber</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DestBuffer</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>BufSize</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                      <DIRECTION>INOUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+    [!NOCODE!]
+    [!/* With AUTOSAR_43 following APPLICATION ERRORs are available for GetEventExtendedDataRecordEx */!][!//
+    [!ENDNOCODE!]
+    [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_BUFFER_TOO_SMALL</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_NO_SUCH_ELEMENT</POSSIBLE-ERROR-REF>
+    [!ELSE!]
+    [!NOCODE!]
+    [!/* With AUTOSAR_42 following APPLICATION ERRORs are available for GetEventExtendedDataRecordEx */!][!//
+    [!ENDNOCODE!]
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_NODATAAVAILABLE</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_WRONG_RECORDNUMBER</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_WRONG_BUFFERSIZE</POSSIBLE-ERROR-REF>
+    [!ENDIF!]
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <!-- !LINKSTO SWS_Dem_01191,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventFreezeFrameDataEx</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>RecordNumber</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DataId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DestBuffer</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>BufSize</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                      <DIRECTION>INOUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+    [!NOCODE!]
+    [!/* With AUTOSAR_43 following APPLICATION ERRORs are available for GetEventFreezeFrameDataEx */!][!//
+    [!ENDNOCODE!]
+    [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_BUFFER_TOO_SMALL</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_NO_SUCH_ELEMENT</POSSIBLE-ERROR-REF>
+    [!ELSE!]
+    [!NOCODE!]
+    [!/* With AUTOSAR_42 following APPLICATION ERRORs are available for GetEventFreezeFrameDataEx */!][!//
+    [!ENDNOCODE!]
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_NODATAAVAILABLE</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_WRONG_RECORDNUMBER</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_WRONG_DIDNUMBER</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralDiagnosticInfo"!]/DEM_E_WRONG_BUFFERSIZE</POSSIBLE-ERROR-REF>
+    [!ENDIF!]
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+  [!ENDIF!]
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_NO_DTC_AVAILABLE</SHORT-NAME>
+  [!NOCODE!]
+  [!/* With AUTOSAR_40 and AUTOSAR_42 the value for DEM_E_NO_DTC_AVAILABLE is 2 */!][!//
+  [!/* With AUTOSAR_43 the value for DEM_E_NO_DTC_AVAILABLE is 10 */!][!//
+  [!ENDNOCODE!]
+  [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+                  <ERROR-CODE>10</ERROR-CODE>
+  [!ELSE!]
+                  <ERROR-CODE>2</ERROR-CODE>
+  [!ENDIF!]
+                </APPLICATION-ERROR>
+  [!NOCODE!]
+  [!/* With AUTOSAR_42 following APPLICATION ERRORs are available for GeneralDiagnosticInfo */!][!//
+  [!ENDNOCODE!]
+  [!IF "$AsrVersion = 'AUTOSAR_42' and $EnableVersion = ''"!]
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_NO_FDC_AVAILABLE</SHORT-NAME>
+                  <ERROR-CODE>3</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_WRONG_BUFFERSIZE</SHORT-NAME>
+                  <ERROR-CODE>21</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_NODATAAVAILABLE</SHORT-NAME>
+                  <ERROR-CODE>48</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_WRONG_RECORDNUMBER</SHORT-NAME>
+                  <ERROR-CODE>49</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_WRONG_DIDNUMBER</SHORT-NAME>
+                  <ERROR-CODE>50</ERROR-CODE>
+                </APPLICATION-ERROR>
+  [!ENDIF!]
+  [!NOCODE!]
+  [!/* With AUTOSAR_43 following APPLICATION ERRORs are available for GeneralDiagnosticInfo */!][!//
+  [!ENDNOCODE!]
+  [!IF "$EnableVersion = 'AUTOSAR_43'"!]
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_E_NO_FDC_AVAILABLE</SHORT-NAME>
+                  <ERROR-CODE>14</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_BUFFER_TOO_SMALL</SHORT-NAME>
+                  <ERROR-CODE>21</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_NO_SUCH_ELEMENT</SHORT-NAME>
+                  <ERROR-CODE>48</ERROR-CODE>
+                </APPLICATION-ERROR>
+  [!ENDIF!]
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!VAR "OperationCycle" = "concat($InterfacePrefix, 'OperationCycle')"!]
+            <!-- !LINKSTO Dem601,1 -->
+            <!-- !LINKSTO Dem.ASR440.SWS_Dem_00601,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$OperationCycle"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+  [!IF "DemGeneral/DemOperationCycleProcessing = 'DEM_PROCESS_OPCYC_STATE'"!]
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetOperationCycleState</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>CycleState</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]OperationCycleStateType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$OperationCycle"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+  [!ELSE!][!/* DemOperationCycleProcessing = 'DEM_PROCESS_OPCYC_COUNTER' */!][!//
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetOperationCycleCntValue</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>CounterValue</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$OperationCycle"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+  [!ENDIF!]
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetCycleQualified</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$OperationCycle"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!VAR "AgingCycle" = "concat($InterfacePrefix, 'AgingCycle')"!]
+            <!-- !LINKSTO Dem602,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$AgingCycle"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetAgingCycleState</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$AgingCycle"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!VAR "ExternalAgingCycle" = "concat($InterfacePrefix, 'ExternalAgingCycle')"!]
+            <!-- Functionality not implemented, only stub available. -->
+            <!-- !LINKSTO Dem603,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$ExternalAgingCycle"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetAgingCycleCounterValue</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>CounterValue</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$ExternalAgingCycle"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!VAR "EnableCondition" = "concat($InterfacePrefix, 'EnableCondition')"!]
+            <!-- !LINKSTO Dem604,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$EnableCondition"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetEnableCondition</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>ConditionFulfilled</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$EnableCondition"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!VAR "StorageCondition" = "concat($InterfacePrefix, 'StorageCondition')"!]
+            <!-- Functionality not implemented, only stub available. -->
+            <!-- !LINKSTO Dem605,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$StorageCondition"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetStorageCondition</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>ConditionFulfilled</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$StorageCondition"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!VAR "IndicatorStatus" = "concat($InterfacePrefix, 'IndicatorStatus')"!]
+            <!-- !LINKSTO Dem606,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$IndicatorStatus"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetIndicatorStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>IndicatorStatus</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]IndicatorStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$IndicatorStatus"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!VAR "EvMemOverflowIndication" = "concat($InterfacePrefix, 'EvMemOverflowIndication')"!]
+            <!-- !LINKSTO Dem607,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$EvMemOverflowIndication"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetEventMemoryOverflow</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>OverflowIndication</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$EvMemOverflowIndication"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetNumberOfEventMemoryEntries</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>GetNumberOfEventMemoryEntries</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$EvMemOverflowIndication"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!IF "DemGeneral/DemSuppressionSupport = 'DEM_DTC_SUPPRESSION'"!]
+    [!VAR "DTCSuppression" = "concat($InterfacePrefix, 'DTCSuppression')"!]
+            <!-- !LINKSTO Dem608,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$DTCSuppression"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetDTCSuppression</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTC</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint32</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTCFormat</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]DTCFormatType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>SuppressionStatus</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DTCSuppression"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+  [!ENDIF!]
+
+  [!IF "DemGeneral/DemAvailabilitySupport = 'DEM_EVENT_AVAILABILITY'"!]
+    [!VAR "EventAvailable" = "concat($InterfacePrefix, 'EventAvailable')"!]
+            <!-- !LINKSTO SWS_Dem_01193,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$EventAvailable"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetEventAvailable</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>AvailableStatus</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$EventAvailable"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+  [!ENDIF!]
+
+  [!IF "$InterfaceName = ''"!][!/* generated ONLY for default interface */!][!//
+    [!IF "$AsrVersion = 'AUTOSAR_42'"!]
+            <!-- !LINKSTO SWS_Dem_00665,1, SWS_Dem_00659,1, Dem.ASR422.SWS_Dem_00666,1 -->
+
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>CddIf</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>ClearDTC</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTC</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint32</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTCFormat</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]DTCFormatType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTCOrigin</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]DTCOriginType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/CddIf/DEM_CLEAR_WRONG_DTC</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/CddIf/DEM_CLEAR_WRONG_DTCORIGIN</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/CddIf/DEM_CLEAR_FAILED</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/CddIf/DEM_CLEAR_PENDING</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/CddIf/DEM_CLEAR_BUSY</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/CddIf/DEM_CLEAR_MEMORY_ERROR</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_CLEAR_WRONG_DTC</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_CLEAR_WRONG_DTCORIGIN</SHORT-NAME>
+                  <ERROR-CODE>2</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_CLEAR_FAILED</SHORT-NAME>
+                  <ERROR-CODE>3</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_CLEAR_PENDING</SHORT-NAME>
+                  <ERROR-CODE>4</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_CLEAR_BUSY</SHORT-NAME>
+                  <ERROR-CODE>5</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>DEM_CLEAR_MEMORY_ERROR</SHORT-NAME>
+                  <ERROR-CODE>6</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+    [!ENDIF!]
+  [!ENDIF!]
+  [!VAR "IUMPRNumerator" = "concat($InterfacePrefix, 'IUMPRNumerator')"!]
+            <!-- Functionality not implemented, only stub available. -->
+            <!-- !LINKSTO Dem610,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$IUMPRNumerator"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>RepIUMPRFaultDetect</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$IUMPRNumerator"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!VAR "IUMPRDenominator" = "concat($InterfacePrefix, 'IUMPRDenominator')"!]
+            <!-- Functionality not implemented, only stub available. -->
+            <!-- !LINKSTO Dem611,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$IUMPRDenominator"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>RepIUMPRDenLock</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$IUMPRDenominator"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>RepIUMPRDenRelease</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$IUMPRDenominator"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  <!-- !LINKSTO Dem_OBD_0001,2 -->
+  [!IF "DemGeneral/DemOBDSupport = 'true'"!]
+    [!VAR "PfcCyclePfcCycleQualified" = "concat($InterfacePrefix, 'PfcCyclePfcCycleQualified')"!]
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$PfcCyclePfcCycleQualified"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetPfcCycleSetPfcCycleQualified</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$PfcCyclePfcCycleQualified"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetPfcCycleQualified</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>isqualified</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$PfcCyclePfcCycleQualified"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!ENDIF!]
+
+  [!IF "DemGeneral/DemOBDSupport = 'true'"!]
+    [!VAR "ResetReadiness" = "concat($InterfacePrefix, 'ResetReadiness')"!]
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$ResetReadiness"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>ResetReadiness</SHORT-NAME>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!ENDIF!]
+  [!IF "DemGeneral/DemOBDSupport = 'true'"!]
+    [!VAR "PowerTakeOff" = "concat($InterfacePrefix, 'PowerTakeOff')"!]
+            <!-- Functionality not implemented, only stub available. -->
+            <!-- !LINKSTO Dem612,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$PowerTakeOff"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetPtoStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>PtoStatus</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$PowerTakeOff"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+  [!ENDIF!]
+  [!IF "($InterfaceName = '')"!][!/* default interface */!][!//
+
+            <!-- Callback Interfaces -->
+
+    [!VAR "CallbackInitMonitorForEvent" = "concat($InterfacePrefix, 'CallbackInitMonitorForEvent')"!]
+            <!-- !LINKSTO Dem613,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$CallbackInitMonitorForEvent"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>InitMonitorForEvent</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>InitMonitorReason</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]InitMonitorReasonType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CallbackInitMonitorForEvent"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+    [!VAR "CallbackInitMonitorForFunction" = "concat($InterfacePrefix, 'CallbackInitMonitorForFunction')"!]
+            <!-- Interface not used by this version. -->
+            <!-- !LINKSTO Dem614,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$CallbackInitMonitorForFunction"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>InitMonitorForFunction</SHORT-NAME>
+                  <ARGUMENTS/>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CallbackInitMonitorForFunction"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+    [!VAR "CallbackEventStatusChange" = "concat($InterfacePrefix, 'CallbackEventStatusChange')"!]
+            <!-- !LINKSTO Dem615,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$CallbackEventStatusChange"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>EventStatusChanged</SHORT-NAME>
+                  <ARGUMENTS>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatusOld</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventStatusExtendedType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatusNew</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventStatusExtendedType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+    [!ELSE!][!//
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatusByteOld</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]UdsStatusByteType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatusByteNew</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]UdsStatusByteType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+    [!ENDIF!]
+                  </ARGUMENTS>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CallbackEventStatusChange"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+    [!ELSE!][!//
+                  <!-- no POSSIBLE-ERROR-REFS defined in R4.2 -->
+    [!ENDIF!]
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+    [!ENDIF!]
+            </CLIENT-SERVER-INTERFACE>
+
+    [!VAR "GeneralCallbackEventStatusChange" = "concat($InterfacePrefix, 'GeneralCallbackEventStatusChange')"!]
+            <!-- !LINKSTO Dem616,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$GeneralCallbackEventStatusChange"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>EventStatusChanged</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatusOld</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventStatusExtendedType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatusNew</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventStatusExtendedType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+    [!ELSE!][!//
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatusByteOld</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]UdsStatusByteType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventStatusByteNew</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]UdsStatusByteType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+    [!ENDIF!]
+                  </ARGUMENTS>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralCallbackEventStatusChange"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+    [!ELSE!][!//
+                  <!-- no POSSIBLE-ERROR-REFS defined in R4.2 -->
+    [!ENDIF!]
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+    [!ENDIF!]
+            </CLIENT-SERVER-INTERFACE>
+
+    [!VAR "CallbackDTCStatusChange" = "concat($InterfacePrefix, 'CallbackDTCStatusChange')"!]
+            <!-- !LINKSTO Dem617,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$CallbackDTCStatusChange"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>DTCStatusChanged</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTC</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint32</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTCStatusOld</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]DTCStatusMaskType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>DTCStatusNew</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]DTCStatusMaskType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CallbackDTCStatusChange"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+    [!VAR "CallbackEventDataChanged" = "concat($InterfacePrefix, 'CallbackEventDataChanged')"!]
+            <!-- !LINKSTO Dem618,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$CallbackEventDataChanged"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>EventDataChanged</SHORT-NAME>
+                  <ARGUMENTS/>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CallbackEventDataChanged"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+    [!ELSE!][!//
+                  <!-- no POSSIBLE-ERROR-REFS defined in R4.2 -->
+    [!ENDIF!]
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+    [!ENDIF!]
+            </CLIENT-SERVER-INTERFACE>
+
+    [!VAR "GeneralCallbackEventDataChanged" = "concat($InterfacePrefix, 'GeneralCallbackEventDataChanged')"!]
+            <!-- !LINKSTO Dem619,2 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$GeneralCallbackEventDataChanged"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>EventDataChanged</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$GeneralCallbackEventDataChanged"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+    [!ELSE!][!//
+                  <!-- no POSSIBLE-ERROR-REFS defined in R4.2 -->
+    [!ENDIF!]
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+    [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+    [!ENDIF!]
+            </CLIENT-SERVER-INTERFACE>
+
+    [!VAR "CallbackClearEventAllowed" = "concat($InterfacePrefix, 'CallbackClearEventAllowed')"!]
+            <!-- Interface not used by this version. -->
+            <!-- !LINKSTO Dem620,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$CallbackClearEventAllowed"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>ClearEventAllowed</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>Allowed</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CallbackClearEventAllowed"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+    [!LOOP "DemGeneral/DemDataElementClass/*[. = 'DemExternalCSDataElementClass' and DemDataElementUsePort = 'true']"!]
+      [!VAR "SyncDataElement" = "name(.)"!]
+      [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+        [!VAR "CSDataServices" = "'CSDataServices_'"!]
+      [!ELSE!][!//
+        [!VAR "CSDataServices" = "'DataServices_'"!]
+      [!ENDIF!]
+            <!-- !LINKSTO Dem.ServiceComponent.CSInterface,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$CSDataServices"!][!"$SyncDataElement"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>ReadData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>Data</SHORT-NAME>
+      [!IF "$AsrVersion = 'AUTOSAR_40'"!]
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]Data[!"$SyncDataElement"!]_ArrayType</TYPE-TREF>
+      [!ELSE!][!//
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/DataArrayType_[!"$InterfaceName"!][!"$SyncDataElement"!]</TYPE-TREF>
+      [!ENDIF!]
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+      [!IF "./DemDataElementInterfaceWithEventParameter = 'true'"!]
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>EventId</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_[!"$InterfaceName"!]EventIdType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+      [!ENDIF!]
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CSDataServices"!][!"$SyncDataElement"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+    [!ENDLOOP!]
+
+    [!LOOP "DemGeneral/DemDataElementClass/*[. = 'DemExternalSRDataElementClass']"!]
+      [!CALL "GetImplementationDataType", "InputDataType" = "DemDataElementDataType", "DataSize" = "DemDataElementDataSize"!]
+            <!-- !LINKSTO Dem.ServiceComponent.SRInterface,1 -->
+            <SENDER-RECEIVER-INTERFACE>
+              <SHORT-NAME>SRDataServices_[!"name(.)"!]</SHORT-NAME>
+              <IS-SERVICE>false</IS-SERVICE>
+              <DATA-ELEMENTS>
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>data</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$ImplementationDataType"!]</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+    [!ENDLOOP!]
+
+    [!VAR "CallbackGetFaultDetectCounter" = "concat($InterfacePrefix, 'CallbackGetFaultDetectCounter')"!]
+            <!-- !LINKSTO Dem622,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$CallbackGetFaultDetectCounter"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetFaultDetectionCounter</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>FaultDetectionCounter</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/sint8</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CallbackGetFaultDetectCounter"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+  [!ENDIF!][!/* default interface */!][!//
+  [!IF "as:modconf('Dem')[1]/DemGeneral/DemOBDSupportKind = 'DEM_OBD_MASTER_ECU'"!]
+                <!-- !LINKSTO SWS_Dem_00744,1 -->
+                <!-- description of SetClearDTC interface -->
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>SetClearDTC</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>SetClearDTC</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>DTC</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint32</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>DTCFormat</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_DTCFormatType</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>DTCOrigin</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/Dem_DTCOriginType</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/SetClearDTC/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                  </OPERATIONS>
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+  [!ENDIF!]
+
+  [!IF "as:modconf('Dem')[1]/DemGeneral/DemUserControlledWIRBitSupport = 'true'"!]
+  <!-- !LINKSTO SWS_Dem_00838,1 -->
+  <!-- Client server interface for SetWIRStatus to provide the capability for user controlled WIR bit -->
+  [!VAR "EventStatus" = "concat($InterfacePrefix, 'EventStatus')"!]
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>[!"$EventStatus"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetWIRStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>WIRStatus</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$EventStatus"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+              </OPERATIONS>
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+  [!ENDIF!]
+
+          </ELEMENTS>
+        </AR-PACKAGE>
+[!ENDMACRO!]
+[!//
+[!//
+[!NOCODE!]
+[!/* used to see if AUTOSAR_43 service API's are requested or not */!][!//
+[!VAR "EnableASR43" = "''"!]
+[!/* Determine the AUTOSAR version to be used as base for service API's */!][!//
+[!/* Because the AUTOSAR_43 is very similar to AUTOSAR_42, only small differences for the requested API's */!][!//
+[!/* we have 2 major versions to be used as base versions: AUTOSAR_40 and AUTOSAR_42 */!][!//
+[!IF "DemGeneral/DemServiceAPI/DemDefaultASRServiceAPI != 'NONE'"!]
+  [!IF "DemGeneral/DemServiceAPI/DemDefaultASRServiceAPI = 'AUTOSAR_42'"!]
+    [!/* base versions for creating the service API's will be AUTOSAR_42 */!][!//
+    [!VAR "BaseServiceAPIVersion" = "'AUTOSAR_42'"!]
+  [!ELSEIF "DemGeneral/DemServiceAPI/DemDefaultASRServiceAPI = 'AUTOSAR_43'"!]
+    [!/* base versions for creating the service API's will be AUTOSAR_42 */!][!//
+    [!VAR "BaseServiceAPIVersion" = "'AUTOSAR_42'"!]
+    [!/* AUTOSAR_43 service API's are requested */!][!//
+    [!VAR "EnableASR43" = "'AUTOSAR_43'"!]
+  [!ELSE!]
+    [!/* base versions for creating the service API's will be AUTOSAR_40 */!][!//
+    [!VAR "BaseServiceAPIVersion" = "'AUTOSAR_40'"!]
+  [!ENDIF!]
+[!ELSE!]
+  [!/* base versions for creating the service API's will be NONE */!][!//
+  [!VAR "BaseServiceAPIVersion" = "'NONE'"!]
+[!ENDIF!]
+[!ENDNOCODE!]
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+[!/* do not generate this file if RTE is not used */!][!//
+[!SKIPFILE "DemGeneral/DemRteUsage = 'false'"!]
+
+  <AR-PACKAGES>
+    <!-- AUTOSAR_Dem -->
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_Dem</SHORT-NAME>
+      <ELEMENTS/>
+      <AR-PACKAGES>
+[!IF "DemGeneral/DemRteUsage = 'true' and DemGeneral/DemServiceAPI/DemEnableASR40ServiceAPI = 'true'"!]
+        <!-- Provide AUTOSAR 4.0 service interface -->
+        <AR-PACKAGE>
+          <SHORT-NAME>ASR40</SHORT-NAME>
+          <ELEMENTS/>
+          <AR-PACKAGES>
+            [!CALL "Build_Body", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_Dem/ASR40'"!]
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+[!ENDIF!]
+[!IF "DemGeneral/DemRteUsage = 'true' and DemGeneral/DemServiceAPI/DemEnableASR42ServiceAPI = 'true'"!]
+        <!-- Provide AUTOSAR 4.2 service interface -->
+        <AR-PACKAGE>
+          <SHORT-NAME>ASR42</SHORT-NAME>
+          <ELEMENTS/>
+          <AR-PACKAGES>
+            [!CALL "Build_Body", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_Dem/ASR42'"!]
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+[!ENDIF!]
+[!IF "DemGeneral/DemRteUsage = 'true' and DemGeneral/DemServiceAPI/DemDefaultASRServiceAPI != 'NONE'"!]
+        <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 / 3.2 -->
+        [!CALL "Build_Body", "AsrVersion"="$BaseServiceAPIVersion", "EnableVersion"="$EnableASR43"!]
+[!ENDIF!]
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

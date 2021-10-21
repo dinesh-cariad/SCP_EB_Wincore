@@ -1,0 +1,553 @@
+[!AUTOSPACING!]
+[!//
+[!/* determine FiM extension support and calibration support */!][!//
+[!IF "node:exists(FiMGeneral/FiMExtendedSupport) and (FiMGeneral/FiMExtendedSupport = 'true')"!]
+  [!VAR "ExtendedLevel" = "FiMGeneral/FiMExtendedLevel"!]
+  [!VAR "FixedData" = "'false'"!]
+  [!VAR "InhibitionMaskWidth" = "'3'"!]
+[!ELSE!][!//
+  [!VAR "ExtendedLevel" = "'FIM_NO_EXTENSION'"!]
+  [!IF "node:exists(FiMGeneral/FiMDataFixed)"!]
+    [!VAR "FixedData" = "FiMGeneral/FiMDataFixed"!]
+  [!ELSE!]
+    [!VAR "FixedData" = "'true'"!]
+  [!ENDIF!]
+  [!VAR "InhibitionMaskWidth" = "'2'"!]
+[!ENDIF!]
+[!//
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0
+  AUTOSAR_4-1-3_STRICT_COMPACT.xsd">
+  <AR-PACKAGES>
+    <!-- Definition of FiM calibration internal behavior necessary for module description importer validation only -->
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_FiM</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleDescriptions</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-DESCRIPTION>
+              <SHORT-NAME>FiM</SHORT-NAME>
+              <MODULE-ID>11</MODULE-ID>
+              <PROVIDED-ENTRYS>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_FiM/BswModuleEntrys/FiM_MainFunction_Dummy</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+              </PROVIDED-ENTRYS>
+              <INTERNAL-BEHAVIORS>
+                <!-- BSW Internal Behavior of the FiM instance -->
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_0</SHORT-NAME>
+                  <ENTITYS>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>FiM_MainFunction_Dummy</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_FiM/BswModuleEntrys/FiM_MainFunction_Dummy</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_MainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_FiM/BswModuleDescriptions/FiM/InternalBehavior_0/FiM_MainFunction_Dummy</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"FiMGeneral/FiMTaskTime"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </BSW-MODULE-DESCRIPTION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleEntrys</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>FiM_MainFunction_Dummy</SHORT-NAME>
+              <!-- ADMIN-DATA For ACG-6 compatibility -->
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">false</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>5</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_FiM</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Implementations</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_0</SHORT-NAME>
+
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::FiM.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::FiM_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::FiM_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::FiM_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::FiM.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::FiM_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::FiM_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+
+              <MC-SUPPORT>
+                <MC-PARAMETER-INSTANCES>
+[!IF "$FixedData = 'false'"!]
+  [!IF "num:i(count(FiMConfigSet/*/FiMFID/*) + 1) <= 256"!][!//
+    [!VAR "FunctionIdType" = "'uint8'"!][!//
+  [!ELSE!][!//
+    [!VAR "FunctionIdType" = "'uint16'"!][!//
+  [!ENDIF!][!//
+  [!IF "num:i(count(as:modconf('Dem')[1]/DemConfigSet/DemEventParameter/*) + 1) <= 256"!][!//
+    [!VAR "EventIdIdType" = "'uint8'"!][!//
+  [!ELSE!][!//
+    [!VAR "EventIdIdType" = "'uint16'"!][!//
+  [!ENDIF!][!//
+
+  [!VAR "ConfigDataNum" = "0"!]
+  [!LOOP "node:order(FiMConfigSet/*/FiMFID/*, 'FiMFunctionId')"!]
+    [!LOOP "../../FiMInhibitionConfiguration/*[name(as:ref(FiMInhFunctionIdRef)) = name(node:current())]"!]
+      [!IF "FiMInhEventId/FiMInhRefChoice = 'FiMInhChoiceDemRef'"!]
+       [!VAR "ConfigDataNum" = "$ConfigDataNum + 1"!]
+      [!ELSE!][!//
+        [!LOOP "../../FiMEventSummary/*[FiMOutputSumEventRef = node:current()/FiMInhEventId/FiMInhRefChoice/FiMInhSumRef/*[1]]"!]
+          [!VAR "ConfigDataNum" = "$ConfigDataNum + 1"!]
+        [!ENDLOOP!]
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDLOOP!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>[!"concat('FiM_',name(FiMConfigSet))"!]</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i($ConfigDataNum)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+  [!VAR "Index" = "0"!]
+  [!LOOP "node:order(FiMConfigSet/*/FiMFID/*, 'FiMFunctionId')"!]
+    [!VAR "FID" = "name(node:current())"!]
+    [!LOOP "../../FiMInhibitionConfiguration/*[name(as:ref(FiMInhFunctionIdRef)) = name(node:current())]"!]
+      [!IF "FiMInhEventId/FiMInhRefChoice = 'FiMInhChoiceDemRef'"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>Event_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Event Id of the Dem event referenced by FID &lt;[!"$FID"!]&gt;.
+                            Valid values: configured DemEventId's in range 1..8191 (1..0x1FFF).
+                            Event Id value 0 is invalid and it is not allowed for calibration.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>0</BIT-POSITION>
+                                <NUMBER-OF-BITS>13</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>InhibitionMask_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Inhibition Mask ranges:
+                              - between 0..3, if ExtendedSupport is disabled; it can referentiate one of
+                                four masks defined by FIM_LAST_FAILED_MASK (0), FIM_NOT_TESTED_MASK (1),
+                                FIM_TESTED_MASK (2) and FIM_TESTED_AND_FAILED_MASK (3);
+                              - between 0..6, if ExtendedSupport is enabled; it can referentiate one of
+                                seven masks, as three additional vendor specific items are available:
+                                FIM_FAILED_THIS_OP_CYCLE_MASK (4), FIM_LAST_UNCONFIRMED_MASK (5) and
+                                FIM_UNCONFIRMED_THIS_OP_CYCLE_MASK (6).
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>13</BIT-POSITION>
+                                <NUMBER-OF-BITS>[!"$InhibitionMaskWidth"!]</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+        [!VAR "Index" = "$Index + 1"!]
+      [!ELSE!][!//
+        [!LOOP "../../FiMEventSummary/*[FiMOutputSumEventRef = node:current()/FiMInhEventId/FiMInhRefChoice/FiMInhSumRef/*[1]]"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>Event_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Event Id of the summarized event referenced by FID &lt;[!"$FID"!]&gt;.
+                            Valid values: configured DemEventId's in range 1..8191 (1..0x1FFF).
+                            Event Id value 0 is invalid and it is not allowed for calibration.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>0</BIT-POSITION>
+                                <NUMBER-OF-BITS>13</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>InhibitionMask_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Inhibition Mask ranges:
+                              - between 0..3, if ExtendedSupport is disabled; it can referentiate one of
+                                four masks defined by FIM_LAST_FAILED_MASK (0), FIM_NOT_TESTED_MASK (1),
+                                FIM_TESTED_MASK (2) and FIM_TESTED_AND_FAILED_MASK (3);
+                              - between 0..6, if ExtendedSupport is enabled; it can referentiate one of
+                                seven masks, as three additional vendor specific items are available:
+                                FIM_FAILED_THIS_OP_CYCLE_MASK (4), FIM_LAST_UNCONFIRMED_MASK (5) and
+                                FIM_UNCONFIRMED_THIS_OP_CYCLE_MASK (6).
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>13</BIT-POSITION>
+                                <NUMBER-OF-BITS>[!"$InhibitionMaskWidth"!]</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+          [!VAR "Index" = "$Index + 1"!]
+        [!ENDLOOP!]
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>FiM_FidConfigData</SYMBOL>
+                  </MC-DATA-INSTANCE>
+
+  [!IF "$ExtendedLevel != 'FIM_NO_EXTENSION'"!][!//
+                  <!-- !LINKSTO VCC-FIM-003:Req37v1,1 -->
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>FiM_HighPrioFid</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i(FiMGeneral/FiMMaxHighPrioEventToFidLinks)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+    [!VAR "NumFID" = "num:i(count(FiMConfigSet/*/FiMFID/*))"!]
+    [!FOR "Index" = "0" TO "FiMGeneral/FiMMaxHighPrioEventToFidLinks - 1"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>FunctionId_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Function Id values have the range 1..[!"$NumFID"!].
+                            Value 0 means that the slot is available to set the high priority, through
+                            calibration, for another Function Id present in the current configuration.
+                            The value 0 must not be calibrated if the corresponding high priority event
+                            slot is used (i.e. contains a valid EventId).
+                            The calibrated value has to be aligned with the calibrated EventId - FID assignment
+                            from FiM_FidConfigData.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/[!"$FunctionIdType"!]</BASE-TYPE-REF>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/[!"$FunctionIdType"!]</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+    [!ENDFOR!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>FiM_HighPrioFid</SYMBOL>
+                  </MC-DATA-INSTANCE>
+
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>FiM_HighPrioEventId</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i(FiMGeneral/FiMMaxHighPrioEventToFidLinks)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+    [!FOR "Index" = "0" TO "FiMGeneral/FiMMaxHighPrioEventToFidLinks - 1"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>EventId_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Valid values: configured DemEventId's in range 1..65535.
+                            The value 0 disables this high priority event slot.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/[!"$EventIdIdType"!]</BASE-TYPE-REF>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/[!"$EventIdIdType"!]</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+    [!ENDFOR!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>FiM_HighPrioEventId</SYMBOL>
+                  </MC-DATA-INSTANCE>
+
+                  <!-- !LINKSTO VCC-FIM-004:Req11v2,1, VCC-FIM-003:Req33v1,1, VCC-FIM-003:Req36v1,1 -->
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>FiM_ExtendedConfiguration</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i(count(FiMConfigSet/*/FiMFID/*))"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+    [!VAR "Index" = "0"!]
+    [!LOOP "node:order(FiMConfigSet/*/FiMFID/*, 'FiMFunctionId')"!]
+      [!VAR "FID" = "name(node:current())"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>ConditionEvent_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Condition Event of the Dem event referenced by FID &lt;[!"$FID"!]&gt;.
+                            Valid values: configured DemEventId's in range 1..32767.
+                            The value 0 disables the Condition Event for this FID.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>0</BIT-POSITION>
+                                <NUMBER-OF-BITS>15</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>SymptomBit_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Symptom Bit of FID &lt;[!"$FID"!]&gt;.
+                            Symptom Bit has the range 0..1 and it uses the last bit of the entry.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>15</BIT-POSITION>
+                                <NUMBER-OF-BITS>1</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+      [!VAR "Index" = "$Index + 1"!]
+    [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>FiM_ExtendedConfiguration</SYMBOL>
+                  </MC-DATA-INSTANCE>
+
+                  <!-- !LINKSTO VCC-FIM-003:Req32v1,1 -->
+    [!VAR "NumMsgId" = "num:i(count(FiMConfigSet/*/FiMMessage/*))"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>FiM_MessageIdConfiguration</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"$NumMsgId"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+    [!VAR "Index" = "0"!]
+    [!LOOP "node:order(FiMConfigSet/*/FiMFID/*, 'FiMFunctionId')"!]
+      [!VAR "FID" = "name(node:current())"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>MessageId_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Message Id of FID &lt;[!"$FID"!]&gt;.
+                            Message Id has the range 1..[!"$NumMsgId"!].
+                            Only valid (i.e. configured) Message Ids are allowed for calibration.
+                            The value 0 disables the Message Id for this FID.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+      [!VAR "Index" = "$Index + 1"!]
+    [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>FiM_MessageIdConfiguration</SYMBOL>
+                  </MC-DATA-INSTANCE>
+
+    [!IF "$ExtendedLevel = 'FIM_EXTENSION_LVL2'"!]
+                  <!-- !LINKSTO VCC-FIM-003:Req35v1,1, VCC-FIM-003:Req34v1,1 -->
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>FiM_ExtendedConfigurationLvl2</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i(count(FiMConfigSet/*/FiMFID/*))"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+      [!VAR "Index" = "0"!]
+      [!LOOP "node:order(FiMConfigSet/*/FiMFID/*, 'FiMFunctionId')"!]
+        [!VAR "FID" = "name(node:current())"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>RecoveryEvent_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            RecoveryEvent of the Dem event referenced by FID &lt;[!"$FID"!]&gt;.
+                            RecoveryEvent can be configured for FIDs when extension level is set to
+                            FIM_EXTENSION_LVL2.
+                            Valid values: configured DemEventId's in range 1..65535.
+                            The value 0 disables the RecoveryEvent for this FID.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint32</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>0</BIT-POSITION>
+                                <NUMBER-OF-BITS>16</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint32</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>ForceReleaseEvent_[!"num:i($Index)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            ForceReleaseEvent of the Dem event referenced by FID &lt;[!"$FID"!]&gt;.
+                            ForceReleaseEvent can be configured for FIDs when extension level is set
+                            to FIM_EXTENSION_LVL2.
+                            Valid values: configured DemEventId's in range 1..65535.
+                            The value 0 disables the ForceReleaseEvent for this FID.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint32</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>16</BIT-POSITION>
+                                <NUMBER-OF-BITS>16</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint32</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+        [!VAR "Index" = "$Index + 1"!]
+      [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>FiM_ExtendedConfigurationLvl2</SYMBOL>
+                  </MC-DATA-INSTANCE>
+    [!ENDIF!]
+  [!ENDIF!][!//
+[!ENDIF!]
+                </MC-PARAMETER-INSTANCES>
+              </MC-SUPPORT>
+
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>2.5.3</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_FiM/BswModuleDescriptions/FiM/InternalBehavior_0</BEHAVIOR-REF>
+            </BSW-IMPLEMENTATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

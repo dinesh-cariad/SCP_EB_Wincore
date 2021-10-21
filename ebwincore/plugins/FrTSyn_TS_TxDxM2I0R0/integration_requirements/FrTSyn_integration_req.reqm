@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.FrTSyn.EB_INTREQ_FrTSyn_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      Limitation on order of invocation of <code>FrTSyn_Init</code> function.
+      The invocations of <code>FrTSyn_Init</code>, should be called after 
+      <code>FrIf_Init</code> is called.
+      </description>
+      <rationale>
+      The calls to <code>FrIf_GetMacrotickDuration()</code> and 
+      <code>FrIf_GetMacroticksPerCycle()</code> will raise a DET, because these 
+      functions are called during initialization of the FrTSyn module.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.FrTSyn.EB_INTREQ_FrTSyn_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      It shall be assured that the TxPeriod is configured in a way that
+      a second transmission does not interrupt the TriggerTransmit for the
+      first one (on the same TimeDomain).
+      </description>
+      <rationale>
+        FrTSyn can not handle this scenario since it has no control over
+        TriggerTransmit.
+      </rationale>
+      
+    </specobject>
+  </specobjects>
+</specdocument>

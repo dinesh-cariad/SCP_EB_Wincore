@@ -1,0 +1,94 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_xgen" skeleton="File_xgen.skeleton" 
+        imports="dreisoft.tresos.generator.ng.api.cds.ctypes.CTypeDescriptors
+                 dreisoft.tresos.com.generator.intermediate.factory.TypeDescriptorFactory
+                 dreisoft.tresos.generator.ng.api.cds.abstraction.CompilerAbstraction
+                 dreisoft.tresos.com.generator.input.entity.Cache
+                 dreisoft.tresos.generator.ng.api.cds.struct.AlignmentMemberSorter
+                 dreisoft.tresos.com.generator.ComStruct
+                 dreisoft.tresos.com.generator.Com_ConstConfigLayoutType
+                 dreisoft.tresos.com.tools.AuxiliaryMethods
+                 dreisoft.tresos.com.generator.constants.Constants"
+%>
+<%@ include file="head.xgen.inc" %>
+
+
+<%
+    JavaGenContext context = getJavaGenContext(argument, stringBuffer);
+    if(context != null) {
+        boolean comGenerationSuccessful = !context.gen.isVerifying();
+
+        final Cache cache = (Cache) context.gen.getVariable("Com.cache", Cache.class, null);
+        final String postBildVariantInfix = cache.PbVariant;
+        final String fileName = MODULE_NAME + GENERATED_FILE_NAME_SEPARATOR + Constants.POST_BUILD_FILE_NAME_INFIX;
+        final String generatedCSourceFileName = AuxiliaryMethods.getAddInfix(fileName, postBildVariantInfix);
+
+        try {
+            TypeDescriptorFactory typeDescriptorFactory = new TypeDescriptorFactory();
+            CTypeDescriptors typeDescriptors = typeDescriptorFactory.makeTypeDescriptors(cache.properties);
+            ComStruct.setGlobalMemberSorter(new AlignmentMemberSorter(typeDescriptors));
+            typeDescriptors.setDefaultMemberSorter(ComStruct.getGlobalMemberSorter());
+
+            ComStruct.setGlobalCompilerAbstraction(new CompilerAbstraction( false, "COM_APPL_CONST" ));
+
+            // create PB config structure
+            Com_ConfigLayoutType comPBCfgDataModel = new Com_ConfigLayoutType( context, typeDescriptors, cache );
+
+            // store the layout structure for later use in other JET files
+            context.gen.setVariable("comPBCfgDataModel", comPBCfgDataModel);
+
+            Com_ConstConfigLayoutType comConstPBCfgDataModel = new Com_ConstConfigLayoutType( comPBCfgDataModel );
+            context.gen.setVariable("comConstPBCfgDataModel", comConstPBCfgDataModel);
+
+            CDSGenFile cdsGenFile = getCSDGenFile(context);
+
+            ComCfgDataModel model = (ComCfgDataModel) context.gen.getVariable("comCfgDataModel", ComCfgDataModel.class, null);
+
+            final String configName = postBildVariantInfix.isEmpty() ? 
+                                    model.getComConfigName() : 
+                                    model.getComConfigName() + GENERATED_FILE_NAME_SEPARATOR + postBildVariantInfix;
+%>
+        <!-- This is the precompile-time configuration of the module. -->
+        <configuration class="PreCompile">
+            <?artifact generate="no" <%@ include file="preCompileConfigData.xgen.inc" %>
+        </configuration> <!-- precompile -->
+
+
+        <!-- This is the post-build configuration of the module. -->
+        <configuration class="PostBuild">
+            <?artifact type="postbuild-h" directory="include" file="<%= generatedCSourceFileName %>.h" generate="yes"?>
+            <?artifact type="postbuild-c" directory="src" file="<%= generatedCSourceFileName %>.c" generate="yes"?>
+
+            <!-- PostBuild type and variable definitions -->
+            <!-- START GENERATED PostBuild type and variable definitions -->
+<%
+            cdsGenFile.type( comPBCfgDataModel, false );
+            cdsGenFile.type( comConstPBCfgDataModel, false );
+%>
+            <memory-section name="CONFIG_DATA_UNSPECIFIED">
+            <parameter name="postbuild-configuration-name.<%= comConstPBCfgDataModel.getName() %>">
+                <symbolic-value><%= configName %></symbolic-value>
+            </parameter>
+<%
+            cdsGenFile.var( comConstPBCfgDataModel );
+%>
+            </memory-section>
+            <!-- END GENERATED PostBuild type and variable definitions -->
+        </configuration> <!-- post-build -->
+<%
+            context.cds.endFile(cdsGenFile);
+        } catch ( ComGeneratorException e ) {
+            comGenerationSuccessful = false;
+        }
+
+
+
+        if (comGenerationSuccessful)
+        {
+            context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE( MODULE_NAME + postBildVariantInfix + ".xgen" ) );
+        }
+        else {
+            return "";
+        }
+    }
+%>
+<%@ include file="foot.xgen.inc" %>

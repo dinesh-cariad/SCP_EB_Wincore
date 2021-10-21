@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="dev">
+    <specobject>
+      <id>Det.EB.IntReq.EB_INTREQ_Det_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+       Callout functions of the Det module must not call <code>Det_ReportError()</code>.
+      </description>
+      <rationale>
+       According to DET026, recursive calls of <code>Det_ReportError()</code> are not allowed.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>Det.EB.IntReq.EB_INTREQ_Det_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In case the Multi-Core functionality of the Det module is used in a project with Memory Protection
+        enabled, the memory sections of the Det module shall be configured in a way that write access is 
+        granted for all Os partitions from which Det errors can be reported.
+      </description>
+      <rationale>
+        If Memory Protection is enabled and Det errors are reported from Os Partitions which do not have write 
+        access to the Det_ErrorBuffer, memory protection errors will be triggered.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>Det.EB.IntReq.EB_INTREQ_Det_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+       Callout functions of the Det module must not call <code>Det_ReportRuntimeError()</code>.
+      </description>
+      <rationale>
+       According to SWS_Det_00026, recursive calls of <code>Det_ReportRuntimeError()</code> are not allowed.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>Det.EB.IntReq.EB_INTREQ_Det_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+       Callout functions of the Det module must not call <code>Det_ReportTransientFault()</code>.
+      </description>
+      <rationale>
+       According to SWS_Det_00026, recursive calls of <code>Det_ReportTransientFault()</code> are not allowed.
+      </rationale>
+      
+    </specobject>
+
+  </specobjects>
+</specdocument>

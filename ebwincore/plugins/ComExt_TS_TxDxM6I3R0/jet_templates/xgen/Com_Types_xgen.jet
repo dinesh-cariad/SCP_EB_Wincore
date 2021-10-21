@@ -1,0 +1,36 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_Types_xgen" skeleton="File_xgen.skeleton" %>
+<%@ include file="head.xgen.inc" %>
+
+
+<%
+    JavaGenContext context = getJavaGenContext(argument, stringBuffer);
+    if(context != null) {
+        boolean comGenerationSuccessful = !context.gen.isVerifying();
+        try {
+            CDSGenFile cdsGenFile = getCSDGenFile(context);
+
+            ComCfgDataModel model = (ComCfgDataModel) context.gen.getVariable("comCfgDataModel", ComCfgDataModel.class, null);
+            Com_ConfigLayoutType comPBCfgDataModel = (Com_ConfigLayoutType) context.gen.getVariable("comPBCfgDataModel", Com_ConfigLayoutType.class, null);
+%>
+        <!-- This is the precompile-time configuration of the module. -->
+        <configuration class="PreCompile">
+            <?artifact generate="yes" <%@ include file="preCompileConfigData.xgen.inc" %>
+        </configuration> <!-- precompile -->
+<%
+            context.cds.endFile(cdsGenFile);
+        } catch ( ComGeneratorException e ) {
+            comGenerationSuccessful = false;
+        }
+
+
+
+        if (comGenerationSuccessful == true)
+        {
+            context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE( MODULE_NAME + GENERATED_FILE_NAME_SEPARATOR + "Types.xgen" ) );
+        }
+        else {
+            return "";
+        }
+    }
+%>
+<%@ include file="foot.xgen.inc" %>

@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tresos Studio Workflow >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+<workflow xmlns="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+  id="ACGMemStackWorkflow" version="2.3"
+  label="AutoCore Workflow Memory Stack"
+  description="The EB tresos workflow is a step-by-step instruction to guide you through the configuration of a project.
+                       The workflow represents a sequence of steps to accomplish the task of building an application.">
+
+
+  <group id="MEM" label="Integrate a memory stack into your basic software project">
+    <description>
+      <![CDATA[
+     <h2><b>Goal</b></h2>
+     <p>To integrate a memory stack into your basic software project.</p>
+       <p>The memory stack workflow helps you to add a memory stack to your project
+          and to create a runnable software component that reads data from NVRAM and writes data
+          back to NVRAM.</p>
+     <h2><b>Preconditions</b></h2>
+        <p>The <i>AutoCore Workflow Memory Stack</i> continues the <i>AutoCore Workflow Rte</i>, 
+        the <i>AutoCore Workflow CAN Stack</i> or the <i>AutoCore Workflow IP Stack</i>. If you did not perform the steps
+          as described in these workflows, go through the <a
+          href="workflow://ACGWorkflowRte/RTE">AutoCore Workflow Rte</a>,  <a
+          href="workflow://ACGCanStackWorkflow/CAN">AutoCore Workflow CAN Stack</a> or <a
+          href="workflow://ACGEthStackWorkflow/ETH">AutoCore Workflow IP Stack</a> before continuing
+          with this memory stack workflow.</p>
+          <p>
+          If you integrate the memory stack based on the <i>AutoCore Workflow CAN Stack</i>, you
+          have full support for shutting down the ECU. The data stored in permanent RAM blocks
+          is then written back to the NVRAM when the ECU is shut down. Whereas when you continue the
+          <i>AutoCore Workflow Rte</i> without the <i>AutoCore Workflow CAN Stack</i>, you don't
+          have support for shutting down the ECU.
+          </p>
+        <h2><u>Procedure</u></h2>
+        <p><ol>
+            <li>Add memory stack modules to your project.</li>
+            <li>Configure memory stack modules.</li>
+            <li>Run the Memory Stack Editor.</li>
+            <li>Configure the Rte module.</li>
+            <li>Change, build and run your application.</li>
+        </ol></p>
+        <h2><u>Output</u></h2>
+        A project with basic NVRAM read and write capabilities.
+        <blockquote><b>Note:</b> Names that denote a configuration parameter in EB tresos Studio are
+          displayed in <i>italic</i> font.
+          Important details are displayed in <b>bold</b> font. Function or path names are displayed in
+          <tt>Courier</tt> font. Example configurations are written in <font color="#808080">gray
+          </font>color.</blockquote>
+        <blockquote><b>Tip:</b> A workflow step that is displayed with a green arrow icon is an
+          action step. You may start the corresponding action by
+          double-clicking the step or by clicking the <b>Run</b> button in the tool bar.
+          A workflow step that is displayed with a red cross icon is a step that cannot be carried
+          out. With your
+          current selection in the <i>Project Explorer</i> view it is not possible to execute the
+          corresponding action.</blockquote>
+        ]]>
+    </description>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Add modules >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <action id="MEM_ADD_ADD" label="Add module configurations">
+      <command description="Add memory stack modules to your project"
+        serialization="dreisoft.tresos.launcher2.api.plugin.ModuleConfigurationDialogCommand"/>
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+        <p>To add all memory stack modules to your project.
+        </p>
+        </p>
+          <ol>
+            <li>Double-click this action step in the <i>Workflows</i> view to open the <i>Module Configurations</i> dialog.</li>
+            <li>In the <i>Available Modules</i> tree, select all modules necessary for NVRAM access.<br/>
+            If you want to store data in Flash, select:
+             <ul>
+                <li><i>Crc(CRC Routines)</i></li>
+                <li><i>Fee (Flash EEPROM Emulation)</i></li>
+                <li><i>Fls (Flash Driver)</i></li>
+                <li><i>MemIf (Memory Interface)</i></li>
+                <li><i>NvM (NVRAM Manager)</i> (use <tt>NvMPreConfiguration</tt> as
+                <i>Pre-Configuration</i> )</li>
+             </ul>
+             If you want to store data in EEPROM, select:
+             <ul>
+                <li><i>Crc(CRC Routines)</i></li>
+                <li><i>Ea (EEPROM Abstraction)</i></li>
+                <li><i>Eep (EEPROM Driver)</i></li>
+                <li><i>MemIf (Memory Interface)</i></li>
+                <li><i>NvM (NVRAM Manager)</i> (use <tt>NvMPreConfiguration</tt> as
+                <i>Pre-Configuration</i> )</li>
+            </ul>
+            </li>
+            <li>Click the button <b>Add module configurations for selected modules</b>.
+             <blockquote><b>Tip:</b> Multiple selection of modules is possible: All memory stack
+             modules are grouped together in the cluster <i>Memory Stack</i>.</blockquote>
+            </li>
+          </ol>
+          </p>
+          ]]>
+      </description>
+    </action>
+
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Configure Basic Software >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="MEM_CFG" label="Configure memory stack modules" repeatable="false" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+        <p>To configure the basic software modules in your project.</p>
+        <h2><b>Procedure</b></h2>
+          <p>You can change each basic software module configuration either by double-clicking the
+            respective action step in the <i>Workflows</i> view or by double-clicking the module in the <i>Project Explorer</i> tree view.</p>
+          <blockquote><b>Tip</b>: To search for configuration parameter names
+            project wide, use the keys <b>Ctrl+T</b>.</blockquote>
+          <p>Configure the following modules manually:</p>
+          <ul>
+            <li><a href="workflow:///MEM_CFG_FLS"><i>Fls</i></a>: Configure Flash sectors and other
+            Flash-specific parameters.</li>
+            <li><a href="workflow:///MEM_CFG_EEP"><i>Eep</i></a>:
+              Configure EEPROM-specific parameters.</li>
+            <li><a href="workflow:///MEM_CFG_MEMIF"><i>MemIf</i></a>: Configure the number of
+            underlying devices.</li>
+            <li><a href="workflow:///MEM_CFG_NVM"><i>NvM</i></a>: Enable the Rte usage.</li>
+          </ul>
+          ]]></description>
+
+      <action label="Configure the Fls module" id="MEM_CFG_FLS">
+        <command description="Open Fls configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Fls)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <p>To configure the <i>Fls</i> module:</p>
+            <ul>
+            <li>
+            Double-click this action step in the <i>Workflows</i> view. The <i>Fls</i> editor
+            opens up in the editor area of EB tresos Studio.
+            </li>
+            <li>
+            The configuration of the <i>Fls</i> module highly depends on the characteristics of the
+            Flash memory provided by your ECU. You have to configure the Flash sectors which are
+            available for the used Flash memory and the total size. In many cases, the default or recommended configuration
+            should work.
+            </li>
+            </ul>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Configure the Eep module" id="MEM_CFG_EEP">
+        <command description="Open Eep configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Eep)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <p>To configure the <i>Eep</i> module:</p>
+            <ul>
+            <li>
+            Double-click this action step in the <i>Workflows</i> view. The <i>Eep</i> editor
+            opens up in the editor area of EB tresos Studio.
+            </li>
+            <li>
+            The configuration of the <i>Eep</i> module highly depends on the characteristics of the
+            EEPROM memory provided by your ECU. You have to configure the base address, the total
+            size and the block sizes for the EEPROM memory used. In many cases, the default or recommended configuration
+            should work.
+            </li>
+            <li>
+            In the tab <i>General</i>, if you use both <i>Eep</i> and <i>Fls</i> in the same project, you have to set the
+            parameter <i>EepDriverIndex</i> to a different value than the parameter
+            <i>FlsDriverIndex</i> of the <i>Fls</i> module e.g. use <tt>0</tt> for
+            <i>FlsDriverIndex</i> and <tt>1</tt> for <i>EepDriverIndex</i>.
+            </li>
+            </ul>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Configure the MemIf module" id="MEM_CFG_MEMIF">
+        <command description="Open MemIf configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=MemIf)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+           <p>To configure the <i>MemIf module</i>:</p>
+           <p>
+           <ul>
+            <li>Double-click this action step in the <i>Workflows</i> view. The <i>MemIf</i> editor
+            opens up in the editor area of EB tresos Studio.</li>
+            </li>
+            <li>
+            In the tab <i>General</i>, set <i>Number of Underlying Devices</i> to <tt>1</tt> if you only use <i>Ea</i> or
+            <i>Fee</i> or to <tt>2</tt> if you use <i>Ea</i> and <i>Fee</i>. You can use the
+            <i>Calculate value</i> button to set the value automatically.
+            </li>
+           </ul>
+           </p>
+           ]]>
+        </description>
+      </action>
+
+      <action label="Configure the NvM module" id="MEM_CFG_NVM">
+        <command description="Open NvM configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=NvM)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+           <p>To configure the <i>NvM module</i>:</p>
+           <p>
+           <ul>
+            <li>Double-click this action step in the <i>Workflows</i> view. The <i>NvM</i> editor
+            opens up in the editor area of EB tresos Studio.</li>
+            <li>
+            In the tab <i>General</i>, enable <tt>Enable Usage of Rte</tt>. The <i>NvM</i> then
+              provides a service component which can be connected to the application to read/write
+              NVRAM blocks and to set the status of a block.
+            </li>
+            <li>
+            In the tab <i>General</i>, enable <tt>NvMMultiBlockCallback</tt>. The application
+            source code requires this callback.
+            </li>
+            </ul>
+           </p>
+           ]]>
+        </description>
+      </action>
+
+      <action label="Calculate Dem, NvM and EcuM Service Needs" id="MEM_CFG_SERVICE_NEEDS1">
+        <command description="Open the Service Needs Calculator configuration" type="configure"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerId=SvcAs_Trigger)"/>
+        <command description="Run the Service Needs Calculator"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=SvcAs_Trigger)"/>
+        <description>
+          <![CDATA[
+          <p>The <i>Service Needs Calculator</i> automatically resolves most dependencies between the
+          different module configurations. For example, it adds required <i>Dem<i> events to the <i>Dem</i>
+          configuration, required init functions to the <i>EcuM</i> configuration and required NvM blocks to the
+          <i>NvM</i> configuration.</p>
+          <p>
+          <ul>
+            <li>To open the configuration dialog of the <i>Service Needs Calculator</i>, click the book icon
+                in the tool bar of the <i>Workflows</i> view.
+                Alternatively you can find the configuration dialog in the menu <i>Project -> Unattended Wizards -> Unattended wizard configuration</li>
+            <li>To run the <i>Service Needs Calculator</i>, double-click this action step in the <i>Workflows</i> view.
+                Alternatively you can run the <i>Service Needs Calculator</i> in the menu <i>Project -> Unattended Wizards -> Calculate Service Needs</li>
+          </ul>
+          </p>
+            ]]>
+        </description>
+      </action>
+
+    </group>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Assistants >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <action label="Edit Memory Stack" id="MEM_EDIT">
+      <command
+        serialization="dreisoft.tresos.guidedconfig.api.plugin.SidebarTriggerCommand(triggerId=MemStackEditor11)"/>
+      <description>
+        <![CDATA[
+          <h2><b>Goal</b></h2>
+          <p>To configure the required NvM blocks and Ea/Fee blocks</p>
+          <p>The <i>Memory Stack Editor</i> supports you in adding/editing NvM blocks and
+             automatically configures the underlying <i>Ea</i> and <i>Fee</i> module(s). Moreover, it
+             finds inconsistencies in your configuration and can automatically fix these issues.</p>
+          <h2><b>Procedure</b></h2>
+          <p>To configure the memory stack, follow these steps:</p>
+            <p>
+            <ol>
+              <li>Double-click this action step in the <i>Workflows</i> view to open the <i>Memory
+              Stack Editor</i>.</li>
+              <li>Click on the <i>Evaluate NV block needs</i> button to automatically add the NvM blocks
+              which are specified in the service needs of your application software components.</li>
+              <li>Set the <i>Size</i>  of the newly added blocks to a correct value. The size is not
+              specified in the service needs and must be set manually. If you don't know the size
+              yet, you first have to compile the project, read the size from the linker map file and
+              reconfigure/recompile the project later.</li>
+              <li>Add/edit required NvM blocks which are not specified in the service needs.</li>
+              <li>Click on the <i>Memory Stack Configurator</li> button. This step automatically
+              configures the Ea and/or Fee blocks.</li>
+              <li>Specify the approximate <i>No. of Write Cycles</i> for the Ea/Fee blocks.</li>
+              <li>Click <b>Finish</b>.</li>
+            </ol>
+          </p>
+            ]]>
+      </description>
+    </action>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Configure Rte >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="MEM_RTE" label="Modify the Rte configuration" repeatable="false" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+        <p>To configure the Rte module in your project.</p>
+        <h2><b>Procedure</b></h2>
+          <p>The Rte has to be configured so that your software components can access
+          the NVRAM blocks. As a prerequisite, one additional OS task has to be created, the service components must be updated and the
+          service needs must be calculated.</p>
+          ]]></description>
+      <action label="Update BSW and SWC descriptions in the system model" id="MEM_BSW_SWCD1" >
+        <command description="Run the Imp_Swcd im "
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=MultiTask_UpdateBswDescriptions)" />
+        <description>
+          <![CDATA[
+        <p>The wizard generates and import the BSW and SWC descriptions for all the enabled BSW modules</p>
+        <p>This step is a prerequisite for the main-function-to-task mapping and of the configuration of the BSW exclusive area in the
+                <i>Rte</i>.</p>
+        <p> After this step, the service components are available and can be connected to the application
+            software components. </p>
+        <ul>
+            <li>To run the <i>MultiTask_UpdateBswDescriptions</i>, double-click this
+                action step in the <i>Workflows</i> view.</li>
+            <li> Alternatively you can run the <i>MultiTask_UpdateBswDescriptions</i> in the menu <i>Project -> Unattended Wizards -> Execute multiple tasks(MultiTask_UpdateBswDescriptions)</i></li>
+            
+        </ul>
+          ]]>
+        </description>
+      </action>
+      <action label="Run Compositions and Connections Editor" id="MEM_BSW_COMCONEDIT">
+        <command
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.SidebarTriggerCommand(triggerId=ConnectionEditor_Trigger)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <ol>
+              <li>To run the <i>Compositions and Connections Editor</i>, double-click this action
+              step in the <i>Workflows</i> view or select <b>Edit Compositions and Connections</b>
+              from the category <i>System</i> in the Sidebar view. If the System and EcuInstance
+              have not yet been selected for the given project, then the <i>Select system and ecuInstance</i>
+              dialog opens up.</li>
+              <ul>
+                <li>In the <i>System</i> drop-down list box, select a system from the system description.
+                In the <i>EcuInstance</i> drop-down list box, select an ECU from the system description.
+                </li>
+                <li>Click <b>OK</b> to proceed to the <i>Compositions and Connections Editor</i>.</li>
+              </ul>
+              <li>Add Component Prototypes:
+                <ol>
+                  <li>Right-click on <b>TopLevelComposition</b> in the <i>Entity</i> list and select
+                  <b>Add Prototypes...</b>.</li>
+                  <li>Select the <b>NvM</b> checkbox.</li>
+                  <li>Click <b>OK</b> to add a component prototype for each selected component type</li>
+                </ol>
+              </li>
+              <li>Add connections:
+                <ol>
+                  <li>To make the assignment, expand a prototype, right-click on the prototype's
+                  port and select <b>Add Connector...</b>. Then expand a component prototype and
+                  select a port.If the OK button is not enabled, then the selected port is not compatible.
+                  With the buttons on top of the dialog you can restrict the entities of the Tree to show
+                  or hide incompatible ports and already connected ports. With the type filter text you can
+                  restrict the shown ports by name. Click <b>OK</b> to add the connection.</li>
+                  <ul>
+                    <li>For a concrete example, see an application demo hint below the text</lI>
+                  </ul>
+                  </li>
+                </ol>
+              </li>
+            </ol>
+            <b>Application demos concrete examples</b>:
+            <p>
+            <li>In the assignment of Compositions and Connections Editor, assign the following prototype and port:
+            <p>NvM_Prototype/PS_PersistentCounterValue -> SWC_CyclicCounter/PS_PersistentCounterValue</p>
+            </li>
+          ]]>
+        </description>
+      </action>
+      <action label="Run EcuExtractCreator wizard" id="RTE_BSW_RUN_EXCREAT">
+        <command description="Run EcuExtractCreator wizard"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=EcuExtractCreator)" />
+        <description>
+          <![CDATA[
+            <p>To run the <i>EcuExtractCreator wizard</i>, double-click this action step in the <i>Workflows</i> view.
+               Alternatively you can run the <i>EcuExtractCreator wizard</i> in the menu <i>Project -> Unattended Wizards -> Creates
+              an ecu extract (EcuExtractCreator)</i></p>
+          ]]>
+        </description>
+      </action>
+      <action label="Configure the Rte module" id="MEM_RTE_CFG">
+        <command description="Open Rte configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Rte)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+          <p>
+            <ul>
+             <li>Double-click this action step in the <i>Workflows</i> view. The <i>Select Editor</i> dialog
+             opens up. </li>
+             <li>Select <b>Rte Editor</b>. The <i>Rte Editor</i> opens up in the editor area of EB
+             tresos Studio.</li>
+             <li>Open the tab <i>NVRAM Allocation</i>.
+                <ul>
+                <li>Map all elements shown in the <i>SWC service dependency</i> column to an NvM
+                block by selecting a value from <i>NvM block reference</i>.</li>
+                <li>Specify a name (not address!) for the <i>ROM block location symbol</i>. This is used by the
+                <i>Rte</i> Generator as name for the constant which contains the ROM block default
+                value for this NvM block.</li>
+                <li>Specify a name (not address!) for the <i>RAM block location symbol</i>. This is used by the
+                <i>Rte</i> Generator as name for the variable representing the RAM block.</li>
+                <li></li>
+                </ul>
+             </li>
+             <li>Open the <i>Event Mapping</i> tab.
+                <ul>
+                  <li>Auto-map all Bsw main functions that are triggered by Bsw timing events.</li>
+                  <li>To auto-map all Bsw main functions click the button <b>Auto-map all Bsw main
+                      functions that are triggered by Bsw timing events</b></li>
+                  <li>Map all remaining events that have the <tt>Required</tt> flag set to <tt>true</tt> to a
+                      task.</li>
+                  <li>To map an event to a task, select a task in the <b>Task</b> drop-down
+                      list box and click the button <b>Map the runnable entity selected above
+                      to the task selected below</b>.</li>
+                  <li>Map timing events and non-timing events to separate tasks.</li>
+                </ul>
+             </li>
+
+              </ul>
+              </p>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Calculate Os service needs" id="MEM_RTE_SERVICE_NEEDS3">
+        <command description="Open the Service Needs Calculator configuration" type="configure"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerId=SvcAs_Trigger)"/>
+        <command description="Run the Service Needs Calculator"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=SvcAs_Trigger)"/>
+        <description>
+          <![CDATA[
+         <p>It is recommended that you run the <i>Service Needs Calculator</i> again to add the Os
+            objects required by the <i>SchM</i>/<i>Rte</i> module to the <i>Os</i> configuration.
+            Since this requires a consistent <i>SchM/Rte</i> configuration, this step is recommended
+            after you have completed the step <a href="workflow:///MEM_RTE_CFG">Configure Rte
+                module</a>.</p>
+        <ul>
+            <li>To open the configuration dialog of the <i>Service Needs Calculator</i>, click the
+                book icon in the tool bar of the <i>Workflows</i> view.
+                Alternatively you can find the configuration dialog in the menu <i>Project -> Unattended Wizards -> Unattended wizard configuration</li>
+            <li>To run the <i>Service Needs Calculator</i>, double-click this action step in the <i>Workflows</i> view.
+                Alternatively you can run the <i>Service Needs Calculator</i> in the menu <i>Project -> Unattended Wizards -> Calculate Service Needs</li>
+        </ul>
+            ]]>
+        </description>
+      </action>
+      <action label="Update system model" id="MEM_BSW_SWCD2" >
+        <command description="Run the Imp_Swcd im "
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=MultiTask_UpdateBswDescriptions)" />
+        <description>
+          <![CDATA[
+        <p>The wizard generates and import the BSW and SWC descriptions for all the enabled BSW modules</p>
+        <p>The last steps have changed the ECU configuration, on which the BSWMD depends. Thus, it
+            is recommended to update the basic software module description again. </p>
+        <ul>
+            <li>To run the <i>MultiTask_UpdateBswDescriptions</i>, double-click this
+                action step in the <i>Workflows</i> view.</li>
+            <li> Alternatively you can run the <i>MultiTask_UpdateBswDescriptions</i> in the menu <i>Project -> Unattended Wizards -> Execute multiple tasks(MultiTask_UpdateBswDescriptions)</i></li>
+            
+        </ul>
+          ]]>
+        </description>
+      </action>
+    </group>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Application >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="MEM_APP" label="Build your application" type="sequence">
+      <description>
+        <![CDATA[
+           <h2><b>Goal</b></h2>
+          <p>To generate code, build your application and run your application.</p>
+           <h2><b>Preconditions</b></h2>
+           <p>If you have performed all steps that are described in the AutoCore Workflow Rte (or AutoCore Workflow CanStack ), there are
+            some C source files in your project already.</p>
+          <h2><b>Procedure</b></h2>
+          <ol>
+          <li><a href="workflow:///MEM_APP_GENERATE">Generate code</a></li>
+           <li><a href="workflow:///MEM_APP_BUILD">Build your application</a></li>
+          <li><a href="workflow:///MEM_APP_RUN">Run your application</a></li>
+          </ol>
+        <h2><b>Output</b></h2>
+        <p>The application code will be located in the <i>Project
+                  Explorer</i> view in the directory <tt>source\application</tt>. This application code belongs to your project.</p>
+              ]]>
+      </description>
+
+      <action label="Generate code" id="MEM_APP_GENERATE" repeatable="true">
+        <command description="Generate code"
+          serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand()"/>
+        <description>
+          <![CDATA[
+                <p>Start the generation of your project configuration code
+                    by double-clicking this action step in the <i>Workflows</i> view or by clicking
+                    the hammer icon in the tool bar of EB tresos Studio.
+                </p>
+                ]]>
+        </description>
+      </action>
+
+      <action label="Build your application" id="MEM_APP_BUILD" repeatable="true">
+        <description>
+          <![CDATA[
+                <p>To make your application run you have to create a binary
+                  for your target platform.</p>
+                <p>To create a binary for your target platform:</p>
+                <ul>
+                  <li>Execute <tt>launch.bat</tt></li>
+                  <li>To build the dependencies, type <tt>make depend</tt> in the command line.</li>
+                  <li>To compile and link your software components, type <tt>make</tt>.</li>
+                </ul>
+                ]]>
+        </description>
+      </action>
+
+      <action label="Update NvM block sizes" id="MEM_APP_UPDATEBLOCKSIZES">
+        <description>
+          <![CDATA[
+                <p>The <i>Dem</i> and the <i>ComM</i> (optional) use an NV RAM block to store persistent
+                data in NVRAM. The size of the data structures representing the RAM block depends on
+                the configuration and on the hardware-specific compiler. Currently, EB tresos Studio
+                cannot automatically calculate the sizes of the corresponding NvM blocks. Thus, you
+                have to read the sizes of these data structures from the linker map file, update the
+                memory stack configuration accordingly and re-compile the project. This may also
+                affect application-specific blocks where you don't know the size of the data at pre-compile
+                time exactly.</p>
+                <p>To update the block sizes:</p>
+                <ul>
+                  <li>Locate the linker map file, this is usually located in the same directory as the
+                  binary file  <tt>output\bin</tt>.</li>
+                  <li>Search for the symbol <tt>Dem_NvData</tt> and get the size of the data
+                  structure.</li>
+                  <li>If you use the features <i>Mode Limitation</i> or <i>Wakeup Inhibition</i> of
+                  the <i>ComM</i>, then the <i>ComM</i> also needs an NvM block. Search for the symbol <tt>ComM_EB_NvRAM</tt> and get the size of the data
+                  structure.</li>
+                  <li>Fetch further sizes of application-specific RAM blocks from the map file.</li>
+                  <li>
+                  Return to the workflow step <a href="workflow:///MEM_EDIT">Edit Memory Stack</a>
+                  and update the sizes of the NvM blocks. The block for the <i>Dem</i> is called
+                  <tt>NVM_BLOCK_DEM</tt>, the block for the <i>ComM</i> is called <tt>NVM_BLOCK_COMM</tt>.
+                  </li>
+                  <li>Repeat all following workflow steps until <a href="workflow:///MEM_APP_RUN">Run your application</a>.</li>
+                </ul>
+                ]]>
+        </description>
+      </action>
+
+
+      <action label="Run your application" id="MEM_APP_RUN">
+        <description>
+          <![CDATA[
+            <p>Your finished application binary is located in the directory <tt>output\bin</tt>.</p>
+            <p>You can use a debugger (e.g. Lauterbach) to download your application to your
+              target ECU.</p>
+            ]]>
+        </description>
+      </action>
+
+
+    </group>
+
+    <action id="MEM_FIN" label="Finish">
+      <description>
+        <![CDATA[
+              <p>You have built your memory stack application successfully.</p>
+              ]]>
+      </description>
+    </action>
+
+  </group>
+
+</workflow>

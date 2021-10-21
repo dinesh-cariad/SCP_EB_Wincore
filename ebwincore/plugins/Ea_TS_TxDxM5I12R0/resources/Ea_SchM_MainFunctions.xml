@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+
+    <mainFunction name="Ea_MainFunction">
+        <header value="Ea.h" />
+        <cycleTime type="XPATH" value="node:when( node:exists( as:modconf( 'NvM' )[1]/NvMCommon/NvMMainFunctionCycleTime ), as:modconf( 'NvM' )[1]/NvMCommon/NvMMainFunctionCycleTime, 0.01 )" />
+        <taskPrefix value="SchMMemTask" />
+        <taskPriority value="100" />
+        <callBefore>
+            <mainFunction>Eep_MainFunction</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>NvM_MainFunction</mainFunction>
+            <mainFunction>Fee_MainFunction</mainFunction>
+            <mainFunction>Fls_MainFunction</mainFunction>
+        </callAfter>
+    </mainFunction>
+</schm:mainFunctions>

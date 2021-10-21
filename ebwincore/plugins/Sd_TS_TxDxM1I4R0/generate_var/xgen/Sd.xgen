@@ -1,0 +1,1389 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module Sd?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!INCLUDE "../../generate/include/Sd_ConfigChecks.m"!]
+
+[!CODE!]
+[!AUTOSPACING!]
+
+[!MACRO "AsciiToDecimal", "char"!][!/*
+  */!][!VAR "AsciiString" = "' !"#$%&&apos;()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~'"!][!/*
+  */!][!VAR "result"="num:i(text:indexOf(string($AsciiString), string($char))+32)"!][!/*
+  */!][!"num:i($result)"!][!/*
+*/!][!ENDMACRO!][!//
+
+[!MACRO "SD_ARRAY_SIZE", "count"!][!/*
+  */!][!IF "num:i($count) = 0"!][!/*
+  */!][!VAR "result"="num:i(1)"!][!/*
+  */!][!ELSE!][!/*
+  */!][!VAR "result"="num:i($count)"!][!/*
+  */!][!ENDIF!][!/*
+  */!][!"num:i($result)"!][!/*
+*/!][!ENDMACRO!][!//
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "SD_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "SD_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat('SdConfig','_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="string("SdConfig")"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+*/!][!VAR "SD_PBCFG_C_VARIANT"="concat('Sd',$SD_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "SD_PBCFG_H_VARIANT"="concat('Sd',$SD_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "SD_CONFIG_LAYOUT_VARIANT"="concat('Sd',$SD_VARIANT_SUFIX,'ConfigLayout')"!]
+[!/* Current Config Type variant based
+*/!][!VAR "SD_CONFIGLAYOUTTYPE_VARIANT"="concat('Sd',$SD_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "SD_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('Sd',$SD_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+[!VAR "DemMalformedMsg"!][!"SdGeneral/VendorSpecific/ProductionErrorHandling/Enable_SD_E_MALFORMED_MSG = 'DEM'"!][!ENDVAR!][!//
+[!VAR "DemOutOfRes"!][!"SdGeneral/VendorSpecific/ProductionErrorHandling/Enable_SD_E_OUT_OF_RES = 'DEM'"!][!ENDVAR!][!//
+[!VAR "DemSubscrNackRecv"!][!"SdGeneral/VendorSpecific/ProductionErrorHandling/Enable_SD_E_SUBSCR_NACK_RECV = 'DEM'"!][!ENDVAR!][!//
+[!VAR "DemServerNotAvailable"!][!"SdGeneral/VendorSpecific/ProductionErrorHandling/Enable_SD_E_SERVER_NOT_AVAILABLE = 'DEM'"!][!ENDVAR!][!//
+[!VAR "MainPerSecond"!][!"num:i((1) div (as:modconf('Sd')[1]/SdGeneral/SdMainFunctionCycleTime))"!][!ENDVAR!][!//
+[!VAR "SubscribeEventgroupRetryEnable" = "'false'"!]
+[!IF "as:modconf('Sd')/SdGeneral/SdSubscribeEventgroupRetryEnable  = 'true'"!][!//
+[!VAR "SubscribeEventgroupRetryEnable" = "'true'"!][!//
+[!ENDIF!][!//
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!VAR "InstanceCount"!] [!"num:i(count(./SdInstance/*))"!][!ENDVAR!]
+[!VAR "ClientServiceCount"!][!"num:i(count(./SdInstance/*/SdClientService/*))"!][!ENDVAR!][!//
+[!VAR "ClientServiceEventGroupCount"!][!"num:i(count(./SdInstance/*/SdClientService/*/SdConsumedEventGroup/*))"!][!ENDVAR!][!//
+[!VAR "ServerServiceCount"!][!"num:i(count(./SdInstance/*/SdServerService/*))"!][!ENDVAR!][!//
+[!VAR "EventHandlerCount"!][!"num:i(count(SdInstance/*/SdServerService/*/SdEventHandler/*))"!][!ENDVAR!][!//
+[!/* Count of all SoConGroups and SoCons used by the server services (Udp + Tcp)
+*/!][!VAR "ServerSoConCount"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "ServerSoConGroupCount"!][!"num:i(0)"!][!ENDVAR!][!//
+
+[!VAR "SdClientTimerCount"!][!"num:i(count(./SdInstance/*/SdClientTimer/*))"!][!ENDVAR!][!//
+[!VAR "SdServerTimerCount"!][!"num:i(count(./SdInstance/*/SdServerTimer/*))"!][!ENDVAR!][!//
+
+[!VAR "MaxRemoteNodeCount"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "MaxInstanceRemoteNodeCount"!][!"num:i(0)"!][!ENDVAR!][!//
+[!LOOP "as:modconf('Sd')/SdConfig/*[1]/SdInstance/*"!][!//
+[!VAR "MaxRemoteNodeCount"!][!"num:i($MaxRemoteNodeCount + SdMaximumRemoteNodes)"!][!ENDVAR!][!//
+[!IF "num:i(SdMaximumRemoteNodes) > $MaxInstanceRemoteNodeCount"!][!//
+[!VAR "MaxInstanceRemoteNodeCount"!][!"num:i(SdMaximumRemoteNodes)"!][!ENDVAR!][!//
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+
+[!IF "num:i(count(./SdInstance/*/SdClientTimer/*)) > 0"!][!//
+[!VAR "ClientTimerIdxMap"="''"!][!//
+[!VAR "ClientTimerIdx"="num:i(0)"!][!//
+[!LOOP "./SdInstance/*/SdClientTimer/*"!][!//
+[!VAR "ClientTimerIdxMap" = "concat($ClientTimerIdxMap,' ',node:path(.),':',$ClientTimerIdx)"!][!//
+[!VAR "ClientTimerIdx"="num:i($ClientTimerIdx + 1)"!][!//
+[!ENDLOOP!][!//
+[!ENDIF!][!//
+
+[!IF "num:i(count(./SdInstance/*/SdServerTimer/*)) > 0"!][!//
+[!VAR "ServerTimerIdxMap"="''"!][!//
+[!VAR "ServerTimerIdx"="num:i(0)"!][!//
+[!LOOP "./SdInstance/*/SdServerTimer/*"!][!//
+[!VAR "ServerTimerIdxMap" = "concat($ServerTimerIdxMap,' ',node:path(.),':',$ServerTimerIdx)"!][!//
+[!VAR "ServerTimerIdx"="num:i($ServerTimerIdx + 1)"!][!//
+[!ENDLOOP!][!//
+[!ENDIF!][!//
+
+[!VAR "ConfigurationStringIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "SdConfigurationString" = "''"!][!//
+
+[!VAR "ConfigurationStringLen"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "ConfigStringsRefsCount"!][!"num:i(0)"!][!ENDVAR!][!//
+
+[!//
+[!LOOP "SdInstance/*/SdClientService/*"!][!//
+[!VAR "ClientServiceConfigurationStringLen" = "num:i(0)"!][!//
+[!IF "node:exists(../../SdInstanceHostname)"!][!//
+[!VAR "ClientServiceConfigurationStringLen" = "num:i(string-length(../../SdInstanceHostname) + 10)"!][!//
+[!ENDIF!][!//
+[!LOOP "SdClientCapabilityRecord/*"!][!//
+[!IF "node:exists(./SdClientServiceCapabilityRecordValue)"!][!//
+[!VAR "CapabilityRecordLen" = "num:i(string-length(./SdClientServiceCapabilityRecordKey)) + num:i(string-length(./SdClientServiceCapabilityRecordValue)) + 1"!][!//
+[!ELSE!][!//
+[!VAR "CapabilityRecordLen" = "num:i(string-length(./SdClientServiceCapabilityRecordKey))"!][!//
+[!ENDIF!][!//
+[!VAR "ClientServiceConfigurationStringLen"!][!"num:i($ClientServiceConfigurationStringLen) + num:i($CapabilityRecordLen) + 1"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!VAR "ConfigurationStringLen"!][!"num:i($ConfigurationStringLen) + num:i($ClientServiceConfigurationStringLen)"!][!ENDVAR!][!//
+[!VAR "ConfigStringsRefsCount"!][!"num:i($ConfigStringsRefsCount + 1)"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+
+[!LOOP "SdInstance/*/SdServerService/*"!][!//
+[!VAR "ServerServiceConfigurationStringLen" = "num:i(0)"!][!//
+[!IF "node:exists(../../SdInstanceHostname)"!][!//
+[!VAR "ServerServiceConfigurationStringLen" = "num:i(string-length(../../SdInstanceHostname) + 10)"!][!//
+[!ENDIF!][!//
+[!LOOP "SdServerCapabilityRecord/*"!][!//
+[!IF "node:exists(./SdServerCapabilityRecordValue)"!][!//
+[!VAR "CapabilityRecordLen" = "num:i(string-length(./SdServerCapabilityRecordKey)) + num:i(string-length(./SdServerCapabilityRecordValue)) + 1"!][!//
+[!ELSE!][!//
+[!VAR "CapabilityRecordLen" = "num:i(string-length(./SdServerCapabilityRecordKey))"!][!//
+[!ENDIF!][!//
+[!VAR "ServerServiceConfigurationStringLen"!][!"num:i($ServerServiceConfigurationStringLen) + num:i($CapabilityRecordLen) + 1"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!//
+[!VAR "ConfigurationStringLen"!][!"num:i($ConfigurationStringLen) + num:i($ServerServiceConfigurationStringLen)"!][!ENDVAR!][!//
+[!VAR "ConfigStringsRefsCount"!][!"num:i($ConfigStringsRefsCount + 1)"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+
+[!VAR "references" = "text:join(as:modconf('Sd')/SdConfig/*[1]/SdInstance/*/SdServerService/*/SdServerServiceUdpRef|as:modconf('Sd')/SdConfig/*[1]/SdInstance/*/SdServerService/*/SdServerServiceTcpRef|as:modconf('Sd')/SdConfig/*[1]/SdInstance/*/SdClientService/*/SdClientServiceUdpRef|as:modconf('Sd')/SdConfig/*[1]/SdInstance/*/SdClientService/*/SdClientServiceTcpRef)"!][!//
+[!LOOP "as:modconf('SoAd')/SoAdConfig/*[1]/SoAdSocketConnectionGroup/*[text:contains(string($references),as:path(node:path(.)))]"!][!//
+[!VAR "ServerSoConCount" = "num:i($ServerSoConCount + count(SoAdSocketConnection/*))"!][!//
+[!VAR "ServerSoConGroupCount" = "num:i($ServerSoConGroupCount + 1)"!][!//
+[!ENDLOOP!][!//
+[!VAR "ConsumedEventGroupCount"!][!"num:i(count(SdInstance/*/SdClientService/*/SdConsumedEventGroup/*))"!][!ENDVAR!][!//
+[!VAR "BlackListedVersionsCount"!][!"num:i(count(SdInstance/*/SdClientService/*/SdBlacklistedVersions/*))"!][!ENDVAR!][!//
+[!ENDSELECT!][!//
+
+    <!-- This is the configuration of module SD -->
+    <module name="Sd">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+
+      [!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+        <?artifact directory="include" file="Sd_Types_ExtGen.h" type="types-h" generate="yes" ?>
+      [!ELSE!]
+        <?artifact directory="include" file="Sd_Types_ExtGen.h" type="types-h" generate="no" ?>
+      [!ENDIF!]
+
+      [!VAR "relocatable" = "'false'"!]
+      [!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('Sd')) = 'true'"!]
+      [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ELSE!]
+      [!IF "as:modconf('Sd')/SdGeneral/SdRelocatablePbcfgEnable = 'true'"!][!//
+      [!VAR "relocatable" = "'true'"!][!//
+      [!ENDIF!][!//
+      [!ENDIF!][!//
+	  
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <!-- This is the type definition of the root structure -->
+      <type name="Sd_ConfigType">
+        <struct>
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform."/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration."/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate Public information."/>
+
+          <member name="SdInstancesRef" type="SdInstance_t">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          <member name="SdConsumedEventGroupsRef" type="SdConsumedEventGroup_t">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          <member name="SdEventHandlersRef" type="SdEventHandler_t">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          <member name="SdSoConGroupsRef" type="SdSocketConnectionGroupType">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          <member name="SdClientServicesRef" type="SdClientService_t">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          <member name="SdClientServiceIndexRef" type="SdServiceIndex_t">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          <member name="SdServerServicesRef" type="SdServerService_t">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          <member name="SdServerServiceIndexRef" type="SdServiceIndex_t">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          <member name="SdClientTimersRef" type="SdClientTimer_t">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          <member name="SdServerTimersRef" type="SdServerTimer_t">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+		  
+          <member name="SdBlackListedVersionsRef" type="uint32">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+
+          <member name="SdConfigStringRef" type="uint8">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+		  
+          <member name="SdBlackListedVersionsCount" type="uint16">
+            <comment>
+              <![CDATA[TODO Add a comment]]>
+            </comment>
+          </member>
+
+          <member name="SdConsumedEventGroupCount" type="uint16">
+            <comment>
+              <![CDATA[TODO Add a comment]]>
+            </comment>
+          </member>
+
+          <member name="SdEventHandlerCount" type="uint16">
+            <comment>
+              <![CDATA[TODO Add a comment]]>
+            </comment>
+          </member>
+
+          <member name="SdClientServiceCount" type="uint16">
+            <comment>
+              <![CDATA[TODO Add a comment]]>
+            </comment>
+          </member>
+
+          <member name="SdServerServiceCount" type="uint16">
+            <comment>
+              <![CDATA[TODO Add a comment]]>
+            </comment>
+          </member>
+
+          <member name="SdInstanceCount" type="uint8">
+            <comment>
+              <![CDATA[TODO Add a comment]]>
+            </comment>
+          </member>
+
+        </struct>
+      </type>
+      <!-- !LINKSTO Sd.Design.Data.Config,1 -->
+      <type name="SdInstance_t">
+        <struct>
+[!IF "$DemMalformedMsg = 'true'"!][!//
+          <member name="SdDemMalformedMsgId" type="uint16" comment=""/>
+[!ENDIF!][!//
+[!IF "$DemOutOfRes = 'true'"!][!//
+          <member name="SdDemOutOfResId" type="uint16" comment=""/>
+[!ENDIF!][!//
+[!IF "$DemSubscrNackRecv = 'true'"!][!//
+          <member name="SdDemSubscrNackRecvId" type="uint16" comment=""/>
+[!ENDIF!][!//
+[!IF "$DemServerNotAvailable = 'true'"!][!//
+          <member name="SdDemServerNotAvailableId" type="uint16" comment=""/>
+[!ENDIF!][!//
+          <member name="SdServerService" type="uint16" comment=""/>
+          <member name="SdServerServiceCount" type="uint16" comment=""/>
+          <member name="SdClientService" type="uint16" comment=""/>
+          <member name="SdClientServiceCount" type="uint16" comment=""/>
+          <member name="FindReceivedBitmapStartByte" type="uint16" comment=""/>
+          <member name="FindReceivedBitmapByteSize" type="uint16" comment=""/>
+[!IF "$SubscribeEventgroupRetryEnable = 'true'"!][!//
+          <member name="SdSubscribeEventgroupRetryDelay" type="uint16" comment=""/>
+[!ENDIF!][!//
+          <member name="RemoteNode" type="Sd_RemoteNodeIdType" comment=""/>
+          <member name="RemoteNodeCount" type="Sd_RemoteNodeIdType" comment=""/>
+          <member name="SdInstanceTxPduId" type="PduIdType" comment=""/>
+          <member name="SdInstanceTxSoCon" type="uint8" comment=""/>
+          <member name="SdInstanceRxMultiCastSoCon" type="uint8" comment=""/>
+          <member name="SdInstanceRxUniCastSoCon" type="uint8" comment=""/>
+[!IF "$SubscribeEventgroupRetryEnable = 'true'"!][!//
+          <member name="SdSubscribeEventgroupRetryMax" type="uint8" comment=""/>
+[!ENDIF!][!//
+        </struct>
+      </type>
+
+      <type name="SdConsumedEventGroup_t">
+        <struct>
+          <member name="SdClientTimerTTL" type="uint32" comment="Time to live for find and subscribe messages."/>
+          <member name="SdConsumedEventGroupID" type="uint16" comment="A unique identifier of the eventgroup in the service."/>
+          <member name="ServiceHandleId" type="uint16" comment="A unique Id to identify service instance."/>
+          <member name="SdConsumedEventGroupMulticastSoConId" type="SoAd_SoConIdType" comment=""/>
+          <member name="SdConsumEventGroupMulticastRefIndex" type="uint16" comment=""/>
+          <member name="SdConsumEventGroupMulticastRefCount" type="uint16" comment=""/>
+          <member name="SdConsumedEventGroupMulticastActivationRef" type="SoAd_RoutingGroupIdType" comment=""/>
+          <member name="SdConsumedEventGroupUdpActivationRef" type="SoAd_RoutingGroupIdType" comment=""/>
+          <member name="SdConsumedEventGroupTcpActivationRef" type="SoAd_RoutingGroupIdType" comment=""/>
+          <member name="SdConsumedEventGroupAutoRequire" type="boolean" comment=""/>
+        </struct>
+      </type>
+
+      <type name="SdEventHandler_t">
+        <struct>
+          <member name="SdEventHandlerEventGroupId" type="uint16" comment=""/>
+          <member name="SdEventHandlerMulticastThreshold" type="uint16" comment=""/>
+          <member name="SdMulticastEventSoConRef" type="SoAd_SoConIdType" comment=""/>
+          <member name="SdEventHandlerMulticastActivationRef" type="SoAd_RoutingGroupIdType" comment=""/>
+          <member name="SdEventHandlerUdpActivationRef" type="SoAd_RoutingGroupIdType" comment=""/>
+          <member name="SdEventHandlerUdpTriggeringRef" type="SoAd_RoutingGroupIdType" comment=""/>
+          <member name="SdEventHandlerTcpActivationRef" type="SoAd_RoutingGroupIdType" comment=""/>
+          <member name="SdEventHandlerTcpTriggeringRef" type="SoAd_RoutingGroupIdType" comment=""/>
+        </struct>
+      </type>
+
+      <type name="SdSocketConnectionGroupType">
+        <struct>
+          <member name="GroupStart" type="SoAd_SoConIdType" comment=""/>
+          <member name="ConStateStart" type="SoAd_SoConIdType" comment=""/>
+          <member name="SoConCount" type="SoAd_SoConIdType" comment=""/>
+        </struct>
+      </type>
+
+      <type name="SdClientService_t">
+        <struct>
+          <member name="SdClientServiceMinorVersion" type="uint32" comment=""/>
+          <member name="SdClientTimerRequestResponseMaxDelay" type="Sd_TimerType" comment=""/>
+          <member name="SdClientTimerRequestResponseMinDelay" type="Sd_TimerType" comment=""/>
+          <member name="SdClientServiceTimerIndex" type="uint16" comment=""/>
+          <member name="SdClientServiceID" type="uint16" comment=""/>
+          <member name="SdClientServiceInstanceId" type="uint16" comment=""/>
+          <member name="SdConsumedEventGroup" type="uint16" comment=""/>
+          <member name="SdConsumedEventGroupCount" type="uint16" comment=""/>
+          <member name="SdBlacklistedVersion" type="uint16" comment=""/>
+          <member name="SdBlacklistedVersionsCount" type="uint16" comment=""/>
+          <member name="SdClientServiceSoConGroupUdp" type="uint16" comment=""/>
+          <member name="SdClientServiceSoConGroupTcp" type="uint16" comment=""/>
+          <member name="SdConfigurationStringIndex" type="uint16" comment=""/>
+          <member name="SdClientServiceConfigurationStringLength" type="uint16" comment=""/>
+          <member name="SdClientServiceActivationRef" type="SoAd_RoutingGroupIdType" comment=""/>
+          <member name="SdInstanceIndex" type="uint8" comment=""/>
+          <member name="SdClientServiceMajorVersion" type="uint8" comment=""/>
+          <member name="SdVersionDrivenFindBehavior" type="uint8" comment=""/>
+          <member name="SdClientServiceAutoRequire" type="boolean" comment=""/>
+        </struct>
+      </type>
+
+      <type name="SdServiceIndex_t">
+        <struct>
+          <member name="SdServiceCombinedId" type="uint32" comment=""/>
+          <member name="SdServiceHandleId" type="uint16" comment=""/>
+        </struct>
+      </type>
+
+      <type name="SdServerService_t">
+        <struct>
+          <member name="SdServerServiceMinorVersion" type="uint32" comment=""/>
+          <member name="SdServerServiceTimerIndex" type="uint16" comment=""/>
+          <member name="SdServerServiceID" type="uint16" comment=""/>
+          <member name="SdServerServiceInstanceId" type="uint16" comment=""/>
+          <member name="SdEventHandler" type="uint16" comment=""/>
+          <member name="SdEventHandlerCount" type="uint16" comment=""/>
+          <member name="SoConGroupUdp" type="uint16" comment=""/>
+          <member name="SoConGroupTcp" type="uint16" comment=""/>
+          <member name="SdConfigurationStringIndex" type="uint16" comment=""/>
+          <member name="SdServerServiceConfigurationStringLength" type="uint16" comment=""/>
+          <member name="SdServerServiceActivationRef" type="SoAd_RoutingGroupIdType" comment=""/>
+          <member name="SdInstanceIndex" type="uint8" comment=""/>
+          <member name="SdServerServiceMajorVersion" type="uint8" comment=""/>
+          <member name="SdServerServiceAutoAvailable" type="boolean" comment=""/>
+        </struct>
+      </type>
+
+      <type name="SdClientTimer_t">
+        <struct>
+          <member name="SdClientTimerInitialFindDelayMax" type="Sd_TimerType" comment=""/>
+          <member name="SdClientTimerInitialFindDelayMin" type="Sd_TimerType" comment=""/>
+          <member name="SdClientTimerInitialFindRepetitionsBaseDelay" type="Sd_TimerType" comment=""/>
+          <member name="SdClientTimerTTL" type="uint32" comment=""/>
+          <member name="SdClientTimerInitialFindRepetitionsMax" type="uint8" comment=""/>
+        </struct>
+      </type>
+
+      <type name="SdServerTimer_t">
+        <struct>
+          <member name="SdServerTimerInitialOfferDelayMax" type="Sd_TimerType" comment=""/>
+          <member name="SdServerTimerInitialOfferDelayMin" type="Sd_TimerType" comment=""/>
+          <member name="SdServerTimerInitialOfferRepetitionBaseDelay" type="Sd_TimerType" comment=""/>
+          <member name="SdServerTimerOfferCyclicDelay" type="Sd_TimerType" comment=""/>
+          <member name="SdServerTimerRequestResponseMaxDelay" type="Sd_TimerType" comment=""/>
+          <member name="SdServerTimerRequestResponseMinDelay" type="Sd_TimerType" comment=""/>
+          <member name="SdServerTimerTTL" type="uint32" comment=""/>
+          <member name="SdServerTimerInitialOfferRepetitionsMax" type="uint8" comment=""/>
+        </struct>
+      </type>
+
+      <type name="Sd_TimerType">
+        <reference type="uint32" />
+      </type>
+
+[!IF "num:i($MaxRemoteNodeCount) < 254"!][!//
+      <type name="Sd_RemoteNodeIdType">
+        <reference type="uint8" />
+      </type>
+
+      <symbol-def name="SD_INVALID_REMOTENODE_ID" suffix="U">
+        <integer-value>255</integer-value>
+      </symbol-def>
+[!ELSEIF "num:i($MaxRemoteNodeCount) < 65534"!][!//
+      <type name="Sd_RemoteNodeIdType">
+        <reference type="uint16" />
+      </type>
+
+      <symbol-def name="SD_INVALID_REMOTENODE_ID" suffix="U">
+        <integer-value>65535</integer-value>
+      </symbol-def>
+[!ELSE!][!//
+[!ERROR!] Number of remote nodes exceed possible range. [!ENDERROR!] [!//
+[!ENDIF!][!//
+
+      <symbol-def name="SD_TIMER_INVALIDVALUE" suffix="U">
+        <integer-value>4294967295</integer-value>
+      </symbol-def>
+
+      <symbol-def name="SD_INVALID_SOCONGROUP_ID" suffix="U">
+        <integer-value>65535</integer-value>
+      </symbol-def>
+
+      <symbol-def name="SD_COMBINED_ID_INVALID_VALUE" suffix="U">
+        <integer-value>4294967295</integer-value>
+      </symbol-def>
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <?artifact directory="include" file="[!"$SD_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$SD_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of Sd_PBcfg.h and Sd_Types.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+      <type name="[!"$SD_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="Sd_ConfigType"/>
+
+          <member name="SdInstances" type="SdInstance_t"
+            count="[!"num:i($InstanceCount)"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+          <member name="SdConsumedEventGroups" type="SdConsumedEventGroup_t"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$ConsumedEventGroupCount"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+          <member name="SdEventHandlers" type="SdEventHandler_t"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$EventHandlerCount"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+          <member name="SdSoConGroups" type="SdSocketConnectionGroupType"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$ServerSoConGroupCount"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+          <member name="SdClientServices" type="SdClientService_t"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$ClientServiceCount"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+          <member name="SdClientServiceIndex" type="SdServiceIndex_t"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$ClientServiceCount"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+          <member name="SdServerServices" type="SdServerService_t"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$ServerServiceCount"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+          <member name="SdServerServiceIndex" type="SdServiceIndex_t"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$ServerServiceCount"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+          <member name="SdClientTimers" type="SdClientTimer_t"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$SdClientTimerCount"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+          <member name="SdServerTimers" type="SdServerTimer_t"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$SdServerTimerCount"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+		  
+          <member name="SdBlackListedVersions" type="uint32"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$BlackListedVersionsCount"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+          <member name="SdConfigString" type="uint8"
+            count="[!CALL "SD_ARRAY_SIZE", "count" = "$ConfigurationStringLen"!]">
+            <comment><![CDATA[TODO Add a comment]]></comment>
+          </member>
+
+        </struct>
+      </type>
+
+      <type name="[!"$SD_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$SD_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="SD_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialisation:
+          Specifies the content of Sd_PBcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+
+      <instance type="[!"$SD_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+             name="[!"$SD_CONFIG_LAYOUT_VARIANT"!]">
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+        [!IF "not(var:defined('postBuildVariant')) and not(as:modconf('Sd')/SdConfig/@name = $initPredefinedCfgName)"!]
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"as:modconf('Sd')/SdConfig/@name"!]</symbolic-value>
+        </parameter>
+        [!ENDIF!]
+
+        <!-- Sd_ConfigLayout.RootCfg -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int> <!-- PlatformSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('Sd')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int> <!-- CfgSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('Sd')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('Sd')[1]/CommonPublishedInformation/Release))"!]</int> <!-- PublicInfoSignature -->
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdInstances"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdConsumedEventGroups"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdEventHandlers"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdSoConGroups"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdClientServices"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdClientServiceIndex"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdServerServices"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdServerServiceIndex"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdClientTimers"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdServerTimers"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdBlackListedVersions"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="SdConfigString"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+		  
+          <field>
+            <int>[!"num:i($BlackListedVersionsCount)"!]</int> <!-- BlackListedVersionsCount -->
+          </field>
+
+          <field>
+            <int>[!"num:i($ConsumedEventGroupCount)"!]</int> <!-- SdConsumedEventGroupCount -->
+          </field>
+
+          <field>
+            <int>[!"num:i($EventHandlerCount)"!]</int> <!-- SdEventHandlerCount -->
+          </field>
+
+          <field>
+            <int>[!"num:i($ClientServiceCount)"!]</int> <!-- SdClientServiceCount -->
+          </field>
+
+          <field>
+            <int>[!"num:i($ServerServiceCount)"!]</int> <!-- SdServerServiceCount -->
+          </field>
+
+          <field>
+            <int>[!"num:i($InstanceCount)"!]</int> <!-- SdInstanceCount -->
+          </field>
+
+        </field>
+
+        <!-- Module_ConfigLayout.RootCfg -->
+
+        <!-- Module_ConfigLayout.SdInstances -->
+        <field>
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!VAR "ClientCounter"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "ServerCounter"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "RemoteNode"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "FindReceivedBitmapStart"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "SubscribeEventgroupRetryDelay"!][!"num:i(0)"!][!ENDVAR!][!//
+[!LOOP "SdInstance/*"!][!//
+[!VAR "RemoteNodeCount"!][!"num:i(SdMaximumRemoteNodes)"!][!ENDVAR!][!//
+[!VAR "FindReceivedBitmapSize"!][!"ceiling(count(./SdServerService/*) div 8)"!][!ENDVAR!][!//
+          <field>
+          <!-- [!"name(.)"!] -->
+[!IF "$DemMalformedMsg = 'true'"!][!//
+[!IF "node:exists(./SdInstanceDemEventParameterRefs/SD_E_MALFORMED_MSG) and node:refvalid(./SdInstanceDemEventParameterRefs/SD_E_MALFORMED_MSG)"!][!//
+            <field><int>[!"as:ref(./SdInstanceDemEventParameterRefs/SD_E_MALFORMED_MSG)/DemEventId"!]</int></field> <!-- SdDemMalformedMsgId -->
+[!ELSE!][!//
+            <field><symbol>SD_INVALID_DEM_EVENTID</symbol></field> <!-- SdDemMalformedMsgId -->
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!IF "$DemOutOfRes = 'true'"!][!//
+[!IF "node:exists(./SdInstanceDemEventParameterRefs/SD_E_OUT_OF_RES) and node:refvalid(./SdInstanceDemEventParameterRefs/SD_E_OUT_OF_RES)"!][!//
+            <field><int>[!"as:ref(./SdInstanceDemEventParameterRefs/SD_E_OUT_OF_RES)/DemEventId"!]</int></field> <!-- SdDemOutOfResId -->
+[!ELSE!][!//
+            <field><symbol>SD_INVALID_DEM_EVENTID</symbol></field> <!-- SdDemOutOfResId -->
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!IF "$DemSubscrNackRecv = 'true'"!][!//
+[!IF "node:exists(./SdInstanceDemEventParameterRefs/SD_E_SUBSCR_NACK_RECV) and node:refvalid(./SdInstanceDemEventParameterRefs/SD_E_SUBSCR_NACK_RECV)"!][!//
+            <field><int>[!"as:ref(./SdInstanceDemEventParameterRefs/SD_E_SUBSCR_NACK_RECV)/DemEventId"!]</int></field> <!-- SdDemSubscrNackRecvId -->
+[!ELSE!][!//
+            <field><symbol>SD_INVALID_DEM_EVENTID</symbol></field> <!-- SdDemSubscrNackRecvId -->
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!IF "$DemServerNotAvailable = 'true'"!][!//
+[!IF "node:exists(./SdInstanceDemEventParameterRefs/SD_E_SERVER_NOT_AVAILABLE) and node:refvalid(./SdInstanceDemEventParameterRefs/SD_E_SERVER_NOT_AVAILABLE)"!][!//
+            <field><int>[!"as:ref(./SdInstanceDemEventParameterRefs/SD_E_SERVER_NOT_AVAILABLE)/DemEventId"!]</int></field> <!-- SdDemServerNotAvailableId -->
+[!ELSE!][!//
+            <field><symbol>SD_INVALID_DEM_EVENTID</symbol></field> <!-- SdDemServerNotAvailableId -->
+[!ENDIF!][!//
+[!ENDIF!][!//
+            <field><int>[!"num:i($ServerCounter)"!]</int></field> <!-- SdServerService -->
+[!VAR "ServerCounter"!][!"num:i($ServerCounter + count(./SdServerService/*))"!][!ENDVAR!][!//
+            <field><int>[!"num:i(count(./SdServerService/*))"!]</int></field> <!-- SdServerServiceCount -->
+            <field><int>[!"num:i($ClientCounter)"!]</int></field> <!-- SdClientService -->
+[!VAR "ClientCounter"!][!"num:i($ClientCounter + count(./SdClientService/*))"!][!ENDVAR!][!//
+            <field><int>[!"num:i(count(./SdClientService/*))"!]</int></field> <!-- SdClientServiceCount -->
+            <field><int>[!"num:i($FindReceivedBitmapStart)"!]</int></field> <!-- FindReceivedBitmapStartByte -->
+            <field><int>[!"num:i($FindReceivedBitmapSize)"!]</int></field> <!-- FindReceivedBitmapByteSize -->
+[!IF "$SubscribeEventgroupRetryEnable = 'true'"!][!//
+[!IF "num:i(SdSubscribeEventgroupRetryMax) = num:i(0)"!][!//
+            <field><int>0</int></field> <!-- SdSubscribeEventgroupRetryDelay -->
+[!ELSE!][!//
+[!VAR "SubscribeEventgroupRetryDelay"!][!"num:i(SdSubscribeEventgroupRetryDelay * $MainPerSecond)"!][!ENDVAR!][!//
+[!IF "$SubscribeEventgroupRetryDelay = num:i(0)"!][!//
+            <field><int>1</int></field> <!-- SdSubscribeEventgroupRetryDelay -->
+[!ELSE!][!//
+            <field><int>[!"num:i($SubscribeEventgroupRetryDelay)"!]</int></field> <!-- SdSubscribeEventgroupRetryDelay -->
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!ENDIF!][!//
+            <field><int>[!"num:i($RemoteNode)"!]</int></field> <!-- RemoteNode -->
+            <field><int>[!"num:i($RemoteNodeCount)"!]</int></field> <!-- RemoteNodeCount -->
+[!VAR "RemoteNode"!][!"num:i($RemoteNode + $RemoteNodeCount)"!][!ENDVAR!][!//
+[!VAR "FindReceivedBitmapStart"!][!"num:i($FindReceivedBitmapStart+ ($FindReceivedBitmapSize * SdMaximumRemoteNodes))"!][!ENDVAR!][!//
+[!IF "count(as:modconf('SoAd')[1]/SoAdConfig/*[1]/SoAdPduRoute/*[(node:refvalid(SoAdTxPduRef)) and (node:path(as:ref(SoAdTxPduRef)) = node:path(as:ref(node:current()/SdInstanceTxPdu/SdTxPduRef)))]) = 1"!][!//
+            <field><int>[!"num:i(as:modconf('SoAd')[1]/SoAdConfig/*[1]/SoAdPduRoute/*[(node:refvalid(SoAdTxPduRef)) and (node:path(as:ref(SoAdTxPduRef)) = node:path(as:ref(node:current()/SdInstanceTxPdu/SdTxPduRef)))]/SoAdTxPduId)"!]</int></field> <!-- SdInstanceTxPduId -->
+            <field><int>[!"num:i(as:ref(as:modconf('SoAd')[1]/SoAdConfig/*[1]/SoAdPduRoute/*[(node:refvalid(SoAdTxPduRef)) and (node:path(as:ref(SoAdTxPduRef)) = node:path(as:ref(node:current()/SdInstanceTxPdu/SdTxPduRef)))]/SoAdPduRouteDest/*[1]/SoAdTxSocketConnOrSocketConnBundleRef)/SoAdSocketId)"!]</int></field> <!-- SdInstanceTxSoCon -->
+[!ELSE!][!//
+      [!ERROR!][!"node:path(as:ref(node:current()/SdInstanceTxPdu/SdTxPduRef))"!] must be referenced by exactly one SoAdPduRoute.[!ENDERROR!]
+[!ENDIF!][!//
+[!IF "count(as:modconf('SoAd')[1]/SoAdConfig/*[1]/SoAdSocketRoute/*/SoAdSocketRouteDest/*[(node:refvalid(SoAdRxPduRef)) and (node:path(as:ref(SoAdRxPduRef)) = node:path(as:ref(node:current()/SdInstanceMulticastRxPdu/SdRxPduRef)))]) = 1"!][!//
+            <field><int>[!"num:i(as:ref(as:modconf('SoAd')[1]/SoAdConfig/*[1]/SoAdSocketRoute/*/SoAdSocketRouteDest/*[(node:refvalid(SoAdRxPduRef)) and (node:path(as:ref(SoAdRxPduRef)) = node:path(as:ref(node:current()/SdInstanceMulticastRxPdu/SdRxPduRef)))]/../../SoAdRxSocketConnOrSocketConnBundleRef)/SoAdSocketId)"!]</int></field> <!-- SdInstanceRxMultiCastSoCon -->
+[!ELSE!][!//
+      [!ERROR!][!"node:path(as:ref(node:current()/SdInstanceMulticastRxPdu/SdRxPduRef))"!] must be referenced by exactly one SoAdSocketRoute.[!ENDERROR!]
+[!ENDIF!][!//
+[!IF "count(as:modconf('SoAd')[1]/SoAdConfig/*[1]/SoAdSocketRoute/*/SoAdSocketRouteDest/*[(node:refvalid(SoAdRxPduRef)) and (node:path(as:ref(SoAdRxPduRef)) = node:path(as:ref(node:current()/SdInstanceUnicastRxPdu/SdRxPduRef)))]) = 1"!][!//
+            <field><int>[!"num:i(as:ref(as:modconf('SoAd')[1]/SoAdConfig/*[1]/SoAdSocketRoute/*/SoAdSocketRouteDest/*[(node:refvalid(SoAdRxPduRef)) and (node:path(as:ref(SoAdRxPduRef)) = node:path(as:ref(node:current()/SdInstanceUnicastRxPdu/SdRxPduRef)))]/../../SoAdRxSocketConnOrSocketConnBundleRef)/SoAdSocketId)"!]</int></field> <!-- SdInstanceRxUniCastSoCon -->
+[!ELSE!][!//
+      [!ERROR!][!"node:path(as:ref(node:current()/SdInstanceUnicastRxPdu/SdRxPduRef))"!] must be referenced by exactly one SoAdSocketRoute.[!ENDERROR!]
+[!ENDIF!][!//
+[!IF "$SubscribeEventgroupRetryEnable = 'true'"!][!//
+            <field><int>[!"num:i(SdSubscribeEventgroupRetryMax)"!]</int></field> <!-- SdSubscribeEventgroupRetryMax -->
+[!ENDIF!][!//
+          </field>
+[!ENDLOOP!][!//
+[!ENDSELECT!][!//
+        </field>
+        <!-- Module_ConfigLayout.SdInstances -->
+
+        <!-- Module_ConfigLayout.SdConsumedEventGroups -->
+        <field>
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!IF "$ConsumedEventGroupCount > 0"!][!//
+[!VAR "EventgroupIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "CurrSoConId"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "ConsumEventGroupMulticastRefIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!LOOP "SdInstance/*"!][!//
+[!LOOP "SdClientService/*/SdConsumedEventGroup/*"!][!//
+[!VAR "Match"!][!"num:i(0)"!][!ENDVAR!][!//
+          <field>
+          <!-- [!"name(.)"!] -->
+            <field><int>[!"num:i(as:ref(SdConsumedEventGroupTimerRef)/SdClientTimerTTL)"!]</int></field> <!-- SdClientTimerTTL -->
+            <field><int>[!"num:i(SdConsumedEventGroupId)"!]</int></field> <!-- SdConsumedEventGroupId -->
+            <field><int>[!"num:i(../../SdClientServiceHandleId)"!]</int></field> <!-- ServiceHandleId -->
+            [!IF "node:refvalid(SdConsumedEventGroupMulticastGroupRef/*[1])"!][!//
+            <field><int>[!"num:i(as:ref(SdConsumedEventGroupMulticastGroupRef/*[1])/SoAdSocketConnection/*[1]/SoAdSocketId)"!]</int></field> <!-- SdConsumedEventGroupMulticastSoConId -->
+[!VAR "CurrSoConId"!][!"num:i(as:ref(SdConsumedEventGroupMulticastGroupRef/*[1])/SoAdSocketConnection/*[1]/SoAdSocketId)"!][!ENDVAR!][!//
+[!VAR "TempEventGroupMulticastRefIdx"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "TempEventgroupIdx"!][!"num:i(0)"!][!ENDVAR!][!//
+[!LOOP "../../../../../../SdInstance/*/SdClientService/*/SdConsumedEventGroup/*"!][!//
+[!IF "$TempEventgroupIdx < $EventgroupIndex"!][!//
+[!IF "node:refvalid(SdConsumedEventGroupMulticastGroupRef/*[1])"!][!//
+[!IF "$CurrSoConId = num:i(as:ref(SdConsumedEventGroupMulticastGroupRef/*[1])/SoAdSocketConnection/*[1]/SoAdSocketId)"!][!//
+[!VAR "Match"!][!"num:i(1)"!][!ENDVAR!][!//
+[!BREAK!][!//
+[!ELSE!][!//
+[!VAR "CurrSoConId2"!][!"num:i(as:ref(SdConsumedEventGroupMulticastGroupRef/*[1])/SoAdSocketConnection/*[1]/SoAdSocketId)"!][!ENDVAR!][!//
+[!VAR "Match2"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "TempEventgroupIdx2"!][!"num:i(0)"!][!ENDVAR!][!//
+[!LOOP "../../../../../../SdInstance/*/SdClientService/*/SdConsumedEventGroup/*"!][!//
+[!IF "$TempEventgroupIdx2 < $TempEventgroupIdx"!][!//
+[!IF "node:refvalid(SdConsumedEventGroupMulticastGroupRef/*[1])"!][!//
+[!IF "$CurrSoConId2 = num:i(as:ref(SdConsumedEventGroupMulticastGroupRef/*[1])/SoAdSocketConnection/*[1]/SoAdSocketId)"!][!//
+[!VAR "Match2"!][!"num:i(1)"!][!ENDVAR!][!//
+[!BREAK!][!//
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!VAR "TempEventgroupIdx2"!][!"num:i($TempEventgroupIdx2 + 1)"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!IF "$Match2 = num:i(0)"!][!//
+[!VAR "TempEventGroupMulticastRefIdx"!][!"num:i($TempEventGroupMulticastRefIdx + 1)"!][!ENDVAR!][!//
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!VAR "TempEventgroupIdx"!][!"num:i($TempEventgroupIdx + 1)"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!IF "$Match = num:i(1)"!][!//
+            <field><int>[!"num:i($TempEventGroupMulticastRefIdx)"!]</int></field>  <!-- SdConsumEventGroupMulticastRefIndex -->
+            <field><int>[!"num:i(count(as:ref(SdConsumedEventGroupMulticastGroupRef/*)/SoAdSocketConnection/*))"!]</int></field>  <!-- SdConsumEventGroupMulticastRefCount -->
+[!ELSE!][!//
+            <field><int>[!"num:i($ConsumEventGroupMulticastRefIndex)"!]</int></field>  <!-- SdConsumEventGroupMulticastRefIndex -->
+            <field><int>[!"num:i(count(as:ref(SdConsumedEventGroupMulticastGroupRef/*)/SoAdSocketConnection/*))"!]</int></field>  <!-- SdConsumEventGroupMulticastRefCount -->
+[!VAR "ConsumEventGroupMulticastRefIndex"!][!"num:i($ConsumEventGroupMulticastRefIndex + 1)"!][!ENDVAR!][!//
+[!ENDIF!][!//
+[!ELSE!][!//
+            <field><symbol>SOAD_INVALID_SOCON_ID</symbol></field> <!-- SdConsumedEventGroupMulticastSoConId -->
+            <field><int>0</int></field>  <!-- SdConsumEventGroupMulticastRefIndex -->
+            <field><int>0</int></field>  <!-- SdConsumEventGroupMulticastRefCount -->
+[!ENDIF!][!//
+            <field>[!IF "node:refvalid(SdConsumedEventGroupMulticastActivationRef)"!]<int>[!"num:i(as:ref(SdConsumedEventGroupMulticastActivationRef)/SoAdRoutingGroupId)"!]</int>[!ELSE!]<symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol>[!ENDIF!]</field> <!-- SdConsumedEventGroupMulticastActivationRef -->
+            <field>[!IF "node:refvalid(SdConsumedEventGroupUdpActivationRef)"!]<int>[!"num:i(as:ref(SdConsumedEventGroupUdpActivationRef)/SoAdRoutingGroupId)"!]</int>[!ELSE!]<symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol>[!ENDIF!]</field> <!-- SdConsumedEventGroupUdpActivationRef -->
+            <field>[!IF "node:refvalid(SdConsumedEventGroupTcpActivationRef)"!]<int>[!"num:i(as:ref(SdConsumedEventGroupTcpActivationRef)/SoAdRoutingGroupId)"!]</int>[!ELSE!]<symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol>[!ENDIF!]</field> <!-- SdConsumedEventGroupTcpActivationRef -->
+            <field>[!IF "SdConsumedEventGroupAutoRequire = 'true'"!]<symbol>TRUE</symbol>[!ELSE!]<symbol>FALSE</symbol>[!ENDIF!]</field> <!-- SdConsumedEventGroupAutoRequire -->
+          </field>
+[!VAR "EventgroupIndex"!][!"num:i($EventgroupIndex + 1)"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!ENDLOOP!][!//
+[!ELSE!][!//
+            <field> <!-- Dummy SdConsumedEventGroup -->
+              <field><int>0</int></field> <!-- SdClientTimerTTL -->
+              <field><int>0</int></field> <!-- SdConsumedEventGroupId -->
+              <field><int>0</int></field> <!-- ServiceHandleId -->
+              <field><symbol>SOAD_INVALID_SOCON_ID</symbol></field> <!-- SdConsumedEventGroupMulticastSoConId -->
+              <field><int>0</int></field>  <!-- SdConsumEventGroupMulticastRefIndex -->
+              <field><int>0</int></field>  <!-- SdConsumEventGroupMulticastRefCount -->
+              <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdConsumedEventGroupMulticastActivationRef -->
+              <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdConsumedEventGroupUdpActivationRef -->
+              <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdConsumedEventGroupTcpActivationRef -->
+              <field><symbol>FALSE</symbol></field> <!-- SdConsumedEventGroupAutoRequire -->
+            </field>
+[!ENDIF!][!//
+[!ENDSELECT!]
+        </field>
+        <!-- Module_ConfigLayout.SdConsumedEventGroups -->
+
+        <!-- Module_ConfigLayout.SdEventHandlers -->
+        <field>
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!IF "$EventHandlerCount > 0"!][!//
+[!VAR "EventgroupIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!LOOP "SdInstance/*"!][!//
+[!LOOP "SdServerService/*/SdEventHandler/*"!][!//
+[!//
+          <field>
+          <!-- [!"name(.)"!] -->
+            <field><int>[!"num:i(SdEventHandlerEventGroupId)"!]</int></field> <!-- SdEventHandlerEventGroupId -->
+[!IF "num:i(SdEventHandlerMulticastThreshold) > 0"!][!//
+            <field><int>[!"num:i(SdEventHandlerMulticastThreshold)"!]</int></field> <!-- SdEventHandlerMulticastThreshold -->
+            <field><int>[!"num:i(as:ref(SdEventHandlerMulticast/SdMulticastEventSoConRef)/SoAdSocketId)"!]</int></field> <!-- SdMulticastEventSoConRef -->
+            <field><int>[!"num:i(as:ref(SdEventHandlerMulticast/SdEventActivationRef)/SoAdRoutingGroupId)"!]</int></field> <!-- SdEventHandlerMulticastActivationRef -->
+[!ELSE!][!//
+            <field><int>65535</int></field> <!-- SdEventHandlerMulticastThreshold -->
+            <field><symbol>SOAD_INVALID_SOCON_ID</symbol></field> <!-- SdMulticastEventSoConRef -->
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdEventHandlerMulticastActivationRef -->
+[!ENDIF!][!//
+[!IF "node:refvalid(SdEventHandlerUdp/SdEventActivationRef)"!][!//
+            <field><int>[!"num:i(as:ref(SdEventHandlerUdp/SdEventActivationRef)/SoAdRoutingGroupId)"!]</int></field> <!-- SdEventHandlerUdpActivationRef -->
+[!ELSE!][!//
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdEventHandlerUdpActivationRef -->
+[!ENDIF!][!//
+[!IF "node:refvalid(SdEventHandlerUdp/SdEventTriggeringRef)"!][!//
+            <field><int>[!"num:i(as:ref(SdEventHandlerUdp/SdEventTriggeringRef)/SoAdRoutingGroupId)"!]</int></field> <!-- SdEventHandlerUdpTriggeringRef -->
+[!ELSE!][!//
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdEventHandlerUdpTriggeringRef -->
+[!ENDIF!][!//
+[!IF "node:refvalid(SdEventHandlerTcp/SdEventActivationRef)"!][!//
+            <field><int>[!"num:i(as:ref(SdEventHandlerTcp/SdEventActivationRef)/SoAdRoutingGroupId)"!]</int></field> <!-- SdEventHandlerTcpActivationRef -->
+[!ELSE!][!//
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdEventHandlerTcpActivationRef -->
+[!ENDIF!][!//
+[!IF "node:refvalid(SdEventHandlerTcp/SdEventTriggeringRef)"!][!//
+            <field><int>[!"num:i(as:ref(SdEventHandlerTcp/SdEventTriggeringRef)/SoAdRoutingGroupId)"!]</int></field> <!-- SdEventHandlerTcpTriggeringRef -->
+[!ELSE!][!//
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdEventHandlerTcpTriggeringRef -->
+[!ENDIF!][!//
+          </field>
+[!VAR "EventgroupIndex"!][!"num:i($EventgroupIndex + 1)"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!ENDLOOP!][!//
+[!ELSE!][!//
+          <field> <!-- Dummy SdEventHandler -->
+            <field><int>0</int></field> <!-- SdEventHandlerEventGroupId -->
+            <field><int>0</int></field> <!-- SdEventHandlerMulticastThreshold -->
+            <field><symbol>SOAD_INVALID_SOCON_ID</symbol></field> <!-- SdMulticastEventSoConRef -->
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdEventHandlerMulticastActivationRef -->
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdEventHandlerUdpActivationRef -->
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdEventHandlerUdpTriggeringRef -->
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdEventHandlerTcpActivationRef -->
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field>  <!-- SdEventHandlerTcpTriggeringRef -->
+          </field>
+[!ENDIF!][!//
+[!ENDSELECT!]
+        </field>
+        <!-- Module_ConfigLayout.SdEventHandlers -->
+
+        <!-- Module_ConfigLayout.SdSoConGroups -->
+        <field>
+[!VAR "references" = "text:join(as:modconf('Sd')/SdConfig/*[1]/SdInstance/*/SdServerService/*/SdServerServiceUdpRef|as:modconf('Sd')/SdConfig/*[1]/SdInstance/*/SdServerService/*/SdServerServiceTcpRef|as:modconf('Sd')/SdConfig/*[1]/SdInstance/*/SdClientService/*/SdClientServiceUdpRef|as:modconf('Sd')/SdConfig/*[1]/SdInstance/*/SdClientService/*/SdClientServiceTcpRef)"!][!//
+[!IF "(($ServerServiceCount > 0) or ($ClientServiceCount > 0)) and (count(as:modconf('SoAd')/SoAdConfig/*[1]/SoAdSocketConnectionGroup/*[text:contains(string($references),as:path(node:path(.)))]) > 0)"!][!//
+[!VAR "ConnectionGroupList" = "''"!][!//
+[!VAR "RamIndex" = "0"!][!//
+[!VAR "GroupIndex" = "0"!][!//
+[!LOOP "as:modconf('SoAd')/SoAdConfig/*[1]/SoAdSocketConnectionGroup/*[text:contains(string($references),as:path(node:path(.)))]"!][!//
+          <field> <!-- [!"name(.)"!] -->
+            <field><int>[!"num:i(SoAdSocketConnection/*[1]/SoAdSocketId)"!]</int></field> <!-- GroupStart -->
+            <field><int>[!"num:i($RamIndex)"!]</int></field> <!-- ConStateStart -->
+            <field><int>[!"num:i(count(SoAdSocketConnection/*))"!]</int></field>  <!-- SoConCount -->
+[!VAR "ConnectionGroupList" = "concat($ConnectionGroupList,as:path(.),':',num:i($GroupIndex),';')"!][!//
+[!VAR "GroupIndex" = "num:i($GroupIndex + 1)"!][!//
+[!VAR "RamIndex" = "num:i($RamIndex + count(SoAdSocketConnection/*))"!][!//
+          </field>
+[!ENDLOOP!][!//
+[!ELSE!][!//
+          <field> <!-- Dummy SdSocketConnectionGroup -->
+            <field><int>0</int></field>
+            <field><int>0</int></field>
+            <field><int>0</int></field>
+          </field>
+[!ENDIF!][!//
+        </field>
+        <!-- Module_ConfigLayout.SdSoConGroups -->
+
+        <!-- Module_ConfigLayout.SdClientServices -->
+        <field>
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!IF "$ClientServiceCount >0"!][!//
+[!VAR "InstanceIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "ServiceIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "EventGroupIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "BlacklistedVersionsIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!LOOP "SdInstance/*"!][!//
+[!LOOP "SdClientService/*"!][!//
+          <field>
+          <!-- [!"name(.)"!] -->
+            <field><int>[!"num:i(SdClientServiceMinorVersion)"!]</int></field> <!-- SdClientServiceMinorVersion -->
+[!IF "node:refvalid(SdConsumedEventGroup/*/SdConsumedEventGroupTimerRef)"!][!//
+            <field><int>[!"num:i(node:ref(SdConsumedEventGroup/*/SdConsumedEventGroupTimerRef)/SdClientTimerRequestResponseMaxDelay * $MainPerSecond)"!]</int></field> <!-- SdClientTimerRequestResponseMaxDelay --> <!-- !LINKSTO Sd.ASR40.SWS_SD_00493,1 -->
+            <field><int>[!"num:i(node:ref(SdConsumedEventGroup/*/SdConsumedEventGroupTimerRef)/SdClientTimerRequestResponseMinDelay * $MainPerSecond)"!]</int></field> <!-- SdClientTimerRequestResponseMinDelay --> <!-- !LINKSTO Sd.ASR40.SWS_SD_00493,1 -->
+[!ELSE!][!//
+            <field><symbol>SD_TIMER_INVALIDVALUE</symbol></field> <!-- SdClientTimerRequestResponseMaxDelay -->
+            <field><symbol>SD_TIMER_INVALIDVALUE</symbol></field> <!-- SdClientTimerRequestResponseMinDelay -->
+[!ENDIF!][!//
+            <field><int>[!"num:i(text:split(text:grep(text:split($ClientTimerIdxMap),concat(node:path(node:ref(SdClientServiceTimerRef)),':[^ ]+')),':')[2])"!]</int></field> <!-- SdClientServiceTimerIndex -->
+            <field><int>[!"num:i(SdClientServiceId)"!]</int></field> <!-- SdClientServiceId -->
+            <field><int>[!"num:i(SdClientServiceInstanceId)"!]</int></field> <!-- SdClientServiceInstanceId -->
+            <field><int>[!"num:i($EventGroupIndex)"!]</int></field> <!-- SdConsumedEventGroup -->
+            <field><int>[!"num:i(count(SdConsumedEventGroup/*))"!]</int></field> <!-- SdConsumedEventGroupCount --> <!-- !LINKSTO Sd.EB.Config.Client002,2 -->
+            <field><int>[!"num:i($BlacklistedVersionsIndex)"!]</int></field> <!-- SdBlacklistedVersion -->
+            <field><int>[!"num:i(count(SdBlacklistedVersions/*))"!]</int></field> <!-- SdBlacklistedVersionsCount -->
+[!IF "node:refvalid(SdClientServiceUdpRef)"!][!//
+            <field><int>[!VAR "ref" = "concat(as:path(as:ref(SdClientServiceUdpRef)),':')"!][!"text:split(string(text:split($ConnectionGroupList,';')[starts-with(.,$ref)]),':')[2]"!]</int></field> <!-- SdClientServiceSoConGroupUdp -->
+[!ELSE!][!//
+            <field><symbol>SD_INVALID_SOCONGROUP_ID</symbol></field> <!-- SdClientServiceSoConGroupUdp -->
+[!ENDIF!][!//
+[!IF "node:refvalid(SdClientServiceTcpRef)"!][!//
+            <field><int>[!VAR "ref" = "concat(as:path(as:ref(SdClientServiceTcpRef)),':')"!][!"text:split(string(text:split($ConnectionGroupList,';')[starts-with(.,$ref)]),':')[2]"!]</int></field> <!-- SdClientServiceSoConGroupTcp -->
+[!ELSE!][!//
+            <field><symbol>SD_INVALID_SOCONGROUP_ID</symbol></field> <!-- SdClientServiceSoConGroupTcp -->
+[!ENDIF!][!//
+            <field><int>[!"$ConfigurationStringIndex"!]</int></field>  <!-- SdConfigurationStringIndex -->
+[!VAR "ClientServiceConfigurationStringLen" = "num:i(0)"!][!//
+[!IF "node:exists(../../SdInstanceHostname)"!][!//
+[!VAR "ClientServiceConfigurationStringLen" = "num:i(string-length(../../SdInstanceHostname) + 10)"!][!//
+[!ENDIF!][!//
+[!LOOP "SdClientCapabilityRecord/*"!][!//
+[!IF "node:exists(./SdClientServiceCapabilityRecordValue)"!][!//
+[!VAR "CapabilityRecordLen" = "num:i(string-length(./SdClientServiceCapabilityRecordKey)) + num:i(string-length(./SdClientServiceCapabilityRecordValue)) + 1"!][!//
+[!ELSE!][!//
+[!VAR "CapabilityRecordLen" = "num:i(string-length(./SdClientServiceCapabilityRecordKey))"!][!//
+[!ENDIF!][!//
+[!VAR "ClientServiceConfigurationStringLen"!][!"num:i($ClientServiceConfigurationStringLen) + num:i($CapabilityRecordLen) + 1"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!//
+[!IF "$ClientServiceConfigurationStringLen > 0"!][!//
+[!VAR "ConfigurationStringIndex"!][!"num:i($ConfigurationStringIndex + $ClientServiceConfigurationStringLen)"!][!ENDVAR!][!//
+            <field><int>[!"num:i($ClientServiceConfigurationStringLen + 1)"!]</int></field>  <!-- SdClientServiceConfigurationStringLength -->
+[!ELSE!][!//
+            <field><int>0</int></field> <!-- SdClientServiceConfigurationStringLength -->
+[!ENDIF!][!//
+[!IF "node:refvalid(SdConsumedMethods/SdClientServiceActivationRef)"!][!//
+            <field><int>[!"num:i(as:ref(SdConsumedMethods/SdClientServiceActivationRef)/SoAdRoutingGroupId)"!]</int></field> <!-- SdClientServiceActivationRef -->
+[!ELSE!][!//
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdClientServiceActivationRef -->
+[!ENDIF!][!//
+            <field><int>[!"num:i($InstanceIndex)"!]</int></field> <!-- SdInstanceIndex -->
+            <field><int>[!"num:i(SdClientServiceMajorVersion)"!]</int></field> <!--  SdClientServiceMajorVersion -->
+            <field><int>[!IF "SdVersionDrivenFindBehavior = 'EXACT_OR_ANY_MINOR_VERSION'"!]0[!ELSE!]1[!ENDIF!]</int></field> <!--  SdVersionDrivenFindBehavior -->
+            <field><symbol>[!IF "SdClientServiceAutoRequire = 'true'"!]TRUE[!ELSE!]FALSE[!ENDIF!]</symbol></field> <!-- SdClientServiceAutoRequire -->
+          </field>
+[!VAR "ServiceIndex"!][!"num:i($ServiceIndex + 1)"!][!ENDVAR!][!//
+[!VAR "EventGroupIndex"!][!"num:i($EventGroupIndex + count(SdConsumedEventGroup/*))"!][!ENDVAR!][!//
+[!VAR "BlacklistedVersionsIndex"!][!"num:i($BlacklistedVersionsIndex + count(SdBlacklistedVersions/*))"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!VAR "InstanceIndex"!][!"num:i($InstanceIndex + 1)"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!ELSE!][!//
+          <field> <!-- Dummy SdClientService -->
+            <field><int>0</int></field> <!-- SdClientServiceMinorVersion -->
+            <field><symbol>SD_TIMER_INVALIDVALUE</symbol></field> <!-- SdClientTimerRequestResponseMaxDelay -->
+            <field><symbol>SD_TIMER_INVALIDVALUE</symbol></field> <!-- SdClientTimerRequestResponseMinDelay -->
+            <field><int>0</int></field> <!-- SdClientServiceTimerIndex -->
+            <field><int>0</int></field> <!-- SdClientServiceID -->
+            <field><int>0</int></field> <!-- SdClientServiceInstanceId -->
+            <field><int>0</int></field> <!-- SdConsumedEventGroup -->
+            <field><int>0</int></field> <!-- SdConsumedEventGroupCount -->
+            <field><int>0</int></field> <!-- SdBlacklistedVersion -->
+            <field><int>0</int></field> <!-- SdBlacklistedVersionsCount -->
+            <field><symbol>SD_INVALID_SOCONGROUP_ID</symbol></field> <!-- SdClientServiceSoConGroupUdp -->
+            <field><symbol>SD_INVALID_SOCONGROUP_ID</symbol></field> <!-- SdClientServiceSoConGroupTcp -->
+            <field><int>0</int></field> <!-- SdConfigurationStringIndex -->
+            <field><int>0</int></field> <!-- SdClientServiceConfigurationStringLength -->
+            <field><int>0</int></field> <!-- SdClientServiceActivationRef -->
+            <field><int>0</int></field> <!-- SdInstanceIndex -->
+            <field><int>0</int></field> <!-- SdClientServiceMajorVersion -->
+            <field><int>0</int></field> <!-- SdVersionDrivenFindBehavior -->
+            <field><symbol>FALSE</symbol></field> <!-- boolean SdClientServiceAutoRequire -->
+          </field>
+[!ENDIF!][!//
+[!ENDSELECT!][!//
+        </field>
+        <!-- Module_ConfigLayout.SdClientServices -->
+
+        <!-- Module_ConfigLayout.SdClientServiceIndex -->
+        <!-- if there are client services configured in this instance, they are ordered here -->
+        <!-- from the smaller client service ID/instance ID to the bigger one                -->
+        <field>
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!IF "$ClientServiceCount > 0"!][!//
+[!LOOP "SdInstance/*"!][!//
+[!LOOP "node:order(SdClientService/*, './SdClientServiceId', './SdClientServiceInstanceId')"!][!//
+          <field>
+            <field><int>[!"num:i(num:i(SdClientServiceId)*num:i(65536)+num:i(SdClientServiceInstanceId))"!]</int></field>
+            <field><int>[!"num:i(SdClientServiceHandleId)"!]</int></field>
+          </field>
+[!ENDLOOP!][!//
+[!ENDLOOP!][!//
+[!ELSE!][!//
+          <field>
+            <field><symbol>SD_COMBINED_ID_INVALID_VALUE</symbol></field>
+            <field><int>0</int></field>
+          </field>
+[!ENDIF!][!//
+[!ENDSELECT!][!//
+        </field>
+        <!-- Module_ConfigLayout.SdClientServiceIndex -->
+
+        <!-- Module_ConfigLayout.SdServerServices -->
+        <field>
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!IF "$ServerServiceCount >0"!][!//
+[!VAR "InstanceIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "ServiceIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!VAR "EventGroupIndex"!][!"num:i(0)"!][!ENDVAR!][!//
+[!LOOP "SdInstance/*"!][!//
+[!LOOP "SdServerService/*"!][!//
+          <field>
+            <field><int>[!"num:i(SdServerServiceMinorVersion)"!]</int></field> <!-- SdServerServiceMinorVersion -->
+            <field><int>[!"num:i(text:split(text:grep(text:split($ServerTimerIdxMap),concat(node:path(node:ref(SdServerServiceTimerRef)),':[^ ]+')),':')[2])"!]</int></field> <!-- SdServerServiceTimerIndex --> <!-- !LINKSTO Sd.ASR40.SWS_SD_00492,1 -->
+            <field><int>[!"num:i(SdServerServiceId)"!]</int></field> <!-- SdServerServiceId -->
+            <field><int>[!"num:i(SdServerServiceInstanceId)"!]</int></field> <!-- SdServerServiceInstanceId -->
+            <field><int>[!"num:i($EventGroupIndex)"!]</int></field> <!-- SdEventHandler -->
+            <field><int>[!"num:i(count(SdEventHandler/*))"!]</int></field> <!-- SdEventHandlerCount -->
+[!IF "node:refvalid(SdServerServiceUdpRef)"!][!//
+            <field><int>[!VAR "ref" = "concat(as:path(as:ref(SdServerServiceUdpRef)),':')"!][!"text:split(string(text:split($ConnectionGroupList,';')[starts-with(.,$ref)]),':')[2]"!]</int></field> <!-- SoConGroupUdp -->
+[!ELSE!][!//
+            <field><symbol>SD_INVALID_SOCONGROUP_ID</symbol></field> <!-- SoConGroupUdp -->
+[!ENDIF!][!//
+[!IF "node:refvalid(SdServerServiceTcpRef)"!][!//
+            <field><int>[!VAR "ref" = "concat(as:path(as:ref(SdServerServiceTcpRef)),':')"!][!"text:split(string(text:split($ConnectionGroupList,';')[starts-with(.,$ref)]),':')[2]"!]</int></field> <!-- SoConGroupTcp -->
+[!ELSE!][!//
+            <field><symbol>SD_INVALID_SOCONGROUP_ID</symbol></field> <!-- SoConGroupTcp -->
+[!ENDIF!][!//
+[!IF "$ConfigurationStringIndex > 0"!][!//
+            <field><int>[!"$ConfigurationStringIndex"!]</int></field>  <!-- SdConfigurationStringIndex -->
+[!ELSE!][!//
+            <field><int>0</int></field> <!-- SdConfigurationStringIndex -->
+[!ENDIF!][!//
+[!VAR "ServerServiceConfigurationStringLen" = "num:i(0)"!][!//
+[!IF "node:exists(../../SdInstanceHostname)"!][!//
+[!VAR "ServerServiceConfigurationStringLen" = "num:i(string-length(../../SdInstanceHostname) + 10)"!][!//
+[!ENDIF!][!//
+[!LOOP "SdServerCapabilityRecord/*"!][!//
+[!IF "node:exists(./SdServerCapabilityRecordValue)"!][!//
+[!VAR "CapabilityRecordLen" = "num:i(string-length(./SdServerCapabilityRecordKey)) + num:i(string-length(./SdServerCapabilityRecordValue)) + 1"!][!//
+[!ELSE!][!//
+[!VAR "CapabilityRecordLen" = "num:i(string-length(./SdServerCapabilityRecordKey))"!][!//
+[!ENDIF!][!//
+[!VAR "ServerServiceConfigurationStringLen"!][!"num:i($ServerServiceConfigurationStringLen) + num:i($CapabilityRecordLen) + 1"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!//
+[!IF "$ServerServiceConfigurationStringLen > 0"!][!//
+[!VAR "ConfigurationStringIndex"!][!"num:i($ConfigurationStringIndex + $ServerServiceConfigurationStringLen)"!][!ENDVAR!][!//
+            <field><int>[!"num:i($ServerServiceConfigurationStringLen + 1)"!]</int></field>  <!-- SdServerServiceConfigurationStringLength -->
+[!ELSE!][!//
+            <field><int>0</int></field> <!-- SdServerServiceConfigurationStringLength -->
+[!ENDIF!][!//
+[!IF "node:refvalid(SdProvidedMethods/SdServerServiceActivationRef)"!][!//
+            <field><int>[!"num:i(as:ref(SdProvidedMethods/SdServerServiceActivationRef)/SoAdRoutingGroupId)"!]</int></field> <!-- SdServerServiceActivationRef -->
+[!ELSE!][!//
+            <field><symbol>SOAD_INVALID_ROUTINGGROUP_ID</symbol></field> <!-- SdServerServiceActivationRef -->
+[!ENDIF!][!//
+            <field><int>[!"num:i($InstanceIndex)"!]</int></field> <!-- SdInstanceIndex -->
+            <field><int>[!"num:i(SdServerServiceMajorVersion)"!]</int></field> <!-- SdServerServiceMajorVersion -->
+            <field><symbol>[!IF "SdServerServiceAutoAvailable = 'true'"!]TRUE[!ELSE!]FALSE[!ENDIF!]</symbol></field> <!-- SdServerServiceAutoAvailable -->
+          </field>
+[!VAR "ServiceIndex"!][!"num:i($ServiceIndex + 1)"!][!ENDVAR!][!//
+[!VAR "EventGroupIndex"!][!"num:i($EventGroupIndex + count(SdEventHandler/*))"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!VAR "InstanceIndex"!][!"num:i($InstanceIndex + 1)"!][!ENDVAR!][!//
+[!ENDLOOP!][!//
+[!ELSE!]
+          <field> <!-- Dummy SdServerService -->
+            <field><int>0</int></field> <!-- SdServerServiceMinorVersion -->
+            <field><int>0</int></field> <!-- SdServerServiceTimerIndex -->
+            <field><int>0</int></field> <!-- SdServerServiceId -->
+            <field><int>0</int></field> <!-- SdServerServiceInstanceId -->
+            <field><int>0</int></field> <!-- SdEventHandler -->
+            <field><int>0</int></field> <!-- SdEventHandlerCount -->
+            <field><symbol>SD_INVALID_SOCONGROUP_ID</symbol></field> <!-- SoConGroupUdp -->
+            <field><symbol>SD_INVALID_SOCONGROUP_ID</symbol></field> <!-- SoConGroupTcp -->
+            <field><int>0</int></field> <!-- SdConfigurationStringIndex -->
+            <field><int>0</int></field> <!-- SdServerServiceConfigurationStringLength -->
+            <field><int>0</int></field> <!-- SdServerServiceActivationRef -->
+            <field><int>0</int></field> <!-- SdInstanceIndex -->
+            <field><int>0</int></field> <!-- SdServerServiceMajorVersion -->
+            <field><int>0</int></field> <!-- SdServerServiceAutoAvailable -->
+          </field>
+[!ENDIF!][!//
+[!ENDSELECT!][!//
+        </field>
+        <!-- Module_ConfigLayout.SdServerServices -->
+
+        <!-- Module_ConfigLayout.SdServerServiceIndex -->
+        <!-- if there are server services configured in this instance, they are ordered here -->
+        <!-- from the smaller server service ID/instance ID to the bigger one                -->
+        <field>
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!IF "$ServerServiceCount >0"!][!//
+[!LOOP "SdInstance/*"!][!//
+[!LOOP "node:order(SdServerService/*, './SdServerServiceId', './SdServerServiceInstanceId')"!][!//
+          <field>
+          <!-- [!"name(.)"!] -->
+            <field><int>[!"num:i(num:i(SdServerServiceId)*num:i(65536)+num:i(SdServerServiceInstanceId))"!]</int></field> <!-- SdServiceCombinedId -->
+            <field><int>[!"num:i(SdServerServiceHandleId)"!]</int></field> <!-- SdServiceHandleId -->
+          </field>
+[!ENDLOOP!][!//
+[!ENDLOOP!][!//
+[!ELSE!][!//
+          <field>
+            <field><symbol>SD_COMBINED_ID_INVALID_VALUE</symbol></field>
+            <field><int>0</int></field>
+          </field>
+[!ENDIF!][!//
+[!ENDSELECT!][!//
+        </field>
+        <!-- Module_ConfigLayout.SdServerServiceIndex -->
+
+        <!-- Module_ConfigLayout.SdClientTimers -->
+        <field>
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!IF "$SdClientTimerCount > 0"!][!//
+[!VAR "ClientTimerIdxMap"="''"!][!//
+[!VAR "ClientTimerIdx"="num:i(0)"!][!//
+[!LOOP "./SdInstance/*/SdClientTimer/*"!][!//
+[!VAR "ClientTimerIdxMap" = "concat($ClientTimerIdxMap,' ',node:path(.),':',$ClientTimerIdx)"!][!//
+[!VAR "ClientTimerIdx"="num:i($ClientTimerIdx + 1)"!][!//
+          <field>
+          <!-- [!"name(.)"!] -->
+            <field><int>[!IF "node:exists(./SdClientTimerInitialFindDelayMax)"!][!"num:i(./SdClientTimerInitialFindDelayMax * $MainPerSecond)"!][!ELSE!]0[!ENDIF!]</int></field> <!-- SdClientTimerInitialFindDelayMax -->
+            <field><int>[!IF "node:exists(./SdClientTimerInitialFindDelayMin)"!][!"num:i(SdClientTimerInitialFindDelayMin * $MainPerSecond)"!][!ELSE!]0[!ENDIF!]</int></field> <!-- SdClientTimerInitialFindDelayMin -->
+            <field><int>[!IF "node:exists(./SdClientTimerInitialFindRepetitionsBaseDelay)"!][!"num:i(./SdClientTimerInitialFindRepetitionsBaseDelay * $MainPerSecond)"!][!ELSE!]0[!ENDIF!]</int></field> <!-- SdClientTimerInitialFindRepetitionsBaseDelay -->
+            <field><int>[!"num:i(./SdClientTimerTTL)"!]</int></field> <!-- SdClientTimerTTL -->
+            <field><int>[!IF "node:exists(./SdClientTimerInitialFindRepetitionsMax)"!][!"num:i(./SdClientTimerInitialFindRepetitionsMax)"!][!ELSE!]0[!ENDIF!]</int></field> <!-- SdClientTimerInitialFindRepetitionsMax -->
+          </field>
+[!ENDLOOP!][!//
+[!ELSE!][!//
+          <field>
+            <field><int>0</int></field>  <!-- SdClientTimerInitialFindDelayMax -->
+            <field><int>0</int></field>  <!-- SdClientTimerInitialFindDelayMin -->
+            <field><int>0</int></field>  <!-- SdClientTimerInitialFindRepetitionsBaseDelay -->
+            <field><int>0</int></field>  <!-- SdClientTimerTTL -->
+            <field><int>0</int></field>  <!-- SdClientTimerInitialFindRepetitionsMax -->
+          </field>
+[!ENDIF!][!//
+[!ENDSELECT!][!//
+        </field>
+        <!-- Module_ConfigLayout.SdClientTimers -->
+
+        <!-- Module_ConfigLayout.SdServerTimers -->
+        <field>
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!IF "num:i(count(./SdInstance/*/SdServerTimer/*)) > 0"!][!//
+[!VAR "ServerTimerIdxMap"="''"!][!//
+[!VAR "ServerTimerIdx"="num:i(0)"!][!//
+[!LOOP "./SdInstance/*/SdServerTimer/*"!][!//
+[!VAR "ServerTimerIdxMap" = "concat($ServerTimerIdxMap,' ',node:path(.),':',$ServerTimerIdx)"!][!//
+[!VAR "ServerTimerIdx"="num:i($ServerTimerIdx + 1)"!][!//
+          <field>
+          <!-- [!"name(.)"!] -->
+            <field><int>[!IF "node:exists(./SdServerTimerInitialOfferDelayMax)"!][!"num:i(./SdServerTimerInitialOfferDelayMax  * $MainPerSecond)"!][!ELSE!]0[!ENDIF!]</int></field> <!-- SdServerTimerInitialOfferDelayMax -->
+            <field><int>[!IF "node:exists(./SdServerTimerInitialOfferDelayMin)"!][!"num:i(./SdServerTimerInitialOfferDelayMin  * $MainPerSecond)"!][!ELSE!]0[!ENDIF!]</int></field> <!-- SdServerTimerInitialOfferDelayMin -->
+            <field><int>[!IF "node:exists(./SdServerTimerInitialOfferRepetitionBaseDelay)"!][!"num:i(./SdServerTimerInitialOfferRepetitionBaseDelay  * $MainPerSecond)"!][!ELSE!]0[!ENDIF!]</int></field> <!-- SdServerTimerInitialOfferRepetitionBaseDelay -->
+            <field><int>[!IF "node:exists(./SdServerTimerOfferCyclicDelay)"!][!"num:i(./SdServerTimerOfferCyclicDelay * $MainPerSecond)"!][!ELSE!]0[!ENDIF!]</int></field> <!-- SdServerTimerOfferCyclicDelay -->
+            <field><int>[!"num:i(./SdServerTimerRequestResponseMaxDelay * $MainPerSecond)"!]</int></field> <!-- SdServerTimerRequestResponseMaxDelay -->
+            <field><int>[!"num:i(./SdServerTimerRequestResponseMinDelay * $MainPerSecond)"!]</int></field> <!-- SdServerTimerRequestResponseMinDelay -->
+            <field><int>[!"num:i(./SdServerTimerTTL)"!]</int></field> <!-- SdServerTimerTTL -->
+            <field><int>[!IF "node:exists(./SdServerTimerInitialOfferRepetitionsMax)"!][!"num:i(./SdServerTimerInitialOfferRepetitionsMax)"!][!ELSE!]0[!ENDIF!]</int></field> <!-- SdServerTimerInitialOfferRepetitionsMax -->
+          </field>
+[!ENDLOOP!][!//
+[!ELSE!][!//
+          <field>
+            <field><int>0</int></field> <!-- SdServerTimerInitialOfferDelayMax -->
+            <field><int>0</int></field> <!-- SdServerTimerInitialOfferDelayMin -->
+            <field><int>0</int></field> <!-- SdServerTimerInitialOfferRepetitionBaseDelay -->
+            <field><int>0</int></field> <!-- SdServerTimerOfferCyclicDelay -->
+            <field><int>0</int></field> <!-- SdServerTimerRequestResponseMaxDelay -->
+            <field><int>0</int></field> <!-- SdServerTimerRequestResponseMinDelay -->
+            <field><int>0</int></field> <!-- SdClientTimerTTL -->
+            <field><int>0</int></field>  <!-- SdClientTimerInitialFindRepetitionsMax -->
+          </field>
+[!ENDIF!][!//
+[!ENDSELECT!][!//
+        </field>
+        <!-- Module_ConfigLayout.SdServerTimers -->
+
+        <!-- Module_ConfigLayout.SdBlacklistedVersions -->
+        <field>
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!IF "$BlackListedVersionsCount > 0"!][!//
+[!LOOP "SdInstance/*"!][!//
+[!LOOP "SdClientService/*/SdBlacklistedVersions/*"!][!//
+          <!-- [!"name(.)"!] -->
+          <field><int>[!"num:i(SdBlacklistedMinorVersion)"!]</int></field> <!-- SdBlacklistedMinorVersion -->
+[!ENDLOOP!][!//
+[!ENDLOOP!][!//
+[!ELSE!][!//
+          <!-- Dummy SdBlacklistedMinorVersion -->
+          <field><int>0</int></field> <!-- SdBlacklistedMinorVersion -->
+[!ENDIF!][!//
+[!ENDSELECT!]
+        </field>
+        <!-- Module_ConfigLayout.SdBlacklistedVersions -->
+		
+        <!-- Module_ConfigLayout.SdConfigString -->
+        <field>
+[!IF "$ConfigurationStringLen > 0"!][!//
+[!SELECT "as:modconf('Sd')[1]/SdConfig/*[1]"!][!//
+[!LOOP "SdInstance/*/SdClientService/*"!][!//
+[!IF "node:exists(../../SdInstanceHostname)"!][!//
+          <field><int>[!"num:i(string-length(../../SdInstanceHostname) + 9)"!]</int></field> <!-- substring length -->
+          <field><int>104</int></field> <!-- host  --> <field><int>111</int></field> <field><int>115</int></field> <field><int>116</int></field>
+          <field><int>110</int></field> <!-- name= --> <field><int>97</int></field> <field><int>109</int></field> <field><int>101</int></field> <field><int>61</int></field>
+[!FOR "x" = "1" TO "(num:i(string-length(../../SdInstanceHostname)))"!][!//
+          <field><int>[!CALL "AsciiToDecimal", "char" = "(substring(../../SdInstanceHostname, $x , 1))"!]</int></field> <!-- [!"substring(../../SdInstanceHostname, $x , 1)"!] -->
+[!ENDFOR!][!//
+[!ENDIF!][!//
+[!LOOP "SdClientCapabilityRecord/*"!][!//
+[!IF "node:exists(./SdClientServiceCapabilityRecordValue)"!][!//
+          <field><int>[!"num:i(string-length(./SdClientServiceCapabilityRecordKey) + string-length(./SdClientServiceCapabilityRecordValue) + 1)"!]</int></field> <!-- substring length -->
+[!FOR "x" = "1" TO "(num:i(string-length(./SdClientServiceCapabilityRecordKey)))"!][!//
+          <field><int>[!CALL "AsciiToDecimal", "char" = "(substring(./SdClientServiceCapabilityRecordKey, $x , 1))"!]</int></field> <!-- [!"substring(./SdClientServiceCapabilityRecordKey, $x , 1)"!] -->
+[!ENDFOR!][!//
+          <field><int>61</int></field> <!-- "="  -->
+[!FOR "x" = "1" TO "(num:i(string-length(./SdClientServiceCapabilityRecordValue)))"!][!//
+          <field><int>[!CALL "AsciiToDecimal", "char" = "(substring(./SdClientServiceCapabilityRecordValue, $x , 1))"!]</int></field> <!-- [!"substring(./SdClientServiceCapabilityRecordValue, $x , 1)"!] -->
+[!ENDFOR!][!//
+[!ELSE!][!//
+          <field><int>[!"num:i(string-length(./SdClientServiceCapabilityRecordKey))"!]</int></field> <!-- substring length -->
+[!FOR "x" = "1" TO "(num:i(string-length(./SdClientServiceCapabilityRecordKey)))"!][!//
+          <field><int>[!CALL "AsciiToDecimal", "char" = "(substring(./SdClientServiceCapabilityRecordKey, $x , 1))"!]</int></field> <!-- [!"substring(./SdClientServiceCapabilityRecordKey, $x , 1)"!] -->
+[!ENDFOR!][!//
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!ENDLOOP!][!//
+[!LOOP "SdInstance/*/SdServerService/*"!][!//
+[!IF "node:exists(../../SdInstanceHostname)"!][!//
+          <field><int>[!"num:i(string-length(../../SdInstanceHostname) + 9)"!]</int></field> <!-- substring length -->
+          <field><int>104</int></field> <!-- host  --> <field><int>111</int></field> <field><int>115</int></field> <field><int>116</int></field>
+          <field><int>110</int></field> <!-- name= --> <field><int>97</int></field> <field><int>109</int></field> <field><int>101</int></field> <field><int>61</int></field>
+[!FOR "x" = "1" TO "(num:i(string-length(../../SdInstanceHostname)))"!][!//
+          <field><int>[!CALL "AsciiToDecimal", "char" = "(substring(../../SdInstanceHostname, $x , 1))"!]</int></field> <!-- [!"substring(../../SdInstanceHostname, $x , 1)"!] -->
+[!ENDFOR!][!//
+[!ENDIF!][!//
+[!LOOP "SdServerCapabilityRecord/*"!][!//
+[!IF "node:exists(./SdServerCapabilityRecordValue)"!][!//
+          <field><int>[!"num:i(string-length(./SdServerCapabilityRecordKey) + string-length(./SdServerCapabilityRecordValue) + 1)"!]</int></field> <!-- substring length -->
+[!FOR "x" = "1" TO "(num:i(string-length(./SdServerCapabilityRecordKey)))"!][!//
+          <field><int>[!CALL "AsciiToDecimal", "char" = "(substring(./SdServerCapabilityRecordKey, $x , 1))"!]</int></field> <!-- [!"substring(./SdServerCapabilityRecordKey, $x , 1)"!] -->
+[!ENDFOR!][!//
+          <field><int>61</int></field> <!-- "="  -->
+[!FOR "x" = "1" TO "(num:i(string-length(./SdServerCapabilityRecordValue)))"!][!//
+          <field><int>[!CALL "AsciiToDecimal", "char" = "(substring(./SdServerCapabilityRecordValue, $x , 1))"!]</int></field> <!-- [!"substring(./SdServerCapabilityRecordValue, $x , 1)"!] -->
+[!ENDFOR!][!//
+[!ELSE!][!//
+          <field><int>[!"num:i(string-length(./SdServerCapabilityRecordKey))"!]</int></field> <!-- substring length -->
+[!FOR "x" = "1" TO "(num:i(string-length(./SdServerCapabilityRecordKey)))"!][!//
+          <field><int>[!CALL "AsciiToDecimal", "char" = "(substring(./SdServerCapabilityRecordKey, $x , 1))"!]</int></field> <!-- [!"substring(./SdServerCapabilityRecordKey, $x , 1)"!] -->
+[!ENDFOR!][!//
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!ENDLOOP!][!//
+[!ENDSELECT!][!//
+[!ELSE!][!//
+          <field><int>[!"num:i(0)"!]</int></field> <!-- dummy string -->
+[!ENDIF!][!//
+        </field>
+        <!-- Module_ConfigLayout.SdConfigString -->
+
+      </instance> <!-- Module_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+  </module>
+
+  <!-- Include the AUTOSAR standard data types, etc. -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+  <!-- Include the SoAd generated types. -->
+  <xi:include href="SoAd_CfgTypes.xgen" xpointer="element(/1/1)"/>
+
+
+</xgen>
+
+[!ENDCODE!]

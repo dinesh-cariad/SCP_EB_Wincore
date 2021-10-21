@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dem:events xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd"
+    xmlns:dem="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd">
+
+    <event name="CANSM_E_BUS_OFF"
+        base="as:modconf('CanSM')[1]/CanSMConfiguration/*[1]/CanSMManagerNetwork/*"
+        suffix="concat( '_',node:ref(./CanSMComMNetworkHandleRef)/ComMChannelId)">
+        <enable type="XPATH"
+            value="(as:modconf('CanSM')[1]/ReportToDem/CanSMBusOffReportToDem='DEM') and equals(node:name(node:ref(./CanSMDemEventParameterRefs/CANSM_E_BUS_OFF)), concat( 'CANSM_E_BUS_OFF_',node:ref(./CanSMComMNetworkHandleRef)/ComMChannelId))" />
+        <updateReference
+            value="./CanSMDemEventParameterRefs/CANSM_E_BUS_OFF" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceCounterBased" />
+        <counterDecrementStepSize value="1" />
+        <counterFailedThreshold value="1" />
+        <counterIncrementStepSize value="1" />
+        <counterJumpDown value="false" />
+        <counterJumpDownValue value="0" />
+        <counterJumpUp value="false" />
+        <counterJumpUpValue value="0" />
+        <counterPassedThreshold value="-128" />
+    </event>
+
+</dem:events>

@@ -1,0 +1,285 @@
+<%@ jet package="dreisoft.tresos.soad.generated.jet" class="SoAd_Cfg_h" skeleton="File.skeleton"
+        imports="dreisoft.tresos.soad.generator.output.precompile.PreCompileData
+        	dreisoft.tresos.soad.generator.output.flags.SoAd_SoConGroupTypeFlags
+            dreisoft.tresos.soad.generator.output.flags.SoAd_SoConStateTypeUpperFlags
+            dreisoft.tresos.soad.generator.output.flags.SoAd_SoConStateTypeLowerFlags
+            dreisoft.tresos.soad.generator.output.flags.ConnectionFlag
+            dreisoft.tresos.soad.generator.output.flags.DestinationFlag
+            dreisoft.tresos.soad.generator.output.flags.SoAd_PduRouteTypeFlag
+            dreisoft.tresos.soad.generator.output.flags.SoAd_SocketRouteTypeFlag
+            dreisoft.tresos.soad.generator.output.primitive.TypeVariantFactory
+            dreisoft.tresos.soad.generator.output.primitive.uint8.SoAd_PduRouteDestVirtualStateType
+            dreisoft.tresos.soad.generator.output.primitive.uint8.SoAd_SocketRxStateType
+            dreisoft.tresos.soad.generator.output.primitive.uint8.SoAd_SocketStateType
+            dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+
+    final PreCompileData preCompileData = (PreCompileData)context.gen.getVariable( PreCompileData.ARG_NAME,
+                                                                         PreCompileData.class,
+                                                                         null );
+    final String includeGuardName = getIncludeGuardName( context );
+%>
+<%@ include file="head.h.inc" %>
+
+/*==================[includes]==============================================*/
+
+#include <TSAutosar.h>              /* Global configuration */
+#include <ComStack_Types.h>
+#include <SoAd_DefProg_Cfg.h>
+
+/*==================[macros]================================================*/
+
+<%= defineMacro( "SOAD_PBCFGM_SUPPORT_ENABLED",
+        preCompileData.isPostBuildSupportEnabled(),
+        "switch reports that PbcfgM uses SoAd", NL ) %>
+
+<%= defineMacro( "SOAD_ISVALIDCONFIG_MMAP_ENABLED",
+        preCompileData.isPostBuildSupportEnabled() && preCompileData.isPbcfgMMapIsValidFunctionToMemSection(),
+        "switch reports that SoAd_IsValidConfig function shall be mapped to memory section SOAD_CODE_CC_BLOCK", NL ) %>
+
+<%= defineMacro( "SOAD_DEV_ERROR_DETECT",
+        preCompileData.isDevelopmentErrorDetectionEnabled(),
+        "Pre-processor switch for enabling development error detection.", NL ) %>
+
+<%= defineMacro( "SOAD_VERSION_INFO_API",
+        preCompileData.isVersionApiSupportEnabled(),
+        "Pre-processor switch for enabling version info API support.", NL ) %>
+
+<%= defineMacro( "SOAD_REPORT_SOAD_E_INV_PDUHEADER_ID",
+        preCompileData.isReportInvPDUHeaderIdToDetEnabled(),
+        "Pre-processor switch for enabling version info API support.", NL ) %>
+
+<%= defineMacro( "SOAD_IPV6_SUPPORT",
+        preCompileData.isIpV6Enabled(),
+        "Pre-processor switch for enabling version info API support.", NL ) %>
+
+<%= defineMacroWithoutDeclarationProtection( "SOAD_TIMERTYPE_MAX",
+        preCompileData.getMaxTimerVal().toString() + "U",
+        "Maximum value of SoAd_TimerType.", NL ) %>
+
+<%= defineMacro( "SOAD_META_DATA_HANDLING",
+        preCompileData.isEcucMetaDataHandlingEnabled(),
+        "Pre-prcoessor switch for enabling MetaDataHandling", NL ) %>
+
+<%= defineMacro( "SOAD_ENABLE_MAIN_FUNCTION_TX",
+        preCompileData.isSoAdEnableMainFunctionTxEnabled(),
+        "Pre-Processor switch for enabling SoAdEnableMainFunctionTx", NL ) %>
+
+<%= defineMacro( "SOAD_GETANDRESETMEASUREMENTDATA_API",
+        preCompileData.isSoAdGetAndResetMeasurementDataApiEnabled(),
+        "Pre-Processor switch for enabling SoAdGetAndResetMeasurementDataApi ", NL ) %>
+
+<%= defineMacro( "SOAD_TLS_ENABLED",
+        preCompileData.isSoAdTlsEnabled(),
+        "Pre-Processor switch for enabling SoAdTlsEnabled", NL) %>
+
+<%= defineMacroWithoutDeclarationProtection( "SOAD_SETUNIQUEREMOTEADDRCNT_MAX",
+        preCompileData.getMaxSetUniqueRemoteAddrCntVal().toString() + "U",
+        "Maximum value of SetUniqueRemoteCnt.", NL ) %>
+/*------------------[Invalid values for index types]------------------------*/
+
+<%= defineMacro( "SOAD_INVALID_ROUTE_ID",
+        preCompileData.getInvalidRouteId(),
+        "Max SoAd_RoutingGroupIdType value", NL ) %>
+        
+<%= defineMacro( "SOAD_INVALID_SOCKET_ROUTE_DEST_ID",
+        preCompileData.getInvalidSocketRouteDestId(),
+        "Max SoAd_SocketRouteDestIdType value", NL ) %>
+
+<%= defineMacro( "SOAD_INVALID_DEST_VIRTUAL_ID",
+        preCompileData.getInvalidVirtualRouteId(),
+        "Max SoAd_PduRouteDestVirtualIdType value", NL ) %>
+        
+<%= defineMacro( "SOAD_INVALID_PDUTXDATA_ID",
+        preCompileData.getInvalidPduTxDataId(),
+        "Invalid value for SoAd_PduTxDataIdType", NL ) %>
+        
+<%= defineMacro( "SOAD_INVALID_PDUTXTCPDATA_ID",
+        preCompileData.getInvalidPduTxTcpDataId(),
+        "Invalid value for SoAd_PduTxTcpDataIdType", NL ) %>
+
+<%= defineMacro( "SOAD_INVALID_SOCON_ID",
+        preCompileData.getInvalidSoConId(),
+        "Max SoAd_SoConIdType value", NL ) %>
+
+<%= defineMacro( "SOAD_INVALID_ROUTINGGROUP_ID",
+        preCompileData.getInvalidRoutingGroupId(),
+        "Max SoAd_RoutingGroupIdType value", NL ) %>
+
+<%= defineMacro( "SOAD_INVALID_FRAME_PRIO",
+        "255U",
+        "Max FramePriority value", NL ) %>
+
+<%= defineMacro( "SOAD_INVALID_TIMERVAL",
+        preCompileData.getInvalidTimerVal(),
+        "Invalid value for timers", NL ) %>
+
+<%= defineMacro( "SOAD_TLS_INVALID_CONNECTION_ID",
+        preCompileData.getInvalidTlsConnectionIdVal(),
+        "Invalid value for tlsConnectionIds", NL ) %>
+
+/*------------------[Flag type values]--------------------------------------*/
+
+<% for( SoAd_SoConStateTypeUpperFlags flag : SoAd_SoConStateTypeUpperFlags.values() ) { %>
+<% final String shift = String.format( "%s_SHIFT", flag.toString() ); %>
+<% final String mask = String.format( "%s_MASK", flag.toString() ); %>
+<% final String type = TypeVariantFactory.typeForEnum( SoAd_SoConStateTypeUpperFlags.class ); %>
+
+<%= defineMacro( shift,
+        flag.getValue(),
+        "The bit shift for socket connection upper flag " + flag.toString(), NL ) %>
+
+<%= defineMacro( mask,
+        "((" + type + ")(1UL << " + shift + "))",
+        "The bit mask for socket connection state upper flag " + flag.toString(), NL ) %>
+<% } %>
+
+<% for( SoAd_SoConGroupTypeFlags flag : SoAd_SoConGroupTypeFlags.values() ) { %>
+<% final String shift = String.format( "%s_SHIFT", flag.toString() ); %>
+<% final String mask = String.format( "%s_MASK", flag.toString() ); %>
+<% final String type = TypeVariantFactory.typeForEnum( SoAd_SoConGroupTypeFlags.class ); %>
+
+<%= defineMacro( shift,
+        flag.getValue(),
+        "The bit shift for socket connection group flag " + flag.toString(), NL ) %>
+
+<%= defineMacro( mask,
+        "((" + type + ")(1UL << " + shift + "))",
+        "The bit mask for socket connection group flag " + flag.toString(), NL ) %>
+<% } %>
+
+<% for( SoAd_SoConStateTypeLowerFlags flag : SoAd_SoConStateTypeLowerFlags.values() ) { %>
+<% final String shift = String.format( "%s_SHIFT", flag.toString() ); %>
+<% final String mask = String.format( "%s_MASK", flag.toString() ); %>
+<% final String type = TypeVariantFactory.typeForEnum( SoAd_SoConStateTypeLowerFlags.class ); %>
+
+<%= defineMacro( shift,
+        flag.getValue(),
+        "The bit shift for socket connection state lower flag " + flag.toString(), NL ) %>
+
+<%= defineMacro( mask,
+        "((" + type + ")(1UL << " + shift + "))",
+        "The bit mask for socket connection state lower flag " + flag.toString(), NL ) %>
+<% } %>
+
+<% for( ConnectionFlag flag : ConnectionFlag.values() ) { %>
+<% final String shift = String.format( "%s_SHIFT", flag.toString() ); %>
+<% final String mask = String.format( "%s_MASK", flag.toString() ); %>
+<% final String type = TypeVariantFactory.typeForEnum( ConnectionFlag.class ); %>
+
+<%= defineMacro( shift,
+        flag.getValue(),
+        "The bit shift for socket connection flag " + flag.toString(), NL ) %>
+
+<%= defineMacro( mask,
+        "((" + type + ")(1UL << " + shift + "))",
+        "The bit mask for socket connection flag " + flag.toString(), NL ) %>
+<% } %>
+
+<% for( SoAd_PduRouteTypeFlag flag : SoAd_PduRouteTypeFlag.values() ) { %>
+<% final String shift = String.format( "%s_SHIFT", flag.toString() ); %>
+<% final String mask = String.format( "%s_MASK", flag.toString() ); %>
+<% final String type = TypeVariantFactory.typeForEnum( SoAd_PduRouteTypeFlag.class ); %>
+
+<%= defineMacro( shift,
+        flag.getValue(),
+        "The bit shift for route flag " + flag.toString(), NL ) %>
+
+<%= defineMacro( mask,
+        "((" + type + ")(1UL << " + shift + "))",
+        "The bit mask for route flag " + flag.toString(), NL ) %>
+<% } %>
+<% for( SoAd_SocketRouteTypeFlag flag : SoAd_SocketRouteTypeFlag.values() ) { %>
+<% final String shift = String.format( "%s_SHIFT", flag.toString() ); %>
+<% final String mask = String.format( "%s_MASK", flag.toString() ); %>
+<% final String type = TypeVariantFactory.typeForEnum( SoAd_SocketRouteTypeFlag.class ); %>
+
+<%= defineMacro( shift,
+        flag.getValue(),
+        "The bit shift for route flag " + flag.toString(), NL ) %>
+
+<%= defineMacro( mask,
+        "((" + type + ")(1UL << " + shift + "))",
+        "The bit mask for route flag " + flag.toString(), NL ) %>
+<% } %>
+
+<% for( SoAd_SocketStateType.ValueType value : SoAd_SocketStateType.ValueType.values() ) { %>
+<% final String str = value.toString(); %>
+
+<%= defineMacro( str,
+        value.getValue(),
+        "Value of SoAd_SocketStateType " + str, NL ) %>
+<% } %>
+
+<% for( SoAd_PduRouteDestVirtualStateType.ValueType value : SoAd_PduRouteDestVirtualStateType.ValueType.values() ) { %>
+<% final String str = value.toString(); %>
+
+<%= defineMacro( str,
+        value.getValue(),
+        "Value of SoAd_PduRouteDestVirtualStateType " + str, NL ) %>
+<% } %>
+
+<% for( SoAd_SocketRxStateType.ValueType value : SoAd_SocketRxStateType.ValueType.values() ) { %>
+<% final String str = value.toString(); %>
+
+<%= defineMacro( str,
+        value.getValue(),
+        "Value of SoAd_SocketRxStateType " + str, NL ) %>
+<% } %>
+
+<% for( DestinationFlag flag : DestinationFlag.values() ) { %>
+<% final String shift = String.format( "%s_SHIFT", flag.toString() ); %>
+<% final String mask = String.format( "%s_MASK", flag.toString() ); %>
+<% final String type = TypeVariantFactory.typeForEnum( DestinationFlag.class ); %>
+
+<%= defineMacro( shift,
+        flag.getValue(),
+        "The bit shift for PDU route destination flag " + flag.toString(), NL ) %>
+
+<%= defineMacro( mask,
+        "((" + type + ")(1UL << " + shift + "))",
+        "The bit mask for PDU route destination flag " + flag.toString(), NL ) %>
+<% } %>
+/*------[Pre-processor switch to enable/diable relocatable postbuild config]------*/
+
+
+<%= defineMacro( "SOAD_RELOCATABLE_CFG_ENABLE",
+        preCompileData.isRelocatableConfigEnabled(),
+        "Derived from SoAdRelocatableCfgEnable", NL ) %>
+
+<%= defineMacro( "SOAD_CFG_SIGNATURE",
+        preCompileData.getConfigSignature(),
+        "Compile time verification value", NL ) %>
+
+<%= defineMacro( "SOAD_PUBLIC_INFO_SIGNATURE",
+        preCompileData.getPublicInfoSignature(),
+        "Compile time Published information verfication value", NL ) %>
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

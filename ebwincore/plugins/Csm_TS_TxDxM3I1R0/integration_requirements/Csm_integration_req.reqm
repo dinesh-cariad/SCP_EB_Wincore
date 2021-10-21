@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>Csm.Req.Integration_CsmInit</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Csm_Init() shall be called during the start-up procedure of the ECU before any other API of
+        the module is called.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>Csm.Req.Integration_UInt64_EB</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If
+        <ul>
+          <li>the Csm module is used within an EB tresos Studio configuration project AND</li>
+          <li>the Base module is included in this an EB tresos Studio configuration project AND</li>
+          <li>the Csm module configuration parameter Csm/CsmEbGeneral/CsmEbMisc/CsmEbAutosarApiVersion is configured to CSM_API_VERSION_430 or CSM_API_VERSION_431,</li>
+        </ul>
+       then the Base module configuration parameter Base/BaseTypes/BaseTypes64bit shall be configured to TRUE to provide the AUTOSAR datatype 'uint64' via 'Std_Types.h'.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>Csm.Req.Integration_UInt64_nonEB_or_nonBase</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If
+        <ul>
+          <li>the Csm module is NOT used within an EB tresos Studio configuration project AND</li>
+          <li>the Csm module configuration parameter Csm/CsmEbGeneral/CsmEbMisc/CsmEbAutosarApiVersion is configured to CSM_API_VERSION_430 or CSM_API_VERSION_431</li>
+        </ul>
+        OR
+        <ul>
+          <li>the Csm module is used within an EB tresos Studio configuration project AND</li>
+          <li>the Base module is NOT included in this an EB tresos Studio configuration project AND</li>
+          <li>the Csm module configuration parameter Csm/CsmEbGeneral/CsmEbMisc/CsmEbAutosarApiVersion is configured to CSM_API_VERSION_430 or CSM_API_VERSION_431,</li>
+        </ul>
+        then the AUTOSAR datatype 'uint64' has to be provided via 'Std_Types.h'.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>Csm.Req.Integration_PrimitiveJob</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        For each job configured in Csm module a corresponding primitive has to be provided.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>Csm.Req.Integration_Queue</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        For each job configured in Csm module a corresponding queue has to be provided.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>Csm.Req.Integration_KeyRefJob</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        For any primitive, except Hash, a key shall be referenced by the corresponding job. That means that a dummy key shall be provided even if some drivers might not need a key for a primitive (apart from Hash), e.g. a true random number generator.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+     <id>Csm.Req.Integration_KeyMgmt</id>
+     <status>approved</status>
+     <source>EB integration requirement</source>
+     <version>1</version>
+     <description>
+        Key management functions are only available if at least one key exists in the configuration. Otherwise, they are disabled via compiler switch and thus cannot be called. This applies to the following functions:
+        <ul>
+        <li>Csm_KeyElementSet</li>
+        <li>Csm_KeySetValid</li>
+        <li>Csm_KeyElementGet</li>
+        <li>Csm_KeyElementCopy</li>
+        <li>Csm_KeyCopy</li>
+        <li>Csm_KeyGenerate</li>
+        <li>Csm_KeyDerive</li>
+        <li>Csm_KeyExchangeCalcPubVal</li>
+        <li>Csm_KeyExchangeCalcSecret</li>
+        <li>Csm_CertificateParse</li>
+        <li>Csm_CertificateVerify</li>
+        <li>Csm_RandomSeed</li>
+        </ul>
+     </description>
+     
+   </specobject>
+
+  </specobjects>
+</specdocument>

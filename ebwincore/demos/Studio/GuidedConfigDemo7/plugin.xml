@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+   Plug-in with demos for the EB tresos Studio Public API.
+ -->
+
+  <!--
+    Standard module definition extension point
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+         id="GCDemo7_TS_T00D0M0I0R0"
+         name="Guided Config Demo7 Module Extension">
+
+    <module id="GCDemo7_TS_T00D0M0I0R0"
+            label="GCDemo7_TS_T00D0M0I0R0"
+            mandatory="false"
+            allowMultiple="false"
+            description="Description here"
+            copyright="(c) Elektrobit Automotive"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            relVersionMajor="2"
+            relVersionMinor="1"
+            relVersionPatch="0"
+            categoryType="GCDemo7"
+            categoryLayer="Examples"
+            categoryCategory="Demo"
+            categoryComponent="ECUC">
+       <ecuType target="Demo" derivate="GuidedConfig"/>
+    </module>
+   </extension>
+
+   <!--
+    extension point defining the schema and data structure of the module
+   -->
+   <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+              id="GCDemo7_TS_T00D0M0I0R0ConfExt"
+              name="GCDemo7_TS_T00D0M0I0R0 Config Extension">
+       <configuration moduleId="GCDemo7_TS_T00D0M0I0R0">
+
+         <!-- schema definition -->
+           <schema>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+               <resource value="config/GCDemo7_TS_T00D0M0I0R0.xdm"
+                         type="xdm"/>
+           </schema>
+
+           <!-- data definition -->
+           <data>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+               <schemaNode path="ASPath:/TS_T00D0M0I0R0/GCDemo7"/>
+           </data>
+
+           <!-- generic editor definition -->
+           <editor id="GCDemo7_TS_T00D0M0I0R0Editor"
+                   label="GCDemo7_TS_T00D0M0I0R0"
+                   tooltip="Editor for the GCDemo7_TS_T00D0M0I0R0Editor module">
+               <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+                 <parameter name="schema" value="ASPath:/TS_T00D0M0I0R0/GCDemo7"/>
+                 <parameter name="title" value="GCDemo7_TS_T00D0M0I0R0Editor editor"/>
+               </class>
+           </editor>
+       </configuration>
+   </extension>
+
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+     <guidedconfigwizard id="guidedDemo7">
+        <backend class="dreisoft.tresos.guidedconfig.demo7.Demo7Backend"/>
+        <gui class="dreisoft.tresos.guidedconfig.demo7.Demo7Page"/>
+        <resultGui
+              class="dreisoft.tresos.guidedconfig.api.gui.page.ChangedDCtxtsResultWidget"
+              plugin="dreisoft.tresos.guidedconfig.api.plugin">
+        </resultGui>
+     </guidedconfigwizard>
+  </extension>
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.trigger">
+     <trigger>
+        <autoconfigure
+              id="guidedDemo7"
+              wizardId="guidedDemo7">
+           <visibility>
+              <and>
+                 <with variable="ECUConfigContext.target">
+                    <equals value="Demo"/>
+                 </with>
+                 <with variable="ECUConfigContext.moduleType.GCDemo7">
+                    <equals value="true"/>
+                 </with>
+              </and>
+           </visibility>
+           <display
+                 label="Demo7 Autoconfiguration"
+                 tooltip="Demo7 Autoconfiguration">
+           </display>
+        </autoconfigure>
+     </trigger>
+  </extension>
+
+
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+     <pushoperation
+           desc="example Autoconfigure Operation"
+           id="Demo7AutoconfigureOperation"
+           name="Example Autoconfigure Operation">
+        <operationclass
+              class="dreisoft.tresos.guidedconfig.demo7.ExampleAutoconfigureOperation">
+        </operationclass>
+        <event>
+            <with variable="class">
+                <equals value="dreisoft.tresos.guidedconfig.demo7.ExampleAutoconfigureEvent"/>
+            </with>
+        </event>
+     </pushoperation>
+  </extension>
+
+</plugin>

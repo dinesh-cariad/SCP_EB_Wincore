@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR SomeIpXf_TS_TxDxM1I0R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="SomeIpXf_TS_TxDxM1I0R0_ModuleId"
+             name="SomeIpXf_TS_TxDxM1I0R0 Module">
+    <module id="SomeIpXf_TS_TxDxM1I0R0"
+            label="SomeIpXf"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-Transformers: AUTOSAR SomeIpXf module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="0"
+            swVersionPatch="47"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="2"
+            specVersionPatch="1"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="2"
+            relVersionPatch="1"
+            categoryType="SomeIpXf"
+            categoryLayer="Communication Services"
+            categoryCategory="Com Services"
+            categoryComponent="ECUC">
+      <cluster name="Serializing Transformers"/>
+<cluster name="Transformers"/>
+    </module>
+  </extension>
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="SomeIpXf_TS_TxDxM1I0R0_ConfigId"
+             name="SomeIpXf_TS_TxDxM1I0R0 Configuration">
+    <configuration moduleId="SomeIpXf_TS_TxDxM1I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/SomeIpXf.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/SomeIpXf_TS_TxDxM1I0R0/Xfrm"/>
+      </data>
+
+      <editor id="SomeIpXf_TS_TxDxM1I0R0_EditorId"
+              label="Default"
+              tooltip="ACG-Transformers: AUTOSAR SomeIpXf module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/SomeIpXf_TS_TxDxM1I0R0/Xfrm"/>
+          <parameter name="title" value="SomeIpXf"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="SomeIpXf_TS_TxDxM1I0R0_GeneratorId"
+             name="SomeIpXf_TS_TxDxM1I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="SomeIpXf_TS_TxDxM1I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="SomeIpXf_TS_TxDxM1I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+
+
+
+</plugin>

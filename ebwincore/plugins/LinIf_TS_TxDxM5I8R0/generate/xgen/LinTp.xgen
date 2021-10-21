@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?module LinTp?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+[!CODE!]
+[!AUTOSPACING!]
+[!IF "LinIfGeneral/LinIfTpSupported = 'true'"!]
+[!INCLUDE "../include/LinIf_Macros.m"!]
+[!INCLUDE "../include/LinIf_Checks.m"!]
+
+[!VAR "numTpTxPdus"="count(as:modconf('LinTp')[1]/LinTpGlobalConfig/*[1]/LinTpTxNSdu/*)"!]
+[!VAR "numTpRxPdus"="count(as:modconf('LinTp')[1]/LinTpGlobalConfig/*[1]/LinTpRxNSdu/*)"!]
+[!IF "$numChannelsMaster > 0"!]
+[!VAR "numPendingFrames"= "as:modconf('LinTp')[1]/LinTpGlobalConfig/*[1]/LinTpMaxNumberOfRespPendingFrames"!]
+[!VAR "P2Max"!][!CALL "TimeoutToTicks", "Time"="as:modconf('LinTp')[1]/LinTpGlobalConfig/*[1]/LinTpP2Max"!][!ENDVAR!]
+[!VAR "P2Timing"!][!CALL "TimeoutToTicks", "Time"="as:modconf('LinTp')[1]/LinTpGlobalConfig/*[1]/LinTpP2Timing"!][!ENDVAR!]
+[!ENDIF!]
+[!VAR "numChCfg"="count(as:modconf('LinTp')[1]/LinTpGlobalConfig/*[1]/LinTpChannelConfig/*)"!]
+[!IF "($numTpTxPdus = 0) and ($numTpRxPdus = 0)"!][!ERROR "LinTp: Please define at least one Tx or Rx PDU"!][!ENDIF!]
+
+[!VAR "LINTP_NCR_DISABLED"="num:i(0)"!]
+[!VAR "LINTP_NCS_DISABLED"="num:i(0)"!]
+[!VAR "LINTP_P2TIMING_DISABLED"="num:i(0)"!]
+[!VAR "LINTP_NAS_DISABLED"="num:i(0)"!]
+[!VAR "LINTP_RXNSDUNAD_ZERO"="num:i(0)"!]
+[!VAR "LINTP_TXNSDUNAD_ZERO"="num:i(0)"!]
+[!VAR "LINTP_SCHEDULE_CHANGE_DIAG"="num:i(1)"!]
+[!VAR "LINTP_SCHEDULE_CHANGE_DIAG_FALSE"="num:i(0)"!]
+[!VAR "LINTP_DROP_NOT_REQ_NAD"="num:i(2)"!]
+[!VAR "LINTP_DROP_NOT_REQ_NAD_FALSE"="num:i(0)"!]
+[!ENDIF!]
+
+  <module name="LinTp" version="[!"$moduleSoftwareVer"!]">
+    <configuration class="PreCompile">
+      <?artifact directory="include" file="LinTp_CfgTypes.h" type="types-h" ?>
+      <parameter name="relocatable-enable">
+        <boolean-value>
+[!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('LinTp')) = 'true'"!][!//
+        [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!]true[!ELSE!]false[!ENDIF!]
+[!ELSE!][!//
+        [!IF "as:modconf('LinTp')[1]/LinTpGeneral/LinTpRelocatablePbcfgEnable = 'true'"!]true[!ELSE!]false[!ENDIF!]
+[!ENDIF!][!//
+        </boolean-value>
+      </parameter>
+[!IF "LinIfGeneral/LinIfTpSupported = 'true'"!]
+      <type name="LinTp_ConfigType">
+        <struct>
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform." />
+          <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration." />
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the pre-compile time configuration." />
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate published information configuration." />
+          [!IF "$numChannelsMaster > 0"!]
+          <member name="LinTpMaxNumberOfRespPendingFrames" type="uint16" comment="Configures the maximum number of allowed response pending frames." />
+          <member name="LinTpP2Max" type="uint16" comment="P2 Timeout when a response pending frame is expected in seconds." />
+          <member name="LinTpP2Timing" type="uint16" comment="Definition of the P2 timeout observation parameter in seconds." />
+          [!ENDIF!]
+          <member name="LinTpNumberOfRxNSdu" type="uint16" comment="Number of transport protocol messages that can be received for all channels this node is connected to." />
+          <member name="LinTpNumberOfTxNSdu" type="uint16" comment="Number of transport protocol messages that can be transmitted for all channels this node is connected to." />
+          <member name="TxNSduRef" type="LinTpTxNSduType" comment="Reference to array of TX-NSDUs." >
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="RxNSduRef" type="LinTpRxNSduType" comment="Reference to array of RX-NSDUs." >
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+        </struct>
+      </type>
+
+      <type name="LinTpTxNSduType">
+        <struct>
+          <member name="PduRDestPduHandleId" type="uint16" comment="The identifier of the Transport Protocol message. This ID will be the one that is communicated with upper layers." />
+          <member name="LinTpNcs" type="uint16" comment="Value in LinIfTimeBase ticks of the N_Cs timeout." />
+          <member name="LinTpNas" type="uint16" comment="Value in LinIfTimeBase ticks of the N_As timeout." />
+          <member name="LinIfChannel" type="uint8" comment="LinIf channel over which the transport protocol message is transmitted" />
+          [!IF "$numChannelsMaster > 0"!]
+          <member name="LinTpTxNSduNad" type="uint8" comment="Node Address" />
+          <member name="LinTpOptions" type="uint8" comment="Bit0: BswM_LinTp_RequestMode" />
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="LinTpRxNSduType">
+        <struct>
+          <member type="uint16" name="PduRScrPduHandleId" comment="The identifier of the Transport Protocol message. This ID will be the one that is communicated with upper layers." />
+          <member type="uint16" name="LinTpNcr" comment="Value in LinIfTimeBase ticks of the N_Cr timeout." />
+          <member type="uint8" name="LinIfChannel" comment="LinIf channel over which the transport protocol message is received." />
+          [!IF "$numChannelsMaster > 0"!]
+          <member type="uint8" name="LinTpRxNSduNad" comment="Node Address" />
+          <member type="uint8" name="LinTpOptions" comment="Bit0: BswM_LinTp_RequestMode, Bit1: LinTpDropNotReqNad" />
+          [!ENDIF!]
+        </struct>
+      </type>
+[!ENDIF!]
+      </configuration>
+    <configuration class="PostBuild">
+      <?artifact directory="include" file="LinTp_PBcfg.h" type="postbuild-h" ?>
+      <?artifact directory="src" file="LinTp_PBcfg.c" type="postbuild-c" ?>
+[!IF "LinIfGeneral/LinIfTpSupported = 'true'"!]
+      <type name="LinTp_ConfigLayoutType">
+        <struct>
+          <member type="LinTp_ConfigType" name="RootCfg" />
+          [!IF "$numTpTxPdus > 0"!]
+          <member type="LinTpTxNSduType" name="LinTp_TxNSdu" count="[!"num:i($numTpTxPdus)"!]" />
+          [!ENDIF!]
+          [!IF "$numTpRxPdus > 0"!]
+          <member type="LinTpRxNSduType" name="LinTp_RxNSdu" count="[!"num:i($numTpRxPdus)"!]" />
+          [!ENDIF!]
+        </struct>
+      </type>
+
+
+      <type name="LinTp_ConstConfigLayoutType">
+        <reference type="LinTp_ConfigLayoutType">
+          <compiler-abstraction>
+            <const memory-class="LINTP_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <memory-section  name="CONFIG_DATA_UNSPECIFIED">
+        <instance type="LinTp_ConstConfigLayoutType" name="LinTp_ConfigLayout">
+          <parameter name="postbuild-configuration-name">
+            <symbolic-value>[!"as:modconf('LinTp')[1]/LinTpGlobalConfig/*[1]/@name"!]</symbolic-value>
+          </parameter>
+
+          <field>
+            <field>
+              <int>[!"asc:getPlatformSignature()"!]</int>
+            </field>
+            <field>
+              <int>[!"asc:getConfigSignature(as:modconf('LinTp')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+            </field>
+            <field>
+              <int>[!"asc:getConfigSignature(as:modconf('LinTp')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int>
+            </field>
+            <field>
+              <int>[!"asc:getConfigSignature(node:difference(as:modconf('LinTp')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('LinTp')[1]/CommonPublishedInformation/Release))"!]</int>
+            </field>
+            [!IF "$numChannelsMaster > 0"!]
+            <field>
+              <int>[!"num:i($numPendingFrames + 1.0)"!]</int>
+            </field>
+            <field>
+              <int>[!"num:i($P2Max)"!]</int>
+            </field>
+            <field>
+              <int>
+            [!IF "num:i($P2Timing) = 0"!][!"$LINTP_P2TIMING_DISABLED"!][!ELSE!][!"num:i($P2Timing)"!][!ENDIF!]
+              </int>
+            </field>
+            [!ENDIF!]
+            <field>
+              <int>[!"num:i($numTpRxPdus)"!]</int>
+            </field>
+            <field>
+              <int>[!"num:i($numTpTxPdus)"!]</int>
+            </field>
+            <field>
+              <ref>
+            [!IF "$numTpTxPdus > 0"!]
+                <struct-field name="LinTp_TxNSdu" />
+                <array-field index="0" />
+            [!ENDIF!]
+              </ref>
+            </field>
+            <field>
+              <ref>
+            [!IF "$numTpRxPdus > 0"!]
+                <struct-field name="LinTp_RxNSdu" />
+                <array-field index="0" />
+            [!ENDIF!]
+              </ref>
+            </field>
+          </field>
+
+          [!IF "$numTpTxPdus > 0"!]
+          <field>
+            [!LOOP "node:order(as:modconf('LinTp')[1]/LinTpGlobalConfig/*[1]/LinTpTxNSdu/*, 'LinTpTxNSduId')"!]
+              [!VAR "PduRDestPduHandleId"="as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef = node:current()/LinTpTxNSduPduRef]/PduRDestPduHandleId"!]
+                [!IF "$PduRDestPduHandleId=''"!][!ERROR!] The LinTpTxNSdu '[!"node:name(.)"!]' does not have an associated PduDestPdu container referenced by the same EcuC reference. [!ENDERROR!][!ENDIF!]
+                [!IF "node:exists(LinTpNcs)"!]
+                  [!VAR "LinTpNcs"!][!CALL "TimeoutToTicks", "Time"="LinTpNcs"!][!ENDVAR!]
+                [!ELSE!]
+                  [!VAR "LinTpNcs"="0"!]
+                [!ENDIF!]
+                [!IF "node:exists(LinTpNas)"!]
+                  [!VAR "LinTpNas"!][!CALL "TimeoutToTicks", "Time"="LinTpNas"!][!ENDVAR!]
+                [!ELSE!]
+                  [!VAR "LinTpNas"="0"!]
+                [!ENDIF!]
+                [!IF "$numChannelsMaster > 0"!]
+                [!IF "node:exists(LinTpTxNSduNad)"!]
+                  [!VAR "LinTp_Nad"="num:i(LinTpTxNSduNad)"!]
+                [!ELSE!]
+                  [!VAR "LinTp_Nad"="$LINTP_TXNSDUNAD_ZERO"!]
+                [!ENDIF!]
+                [!ENDIF!]
+            <field>
+              <field>
+                <int>[!"num:i($PduRDestPduHandleId)"!]</int>
+              </field>
+              <field>
+                <int>
+              [!IF "num:i($LinTpNcs) = 0"!][!"$LINTP_NCS_DISABLED"!][!ELSE!][!"num:i($LinTpNcs)"!][!ENDIF!]
+                </int>
+              </field>
+              <field>
+                <int>
+              [!IF "num:i($LinTpNas) = 0"!][!"$LINTP_NAS_DISABLED"!][!ELSE!][!"num:i($LinTpNas)"!][!ENDIF!]
+                </int>
+              </field>
+              <field>
+                <int>[!"num:i(as:ref(LinTpTxNSduChannelRef)/LinIfChannelId)"!]</int>
+              </field>
+              [!IF "$numChannelsMaster > 0"!]
+              <field>
+                <int>[!"$LinTp_Nad"!]</int>
+              </field>
+              <field>
+                <int>
+              [!IF "as:ref(LinTpTxNSduTpChannelRef)/LinTpScheduleChangeDiag = 'true'"!]
+                [!"$LINTP_SCHEDULE_CHANGE_DIAG"!]
+              [!ELSE!]
+                [!"$LINTP_SCHEDULE_CHANGE_DIAG_FALSE"!]
+              [!ENDIF!]
+                </int>
+              </field>
+              [!ENDIF!]
+            </field>
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "$numTpRxPdus > 0"!]
+          <field>
+            [!LOOP "node:order(as:modconf('LinTp')[1]/LinTpGlobalConfig/*[1]/LinTpRxNSdu/*, 'LinTpRxNSduId')"!]
+            [!VAR "PduRScrPduHandleId"="as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRSrcPdu[PduRSrcPduRef = node:current()/LinTpRxNSduPduRef]/PduRSourcePduHandleId"!]
+            [!IF "$PduRScrPduHandleId=''"!][!ERROR!] The LinTpRxNSdu '[!"node:name(.)"!]' does not have an associated PduRSrcPdu container referenced by the same EcuC reference. [!ENDERROR!][!ENDIF!]
+            [!IF "node:exists(LinTpNcr)"!]
+                [!VAR "LinTp_Ncr"!][!CALL "TimeoutToTicks", "Time"="LinTpNcr"!][!ENDVAR!]
+            [!ELSE!]
+                [!VAR "LinTp_Ncr"="0"!]
+            [!ENDIF!]
+            [!IF "$numChannelsMaster > 0"!]
+              [!IF "node:exists(LinTpRxNSduNad)"!]
+                [!VAR "LinTp_Nad" = "num:i(LinTpRxNSduNad)"!]
+              [!ELSE!]
+                [!VAR "LinTp_Nad" = "$LINTP_RXNSDUNAD_ZERO"!]
+              [!ENDIF!]
+            [!ENDIF!]
+            <field>
+              <field>
+                <int>[!"num:i($PduRScrPduHandleId)"!]</int>
+              </field>
+              <field>
+                <int>
+              [!IF "num:i($LinTp_Ncr) = 0"!][!"$LINTP_NCR_DISABLED"!][!ELSE!][!"num:i($LinTp_Ncr)"!]
+              [!ENDIF!]
+                </int>
+              </field>
+              <field>
+                <int>[!"num:i(as:ref(LinTpRxNSduChannelRef)/LinIfChannelId)"!]</int>
+              </field>
+              [!IF "$numChannelsMaster > 0"!]
+              <field>
+                <int>[!"$LinTp_Nad"!]</int>
+              </field>
+              <field>
+                <int>
+              [!IF "as:ref(LinTpRxNSduTpChannelRef)/LinTpScheduleChangeDiag = 'true' and as:ref(LinTpRxNSduTpChannelRef)/LinTpDropNotRequestedNad = 'true'"!]
+                [!"num:i($LINTP_SCHEDULE_CHANGE_DIAG + $LINTP_DROP_NOT_REQ_NAD)"!]
+              [!ELSEIF "as:ref(LinTpRxNSduTpChannelRef)/LinTpScheduleChangeDiag = 'true' and as:ref(LinTpRxNSduTpChannelRef)/LinTpDropNotRequestedNad = 'false'"!]
+                [!"num:i($LINTP_SCHEDULE_CHANGE_DIAG + $LINTP_DROP_NOT_REQ_NAD_FALSE)"!]
+              [!ELSEIF "as:ref(LinTpRxNSduTpChannelRef)/LinTpScheduleChangeDiag = 'false' and as:ref(LinTpRxNSduTpChannelRef)/LinTpDropNotRequestedNad = 'true'"!]
+                [!"num:i($LINTP_SCHEDULE_CHANGE_DIAG_FALSE + $LINTP_DROP_NOT_REQ_NAD)"!]
+              [!ELSE!]
+                [!"num:i($LINTP_SCHEDULE_CHANGE_DIAG_FALSE + $LINTP_DROP_NOT_REQ_NAD_FALSE)"!]
+              [!ENDIF!]
+                </int>
+              </field>
+              [!ENDIF!]
+            </field>
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+        </instance>
+      </memory-section>
+[!ENDIF!]
+    </configuration>
+  </module>
+[!ENDCODE!]
+  <xi:include href="Base.xgen" xpointer="element(/1/1)" />
+</xgen>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+    <guidedconfigwizard id="BswMAsEditor1.25.1" basePathPlugin="BswMAsExt_TS_TxDxM1I25R0">
+      <gui class="eb.tresos.bswmas.page.BswMEditorMultiPage"/>
+      <backend class="eb.tresos.bswmas.backend.BswMEditorBackend"/>
+    </guidedconfigwizard>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation desc="Writing BswM ECU configuration (AUTOSAR 4.0)" id="BswMAs_TS_TxDxM1I25R0_PushBswMConfigOperation40" name="Writing BswM ECU configuration (AUTOSAR 4.0)">
+      <operationclass class="eb.tresos.bswmas.pushservice.operations.PushConfigOperation">
+      </operationclass>
+      <event>
+        <with variable="class">
+          <equals value="eb.tresos.bswmas.pushservice.events.BswMPushEvent"/>
+        </with>
+      </event>
+    </pushoperation>
+    <pushoperation desc="Loading ECU configuration into BswM Editor" id="BswMAs_TS_TxDxM1I25R0_PullEcuConfigOperation" name="Loading ECU configuration into BswM Editor">
+      <operationclass class="eb.tresos.bswmas.pushservice.operations.PullConfigOperation">
+      </operationclass>
+      <event>
+        <with variable="class">
+          <equals value="eb.tresos.bswmas.pushservice.events.BswMPullEvent"/>
+        </with>
+      </event>
+    </pushoperation>
+  </extension>
+  
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="BswMAs_TS_TxDxM1I25R0_ConfigId"
+             name="BswMAs_TS_TxDxM1I25R0 Configuration">
+    <configuration moduleId="BswM_TS_TxDxM1I15R0">
+
+      <editor id="BswM_TS_TxDxM1I15R0_AsEditorId"
+              label="BswM Editor"
+              tooltip="Edit the BswM module configuration">
+          <class class="dreisoft.tresos.guidedconfig.api.gui.editor.GuidedConfigEditor"
+                 plugin="dreisoft.tresos.guidedconfig.api.plugin">
+          <!-- value of wizardId must not contain an underscore -->
+          <parameter name="wizardId" value="BswMAsEditor1.25.1"/>
+        </class>
+      </editor>
+
+    </configuration>
+  </extension>
+</plugin>

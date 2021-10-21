@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+
+    <mainFunction name="BswM_MainFunction" base="as:modconf( 'BswM' )[1]/BswMGeneral">
+        <header value="BswM.h" />
+        <cycleTime type="XPATH" value="node:when( node:exists( ./BswMMainFunctionPeriod ), ./BswMMainFunctionPeriod, 0.02 )" />
+        <taskPrefix value="SchMDiagStateTask" />
+        <taskPriority value="50" />
+        <callBefore>
+            <mainFunction>Dem_MainFunction</mainFunction>
+            <mainFunction>FiM_MainFunction</mainFunction>
+            <mainFunction>ComM_MainFunction</mainFunction>
+            <mainFunction>CanSM_MainFunction</mainFunction>
+            <mainFunction>FrSM_MainFunction</mainFunction>
+            <mainFunction>Nm_MainFunction</mainFunction>
+            <mainFunction>CanNm_MainFunction</mainFunction>
+            <mainFunction>FrNm_MainFunction</mainFunction>
+            <mainFunction>LinSM_MainFunction</mainFunction>
+            <mainFunction>RamTst_MainFunction</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>EcuM_MainFunction</mainFunction>
+        </callAfter>
+    </mainFunction>
+</schm:mainFunctions>

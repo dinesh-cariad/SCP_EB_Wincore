@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR SoAd_TS_TxDxM1I8R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="SoAd_TS_TxDxM1I8R0_ModuleId"
+             name="SoAd_TS_TxDxM1I8R0 Module">
+    <module id="SoAd_TS_TxDxM1I8R0"
+            label="SoAd"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-IPStack: AUTOSAR SoAd module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="8"
+            swVersionPatch="16"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="2"
+            specVersionPatch="2"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="2"
+            relVersionPatch="2"
+            categoryType="SoAd"
+            categoryLayer="Communication Services"
+            categoryCategory="Communication"
+            categoryComponent="ECUC">
+      <cluster name="Ethernet Stack"/>
+    </module>
+  </extension>
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="SoAd_TS_TxDxM1I8R0_ConfigId"
+             name="SoAd_TS_TxDxM1I8R0 Configuration">
+    <configuration moduleId="SoAd_TS_TxDxM1I8R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/SoAd.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the recommended configuration SoAdRecConfigurationDflt -->
+        <resource value="config_ext/SoAdRecConfigurationDflt.xdm" type="xdm" id="res_SoAdRecConfigurationDflt"/>
+        <recconfig
+          name="SoAdRecConfigurationDflt"
+          default="true"
+          description="PduR, Sd, and DoIP enabled"
+          resourceId="res_SoAdRecConfigurationDflt"
+          path="ASPath:/TS_TxDxM1I8R0/SoAdRecConfigurationDflt"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM1I8R0/SoAd"/>
+      </data>
+
+      <editor id="SoAd_TS_TxDxM1I8R0_EditorId"
+              label="Default"
+              tooltip="ACG-IPStack: AUTOSAR SoAd module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM1I8R0/SoAd"/>
+          <parameter name="title" value="SoAd"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_SoAd_TS_TxDxM1I8R0"
+           moduleId="SoAd_TS_TxDxM1I8R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.SoAdTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="SoAd_TS_TxDxM1I8R0_GeneratorId"
+             name="SoAd_TS_TxDxM1I8R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="SoAd_TS_TxDxM1I8R0_TemplateBasedCodeGeneratorId"
+               moduleId="SoAd_TS_TxDxM1I8R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_SoAd_TS_TxDxM1I8R0"
+        name="SoAd service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="SoAd" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/SoAd_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.SoAd_TS_TxDxM1I8R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.2" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="SoAd_TS_TxDxM1I8R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+
+
+
+
+
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="SoAdTxPduId_SoAd_TS_TxDxM1I8R0"
+    name="SoAd/SoAdTxPduId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="SoAd_TS_TxDxM1I8R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I8R0/ELEMENTS/SoAd/SoAdConfig/SoAdConfig/SoAdPduRoute"/>
+            <parameter name="idPath" value="SoAdTxPduId"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.SoAd_TS_TxDxM1I8R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                  <equals value="4.2"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="SoAdRxPduId_SoAd_TS_TxDxM1I8R0"
+    name="SoAd/SoAdRxPduId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="SoAd_TS_TxDxM1I8R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I8R0/ELEMENTS/SoAd/SoAdConfig/SoAdConfig/SoAdSocketRoute/SoAdSocketRoute/SoAdSocketRouteDest"/>
+              <parameter name="idPath" value="SoAdRxPduId"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.SoAd_TS_TxDxM1I8R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                  <equals value="4.2"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="SoAdSocketId_SoAd_TS_TxDxM1I8R0"
+    name="SoAd/SoAdSocketId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="SoAd_TS_TxDxM1I8R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I8R0/ELEMENTS/SoAd/SoAdConfig/SoAdConfig/SoAdSocketConnectionGroup/SoAdSocketConnectionGroup/SoAdSocketConnection"/>
+            <parameter name="idPath" value="SoAdSocketId"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.SoAd_TS_TxDxM1I8R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                  <equals value="4.2"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="SoAdRoutingGroupId_SoAd_TS_TxDxM1I8R0"
+    name="SoAd/SoAdRoutingGroupId"
+    desc="">
+        <operationclass class="dreisoft.tresos.hidwiz.api.SimpleHandleIdGroupByXPathPushOperation">
+            <parameter name="moduleId" value="SoAd_TS_TxDxM1I8R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I8R0/ELEMENTS/SoAd/SoAdConfig/SoAdConfig/SoAdRoutingGroup"/>
+            <parameter name="idPath" value="SoAdRoutingGroupId"/>
+            <parameter name="groupBy" value="SoAdRoutingGroupTxTriggerable"/>
+            <parameter name="sortOrder" value="true, false"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.SoAd_TS_TxDxM1I8R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                  <equals value="4.2"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- Generator used to generate all code-templates within a directory the code-templates do all have access to the
+       name of the generated variant but the name of the generated file cannot be influenced directly - if required,
+       renaming a file can e.g. be done by a script run as post-generator
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+              id="SoAd_TS_TxDxM1I8R0_Gen_Template">
+    <generator moduleId="SoAd_TS_TxDxM1I8R0"
+               id="SoAd_TS_TxDxM1I8R0_Gen_TemplateId"
+               modes="generate,Template_withPostRename"
+               class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator">
+      <parameter name="mode_type" mode="Template_withPostRename" value="generate"/>
+
+      <!-- common template path parameters -->
+      <parameter name="templates" mode="generate,verify" value="generate_var"/>
+
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+
+    </generator>
+  </extension>
+
+  <!-- NGGenerator which calls a common ant-script within the ant-script it is also possible to call tresos Studio
+       generators in the example-script, a single code-template file is generated with a custom file-name (depending
+       on the variants name)
+  -->
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+    id="SoAd_TS_TxDxM1I8R0_Gen_NG">
+  <generator class="dreisoft.tresos.generator.ng.api.NGGenerator"
+    id="SoAd_TS_TxDxM1I8R0_Gen_NGId"
+    moduleId="SoAd_TS_TxDxM1I8R0"
+    modes="generate,NG_PostfixAndMove"
+    step="post">
+
+    <!-- Specify the ant build script as parameter to the NGGenerator. -->
+    <parameter name="buildfile" value="resources/generator.xml"/>
+
+    <!-- only having this parameter set to true, a generator is called once for each variant! -->
+    <parameter name="variantAware" value="true"/>
+  </generator>
+  </extension>
+
+</plugin>

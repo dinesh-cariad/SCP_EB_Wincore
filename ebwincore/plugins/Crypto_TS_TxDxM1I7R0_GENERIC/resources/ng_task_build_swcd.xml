@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="Crypto" default="all" basedir=".">
+
+  <!-- include ant-contrib -->
+  <taskdef resource="net/sf/antcontrib/antlib.xml">
+    <classpath>
+      <fileset dir="."/>
+    </classpath>
+  </taskdef>
+
+  <!-- to upper case -->
+  <scriptdef language="javascript" name="upper">
+    <attribute name="string" />
+    <attribute name="to" />
+    project.setProperty(attributes.get("to"),attributes.get("string").toUpperCase());
+  </scriptdef>
+
+  <!-- to lower case -->
+  <scriptdef language="javascript" name="lower">
+    <attribute name="string" />
+    <attribute name="to" />
+    project.setProperty(attributes.get("to"),attributes.get("string").toLowerCase());
+  </scriptdef>
+
+  <!-- set properties -->
+  <ng.getgeneratorvar name="tresosBase"        property="genTresosBase" />
+  <ng.getgeneratorvar name="module"            property="genModule"     />
+  <ng.getgeneratorvar name="pluginPath"        property="genPluginDir"  />
+  <ng.getgeneratorvar name="outputDir"         property="genOutputDir"  />
+  <ng.property        name="cfgApiInfix.camel" xpath="node:value(./CommonPublishedInformation/VendorApiInfix)" />
+  <if> <!-- ant-contrib feature -->
+    <equals arg1="${cfgApiInfix.camel}" arg2="" />
+    <then><ng.property name="cfgVendorId.camel" xpath="string('')"                                        /></then>
+    <else><ng.property name="cfgVendorId.camel" xpath="node:value(./CommonPublishedInformation/VendorId)" /></else>
+  </if>
+  <upper string="${cfgApiInfix.camel}" to="cfgApiInfix.upper" /> <!-- custom feature -->
+  <upper string="${cfgVendorId.camel}" to="cfgVendorId.upper" /> <!-- custom feature -->
+  <lower string="${cfgApiInfix.camel}" to="cfgApiInfix.lower" /> <!-- custom feature -->
+  <lower string="${cfgVendorId.camel}" to="cfgVendorId.lower" /> <!-- custom feature -->
+
+ <!-- macro -->
+  <macrodef name="filenames_prepare">
+    <attribute name="file" />
+    <sequential>
+      <var      name="file.org"          value="@{file}"    /> <!-- ant-contrib feature -->
+      <basename property="file.org.name" file="${file.org}" />
+      <dirname  property="file.org.dir"  file="${file.org}" />
+      <if> <!-- ant-contrib feature -->
+        <equals arg1="${cfgApiInfix.camel}" arg2="" />
+        <then><propertyregex property="file.new.name" input="${file.org.name}" regexp="_xVIx_xAIx" replace=""                                           global="true" defaultValue="${file.org.name}" /></then>
+        <else><propertyregex property="file.new.name" input="${file.org.name}" regexp="_xVIx_xAIx" replace="_${cfgVendorId.camel}_${cfgApiInfix.camel}" global="true" defaultValue="${file.org.name}" /></else>
+      </if>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="filenames_delete">
+    <sequential>
+      <var name="file.org.name" unset="true" /> <!-- ant-contrib feature -->
+      <var name="file.org.dir"  unset="true" /> <!-- ant-contrib feature -->
+      <var name="file.new.name" unset="true" /> <!-- ant-contrib feature -->
+      <var name="file.new"      unset="true" /> <!-- ant-contrib feature -->
+    </sequential>
+  </macrodef>
+
+  <macrodef name="file_replacedata">
+    <attribute name="file" />
+    <sequential>
+      <if> <!-- ant-contrib feature -->
+        <equals arg1="${cfgApiInfix.camel}" arg2="" />
+        <then>
+          <replace file="@{file}" token="_xVIx_xAIx" value="" />
+          <replace file="@{file}" token="_XVIX_XAIX" value="" />
+          <replace file="@{file}" token="_xvix_xaix" value="" />
+        </then>
+        <else>
+          <replace file="@{file}" token="_xVIx_xAIx" value="_${cfgVendorId.camel}_${cfgApiInfix.camel}" />
+          <replace file="@{file}" token="_XVIX_XAIX" value="_${cfgVendorId.upper}_${cfgApiInfix.upper}" />
+          <replace file="@{file}" token="_xvix_xaix" value="_${cfgVendorId.lower}_${cfgApiInfix.lower}" />
+        </else>
+      </if>
+    </sequential>
+  </macrodef>
+
+  <!-- process -->
+  <target name="all" depends="Process.Generate_Swcd" />
+
+  <target name="Process.Generate_Swcd">
+    <sequential>
+      <for list="swcd" param="dir"> <!-- ant-contrib feature -->
+        <sequential>
+          <for param="file"> <!-- ant-contrib feature -->
+            <path>
+              <fileset dir="${genPluginDir}\generate_swcd\@{dir}\"/>
+            </path>
+            <sequential>
+              <filenames_prepare file="@{file}" />
+              <var               name="file.new" value="${genOutputDir}\@{dir}\${file.new.name}" />
+              <ng.tmplgen template="${file.org}" file="${file.new}" failonerror="true">
+                <variable name="project" value="${genProject}"/>
+              </ng.tmplgen>
+              <!-- WORKAROUND BEG [TRESOS-4415] -->
+              <ng.javagen.src class="GeneratorWriterClose" file="${file.new}">
+                <includes dir="." includes="*.java" />
+              </ng.javagen.src>
+              <!-- WORKAROUND END -->
+              <file_replacedata file="${file.new}" />
+              <filenames_delete/>
+            </sequential>
+          </for>
+        </sequential>
+      </for>
+    </sequential>
+  </target>
+
+</project>

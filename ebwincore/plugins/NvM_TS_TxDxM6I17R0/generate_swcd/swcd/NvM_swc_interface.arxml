@@ -1,0 +1,759 @@
+[!AUTOSPACING!][!//
+[!MACRO "Build_Body", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_NvM'"!][!//
+            <!-- CompuMethods -->
+            <AR-PACKAGE>
+              <SHORT-NAME>CompuMethods</SHORT-NAME>
+              <ELEMENTS>
+                <COMPU-METHOD>
+                  <!-- !LINKSTO SWS_NvM_00470,2 -->
+                  <SHORT-NAME>CM_[!"$InterfaceName"!]RequestResultType</SHORT-NAME>
+                  <CATEGORY>TEXTTABLE</CATEGORY>
+                  <COMPU-INTERNAL-TO-PHYS>
+                    <COMPU-SCALES>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_OK</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_NOT_OK</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_PENDING</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_INTEGRITY_FAILED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_BLOCK_SKIPPED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">5</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_NV_INVALIDATED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">6</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">6</UPPER-LIMIT>
+                        <COMPU-CONST>
+[!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+                          <VT>NVM_REQ_CANCELLED</VT>
+[!ELSE!][!//
+                          <VT>NVM_REQ_CANCELED</VT>
+[!ENDIF!][!//
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+[!IF "$AsrVersion != 'AUTOSAR_32'"!]
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">7</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">7</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_REDUNDANCY_FAILED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">8</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">8</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_RESTORED_DEFAULTS</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">8</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">8</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_RESTORED_FROM_ROM</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+[!ENDIF!]
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">9</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">9</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_OK_BLK_INCREASED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                      <COMPU-SCALE>
+                        <LOWER-LIMIT INTERVAL-TYPE="CLOSED">10</LOWER-LIMIT>
+                        <UPPER-LIMIT INTERVAL-TYPE="CLOSED">10</UPPER-LIMIT>
+                        <COMPU-CONST>
+                          <VT>NVM_REQ_OK_BLK_DECREASED</VT>
+                        </COMPU-CONST>
+                      </COMPU-SCALE>
+                    </COMPU-SCALES>
+                  </COMPU-INTERNAL-TO-PHYS>
+                </COMPU-METHOD>
+              </ELEMENTS>
+            </AR-PACKAGE>
+
+            <!-- ImplementationDataTypes -->
+            <AR-PACKAGE>
+              <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+[!IF "$AsrVersion = 'AUTOSAR_32'"!]
+              <!--
+                We do not use AUTOSAR 3.2.2 package name here for the sake of consistency, since for
+                the SwServiceComponentType we _HAVE_ to use the AUTSOAR 4.0.3 package name unless 3.2.2
+                has been selected as default (i.e., we _CANNOT_ replicate the SwServiceComponentType
+                for each activated version (e.g., one for 3.2.2 and one for 4.0.3)
+              -->
+[!ENDIF!]
+              <ELEMENTS>
+[!/* only generate destination pointer type if there is at least one block configured with service port or mirror port */!][!//
+[!IF "count(NvMBlockDescriptor/*[(NvMProvideRteServicePort = 'true') or (NvMProvideRteMirrorPort = 'true')]) > 0"!][!//
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>NvM_[!"$InterfaceName"!]DstPtrType</SHORT-NAME>
+  [!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+                  <CATEGORY>ARRAY</CATEGORY>
+                  <SUB-ELEMENTS>
+                    <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                      <SHORT-NAME>NvM_ASR32_DstPtrType</SHORT-NAME>
+                      <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                      <ARRAY-SIZE>[!"num:integer($MaxArraySize)"!]</ARRAY-SIZE>
+                      <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                            <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                    </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  </SUB-ELEMENTS>
+  [!ELSE!][!//
+                  <CATEGORY>DATA_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <SW-POINTER-TARGET-PROPS>
+                      <TARGET-CATEGORY>VALUE</TARGET-CATEGORY>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                            <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/void</BASE-TYPE-REF>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                    </SW-POINTER-TARGET-PROPS>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+  [!ENDIF!][!//
+                </IMPLEMENTATION-DATA-TYPE>
+
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>NvM_[!"$InterfaceName"!]SrcPtrType</SHORT-NAME>
+  [!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+                  <CATEGORY>ARRAY</CATEGORY>
+                  <SUB-ELEMENTS>
+                    <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                      <SHORT-NAME>NvM_ASR32_SrcPtrType</SHORT-NAME>
+                      <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                      <ARRAY-SIZE>[!"num:integer($MaxArraySize)"!]</ARRAY-SIZE>
+                      <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                            <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                    </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  </SUB-ELEMENTS>
+  [!ELSE!][!//
+                  <CATEGORY>DATA_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <SW-POINTER-TARGET-PROPS>
+                      <TARGET-CATEGORY>VALUE</TARGET-CATEGORY>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                            <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/void</BASE-TYPE-REF>
+                             <SW-IMPL-POLICY>CONST</SW-IMPL-POLICY>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                      </SW-POINTER-TARGET-PROPS>
+                        </SW-DATA-DEF-PROPS-CONDITIONAL>
+                      </SW-DATA-DEF-PROPS-VARIANTS>
+                    </SW-DATA-DEF-PROPS>
+  [!ENDIF!][!//
+                </IMPLEMENTATION-DATA-TYPE>
+
+  [!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>NvM_ASR32_MirrorDstPtrType</SHORT-NAME>
+                  <CATEGORY>DATA_REFERENCE</CATEGORY>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <SW-POINTER-TARGET-PROPS>
+                          <TARGET-CATEGORY>VALUE</TARGET-CATEGORY>
+                          <SW-DATA-DEF-PROPS>
+                            <SW-DATA-DEF-PROPS-VARIANTS>
+                              <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/void</BASE-TYPE-REF>
+                              </SW-DATA-DEF-PROPS-CONDITIONAL>
+                            </SW-DATA-DEF-PROPS-VARIANTS>
+                          </SW-DATA-DEF-PROPS>
+                        </SW-POINTER-TARGET-PROPS>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>NvM_ASR32_MirrorSrcPtrType</SHORT-NAME>
+                  <CATEGORY>DATA_REFERENCE</CATEGORY>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <SW-POINTER-TARGET-PROPS>
+                          <TARGET-CATEGORY>VALUE</TARGET-CATEGORY>
+                          <SW-DATA-DEF-PROPS>
+                            <SW-DATA-DEF-PROPS-VARIANTS>
+                              <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/void</BASE-TYPE-REF>
+                                 <SW-IMPL-POLICY>CONST</SW-IMPL-POLICY>
+                              </SW-DATA-DEF-PROPS-CONDITIONAL>
+                            </SW-DATA-DEF-PROPS-VARIANTS>
+                          </SW-DATA-DEF-PROPS>
+                        </SW-POINTER-TARGET-PROPS>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+  [!ENDIF!][!//
+[!ENDIF!][!//
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>NvM_[!"$InterfaceName"!]BlockIdType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF
+                          DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+[!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+                            <!--
+                              We are intentionally referring to AUTSOAR 4.0.3 uint16 type here - There is no need to replicate uint16 for AUTOSAR 3.2.2
+                            -->
+[!ENDIF!][!//
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+
+                <IMPLEMENTATION-DATA-TYPE>
+                  <SHORT-NAME>NvM_[!"$InterfaceName"!]RequestResultType</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <COMPU-METHOD-REF DEST="COMPU-METHOD">[!"$TopLevelPackage"!]/CompuMethods/CM_[!"$InterfaceName"!]RequestResultType</COMPU-METHOD-REF>
+                        <IMPLEMENTATION-DATA-TYPE-REF
+                          DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+[!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+                            <!--
+                              We are intentionally referring to AUTSOAR 4.0.3 uint8 type here - There is no need to replicate uint8 for AUTOSAR 3.2.2
+                            -->
+[!ENDIF!][!//
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE>
+
+              </ELEMENTS>
+            </AR-PACKAGE>
+
+            <!-- PortInterfaces -->
+            <AR-PACKAGE>
+              <SHORT-NAME>PortInterfaces</SHORT-NAME>
+              <ELEMENTS>
+[!/* only generate service operation if there is at least one block configured with service port */!][!//
+[!IF "count(NvMBlockDescriptor/*[(NvMProvideRteServicePort = 'true')]) > 0"!][!//
+  [!IF "$InterfaceName = ''"!][!//
+    [!VAR "NvmService" = "'NvMService'"!][!//
+  [!ELSE!][!//
+    [!VAR "NvmService" = "concat('NvM_',$InterfaceName,'Service')"!]
+  [!ENDIF!][!//
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>[!"$NvmService"!]</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                   <!-- Operation GetErrorStatus -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>GetErrorStatus</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>RequestResultPtr</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_[!"$InterfaceName"!]RequestResultType</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+  [!IF "$AsrVersion != 'AUTOSAR_32'"!]
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+  [!ENDIF!]
+                    </CLIENT-SERVER-OPERATION>
+
+  [!IF "($ApiCfgClass = 'NVM_API_CONFIG_CLASS_2') or ($ApiCfgClass = 'NVM_API_CONFIG_CLASS_3')"!][!//
+                    <!-- Operation SetDataIndex. Should only be available for configuration class 2, 3 -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>SetDataIndex</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>DataIndex</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+    [!IF "$AsrVersion != 'AUTOSAR_32'"!]
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+    [!ENDIF!]
+                    </CLIENT-SERVER-OPERATION>
+
+                    <!-- Operation GetDataIndex. Should only be available for configuration class 2, 3 -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>GetDataIndex</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>DataIndexPtr</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                          <DIRECTION>OUT</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+    [!IF "$AsrVersion != 'AUTOSAR_32'"!]
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+    [!ENDIF!]
+                    </CLIENT-SERVER-OPERATION>
+  [!ENDIF!][!//
+
+  [!IF "$RBSApi = 'true'"!][!//
+                    <!-- Operation SetRamBlockStatus. Should only be available if NvmSetRamBlockStatusApi is enabled -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>SetRamBlockStatus</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>BlockChanged</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+    [!IF "$AsrVersion != 'AUTOSAR_32'"!]
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+    [!ENDIF!]
+                    </CLIENT-SERVER-OPERATION>
+  [!ENDIF!][!//
+
+  [!IF "($ApiCfgClass = 'NVM_API_CONFIG_CLASS_2') or ($ApiCfgClass = 'NVM_API_CONFIG_CLASS_3')"!][!//
+                    <!-- Operation ReadBlock. Should only be available for configuration class 2, 3 -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>ReadBlock</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>DstPtr</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_[!"$InterfaceName"!]DstPtrType</TYPE-TREF>
+  [!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+                          <DIRECTION>OUT</DIRECTION>
+  [!ELSE!][!//
+                          <DIRECTION>IN</DIRECTION>
+  [!ENDIF!][!//
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+
+  [!IF "$AsrVersion = 'AUTOSAR_42'"!][!//
+                    <!-- Operation ReadPRAMBlock. Should only be available for configuration class 2, 3 -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>ReadPRAMBlock</SHORT-NAME>
+                      <ARGUMENTS />
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+  [!ENDIF!][!//
+
+                    <!-- Operation WriteBlock. Should only be available for configuration class 2, 3 -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>WriteBlock</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>SrcPtr</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_[!"$InterfaceName"!]SrcPtrType</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+
+  [!IF "$AsrVersion = 'AUTOSAR_42'"!][!//
+                    <!-- Operation WritePRAMBlock. Should only be available for configuration class 2, 3 -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>WritePRAMBlock</SHORT-NAME>
+                      <ARGUMENTS />
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+  [!ENDIF!][!//
+
+                    <!-- Operation RestoreBlockDefaults. Should only be available for configuration class 2, 3 -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>RestoreBlockDefaults</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>DstPtr</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_[!"$InterfaceName"!]DstPtrType</TYPE-TREF>
+  [!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+                          <DIRECTION>OUT</DIRECTION>
+  [!ELSE!][!//
+                          <DIRECTION>IN</DIRECTION>
+  [!ENDIF!][!//
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+  [!IF "$AsrVersion = 'AUTOSAR_42'"!][!//
+                    <!-- Operation RestorePRAMBlockDefaults. Should only be available for configuration class 2, 3 -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>RestorePRAMBlockDefaults</SHORT-NAME>
+                      <ARGUMENTS />
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+  [!ENDIF!][!//
+  [!ENDIF!][!//
+
+  [!IF "$ApiCfgClass = 'NVM_API_CONFIG_CLASS_3'"!][!//
+                    <!-- Operation EraseBlock. Should only be available for configuration class 3 -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>EraseBlock</SHORT-NAME>
+                      <ARGUMENTS />
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                    <!-- Operation InvalidateNvBlock. Should only be available for configuration class 3 -->
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>InvalidateNvBlock</SHORT-NAME>
+                      <ARGUMENTS />
+                      <POSSIBLE-ERROR-REFS>
+                      <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+  [!ENDIF!][!//
+                  </OPERATIONS>
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+[!ENDIF!][!//
+
+[!/* only generate service operation if there is at least one block configured with job finished port */!][!//
+[!IF "count(NvMBlockDescriptor/*[(NvMProvideRteJobFinishedPort = 'true')]) > 0"!][!//
+  [!IF "$InterfaceName = ''"!][!//
+    [!VAR "NotifyJobFinished" = "'NvMNotifyJobFinished'"!][!//
+  [!ELSE!][!//
+    [!VAR "NotifyJobFinished" = "concat('NvM_',$InterfaceName,'NotifyJobFinished')"!][!//
+  [!ENDIF!][!//
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>[!"$NotifyJobFinished"!]</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>JobFinished</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>ServiceId</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>JobResult</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_[!"$InterfaceName"!]RequestResultType</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                      [!IF "$AsrVersion != 'AUTOSAR_42'"!][!//
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NotifyJobFinished"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      [!ELSE!][!//
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NotifyJobFinished"!]/E_OK</POSSIBLE-ERROR-REF>
+                      [!ENDIF!][!//
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                  </OPERATIONS>
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                    [!IF "$AsrVersion != 'AUTOSAR_42'"!][!//
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    [!ELSE!][!//
+                      <SHORT-NAME>E_OK</SHORT-NAME>
+                      <ERROR-CODE>0</ERROR-CODE>
+                    [!ENDIF!][!//
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+[!ENDIF!]
+
+[!/* only generate service operation if there is at least one block configured with init block port */!][!//
+[!IF "count(NvMBlockDescriptor/*[(NvMProvideRteInitBlockPort = 'true')]) > 0"!][!//
+  [!IF "$InterfaceName = ''"!][!//
+    [!VAR "NotifyInitBlock" = "'NvMNotifyInitBlock'"!][!//
+  [!ELSE!][!//
+    [!VAR "NotifyInitBlock" = "concat('NvM_',$InterfaceName,'NotifyInitBlock')"!][!//
+  [!ENDIF!][!//
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>[!"$NotifyInitBlock"!]</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>InitBlock</SHORT-NAME>
+                      <POSSIBLE-ERROR-REFS>
+                      [!IF "$AsrVersion != 'AUTOSAR_42'"!][!//
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NotifyInitBlock"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      [!ELSE!][!//
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NotifyInitBlock"!]/E_OK</POSSIBLE-ERROR-REF>
+                      [!ENDIF!][!//
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                  </OPERATIONS>
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                    [!IF "$AsrVersion != 'AUTOSAR_42'"!][!//
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    [!ELSE!][!//
+                      <SHORT-NAME>E_OK</SHORT-NAME>
+                      <ERROR-CODE>0</ERROR-CODE>
+                    [!ENDIF!][!//
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+[!ENDIF!]
+
+[!IF "$ApiCfgClass = 'NVM_API_CONFIG_CLASS_3'"!][!//
+[!/* only generate callback service operation if there is at least one block configured with admin port */!][!//
+  [!IF "count(NvMBlockDescriptor/*[(NvMProvideRteAdminPort = 'true')]) > 0"!][!//
+                <!-- Should only be available for configuration class 3 -->
+                <CLIENT-SERVER-INTERFACE>
+  [!IF "$InterfaceName = ''"!][!//
+    [!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+      [!VAR "NvMAdmin" = "'NvMAdministration'"!][!//
+    [!ELSE!][!//
+      [!VAR "NvMAdmin" = "'NvMAdmin'"!][!//
+    [!ENDIF!][!//
+  [!ELSE!][!//
+    [!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+      [!VAR "NvMAdmin" = "concat('NvM_',$InterfaceName,'Administration')"!][!//
+    [!ELSE!][!//
+      [!VAR "NvMAdmin" = "concat('NvM_',$InterfaceName,'Admin')"!][!//
+    [!ENDIF!][!//
+    [!ENDIF!][!//
+                  <SHORT-NAME>[!"$NvMAdmin"!]</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+                  <OPERATIONS>
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>SetBlockProtection</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>ProtectionEnabled</SHORT-NAME>
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+    [!IF "$AsrVersion != 'AUTOSAR_32'"!][!//
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvMAdmin"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+    [!ENDIF!][!//
+                    </CLIENT-SERVER-OPERATION>
+                  </OPERATIONS>
+    [!IF "$AsrVersion != 'AUTOSAR_32'"!][!//
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+    [!ENDIF!][!//
+                </CLIENT-SERVER-INTERFACE>
+  [!ENDIF!][!//
+[!ENDIF!][!//
+
+[!/* only generate callback service operation if there is at least one block configured with mirror port */!][!//
+[!IF "count(NvMBlockDescriptor/*[(NvMProvideRteMirrorPort = 'true')]) > 0"!][!//
+  [!IF "$InterfaceName = ''"!][!//
+    [!VAR "Mirror" = "'NvMMirror'"!][!//
+  [!ELSE!][!//
+    [!VAR "Mirror" = "concat('NvM_',$InterfaceName,'Mirror')"!][!//
+  [!ENDIF!][!//
+                <CLIENT-SERVER-INTERFACE>
+                  <SHORT-NAME>[!"$Mirror"!]</SHORT-NAME>
+                  <IS-SERVICE>true</IS-SERVICE>
+
+                  <OPERATIONS>
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>ReadRamBlockFromNvm</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>SrcPtr</SHORT-NAME>
+  [!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_ASR32_MirrorSrcPtrType</TYPE-TREF>
+  [!ELSE!][!//
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_[!"$InterfaceName"!]SrcPtrType</TYPE-TREF>
+  [!ENDIF!][!//
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$Mirror"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+
+                    <CLIENT-SERVER-OPERATION>
+                      <SHORT-NAME>WriteRamBlockToNvm</SHORT-NAME>
+                      <ARGUMENTS>
+                        <ARGUMENT-DATA-PROTOTYPE>
+                          <SHORT-NAME>DstPtr</SHORT-NAME>
+  [!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_ASR32_MirrorDstPtrType</TYPE-TREF>
+  [!ELSE!][!//
+                          <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_[!"$InterfaceName"!]DstPtrType</TYPE-TREF>
+  [!ENDIF!][!//
+                          <DIRECTION>IN</DIRECTION>
+                        </ARGUMENT-DATA-PROTOTYPE>
+                      </ARGUMENTS>
+                      <POSSIBLE-ERROR-REFS>
+                        <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">[!"$TopLevelPackage"!]/PortInterfaces/[!"$Mirror"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                      </POSSIBLE-ERROR-REFS>
+                    </CLIENT-SERVER-OPERATION>
+                  </OPERATIONS>
+                  <POSSIBLE-ERRORS>
+                    <APPLICATION-ERROR>
+                      <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                      <ERROR-CODE>1</ERROR-CODE>
+                    </APPLICATION-ERROR>
+                  </POSSIBLE-ERRORS>
+                </CLIENT-SERVER-INTERFACE>
+[!ENDIF!]
+              </ELEMENTS>
+            </AR-PACKAGE>
+[!ENDMACRO!]
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+[!/* do not generate this file if RTE is not used */!][!/*
+*/!][!SKIPFILE "NvMCommon/NvMRteUsage = 'false'"!][!/*
+*/!][!VAR "RBSApi" = "NvMCommon/NvMSetRamBlockStatusApi"!][!/*
+*/!][!VAR "ApiCfgClass" = "NvMCommon/NvMApiConfigClass"!][!/*
+*/!][!VAR "JobPrio" = "NvMCommon/NvMJobPrioritization"!][!/*
+
+[!/* Calculation of the number of elements of NvM_DstPtr/NvM_SrcPtr */!][!/*
+*/!][!VAR "MaxArraySize" = "0"!][!/*
+*/!][!LOOP "NvMBlockDescriptor/*[NvMProvideRteServicePort = 'true']"!][!/*
+  */!][!VAR "TotalBlockLength" = "NvMNvBlockLength"!][!/*
+  */!][!VAR "CrcSize" = "0"!][!/*
+  */!][!IF "(NvMBlockUseCrc = 'true') and (node:exists(NvMBlockCrcType)) and (NvMUserProvidesSpaceForBlockAndCrc ='true')"!][!/*
+    */!][!IF "NvMBlockCrcType = 'NVM_CRC32'"!][!/*
+      */!][!VAR "CrcSize"="4"!][!/*
+    */!][!ELSEIF "NvMBlockCrcType = 'NVM_CRC16'"!][!/*
+      */!][!VAR "CrcSize"="2"!][!/*
+    */!][!ELSE!][!/*
+      */!][!VAR "CrcSize"="1"!][!/*
+    */!][!ENDIF!][!/*
+  */!][!ENDIF!][!/*
+
+  */!][!VAR "TotalBlockLength" = "$TotalBlockLength + $CrcSize"!][!/*
+  */!][!IF "($MaxArraySize < $TotalBlockLength)"!][!/*
+    */!][!VAR "MaxArraySize" = "$TotalBlockLength"!][!/*
+  */!][!ENDIF!][!/*
+*/!][!ENDLOOP!][!//
+  <AR-PACKAGES>
+    <!-- AUTOSAR_NvM -->
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_NvM</SHORT-NAME>
+      <ELEMENTS/>
+      <AR-PACKAGES>
+[!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR32ServiceAPI = 'true'"!][!//
+        <!-- Provide AUTOSAR 3.2 service interface -->
+        <!-- ASR32 -->
+        <AR-PACKAGE>
+          <SHORT-NAME>ASR32</SHORT-NAME>
+          <ELEMENTS/>
+          <AR-PACKAGES>
+           [!CALL "Build_Body", "AsrVersion"="'AUTOSAR_32'", "InterfaceName"="'ASR32_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR32'"!]
+           </AR-PACKAGES>
+        </AR-PACKAGE>
+[!ENDIF!][!//
+[!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR40ServiceAPI = 'true'"!][!//
+        <!-- Provide AUTOSAR 4.0 service interface -->
+        <!-- ASR40 -->
+        <AR-PACKAGE>
+          <SHORT-NAME>ASR40</SHORT-NAME>
+          <ELEMENTS/>
+          <AR-PACKAGES>
+            [!CALL "Build_Body", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR40'"!]
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+[!ENDIF!][!//
+[!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR42ServiceAPI = 'true'"!][!//
+        <!-- Provide AUTOSAR 4.2 service interface -->
+        <!-- ASR42 -->
+        <AR-PACKAGE>
+          <SHORT-NAME>ASR42</SHORT-NAME>
+          <ELEMENTS/>
+          <AR-PACKAGES>
+            [!CALL "Build_Body", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR42'"!]
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+[!ENDIF!][!//
+[!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI != 'NONE'"!][!//
+        <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 / 3.2 -->
+        [!CALL "Build_Body", "AsrVersion"="NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI"!]
+[!ENDIF!][!//
+          </AR-PACKAGES>
+        </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

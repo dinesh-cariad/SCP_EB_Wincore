@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR NvM_TS_TxDxM6I17R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="NvM_TS_TxDxM6I17R0_ModuleId"
+             name="NvM_TS_TxDxM6I17R0 Module">
+    <module id="NvM_TS_TxDxM6I17R0"
+            label="NvM"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-MemoryStack: AUTOSAR NvM module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="6"
+            swVersionMinor="17"
+            swVersionPatch="22"
+            swVersionSuffix="B439717"
+            specVersionMajor="3"
+            specVersionMinor="2"
+            specVersionPatch="0"
+            specVersionSuffix="3"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="NvM"
+            categoryLayer="Memory Services"
+            categoryCategory="Memory"
+            categoryComponent="ECUC">
+      <cluster name="Memory Stack"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="NvM_TS_TxDxM6I17R0_ConfigId"
+             name="NvM_TS_TxDxM6I17R0 Configuration">
+    <configuration moduleId="NvM_TS_TxDxM6I17R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/NvM.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the pre-configuration NvMPreConfiguration -->
+        <resource value="config_ext/NvMPreConfiguration.xdm" type="xdm" id="res_NvMPreConfiguration"/>
+        <preconfig
+          name="NvMPreConfiguration"
+          default="true"
+          description="Only the configuration ID block is configured"
+          resourceId="res_NvMPreConfiguration"
+          path="ASPath:/TS_TxDxM6I17R0/NvMPreConfiguration"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM6I17R0/NvM"/>
+      </data>
+
+      <editor id="NvM_TS_TxDxM6I17R0_EditorId"
+              label="Default"
+              tooltip="ACG-MemoryStack: AUTOSAR NvM module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM6I17R0/NvM"/>
+          <parameter name="title" value="NvM"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="NvM_TS_TxDxM6I17R0_GeneratorId"
+             name="NvM_TS_TxDxM6I17R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="NvM_TS_TxDxM6I17R0_TemplateBasedCodeGeneratorId"
+               moduleId="NvM_TS_TxDxM6I17R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_NvM_TS_TxDxM6I17R0"
+        name="NvM service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="NvM" />
+        <parameter name="req://dem.events:1" value="resources/NvM_Dem_Events.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/NvM_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.NvM_TS_TxDxM6I17R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+</plugin>

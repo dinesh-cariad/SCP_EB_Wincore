@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="WdgM" default="all" basedir=".">
+
+  <target name="all">
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+      <classpath>
+        <pathelement location="./tools/ant-contrib-1.0b1.jar"/>
+      </classpath>
+    </taskdef>
+    
+    <ng.property
+       name="initFunction"
+       dctxt="WdgM"
+       xpath="asc_wdgm:init()"
+       override="false">
+   </ng.property>
+    
+    <macrodef name="generate-wdgm-rte-lcfg-c">
+      <attribute name="wdgmCoreID" default=""/>
+      <sequential>
+        <echo message="Generating RTE service source files for core ID @{wdgmCoreId}" />
+        <ng.jetgen class="dreisoft.tresos.wdgm.generated.jet.WdgM_Rte_Lcfg_c" file="src/WdgM_@{wdgmCoreID}_Lcfg.c">
+          <argument name="coreId" value="@{wdgmCoreID}" />
+        </ng.jetgen>
+      </sequential> 
+    </macrodef>
+
+    <ng.property
+        name="wdgmCoreIDs"
+        dctxt="WdgM"
+        xpath="asc_wdgm:getServiceFileNames()"
+        override="false">
+    </ng.property>
+
+    <for param="wdgmCoreID"
+         list="${wdgmCoreIDs}"
+         delimiter=" "
+         trim="true">
+      <sequential>
+        <generate-wdgm-rte-lcfg-c wdgmCoreID="@{wdgmCoreID}" />
+      </sequential>
+    </for>
+    
+    <macrodef name="generate-wdgm-rte-lcfg-h">
+      <attribute name="wdgmCoreID" default=""/>
+      <sequential>
+        <echo message="Generating RTE service header file" />
+        <ng.jetgen class="dreisoft.tresos.wdgm.generated.jet.WdgM_Rte_Lcfg_h" file="include/WdgM_Rte_Lcfg.h">
+          <argument name="coreId" value="@{wdgmCoreID}" />
+        </ng.jetgen>
+      </sequential> 
+    </macrodef>
+
+    <ng.property
+        name="wdgmCoreIDs"
+        dctxt="WdgM"
+        xpath="asc_wdgm:getServiceFileNames()"
+        override="false">
+    </ng.property>
+
+    <for param="wdgmCoreID"
+         list="${wdgmCoreIDs}"
+         delimiter=" "
+         trim="true">
+      <sequential>
+        <generate-wdgm-rte-lcfg-h wdgmCoreID="@{wdgmCoreID}" />
+      </sequential>
+    </for>
+
+    <macrodef name="generate-wdgm-rte-c">
+      <attribute name="wdgmCoreID" default=""/>
+      <sequential>
+        <echo message="Generating RTE service source file" />
+        <ng.jetgen class="dreisoft.tresos.wdgm.generated.jet.WdgM_Rte_c" file="src/WdgM_Rte.c">
+          <argument name="coreId" value="@{wdgmCoreID}" />
+        </ng.jetgen>
+      </sequential> 
+    </macrodef>
+
+    <ng.property
+        name="wdgmCoreIDs"
+        dctxt="WdgM"
+        xpath="asc_wdgm:getServiceFileNames()"
+        override="false">
+    </ng.property>
+
+    <for param="wdgmCoreID"
+         list="${wdgmCoreIDs}"
+         delimiter=" "
+         trim="true">
+      <sequential>
+        <generate-wdgm-rte-c wdgmCoreID="@{wdgmCoreID}" />
+      </sequential>
+    </for>
+    
+    <ng.property
+       name="finalFunction"
+       dctxt="WdgM"
+       xpath="asc_wdgm:fin()"
+       override="false">
+   </ng.property>
+
+  </target>
+</project>

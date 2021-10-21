@@ -1,0 +1,1345 @@
+<?xml version='1.0'?>
+<datamodel version="7.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/16/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/16/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:cd="http://www.tresos.de/_projects/DataModel2/08/customdata.xsd" 
+         xmlns:f="http://www.tresos.de/_projects/DataModel2/14/formulaexpr.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd"  
+         xmlns:variant="http://www.tresos.de/_projects/DataModel2/11/variant.xsd">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_TxDxM3I7R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="CanSM" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="ADMIN-DATA" type="ADMIN-DATA">
+                <ad:ADMIN-DATA>
+                  <ad:LANGUAGE>EN</ad:LANGUAGE>
+                  <ad:DOC-REVISIONS>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>4.2.0</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>AUTOSAR</ad:ISSUED-BY>
+                      <ad:DATE>2011-11-09T11:36:22Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>3.7.5</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>Elektrobit Automotive GmbH</ad:ISSUED-BY>
+                      <ad:DATE>2021-07-14T23:59:59Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                  </ad:DOC-REVISIONS>
+                </ad:ADMIN-DATA>
+              </a:a>
+              <a:a name="DESC">
+                <a:v>&lt;html&gt;
+                        Configuration of the CanSM module.
+                      &lt;/html&gt;</a:v>
+              </a:a>
+              <a:a name="LOWER-MULTIPLICITY" value="0"/>
+              <a:a name="POSTBUILDVARIANTSUPPORT" value="true"/>
+              <a:a name="RELEASE" value="asc:4.0"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <a:a name="UUID" value="5a9b4e94-32fa-45ec-a227-197e7b2160f0"/>
+              <a:da name="WARNING" type="XPath">
+                <a:tst expr="count(as:modconf(&apos;BswM&apos;)) = 1" 
+                       false="The CAN State Manager module needs the Basic Software Mode Manager module."/>
+                <a:tst 
+                       expr="(count(as:modconf(&apos;BswM&apos;)) = 1)                              and                              (as:modconf(&apos;BswM&apos;)[1]/BswMGeneral/BswMCanSMEnabled = &apos;false&apos;)" 
+                       true="The BswM does not have CanSM support enabled."/>
+              </a:da>
+              <v:ctr name="CanSMDefensiveProgramming" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                &lt;p&gt;Parameters for defensive programming&lt;/p&gt;
+                &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Defensive Programming Options"/>
+                <v:var name="CanSMDefProgEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                    &lt;p&gt;Enables or disables the defensive
+                    programming feature for the module CanSM.&lt;/p&gt;
+                    &lt;p&gt;Note: This feature is dependent on the use of the development error detection module.
+                    To use the defensive programming feature, proceed as follows:
+                    &lt;ol&gt;
+                    &lt;li&gt;Enable development error detection&lt;/li&gt;
+                    &lt;li&gt;Enable defensive programming&lt;/li&gt;
+                    &lt;li&gt;Enable assertions as required&lt;/li&gt;
+                    &lt;/ol&gt;
+                    &lt;/p&gt;
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Defensive Programming"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../../CanSMGeneral/CanSMDevErrorDetect = &apos;true&apos;" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanSMPrecondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of precondition assertion checks reported from
+                  the module CanSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Precondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanSMGeneral/CanSMDevErrorDetect = &apos;true&apos;) and (../CanSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanSMPostcondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of postcondition assertion checks reported from
+                  the module CanSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Postcondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanSMGeneral/CanSMDevErrorDetect = &apos;true&apos;) and (../CanSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanSMStaticAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of static assertion checks reported from
+                  the module CanSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Static Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanSMGeneral/CanSMDevErrorDetect = &apos;true&apos;) and (../CanSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanSMUnreachAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of unreachable code assertion checks
+                  reported from the module CanSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Unreachable Code Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanSMGeneral/CanSMDevErrorDetect = &apos;true&apos;) and (../CanSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanSMInvariantAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of invariant assertion checks
+                  reported from functions of the module CanSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Invariant Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanSMGeneral/CanSMDevErrorDetect = &apos;true&apos;) and (../CanSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+              </v:ctr>
+              <v:var name="IMPLEMENTATION_CONFIG_VARIANT" type="ENUMERATION">
+                <a:a name="LABEL" value="Config Variant"/>
+                <a:da name="DEFAULT" value="VariantPostBuild"/>
+                <a:da name="EDITABLE" value="false"/>
+                <a:da name="RANGE" value="VariantPostBuild"/>
+              </v:var>
+              <d:ref type="REFINED_MODULE_DEF" 
+                     value="ASPath:/AUTOSAR/EcucDefs/CanSM"/>
+              <v:lst name="CanSMConfiguration" 
+                     type="MULTIPLE-CONFIGURATION-CONTAINER">
+                <a:a name="LABEL" 
+                     value="List of Configurations for the CanSM module"/>
+                <a:a name="TAB" value="List of Configurations"/>
+                <a:da name="MIN" value="1"/>
+                <v:ctr name="CanSMConfiguration" 
+                       type="MULTIPLE-CONFIGURATION-CONTAINER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          This container contains the global parameters of the CanSM and sub
+                          containers, which are for the CAN network specific configuration.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="NAME_PATTERN" value="CanSM_Config_?"/>
+                  <a:a name="UUID" value="8105fb1e-e320-4dc0-857f-fb3449bf554b"/>
+                  <a:da name="TITLE" value="Can State Manager Configuration"/>
+                  <v:var name="CanSMModeRequestRepetitionMax" type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            Specifies the maximal amount of mode request repetitions without a
+                            respective mode indication from the CanIf module until the CanSM module
+                            reports a development error to the DET and tries to go back to no
+                            communication.
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Max. number of mode requests"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="577375da-cd24-480c-a603-ee8d7212265a"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=255"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanSMModeRequestRepetitionTime" type="FLOAT">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            Specifies in which time duration the CanSM module shall repeat mode
+                            change requests by using the API of the CanIf module.
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Mode request repetition time"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="1f394810-3490-4786-8d70-a272341d7d1d"/>
+                    <a:da name="DEFAULT" value="0.0"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=65.534"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                    <a:da name="WARNING" type="XPath" 
+                          expr="(((. div as:modconf(&apos;CanSM&apos;)[1]/CanSMGeneral/CanSMMainFunctionTimePeriod) - round(. div as:modconf(&apos;CanSM&apos;)[1]/CanSMGeneral/CanSMMainFunctionTimePeriod)) &lt; 0.001)                         and (((. div as:modconf(&apos;CanSM&apos;)[1]/CanSMGeneral/CanSMMainFunctionTimePeriod) - round(. div as:modconf(&apos;CanSM&apos;)[1]/CanSMGeneral/CanSMMainFunctionTimePeriod)) &gt; -0.001)" 
+                          false="The value provided is not a multiple of CanSMMainFunctionTimePeriod."/>
+                  </v:var>
+                  <v:lst name="CanSMManagerNetwork" type="MAP">
+                    <a:a name="LABEL" value="List of CAN Networks"/>
+                    <a:a name="TAB" value="List of CAN Networks"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="as:modconf(&apos;CanSM&apos;)[1]/CanSMGeneral/CanSMMaxNumberOfTransceivers &lt; count(./*/CanSMTransceiverId)" 
+                          true="Maximum number of transceivers (CanSMMaxNumberOfTransceivers) is less than the actual number of configured transceivers."/>
+                    <a:da name="MAX" value="255"/>
+                    <a:da name="MIN" value="1"/>
+                    <v:ctr name="CanSMManagerNetwork" type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;This container contains the CAN network specific parameters of
+                              each CAN network.&lt;/p&gt;
+                              &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                  &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                  Using only one container of this type reduces the ROM consumption
+                                  of the module configuration.
+                                &lt;/li&gt;
+                                &lt;li class=&quot;optimization.config.ram.reduction&quot;&gt;
+                                  &lt;strong&gt;RAM reduction (config):&lt;/strong&gt;
+                                  Using only one container of this type reduces the RAM consumption
+                                  of the module configuration.
+                                &lt;/li&gt;
+                                &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                  &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                  Using only one container of this type reduces the ROM consumption
+                                  of the module code.
+                                &lt;/li&gt;
+                                &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                  &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                  Using only one container of this type reduces the execution time of
+                                  the module code.
+                                &lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="NAME_PATTERN" value="CanNetwork_?"/>
+                      <a:a name="UUID" 
+                           value="760a4b82-38e4-4566-8722-d52678f99c09"/>
+                      <a:da name="INVALID" type="XPath" 
+                            expr="(not(node:exists(../*/CanSMTransceiverId))) and                                      (num:i(count(as:modconf(&apos;CanIf&apos;)[1]/CanIfTrcvDrvCfg/*)) &gt; 0)" 
+                            true="CanIf has the transceiver support enabled. At least one CanSMTransceiverId must be configured."/>
+                      <a:da name="TITLE" value="CAN Network"/>
+                      <v:var name="CanSMBorCounterL1ToL2" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;If the count of bus-offs is &lt;em&gt;greater than or equal to&lt;/em&gt; this
+                                threshold, the bus-off recovery switches from level 1 (short
+                                recovery time) to level 2 (long recovery time).&lt;/p&gt;
+                                &lt;p&gt;&lt;em&gt;Remark:&lt;/em&gt; By comparison, the &quot;BOR L2 Error Reporting
+                                Threshold&quot; is a &quot;greater than&quot; threshold.
+                                &lt;/p&gt;
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                    &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the execution
+                                    time of the module code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="BOR L1 to L2 Threshold"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="4e786285-cd83-4775-9a05-d2a5d6767e1c"/>
+                        <a:da name="DEFAULT" value="2"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanSMBorTimeL1" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                This time parameter defines in seconds the duration of the bus-off
+                                recovery time in level 1 (short recovery time).
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                    &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the execution
+                                    time of the module code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="BOR L1 Recovery Time [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="3e67becb-0a64-448c-968c-4c58b400312f"/>
+                        <a:da name="DEFAULT" value="0.5"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65.535"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="    (((. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod) - round(. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod)) &lt; 0.001)                                   and (((. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod) - round(. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod)) &gt; -0.001)" 
+                              false="The value provided is not a multiple of CanSMMainFunctionTimePeriod."/>
+                      </v:var>
+                      <v:var name="CanSMBorTimeL2" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                This time parameter defines in seconds the duration of the bus-off
+                                recovery time in level 2 (long recovery time).
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                    &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the execution
+                                    time of the module code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="BOR L2 Recovery Time [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="8d424bc5-ae4c-4572-be7c-d6d8f2ef476a"/>
+                        <a:da name="DEFAULT" value="1.5"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65.535"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="    (((. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod) - round(. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod)) &lt; 0.001)                                   and (((. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod) - round(. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod)) &gt; -0.001)" 
+                              false="The value provided is not a multiple of CanSMMainFunctionTimePeriod."/>
+                      </v:var>
+                      <v:var name="CanSMBorTimeTxEnsured" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;This parameter defines in seconds the duration of the bus-off
+                                event check.&lt;/p&gt;
+                                &lt;p&gt;This parameter is ignored if parameter
+                                CanSMBorTxConfirmationPolling is enabled.&lt;/p&gt;
+                                &lt;p&gt;This check assesses, if the recovery has been successful after
+                                the recovery reenables the transmit path. If a new bus-off occurs
+                                during this time period, the CanSM assesses this bus-off as
+                                sequential bus-off without successful recovery.&lt;/p&gt;
+                                &lt;p&gt;Because a bus-off only can be detected, when PDUs are
+                                transmitted, the time has to be great enough to ensure that PDUs
+                                are transmitted again (e. g. time period of the fastest cyclic
+                                transmitted PDU of the COM module / ComTxModeTimePeriodFactor).&lt;/p&gt;
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                    &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the execution
+                                    time of the module code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="BOR Time Ensured [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="91028b07-ab39-4c1a-8501-22ddac63992c"/>
+                        <a:da name="DEFAULT" value="5.0"/>
+                        <a:da name="EDITABLE" type="XPath" 
+                              expr="../CanSMBorTxConfirmationPolling = &apos;false&apos;" 
+                              true="true" false="false"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65.534"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="(../CanSMBorTxConfirmationPolling = &apos;true&apos;)                                   or                                   (                                     (((. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod) - round(. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod)) &lt; 0.001)                                     and                                     (((. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod) - round(. div ../../../../../CanSMGeneral/CanSMMainFunctionTimePeriod)) &gt; -0.001)                                   )" 
+                              false="The value provided is not a multiple of CanSMMainFunctionTimePeriod."/>
+                      </v:var>
+                      <v:var name="CanSMBorTxConfirmationPolling" 
+                             type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                This parameter shall configure, if the CanSM polls the
+                                CanIf_GetTxConfirmationState API to decide the bus-off state to be
+                                recovered instead of using the CanSMBorTimeTxEnsured parameter for
+                                this decision.
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="BOR Tx Confirmation Polling"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="099ea3af-a0b0-4c38-8b91-bb1729ea81c0"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="(. = &apos;true&apos;) and (as:modconf(&apos;CanIf&apos;)[1]/CanIfPublicCfg/CanIfPublicTxConfirmPollingSupport = &apos;false&apos;)" 
+                              true="Enabling this parameter requires the API CanIf_GetTxConfirmationState, but in the CanIf configuration this API is disabled through parameter CanIfPublicTxConfirmPollingSupport."/>
+                      </v:var>
+                      <v:ref name="CanSMComMNetworkHandleRef" 
+                             type="SYMBOLIC-NAME-REFERENCE">
+                        <a:a name="COLUMN_TITLE" value="ComM Channel"/>
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                Unique handle to identify one certain CAN network. Reference to one
+                                of the network handles configured for the ComM.
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="ComM Channel"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="UUID" 
+                             value="01779727-b662-483b-99dc-2831d6994ede"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst expr="node:refexists(.)" 
+                                 false="You need to provide a valid reference"/>
+                          <a:tst 
+                                 expr="node:refexists(.) and node:exists(as:ref(.)/ComMBusType) and (as:ref(.)/ComMBusType != &apos;COMM_BUS_TYPE_CAN&apos;)" 
+                                 true="The CanSM can only be used for CAN networks. The channel referenced is not a CAN channel."/>
+                          <a:tst 
+                                 expr="text:uniq(../../*/CanSMComMNetworkHandleRef, .)" 
+                                 false="A 1:1 relation betwen ComM channels and CanSM networks is required. This channel is referenced more than once."/>
+                        </a:da>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/ComM/ComMConfigSet/ComMChannel"/>
+                      </v:ref>
+                      <v:ref name="CanSMTransceiverId" 
+                             type="SYMBOLIC-NAME-REFERENCE">
+                        <a:a name="COLUMN_TITLE" value="CAN Trcv. Ch."/>
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                ID of the CAN transceiver assigned to the configured network
+                                handle. Reference to one of the transceivers managed by the CanIf
+                                module.
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.increase&quot;&gt;
+                                    &lt;strong&gt;ROM increase (config):&lt;/strong&gt;
+                                    Using this parameter increases the ROM consumption of the
+                                    module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                                    &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                                    Using this parameter increases the ROM consumption of the
+                                    module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.increase&quot;&gt;
+                                    &lt;strong&gt;Execution time increase (code):&lt;/strong&gt;
+                                    Using this parameter increases the execution time of the module
+                                    code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Can Transceiver Channel"/>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTMULTIPLICITY" value="true"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="UUID" 
+                             value="fed7d1c2-b6d9-47b7-9f6b-f6146ad3f684"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst expr="node:refexists(.)" 
+                                 false="You need to provide a valid reference"/>
+                          <a:tst 
+                                 expr="text:uniq(../../*/CanSMTransceiverId, .)" 
+                                 false="A 1:1 relation betwen CAN Transceiver channels and CanSM networks is required. This channel is referenced more than once."/>
+                        </a:da>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/CanIf/CanIfTrcvDrvCfg/CanIfTrcvCfg"/>
+                      </v:ref>
+                      <v:lst name="CanSMController" type="MAP">
+                        <a:a name="LABEL" value="List of CAN Controllers"/>
+                        <a:a name="ROWS" value="4"/>
+                        <a:a name="TAB" value="GENERAL"/>
+                        <a:da name="MAX" value="255"/>
+                        <a:da name="MIN" value="1"/>
+                        <v:ctr name="CanSMController" type="IDENTIFIABLE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  This container contains the controller IDs assigned to a CAN
+                                  network.
+                                  &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                  &lt;ul&gt;
+                                    &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                      &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                      Using a single controller for each network reduces the ROM
+                                      consumption of the module configuration.
+                                    &lt;/li&gt;
+                                    &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                      &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                      Using a single controller for each network reduces the ROM
+                                      consumption of the module code.
+                                    &lt;/li&gt;
+                                    &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                      &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                      Using a single controller for each network reduces the
+                                      execution time of the module code.
+                                    &lt;/li&gt;
+                                  &lt;/ul&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="NAME_PATTERN" value="CanController_?"/>
+                          <a:a name="UUID" 
+                               value="2f1c3e0a-fde1-420e-a6d6-b34b9793d38e"/>
+                          <a:da name="TITLE" value="CAN Controller"/>
+                          <v:ref name="CanSMControllerId" 
+                                 type="SYMBOLIC-NAME-REFERENCE">
+                            <a:a name="COLUMN_TITLE" value="CAN Controller"/>
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Unique handle to identify one certain CAN controller. Reference
+                                    to one of the CAN controllers managed by the CanIf module.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="LABEL" value="CAN Controller"/>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="UUID" 
+                                 value="5240945c-e44e-4547-933f-7aca1f2eaec5"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst expr="node:refexists(.)" 
+                                     false="You need to provide a valid reference"/>
+                              <a:tst 
+                                     expr="text:uniq(../../../../*/CanSMController/*/CanSMControllerId, .)" 
+                                     false="A CAN controller shall be referenced at most once for all networks, because a CAN controller can only be part of a single network."/>
+                            </a:da>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/CanIf/CanIfCtrlDrvCfg/CanIfCtrlCfg"/>
+                          </v:ref>
+                        </v:ctr>
+                      </v:lst>
+                      <v:ctr name="CanSMDemEventParameterRefs" 
+                             type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                Container for the references to DemEventParameter elements which
+                                shall be invoked using the API Dem_ReportErrorStatus API in case
+                                the corresponding error occurs. The EventId is taken from the
+                                referenced DemEventParameter&apos;s DemEventId value. The
+                                standardized errors are provided in the container and can be
+                                extended by vendor specific error references.
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Dem Events"/>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="UUID" 
+                             value="a1c8ec88-6541-4d4d-bc45-9ff9f57b0607"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <v:ref name="CANSM_E_BUS_OFF" 
+                               type="SYMBOLIC-NAME-REFERENCE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  Reference to the configured DEM event to report bus-off errors for
+                                  this CAN network.
+                                  &lt;p&gt;Dependency on parameter(s):&lt;/p&gt;
+                                  &lt;ul&gt;
+                                  &lt;li&gt;&lt;code&gt;CanSMBusOffReportToDem&lt;/code&gt;: Select DEM to enable the reporting of
+                                  &lt;code&gt;CANSM_E_BUS_OFF&lt;/code&gt;.&lt;/li&gt;
+                                  &lt;/ul&gt;
+                                  &lt;p&gt;Further notes:&lt;/p&gt;
+                                  &lt;ul&gt;
+                                  &lt;li&gt;Activation: Thrown if there is a notification of a bus-off event
+                                  on a CAN controller. &lt;/li&gt;
+                                  &lt;li&gt;Healing: Will be healed if communication goes on within the configurable
+                                  timespan of bus-off recovery timers &lt;code&gt;CanSMBorTimeL1&lt;/code&gt; and
+                                  &lt;code&gt;CanSMBorTimeL2&lt;/code&gt;.&lt;/li&gt;
+                                  &lt;li&gt;Trigger debounce: None. The error is reported on first occurrence.&lt;/li&gt;
+                                  &lt;li&gt;Rate of diagnostic checks: Checked cyclically within &lt;code&gt;CanSM_MainFunction()&lt;/code&gt;.&lt;/li&gt;
+                                  &lt;/ul&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="CANSM_E_BUS_OFF"/>
+                          <a:a name="OPTIONAL" value="true"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                          <a:a name="UUID" 
+                               value="580d5bf4-b56e-47fe-b9f5-ead77241cce6"/>
+                          <a:da name="ENABLE" value="false"/>
+                          <a:da name="INVALID" type="XPath" 
+                                expr="node:refvalid(.)" 
+                                false="You need to provide a valid reference"/>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/Dem/DemConfigSet/DemEventParameter"/>
+                        </v:ref>
+                      </v:ctr>
+                      <v:var name="CanSMActivatePN" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                Activate/deactivate the partial networking for this network.
+                                &lt;ul&gt;
+                                  &lt;li&gt;true: Partial Networking activated for this network&lt;/li&gt;
+                                  &lt;li&gt;false: Partial Networking deactivated for this network&lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Activate PN for this network"/>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(. = &apos;true&apos;) and (../../../../../CanSMGeneral/CanSMPNSupport != &apos;true&apos;)" 
+                                 true="Partial Networking is generally disabled. Please enable CanSMGeneral/CanSMPNSupport."/>
+                          <a:tst 
+                                 expr="(. = &apos;true&apos;) and not(node:exists(../CanSMTransceiverId))" 
+                                 true="Partial Networking requires a valid reference to a Can Transceiver Channel."/>
+                        </a:da>
+                      </v:var>
+                    </v:ctr>
+                  </v:lst>
+                </v:ctr>
+              </v:lst>
+              <v:ctr name="ReportToDem" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                      Production error handling
+                    &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Production error handling"/>
+                <a:a name="TAB" value="Optimization"/>
+                <a:da name="TITLE" value="Production error handling"/>
+                <v:var name="CanSMBusOffReportToDem" type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Selects the handling of the production error:
+                          &lt;em&gt;bus off recovery state machine error&lt;/em&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;DEM&lt;/code&gt;: All errors are reported to the Diagnostics Event Manager (Dem).&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;DET&lt;/code&gt;: All errors are reported to the Development Error Tracer (Det) if enabled.&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;DISABLE&lt;/code&gt;: Production errors are not reported at all.&lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                            &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                            Setting this parameter to a value of DISABLE reduces the ROM consumption of the module code.
+                          &lt;/li&gt;
+                          &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                            &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                            Setting this parameter to a value of DISABLE reduces the execution time of the module code.
+                          &lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Bus off recovery state machine production error"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Optimization"/>
+                  <a:da name="DEFAULT" value="DEM"/>
+                  <a:da name="RANGE">
+                    <a:v>DEM</a:v>
+                    <a:v>DET</a:v>
+                    <a:v>DISABLE</a:v>
+                  </a:da>
+                  <a:da name="WARNING" type="XPath" 
+                        expr="(. = &apos;DET&apos;) and (../../CanSMGeneral/CanSMDevErrorDetect = &apos;false&apos;)" 
+                        true="CanSMDevErrorDetect is set to false which means that production errors will not be reported to the development error tracer (Det)."/>
+                </v:var>
+                <v:var name="CanSMBusOffReportToDemDetErrorId" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;If a production error is reported towards the Det, this parameter defines
+                        the error id of the production errors CANSM_E_BUS_OFF for all networks.&lt;/p&gt;
+                        &lt;p&gt;The Det instance id is the ComM channel ID (parameter ComMChannelId of the ComM
+                        channel referenced by parameter CanSMComMNetworkHandleRef).&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Bus off recovery state machine Det error ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Optimization"/>
+                  <a:da name="DEFAULT" value="128"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="../CanSMBusOffReportToDem = &apos;DET&apos;"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&gt;=0"/>
+                    <a:tst expr="&lt;=255"/>
+                  </a:da>
+                  <a:da name="WARNING" type="XPath" expr=". &gt;= 9" 
+                        false="Values from 1 to 8 are used as standard Ids according to AUTOSAR SWS and 0 shall not be used."/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="CanSMGeneral" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                        Container for general pre-compile parameters of the CanSM module.
+                      &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="General CanSM Configuration"/>
+                <a:a name="UUID" value="feb6c666-61ee-416a-a6ec-3ada40812bba"/>
+                <v:var name="CanSMDevErrorDetect" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Enables and disables the development error detection and notification
+                          mechanism.&lt;/p&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                              &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.exetime.increase&quot;&gt;
+                              &lt;strong&gt;Execution time increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the execution time of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Development Error Detection"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="bf84be52-4fcd-4dac-8705-9a9b183f417c"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="CanSMMainFunctionTimePeriod" type="FLOAT">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          This parameter defines the cycle time of the function
+                          &lt;code&gt;CanSM_MainFunction&lt;/code&gt; in seconds.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Main Function Period [s]"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="2ff7ac83-5f42-4ec6-940a-3d73511b1ee2"/>
+                  <a:da name="DEFAULT" value="0.02"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=65.535"/>
+                    <a:tst expr="&gt;=0.001"/>
+                  </a:da>
+                </v:var>
+                <v:var name="CanSMVersionInfoApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Activate/deactivate the version information API
+                          (&lt;code&gt;CanSM_GetVersionInfo&lt;/code&gt;).
+                          &lt;ul&gt;
+                            &lt;li&gt;true: Version information API activated&lt;/li&gt;
+                            &lt;li&gt;false: Version information API deactivated&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                              &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Version Info API"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="6cfe4a9a-e649-4e17-adcf-9c46e25bced7"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanSMChangeBaudrateApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        The support of the Can_ChangeBaudrate API is optional..
+                        &lt;ul&gt;
+                            &lt;li&gt;true: Can_ChangeBaudrate API shall be supported&lt;/li&gt;
+                            &lt;li&gt;false:Can_ChangeBaudrate API is not supported&lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                            &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                            Disabling this parameter decreases the ROM consumption of
+                            the module code.
+                          &lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;
+                          &lt;strong&gt;This feature is currently not supported.&lt;/strong&gt;
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:e867d5e0-54d8-4148-85f7-5b893481a47a"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="false"/>
+                </v:var>
+                <v:var name="CanSMPNSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Activate/deactivate the partial networking support.
+                          &lt;ul&gt;
+                            &lt;li&gt;true: Partial Networking enabled&lt;/li&gt;
+                            &lt;li&gt;false: Partial Networking disabled&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Partial Networking"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanSMSetBaudrateApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Activate/deactivate the API function CanSM_SetBaudrate().
+                          &lt;ul&gt;
+                            &lt;li&gt;true: CanSM_SetBaudrate() enabled&lt;/li&gt;
+                            &lt;li&gt;false: CanSM_SetBaudrate() disabled&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Enable API function CanSM_SetBaudrate()"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanSMBusDeactivatedBusOff" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        This parameter selects how Bus Off is handled.
+                        &lt;p&gt;Effect:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;Enabled: Bus Off will trigger No Communication until controller is restarted.&lt;/li&gt;
+                            &lt;li&gt;Disabled: Bus Off will trigger Silent Communication (AUTOSAR handling) until controller is restarted.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enables specific Bus Off handling"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanSMEnhancedBusOffReporting" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Activate/deactivate enhanced bus-off reporting to BswM.
+                          Concerning to enhanced bus-off reporting the range of
+                          enumeration CanSM_BswMCurrentStateType as defined in chapter
+                          8.2.3 of the CAN State Manager SWS has changed to:
+                          &lt;br/&gt;&lt;br/&gt;
+                          Range:&lt;br/&gt;
+                          CANSM_BSWM_NO_COMMUNICATION&lt;br/&gt;
+                          CANSM_BSWM_SILENT_COMMUNICATION&lt;br/&gt;
+                          CANSM_BSWM_FULL_COMMUNICATION&lt;br/&gt;
+                          CANSM_BSWM_BUS_OFF&lt;br/&gt;
+                          CANSM_BSWM_CHANGE_BAUDRATE&lt;br/&gt;
+                          CANSM_BSWM_BUS_OFF_L1&lt;br/&gt;
+                          CANSM_BSWM_BUS_OFF_L2&lt;br/&gt;
+                          &lt;br/&gt;
+                          If this parameter is enabled and a bus-off event occurs and
+                          the bus-off counter is lower than CanSMBorCounterL1ToL2,
+                          CanSM reports the value CANSM_BSWM_BUS_OFF_L1 to BswM.&lt;br/&gt;
+                          If a bus-off event occurs and the bus-off counter is greater than
+                          or equal to CanSMBorCounterL1ToL2, CanSM reports the value
+                          CANSM_BSWM_BUS_OFF_L2 to BswM.&lt;br/&gt;&lt;br/&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;true: CanSM reports the values CANSM_BSWM_BUS_OFF_L1 or
+                            CANSM_BSWM_BUS_OFF_L2 in case of bus-off.&lt;/li&gt;
+                            &lt;li&gt;false: CanSM always reports the value CANSM_BSWM_BUS_OFF
+                            in case of bus-off (= SWS defined behavior).&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable enhanced bus-off reporting"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanSMTxTimeoutExceptionApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Activate/deactivate the API function CanSM_TxTimeoutException().
+                          &lt;ul&gt;
+                            &lt;li&gt;true: CanSM_TxTimeoutException() enabled&lt;/li&gt;
+                            &lt;li&gt;false: CanSM_TxTimeoutException() disabled&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Enable API function CanSM_TxTimeoutException()"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="((node:exists(as:modconf(&apos;CanNm&apos;))) and ((.) != as:modconf(&apos;CanNm&apos;)[1]/CanNmGeneral/CanNmPnSupported))" 
+                        true="CanSMTxTimeoutExceptionApi is generally disabled and CanNmPnSupported is enabled. Please enable CanSMGeneral/CanSMTxTimeoutExceptionApi."/>
+                </v:var>
+                <v:var name="CanSMMultiCoreSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        This parameter enables CanSM support for multicore.
+                        &lt;p&gt;Effect:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;Enabled: CanSM multicore support is enabled.&lt;/li&gt;
+                            &lt;li&gt;Disabled: CanSM multicore support is disabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable CanSM MultiCore Support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanSMMaxNumberOfTransceivers" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Since different variants can configure different number of transceivers,
+                          this parameter specifies the highest number of configured transceivers across
+                          all post-build variants.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Max. number of transceivers accross all post-build variants."/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="CommonPublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Common Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6"/>
+                <v:var name="ArMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1"/>
+                  <a:da name="DEFAULT" value="2"/>
+                </v:var>
+                <v:var name="ArMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70"/>
+                  <a:da name="DEFAULT" value="2"/>
+                </v:var>
+                <v:var name="ArPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="SwMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34"/>
+                  <a:da name="DEFAULT" value="3"/>
+                </v:var>
+                <v:var name="SwMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f"/>
+                  <a:da name="DEFAULT" value="7"/>
+                </v:var>
+                <v:var name="SwPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a318d2d9-0e75-49da-ac43-e7e4e682e2f9"/>
+                  <a:da name="DEFAULT" value="5"/>
+                </v:var>
+                <v:var name="ModuleId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Numeric Module ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:78bc8362-080f-4253-b3da-804ab69a7154"/>
+                  <a:da name="DEFAULT" value="140"/>
+                </v:var>
+                <v:var name="VendorId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Vendor ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="Release" type="STRING_LABEL">
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Release Information"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89"/>
+                  <a:da name="DEFAULT" value=""/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="PublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="EB Published Information"/>
+                <a:a name="TAB" value="EB Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07"/>
+                <v:var name="PbcfgMSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Specifies whether or not the CanSM can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="PbcfgM support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+              </v:ctr>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

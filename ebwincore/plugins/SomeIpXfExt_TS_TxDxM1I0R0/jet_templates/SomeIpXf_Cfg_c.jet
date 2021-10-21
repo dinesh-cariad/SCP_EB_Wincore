@@ -1,0 +1,139 @@
+<%@ jet package="eb.tresos.someipxf.generated.jet" class="SomeIpXf_Cfg_c" skeleton="File.skeleton"
+        imports="eb.tresos.someipxf.generator.output.entity.DataOutputElement"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final OutModel outmodel = (OutModel)context.gen.getVariable( OutModel.ARG_NAME, OutModel.class, null );
+%>
+<%@ include file="head.c.inc" %>
+<%
+    if (!outmodel.isDisableMisraComment())
+    {
+%>
+
+/* MISRA-C:2012 Deviation List
+ *
+ * MISRAC2012-1) Deviated Rule: 1.3 (required)
+ * There shall be no occurrence of undefined or critical unspecified behaviour.
+ *
+ * Reason:
+ * The postbuild macro TS_MAKEREF2CFG requires the usage of the
+ * C standard macro 'offsetof'.
+ * According to the C90 standard, the usage of 'offsetof' produces
+ * an undefined behaviour when the member designator parameter
+ * is a bit-field or when it is an invalid right operator of the
+ * '.' operator for the type parameter.
+ * This is not the case here as the parameter of TS_MAKEREF2CFG
+ * is always a member of TS_PB_CFG_LAYOUT_TYPE and bitfields are
+ * never used when defining the postbuild structure members.
+ *
+ * MISRAC2012-2) Deviated Rule: 11.4 (advisory)
+ * A cast should not be performed between a pointer type and an integral
+ * type.
+ *
+ * Reason:
+ * The offsetof macro casting a null pointer into a pointer to structure (object)
+ * and then obtaining the address of a certain member from the structure.
+ * In this case the exception of MISRA-C:2012 Rule 11.4 appeal.
+ *
+ * MISRAC2012-3) Deviated Rule: 11.9 (required)
+ * The macro NULL shall be the only permitted form of integer null pointer constant.
+ *
+ * Reason:
+ * The offsetof macro implementation depends on the compiler and may use 0 instead of NULL.
+ *
+ */
+
+<%
+    }
+%>
+/*==================[includes]==============================================*/
+
+#include <SomeIpXf_Cfg.h>       /* Config structs */
+#include <SomeIpXf_S_Int_Stc.h> /* Internal static declarations (Safe version) */
+#include <SomeIpXf_Int_Cfg.h> /* External declaration of config data */
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+#define SOMEIPXF_START_SEC_CONST_32
+#include <SomeIpXf_MemMap.h>
+<%
+    if (!outmodel.isDisableMisraComment())
+    {
+%>
+
+/* Deviation MISRAC2012-1, MISRAC2012-2, MISRAC2012-3 <START> */
+<%
+    }
+%>
+
+<%
+  for (final DataOutputElement outputElem : outmodel.getDataElements())
+  {
+%>
+<%= defineMacro( "SOMEIPXF_DATA_TYPE_CONFIG_ENDIAN",
+       outputElem.getByteOrder(), NL ) %>
+
+<%= defineMacro( "SOMEIPXF_DATA_TYPE_NAME",
+        outputElem.getTypeName(),
+       "TypeName: " + outputElem.getTypeName(), NL ) %>
+
+<%= defineMacro( "SOMEIPXF_DATA_TYPE_SHORT_NAME",
+        outputElem.getShortName(),
+       "ShortName: " + outputElem.getShortName(), NL ) %>
+
+<%= defineMacro( "SOMEIPXF_DATA_TYPE_CONFIG_ID",
+        outputElem.getConfigurationArrayId(),
+       "This macro specifies a unique ID of the configuration array", NL ) %>
+
+SOMEIPXF_CONFIG_ARRAY = {
+<%=outputElem.generate()%>
+};
+<%= undefineMacro("SOMEIPXF_DATA_TYPE_CONFIG_ID", NL) %>
+<%= undefineMacro("SOMEIPXF_DATA_TYPE_SHORT_NAME", NL) %>
+<%= undefineMacro("SOMEIPXF_DATA_TYPE_NAME", NL) %>
+<%= undefineMacro("SOMEIPXF_DATA_TYPE_CONFIG_ENDIAN", NL) %>
+
+
+<%
+  }
+%>
+
+<%
+    if (!outmodel.isDisableMisraComment())
+    {
+%>
+/* Deviation MISRAC2012-1, MISRAC2012-2, MISRAC2012-3 <STOP> */
+
+<%
+    }
+%>
+#define SOMEIPXF_STOP_SEC_CONST_32
+#include <SomeIpXf_MemMap.h>
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.c.inc" %>

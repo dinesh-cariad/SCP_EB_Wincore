@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    ** brief AUTOSAR Eep_TS_T19D1M1I0R0 plugin
+    ** project AUTOSAR Standard Core
+    **
+    ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+    ** unless expressly agreed to otherwise.
+  -->
+    <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Eep_TS_T19D1M1I0R0_ModuleId"
+             name="Eep_TS_T19D1M1I0R0 Module">
+    <module id="Eep_TS_T19D1M1I0R0"
+            label="Eep"
+            mandatory="false"
+            allowMultiple="false"
+            description="WinCore-MCAL: AUTOSAR EEPROM driver module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="0"
+            swVersionPatch="9"
+            swVersionSuffix="B439717"
+            specVersionMajor="3"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            specVersionSuffix="1"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="Eep"
+            categoryLayer="MCAL"
+            categoryCategory="Memory"
+            categoryComponent="ECUC">
+      <ecuType target="WINDOWS" derivate="WIN32X86"/>
+      <cluster name="Memory Stack"/>
+    </module>
+  </extension>
+
+  
+  
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Eep_TS_T19D1M1I0R0_ConfigId"
+             name="Eep_TS_T19D1M1I0R0 Configuration">
+    <configuration moduleId="Eep_TS_T19D1M1I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Eep.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the recommended configuration EepRecMinimal -->
+        <resource value="config_ext/EepRecMinimal.xdm" type="xdm" id="res_EepRecMinimal"/>
+        <recconfig
+          name="EepRecMinimal"
+          default="true"
+          description="Minimal configuration."
+          resourceId="res_EepRecMinimal"
+          path="ASPath:/TS_T19D1M1I0R0/EepRecMinimal"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_T19D1M1I0R0/Eep"/>
+      </data>
+
+      <editor id="Eep_TS_T19D1M1I0R0_EditorId"
+              label="Default"
+              tooltip="WinCore-MCAL: AUTOSAR EEPROM driver module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_T19D1M1I0R0/Eep"/>
+          <parameter name="title" value="Eep"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="Eep_TS_T19D1M1I0R0_GeneratorId"
+             name="Eep_TS_T19D1M1I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="Eep_TS_T19D1M1I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="Eep_TS_T19D1M1I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_Eep_TS_T19D1M1I0R0"
+        name="Eep service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="Eep" />
+        <parameter name="req://dem.events:1" value="resources/Eep_Dem_Events.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/Eep_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.Eep_TS_T19D1M1I0R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+
+
+  <extension point="org.eclipse.help.toc">
+      <toc file="anchors.xml" primary="true"/>
+      <!--
+      <toc file="anchors_wincore.xml" primary="true"/>
+      -->
+  </extension>
+</plugin>

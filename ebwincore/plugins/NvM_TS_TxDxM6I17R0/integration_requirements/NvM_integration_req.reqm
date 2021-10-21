@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.NvM.EB_INTREQ_NvM_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      The EB memory stack modules NvM, Ea and Fee make only limited
+      use of the callback calls from their underlying modules.
+      Make sure during the integration that the NvM, Ea,
+      and Fee main functions are only called from the same task
+      context so that they cannot preempt each other.
+      </description>
+      <rationale> 
+      This approach enables a simple and lock free implementation
+      that results in smaller code.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>lim.NvM.EB_INTREQ_NvM_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>If 'BlockCheck' mechanism is used and the API to disable it 'NvM_DisableBlockCheckMechanism' is used.
+      This API shall never be called concurrent with the NvM_MainFunction.
+      </description>
+      <rationale>The purpose of 'NvM_DisableBlockCheckMechanism' is to optimize the NvM_MainFunction runtime during intialization.
+      For this to work as expected the function shall be called to disable the 'BlockCheck' mechanism rigth after ReadAll is 
+      called and before the main function calls start. After ReadAll is completed the function shall be called to enable back the mechanism.
+      The same ussage can be done to speed up the WriteAll.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.NvM.EB_INTREQ_NvM_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>If legacy symbolic names (from AUTOSAR versions 3.x or lower than 4.0.3 ) are used then the
+        macro NVM_PROVIDE_LEGACY_SYMBOLIC_NAMES shall be defined before including the NvM header file.
+      </description>
+      <rationale>The usage of legacy symbolic names is discouraged, but for backwards compatibility the usage of
+        these symbolic names is provided. Recommendation is to go for AUTOSAR 4.0.3 symbolic names
+        (See TPS_ECUC_02108 from AUTOSAR_TPS_ECUConfiguration.pdf) and not enable the macro.
+      </rationale>
+    </specobject>
+  </specobjects>
+</specdocument>

@@ -1,0 +1,76 @@
+<%@ jet package="dreisoft.tresos.soad.generated.jet" class="SoAd_PBcfg_c" skeleton="File.skeleton"
+        imports="dreisoft.tresos.soad.generator.output.postbuild.PostBuildData
+        	dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException
+            dreisoft.tresos.generator.ng.api.cds.CDSGenFile"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    
+    final PostBuildData data = (PostBuildData)context.gen.getVariable( PostBuildData.ARG_NAME,
+                                                                       PostBuildData.class,
+                                                                       null );
+
+    CDSGenFile cdsFile;
+    try {
+        cdsFile = context.cds.startFile( context.getWriter(), data.getBackend() );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        throw new IllegalStateException( "Exception occurred: " + e.getLocalizedMessage() );
+    }
+
+%>
+<%@ include file="head.c.inc" %>
+
+/*==================[includes]==============================================*/
+
+#include <SoAd_PBcfg.h>
+
+#define TS_RELOCATABLE_CFG_ENABLE SOAD_RELOCATABLE_CFG_ENABLE
+#define TS_PB_CFG_LAYOUT_TYPE SoAd_ConstConfigLayoutType
+#define TS_PB_CFG_NAME SoAd_ConfigLayout
+#include <TSPBConfig_Init.h>
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/* start data section declaration */
+#define SOAD_START_SEC_CONFIG_DATA_UNSPECIFIED
+#include <SoAd_MemMap.h>
+
+<%
+cdsFile.var( data.getConstLayout() );
+%>
+
+/* stop data section declaration */
+#define SOAD_STOP_SEC_CONFIG_DATA_UNSPECIFIED
+#include <SoAd_MemMap.h>
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%
+context.cds.endFile( cdsFile );
+%>
+<%@ include file="foot.c.inc" %>

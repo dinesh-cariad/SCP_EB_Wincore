@@ -1,0 +1,87 @@
+
+/** \brief AUTOSAR Module Sample
+ **
+ ** This file contains all definitions of the configuration of the
+ ** AUTOSAR Module Sample.
+ **
+ ** \project AUTOSAR Standard Core
+ ** \file ModuleSample.txt
+ ** \version 1.0.0
+ ** \date 20060418
+ ** \author Joel Cairo
+ ** \author Elektrobit Automotive GmbH, 91058 Erlangen, Germany
+ **
+ ** \controller independent
+ ** \compiler independent
+ ** \hardware independent
+ **
+ ** Copyright 2005 by Elektrobit Automotive GmbH
+ ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+ ** unless expressly agreed to otherwise */
+
+
+/** \addtogroup Module Sample
+ ** @{ */
+
+/*
+ * Initials  Name                           Company
+ * ---------------------------------------------------------------------------
+ * JC        Joel Cairo                     3Soft GmbH
+ */
+
+/*
+ * modification history (version, date, initials, description)
+ * -----------------------------------------------------------
+ * v1.0.0 20060418 JC
+ *        Release version
+ */
+
+/*==================[inclusions]=============================================*/
+
+[!VAR "tabs" = "30"!]
+%      Hello World!!!!
+
+Available MODULE-CONFIGURATIONs:
+[!LOOP "as:modconf('TemplateGenerator')"!][!//
+  [!"name(.)"!]
+[!ENDLOOP!]
+
+#include "TSAutosar.h" /* 3SOFT specific standard types */
+#include "Std_Types.h" /* AUTOSAR standard types */
+[!//
+[!/* Select MODULE-CONFIGURATION as context-node */!][!//
+[!//
+[!NOCODE!]
+
+[!INCLUDE "ModuleSampleChecks.m"!][!//
+
+[!VAR "myVar" = "'Container_1/Choice_0'"!]
+
+[!MACRO "StringByAsRef", "ref" = ""!][!//
+[!"as:ref($ref)/String"!][!//
+[!ENDMACRO!]
+
+[!ENDNOCODE!][!//
+
+[!/* Use the LOOP-command to loop over the elements of a parameter */!][!//
+float Float[[!"num:i(count(Container/Container_1/Choice/Choice_0/Float/*))"!]] { [!//
+[!LOOP "Container/Container_1/Choice/Choice_0/Float/*"!][!//
+[!"."!][!IF "not(node:islast())"!], [!ENDIF!][!//
+[!ENDLOOP!][!//
+ };
+
+/*
+ * Access Int variable via a reference
+ */
+[!IF "node:name(node:ref(Container/Container_1/Choice/Choice_1/Ref)/Choice/Choice_0) = 'Choice1'"!][!//
+int Int = [!"node:ref(Container/Container_1/Choice/Choice_1/Ref)/Choice/Choice_0/Int"!];
+[!ELSE!][!//
+[!WARNING!]
+Choice to which 'Container/Container_1/Choice/Choice_1/Ref' points does not contain a Choice1
+[!ENDWARNING!][!//
+[!ENDIF!][!//
+
+char* String = "[!CALL "StringByAsRef","ref" = "$myVar"!]";
+
+/** @} doxygen end group definition */
+/*==================[end of file]============================================*/

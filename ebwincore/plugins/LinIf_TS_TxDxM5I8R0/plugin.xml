@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+    ** \brief AUTOSAR LinIf_TS_TxDxM5I8R0 plugin
+    ** \project AUTOSAR Standard Core
+    ** \file plugin.xdm
+    **
+    ** Copyright 2010 by Elektrobit Automotive GmbH
+    ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+    ** unless expressly agreed to otherwise.
+  -->
+
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="LinIf_TS_TxDxM5I8R0_ModuleId"
+             name="LinIf_TS_TxDxM5I8R0 Module">
+    <module id="LinIf_TS_TxDxM5I8R0"
+            label="LinIf"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-LINStack: AUTOSAR LinIf module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="5"
+            swVersionMinor="8"
+            swVersionPatch="27"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="LinIf"
+            categoryLayer="Communication HW Abstraction"
+            categoryCategory="LIN"
+            categoryComponent="ECUC">
+      <cluster name="Lin Stack"/>
+    </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="LinIf_TS_TxDxM5I8R0_ConfigId"
+             name="LinIf_TS_TxDxM5I8R0 Configuration">
+    <configuration moduleId="LinIf_TS_TxDxM5I8R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/LinIf.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM5I8R0/LinIf"/>
+      </data>
+
+      <editor id="LinIf_TS_TxDxM5I8R0_EditorId"
+              label="Default"
+              tooltip="ACG-LINStack: AUTOSAR LinIf module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM5I8R0/LinIf"/>
+          <parameter name="title" value="LinIf"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_LinIf_TS_TxDxM5I8R0"
+           moduleId="LinIf_TS_TxDxM5I8R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.LinIfTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_LinIf_TS_TxDxM5I8R0"
+        name="LinIf service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="LinIf" />
+        <parameter name="req://dem.events:1" value="resources/LinIf_Dem_Events.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/LinIf_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.LinIf_TS_TxDxM5I8R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="LinIf_TS_TxDxM5I8R0_GeneratorId"
+             name="LinIf_TS_TxDxM5I8R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="LinIf_TS_TxDxM5I8R0_TemplateBasedCodeGeneratorId"
+               moduleId="LinIf_TS_TxDxM5I8R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="LinIf_TS_TxDxM5I8R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+
+
+
+<!-- register common ComStack modules for Lin Stack cluster -->
+  <extension point="dreisoft.tresos.launcher2.api.plugin.modulecluster">
+    <modulecluster>
+      <default>
+        <cluster name="Lin Stack"/>
+        <module type="Com"/>
+        <module type="EcuC"/>
+        <module type="PduR"/>
+        <module type="IpduM"/>
+        <module type="IPduMplex"/>
+      </default>
+    </modulecluster>
+  </extension>
+
+  <!-- handle id calculator for LinIfChannelId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="LinIfHandleId_LinIfChannelId_LinIf_TS_TxDxM5I8R0"
+    name="LinIf/LinIfChannelId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="LinIf_TS_TxDxM5I8R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I8R0/ELEMENTS/LinIf/LinIfGlobalConfig/LinIfGlobalConfig/LinIfChannel/"/>
+            <parameter name="idPath" value="LinIfChannelId"/>
+            <parameter name="zbcGroups" value="false"/>
+            <parameter name="groupBy" value="LinIfNodeType"/>
+            <parameter name="sortOrder" value="LinIfMaster,LinIfSlave"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.LinIf_TS_TxDxM5I8R0">
+                    <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.0"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+
+  <!-- handle id calculator for LinIfTxPduId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="LinIfHandleId_LinIfTxPduId_LinIf_TS_TxDxM5I8R0"
+    name="LinIf/LinIfTxPduId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="LinIf_TS_TxDxM5I8R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I8R0/ELEMENTS/LinIf/LinIfGlobalConfig/LinIfGlobalConfig/LinIfChannel/LinIfChannel/LinIfFrame"/>
+            <parameter name="idPath" value="LinIfPduDirection/LinIfTxPduId"/>
+            <parameter name="zbcGroups" value="true"/>
+            <parameter name="filterPath" value="LinIfFrameType"/>
+            <parameter name="filterValues" value="UNCONDITIONAL"/>
+            <parameter name="groupBy" value="LinIfPduDirection"/>
+            <parameter name="ignore" value="LinIfRxPdu,LinIfSlaveToSlavePdu"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.LinIf_TS_TxDxM5I8R0">
+                    <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.0"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for LinIfScheduleTableIndex -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="LinIfHandleId_LinIfScheduleTableIndex_LinIf_TS_TxDxM5I8R0"
+    name="LinIf/LinIfScheduleTableIndex"
+    desc="Calculates LinIfScheduleTableIndex for LinIfScheduleTables">
+        <operationclass class="dreisoft.tresos.linif.pushservice.operations.handleid.LinIfSchedTableIdxPushOperation">
+            <parameter name="moduleId" value="LinIf_TS_TxDxM5I8R0"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.LinIf_TS_TxDxM5I8R0">
+                    <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.0"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="LinTp_TS_TxDxM5I8R0_ModuleId"
+             name="LinTp_TS_TxDxM5I8R0 Module">
+    <module id="LinTp_TS_TxDxM5I8R0"
+            label="LinTp"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-LINStack: AUTOSAR LIN Transport Layer"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="5"
+            swVersionMinor="8"
+            swVersionPatch="27"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="LinTp"
+            categoryLayer="Communication HW Abstraction"
+            categoryCategory="LIN"
+            categoryComponent="ECUC">
+      <cluster name="Lin Stack"/>
+    </module>
+  </extension>
+
+
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="LinTp_TS_TxDxM5I8R0_ConfigId"
+             name="LinTp_TS_TxDxM5I8R0 Configuration">
+    <configuration moduleId="LinTp_TS_TxDxM5I8R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/LinIf.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM5I8R0/LinTp"/>
+      </data>
+
+      <editor id="LinTp_TS_TxDxM5I8R0_EditorId"
+              label="Default"
+              tooltip="ACG-LINStack: AUTOSAR LIN Transport Layer">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM5I8R0/LinTp"/>
+          <parameter name="title" value="LinTp"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_LinTp_TS_TxDxM5I8R0"
+           moduleId="LinTp_TS_TxDxM5I8R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.LinTpTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+
+
+<!-- handle id calculator for LinTpRxNSduId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="LinTpHandleId_LinTpRxNSduId_LinIf_TS_TxDxM5I8R0"
+    name="LinTp/LinTpRxNSduId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="LinIf_TS_TxDxM5I8R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I8R0/ELEMENTS/LinTp/LinTpGlobalConfig/LinTpGlobalConfig/LinTpRxNSdu/"/>
+            <parameter name="idPath" value="LinTpRxNSduId"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.LinIf_TS_TxDxM5I8R0">
+                    <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.0"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+<!-- handle id calculator for LinTpTxNSduId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="LinTpHandleId_LinTpTxNSduId_LinIf_TS_TxDxM5I8R0"
+    name="LinTp/LinTpTxNSduId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="LinIf_TS_TxDxM5I8R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I8R0/ELEMENTS/LinTp/LinTpGlobalConfig/LinTpGlobalConfig/LinTpTxNSdu/"/>
+            <parameter name="idPath" value="LinTpTxNSduId"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.LinIf_TS_TxDxM5I8R0">
+                    <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.0"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+</plugin>

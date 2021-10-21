@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    ** brief AUTOSAR Os_TS_T19D1M6I0R0_AS40 plugin
+    ** project AUTOSAR Standard Core
+    **
+    ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+    ** unless expressly agreed to otherwise.
+  -->
+
+  <!-- this is the DER_AS40 wrapper plugin; the sources are stored in the
+       Os_TS_T19D1M6I0R0_AS40 plugin -->
+
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Os_TS_T19D1M6I0R0_AS40_ModuleId"
+             name="Os_TS_T19D1M6I0R0_AS40 Module">
+
+    <module id="Os_TS_T19D1M6I0R0_AS40"
+            label="Os"
+            mandatory="false"
+            allowMultiple="false"
+            description="EBtresosAutoCore: AUTOSAR Os module"
+            copyright="(c) 1998-2020 Elektrobit Automotive GmbH"
+            swVersionMajor="6"
+            swVersionMinor="0"
+            swVersionPatch="302"
+            swVersionSuffix="0000"
+            specVersionMajor="4"
+            specVersionMinor="1"
+            specVersionPatch="0"
+            specVersionSuffix="0"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="2"
+            categoryType="Os"
+            categoryLayer="System Services"
+            categoryCategory="OS/RTE"
+            categoryComponent="ECUC">
+
+      <ecuType target="WINDOWS" derivate="WIN32X86"/>
+
+
+      <cluster name="Basic Services"/>
+      <cluster name="OS/RTE"/>
+      
+
+
+    </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Os_TS_T19D1M6I0R0_AS40_ConfigId"
+             name="Os_TS_T19D1M6I0R0_AS40 Configuration">
+    <configuration moduleId="Os_TS_T19D1M6I0R0_AS40">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager">
+          <parameter name="include" value="data/OIL"/>
+        </manager>
+        <resource value="config/Os.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_T19D1M6I0R0_AS40/Os"/>
+      </data>
+
+      <editor id="Os_TS_T19D1M6I0R0_AS40_EditorId"
+              label="Default"
+              tooltip="EBtresosAutoCore: AUTOSAR Os module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_T19D1M6I0R0_AS40/Os"/>
+          <parameter name="title" value="Os"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension id="asc_Os_TS_T19D1M6I0R0_AS40_generator"
+             name="Os TS_T19D1M6I0R0_AS40 Generator"
+             point="dreisoft.tresos.generator.api.plugin.generator">
+
+      <generator class="eb.Os.Generator.Launcher"
+              id="asc_Os.generator_TS_T19D1M6I0R0_AS40"
+              moduleId="Os_TS_T19D1M6I0R0_AS40">
+
+      <parameter name="os_target" value="WINDOWS"/>
+      <parameter name="os_derivat" value="WIN32X86"/>
+    </generator>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+              id="Os_TS_T19D1M6I0R0_AS40_SWCD_GeneratorId"
+              name="Os_TS_T19D1M6I0R0_AS40 SWCD Generator">
+    <generator moduleId="Os_TS_T19D1M6I0R0_AS40"
+               class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="asc_Os.SWCD_generator_TS_T19D1M6I0R0_AS40">
+
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+
+    </generator>
+  </extension>
+
+
+
+</plugin>

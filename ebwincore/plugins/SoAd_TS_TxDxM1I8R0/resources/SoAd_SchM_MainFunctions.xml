@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+
+    <mainFunction name="SoAd_MainFunction">
+        <header value="SoAd.h" />
+      <cycleTime type="XPATH" value="as:modconf('SoAd')[1]/SoAdGeneral/SoAdMainFunctionPeriod"/>
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150"/>
+        <callBefore></callBefore>
+        <callAfter>
+          <mainFunction>EthSM_MainFunction</mainFunction>
+          <mainFunction>EthIf_MainFunctionRx</mainFunction>
+          <mainFunction>TcpIp_MainFunction</mainFunction>
+        </callAfter>
+    </mainFunction>
+</schm:mainFunctions>

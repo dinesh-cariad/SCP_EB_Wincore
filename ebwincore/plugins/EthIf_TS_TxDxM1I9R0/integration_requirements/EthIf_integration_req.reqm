@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="dev">
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        
+        
+        EthIf must not use receive or transmit interrupts
+        The Integrator must assure that neither <code>EthIf</code> uses interrupts
+        nor function <code>EthIf_MainFunctionRx</code> is called in interrupt context.
+      </description>
+      <rationale/>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The reinitialization process shall not interrupt other module functions.
+        If reinitialization of the module is required, the call of
+        <code>EthIf_Init()</code> shall not interrupt other module functions.
+      </description>
+      <rationale>
+        The reinitialisation process will reset all internal variables. Continuing an interrupted
+        module function after reinitialization can lead to undefined module behavior.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The call of <code>EthIf_GetControllerMode()</code> will always result in the call of
+        <code>Eth_GetControllerMode()</code>. The returned mode is not processed within
+        EthIf. In case of an erroneous behaviour of the hardware (controller return another
+        value as previously set by upper layer), the upper layer shall take care to set
+        EthIf to the new mode by calling the respective APIs.
+      </description>
+      <rationale>
+        It is not specified which layer will call <code>EthIf_GetControllerMode()</code> and
+        for what reason since the upper layer already set the mode.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        
+        <code>EthIf_Init()</code> shall not be preempted by any other module API calls.
+        It needs to be ensured that the function call <code>EthIf_Init()</code> is not
+        preempted by any other module API calls.
+      </description>
+      <rationale>
+        During the call of <code>EthIf_Init()</code> global variables and pointers get
+        initialized. It is easy for the integrator to avoid this preemption, thus no data protection
+        mechanism has been implemented for function <code>EthIf_Init()</code>.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The Integrator must assure that different <code>EthIf_MainFunctionRx_PrioProcessing[name]()
+        </code> functions (for prioritized reception of traffic) as well as the
+        <code>EthIf_MainFunctionRx()</code> do not preempt each other.
+      </description>
+      <rationale/>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0006</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Config parameter EthIfInitControllersTransceivers shall be enabled only for Eth drivers
+        and transceivers below ASR 4.2.2.
+        Functions Eth_ControllerInit() and EthTrcv_TransceiverInit() shall be called by integration
+        code for EB Eth drivers and transceivers ASR 4.2.2 or higher.
+      </description>
+      <rationale/>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0007</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If EB Eth drivers and transceivers ASR 4.3.0 are used, then config parameter
+        EthIfSupportEthAPI needs to be set to ASR430_EB.
+        A compilation error stating a syntax issue with EthIf_TxConfirmation() is an indication
+        that EthIfSupportEthAPI is not properly configured.
+      </description>
+      <rationale/>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0008</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If EthIfSwitch and/or EthIfSwitchPortGroup elements are configured, then EthTrcv configuration
+        parameter: EthTrcvGeneral/EthTrcvGetLinkStateApi must be set and at least one of EthSwtPorts,
+        configured in EthSwt/EthSwtConfig/*/EthSwtPort must have an EthSwtPortTrcvRef defined.
+      </description>
+      <rationale/>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0009</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Locking per switch port for all switch APIs prevents a preemptive access to the same Trcv registers
+        in the chip. However, different switch ports may access e.g. same SPI. Preemption of SPI can not
+        be solved by EthIf since it has no knowledge about the topology of the connected transceivers.
+        This is out of scope of EthIf and should be solved in SPI.
+        It shall be ensured that same Trcv instance (registers) is not shared between switch ports and
+        configured transceivers. Each Trcv instance shall be used only once, either for a dedicated switch
+        port or a configured Trcv in EthIf configuration.
+      </description>
+      <rationale/>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0010</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If config parameter EthIfRetransmitApiEnable is enabled, DataPtr parameter used in EthIf_Retransmit API
+        shall provide space for VLAN header in front of the used buffer.
+      </description>
+      <rationale/>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0011</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If Eth drivers of version below ASR 4.3.0 are used, then EthCtrlIdx of all referenced
+        EthCtrl must be 0-based and consecutive.
+      </description>
+      <rationale/>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0012</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If support of drivers that contain vendorId and vendorApiInfix is required, then every
+        driver which requires it (Eth, EthTrcv or EthSwt) needs to have a valid BswModuleDescription
+        which shall be referenced from EthIf to provide it with VendorId and VendorApiInfix.
+        Support is not available for ASR versions below 4.3.0.
+      </description>
+      <rationale/>
+    </specobject>
+    <specobject>
+      <id>lim.EthIf.EB_INTREQ_EthIf_0013</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Port group mode and link state are related in a way that when mode is set to DOWN, link
+        state will be reported LINK_STATE_DOWN although ports, when used by another active port
+        group, could still be ACTIVE and consequently accumulated port group link state ACTIVE.
+
+        In case when port group is under control of BswM, shut-down of ports when port group mode
+        is set to DOWN could be delayed as specified in [SWS_EthIf_00270] and [SWS_EthIf_00271].
+        During this time period, EthIf accumulates and reports the actual port group link
+        state to BswM. When delay timer expires EthIf will report port group link state
+        LINK_STATE_DOWN as described in previous paragraph.
+
+        Integrator shall be aware of this behaviour, verify and if necessary adjust the related
+        project specific BswM logic.
+      </description>
+      <rationale/>
+    </specobject>
+  </specobjects>
+</specdocument>

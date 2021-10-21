@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.LinSM.EB_INTREQ_LinSM_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      The <code>LinSM_RequestComMode</code> function is non-reentrant if called for a
+      transition from <code>LINSM_FULL_COM</code> to <code>LINSM_NO_COM</code> state for a channel
+      that uses sleep support. During such a transition, the LinIf function
+      <code>LinIf_GotoSleep</code> must be called which itself is non-reentrant.
+      </description>
+      <rationale>
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>lim.LinSM.EB_INTREQ_LinSM_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      <code>LinSM_ScheduleRequest</code> is non-reentrant for the same LIN channel.
+      According to LINSM113, the <code>LinSM_ScheduleRequest</code> function shall be reentrant.
+      Contrary to this, the <code>LinSM_ScheduleRequest</code> function implementation is non-reentrant
+      for the same LIN channel.
+      </description>
+      <rationale>
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>lim.LinSM.EB_INTREQ_LinSM_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      If the LinSM schedule table will be created for each channel, the name NULL_SCHEDULE has
+      to be extended with the channel index (_0 for first channel, _1 for second channel and so on).
+      The extension will be related to the index, not to the name of the channel, so it is needed
+      to have the channels 0-based and consecutive, if numbering is used for channels.
+      </description>
+      <rationale>
+      Considering that LinSM does not provide an ID for its channels, the index of the channel (meaning
+      its order in the channel list) will be used to differentiate the channels.
+      </rationale>
+    </specobject>
+  </specobjects>
+</specdocument>

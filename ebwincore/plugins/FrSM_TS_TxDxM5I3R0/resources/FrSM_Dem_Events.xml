@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dem:events xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd"
+    xmlns:dem="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd">
+
+    <event name="FRSM_E_CLUSTER_STARTUP"
+            base="as:modconf('FrSM')[1]/FrSMConfig/*[1]/FrSMCluster/*"
+            suffix="concat( '_',node:ref(./FrSMComMNetworkHandleRef)/ComMChannelId)">
+        <enable type="XPATH"
+            value="as:modconf('FrSM')[1]/ReportToDem/FrSMClusterStartupReportToDem='DEM'" />
+        <updateReference
+            value="./FrSMClusterDemEventParameterRefs/FRSM_E_CLUSTER_STARTUP" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+</dem:events>

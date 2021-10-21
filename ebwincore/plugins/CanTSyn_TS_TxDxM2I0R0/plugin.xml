@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+    AUTOSAR CanTSyn_TS_TxDxM2I0R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+
+    <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="CanTSyn_TS_TxDxM2I0R0_ModuleId"
+             name="CanTSyn_TS_TxDxM2I0R0 Module">
+    <module id="CanTSyn_TS_TxDxM2I0R0"
+            label="CanTSyn"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-TimeSync: AUTOSAR CanTSyn module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="8"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="4"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="4"
+            relVersionPatch="0"
+            categoryType="CanTSyn"
+            categoryLayer="Communication Services"
+            categoryCategory="CAN"
+            categoryComponent="ECUC">
+      <cluster name="Can Stack"/>
+<cluster name="Time Sync"/>
+    </module>
+  </extension>
+
+
+  
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="CanTSyn_TS_TxDxM2I0R0_ConfigId"
+             name="CanTSyn_TS_TxDxM2I0R0 Configuration">
+    <configuration moduleId="CanTSyn_TS_TxDxM2I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/CanTSyn.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM2I0R0/CanTSyn"/>
+      </data>
+
+      <editor id="CanTSyn_TS_TxDxM2I0R0_EditorId"
+              label="Default"
+              tooltip="ACG-TimeSync: AUTOSAR CanTSyn module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM2I0R0/CanTSyn"/>
+          <parameter name="title" value="CanTSyn"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+  
+      <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_CanTSyn_TS_TxDxM2I0R0"
+           moduleId="CanTSyn_TS_TxDxM2I0R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.CanTSynTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+  
+  
+      <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="CanTSyn_TS_TxDxM2I0R0_GeneratorId"
+             name="CanTSyn_TS_TxDxM2I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="CanTSyn_TS_TxDxM2I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="CanTSyn_TS_TxDxM2I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+  
+  
+      <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_CanTSyn_TS_TxDxM2I0R0"
+        name="CanTSyn service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="CanTSyn" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/CanTSyn_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.CanTSyn_TS_TxDxM2I0R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.4" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+  
+  
+      <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="CanTSyn_TS_TxDxM2I0R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+
+  
+  
+  
+  <!-- !LINKSTO CanTSyn.EB.HandleIdGenerator.CanTSynGlobalTimeMasterConfirmationHandleIds.0based.consecutive,1 -->
+  <!-- handle id calculator for CanTSynGlobalTimeMasterConfirmationHandleId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="CanTSynGlobalTimeMasterConfirmationHandleId_CanTSyn_TS_TxDxM2I0R0"
+    name="CanTSyn/CanTSynGlobalTimeMasterConfirmationHandleId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="CanTSyn_TS_TxDxM2I0R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM2I0R0/ELEMENTS/CanTSyn/CanTSynGlobalTimeDomain/"/>
+            <parameter name="idPath" value="CanTSynGlobalTimeMaster/CanTSynGlobalTimeMasterPdu/CanTSynGlobalTimeMasterConfirmationHandleId"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.CanTSyn_TS_TxDxM2I0R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                  <equals value="4.4"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+
+
+  <!-- !LINKSTO CanTSyn.EB.HandleIdGenerator.CanTSynGlobalTimeSlaveHandleId.0based.consecutive,1 -->
+  <!-- handle id calculator for CanTSynGlobalTimeSlaveHandleId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="CanTSynGlobalTimeSlaveHandleId_CanTSyn_TS_TxDxM2I0R0"
+    name="CanTSyn/CanTSynGlobalTimeSlaveHandleId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="CanTSyn_TS_TxDxM2I0R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM2I0R0/ELEMENTS/CanTSyn/CanTSynGlobalTimeDomain/"/>
+            <parameter name="idPath" value="CanTSynGlobalTimeSlave/CanTSynGlobalTimeSlavePdu/CanTSynGlobalTimeSlaveHandleId"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.CanTSyn_TS_TxDxM2I0R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                  <equals value="4.4"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+   
+</plugin>

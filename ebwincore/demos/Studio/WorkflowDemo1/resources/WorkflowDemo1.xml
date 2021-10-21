@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow xmlns="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd" 
+    id="CreateDemoProject" version="10.9" label="Create the project" description="Create demo project">
+
+    <group id="CreateProject" label="Create the project">
+    	<action id="Precondition" label="Precondition" repeatable="true">
+    		<description><![CDATA[<h1>Precondition</h1><p>As precondition for using this demo workflow, please also install<ul><li>
+    		 <b><i>GuidedConfigDemo2</i></b></li></ul><p>You can find the required plug-in at <b>&lt;tresosInstallBase&gt;\demos</b> ]]></description>
+    	</action>	
+        <action id="NewProject" label="Create a configuration project" repeatable="true">
+            <command description="Create the project"
+                     serialization="org.eclipse.ui.newWizard(newWizardId=newConfigurationProject)"
+                     autoadvance="false"/>
+            <description><![CDATA[Create a new project and use the following settings:<p/>
+            <table border="1" bgcolor="#ebebeb" cellpadding="5"><tr><td>target/derivate</td><td>Demo/GuidedConfig</td></tr>
+            <tr><td>release version</td><td>2.1</td></tr></table>]]></description>
+        </action>
+        <action id="AddModule" label="Add required module" next="workflow:///RunImporters" needsproject="true">
+            <command description="Add required module" serialization="dreisoft.tresos.launcher2.api.plugin.ModuleConfigurationDialogCommand"/>
+	        <description><![CDATA[Add the required module:<p/><ul><li>GCDemo2_TS_T00D0M0I0R0</li></ul>]]> </description>
+        </action>
+        <group id="RunImporters" label="Run importers">
+            <action id="Import" label="Import Autosar file" repeatable="true">
+                <command description="Import Autosar file" serialization="dreisoft.tresos.launcher2.api.plugin.ImporterExporterCommand"/>
+                <description><![CDATA[Add an importer to the project using the following settings:<p>
+				<table border="1" bgcolor="#ebebeb" cellpadding="5">
+				<tr><td>Type:</td><td> AUTOSAR Im-/Exporter</td></tr>
+                <tr><td>Mode:</td><td> Import only</td></tr>
+                <tr><td>File:</td><td> resources/GCDemo2.epc (relative to the WorkflowDemo1 plug-in)</td></tr>
+                <tr><td>Content type:</td><td> asc:2.1</td></tr>
+                <tr><td>Validate:</td><td> true</td></tr></table><p/>
+                Run the importer.]]>
+                </description>
+            </action>  
+            <description>Run importer</description>
+        </group>
+        <action id="InspectChanges" label="Inspect the changes" next="workflow://ConfigureProject/Configuration">
+            <command description="open the assistance dialog to inspect the values"
+                serialization="dreisoft.tresos.guidedconfig.api.plugin.SidebarTriggerCommand(triggerType=GCDemo)"/>
+            <description>&lt;b&gt;Opens a specific assistance dialog&lt;/b&gt; to inspect the changed values.</description>
+        </action>
+        <description><![CDATA[This workflow will guide you to:<p><ul>
+        <li>create a new project</li>
+        <li>add the module configuration</li>
+        <li>run an importer</li>
+        <li>and open an assistance dialog to inspect the configuration</li></ul></p>
+        When finishing this workflow it opens the next workflow with further tasks to go on with configuring the project.]]></description>
+	</group>
+</workflow>

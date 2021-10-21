@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="swurs">
+    <specobject>
+      <id>intgr.BswM.EB_INTREQ_BswM_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The PbcfgM module support shall always be used in case the selected
+        IMPLEMENTATION_CONFIG_VARIANT is VariantPostBuild.
+      </description>
+      <rationale>
+        The EcuM calls the BswM_Init API with NULL_PTR as a parameter. Consequently,
+        the BswM must obtain the the post-build configuration via the PbcfgM.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>intgr.BswM.EB_INTREQ_BswM_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The BswM shall reject a configuration in which the selected IMPLEMENTATION_CONFIG_VARIANT
+        is VariantPostBuild and a symbolic name value is configured as an initial
+        value of a mode request port via BswMBswModeInitValueMode.
+      </description>
+      <rationale>
+        In order to support the binary generation of the BswM's post-build configuration,
+        the BswM now requires that the initial value defined within the parameter
+        BswMBswModeInitValueMode be a numerical constant if the selected variant is
+        VariantPostBuild.
+        This constraint is due to the fact the numerical value of the symbolic
+        value can only be known at runtime but the XGEN generation of the binary
+        representation of the post-build configuration needs to be done before.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>intgr.BswM.EB_INTREQ_BswM_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The BswMSchMEnabled parameter shall be read only and its default value set to 'TRUE'.
+      </description>
+      <rationale>
+        The SchM interface is always needed by the BswM after Bsw distribution support was
+        added.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>intgr.BswM.EB_INTREQ_BswM_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        It falls within the user's responsibilities to be aware and resolve any reentrancy
+        issues that might occur when immediate mode request ports are configured.
+      </description>
+      <rationale>
+        The execution of both user callout functions and predefined BswM actions as a result
+        of the mode arbitration of immediate mode request ports is potentially dangerous and
+        can lead to unexpected behaviour. In case of the predefined BswM actions, the user must
+        consult the API specification of the functions which are called by the BswM and verify
+        their reentrancy status.
+        As an example, the BswMPduGroupSwitch action triggers the execution of the Com_IpduGroupControl()
+        API which is not reentrant. Configuring such an action within a rule whose logical expression
+        uses an immediate mode request port might lead to unexpected behaviour.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>intgr.BswM.EB_INTREQ_BswM_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        BswM API's shall not be called from CAT1 interrupts if multiple BswM instances are configured.
+      </description>
+      <rationale>
+        In CAT1 interrupts the BswM cannot use the GetApplicationID API to determine the exact instance
+        that will arbitrate the request.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>intgr.BswM.EB_INTREQ_BswM_BswMPduGroupSwitch_BswMDeadlineMonitoringControl</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        BswMPduGroupSwitch and BswMDeadlineMonitoringControl actions can only be configured in one BswM instance
+      </description>
+      <rationale>
+        The Com module only has one instance and the API's corresponding to the BswMPduGroupSwitch and BswMDeadlineMonitoringControl
+        actions are not designed to be called concurrently. As the BswM allows multiple instances, only one of them can safely call the two Com API's.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>intgr.BswM.EB_INTREQ_BswMLogicalExpressionsOptimization</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If configuration parameter BswMLogicalExpressionsOptimization is set to TRUE, the parameter BswMRuleExpressionRef cannot reference previously unused logical expressions or logical expressions which are part of other logical
+        expressions at PostBuild time.
+      </description>
+      <rationale>
+        Linktime artifacts for each logical expression are needed in order for the BswMRuleExpressionRef parameter to be changed at PostBuild time. However, this increases ROM consumption.
+        If changing BswMRuleExpressionRef in the above described manner is not required at PostBuild time, the linktime
+        ROM consumption can be improved by setting BswMLogicalExpressionsOptimization to TRUE.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>intgr.BswM.EB_INTREQ_BswMActionsOptimization</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If configuration parameter BswMActionsOptimization is set to TRUE, the parameter BswMActionListItemRef cannot reference a previously unused action at PostBuild time.
+      </description>
+      <rationale>
+        Linktime artifacts for each action are needed in order for the BswMActionListItemRef parameter to be changed at PostBuild time. However, this increases ROM consumption.
+        If changing BswMActionListItemRef in the above described manner is not required at PostBuild time, the linktime
+        ROM consumption can be improved by setting BswMActionsOptimization to TRUE.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>intgr.BswM.EB_INTREQ_BswMSchMSwitchPostbuild</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        At PostBuild time a BswMSchMSwitch action cannot be configured for a rule referencing different mode request ports than the original rule it was mapped to.
+      </description>
+      <rationale>
+        If at PostBuild time a BswMSchMSwitch is mapped to a rule referencing different mode request ports than the one it was mapped initially the
+        basic software module description requires an update. Updating the basic software module description at PostBuild time is not supported in
+        the ACG.
+      </rationale>
+      
+    </specobject>
+  </specobjects>
+</specdocument>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="MemMap" default="all" basedir=".">
+
+  <target name="all">
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+      <classpath>
+        <pathelement location="./tools/ant-contrib-1.0b1.jar"/>
+      </classpath>
+    </taskdef>
+    
+    <ng.property
+       name="initFunction"
+       dctxt="MemMap"
+       xpath="asc_memmap:init()"
+       override="false">
+   </ng.property>
+    
+    <macrodef name="generate-swc-module">
+      <attribute name="swcModName" default=""/>
+      <sequential>
+        <echo message="Generating SchM header files for module: @{swcModName}" />
+        <ng.jetgen class="dreisoft.tresos.memmap.generated.jet.Module_MemMapHeader" file="include/@{swcModName}_MemMap.h">
+          <argument name="modName" value="@{swcModName}" />
+          <argument name="type" value="SWC" />
+        </ng.jetgen>
+      </sequential> 
+    </macrodef>
+
+    <ng.property
+        name="swcModNames"
+        dctxt="MemMap"
+        xpath="asc_memmap:getSwcModuleNames()"
+        override="false">
+    </ng.property>
+
+    <for param="swcModName"
+         list="${swcModNames}"
+         delimiter=" "
+         trim="true">
+      <sequential>
+        <generate-swc-module swcModName="@{swcModName}" />
+      </sequential>
+    </for>
+    
+    <macrodef name="generate-bsw-module">
+      <attribute name="bswModName" default=""/>
+      <sequential>
+        <echo message="Generating SchM header files for module: @{bswModName}" />
+        <ng.jetgen class="dreisoft.tresos.memmap.generated.jet.Module_MemMapHeader" file="include/@{bswModName}_MemMap.h">
+          <argument name="modName" value="@{bswModName}" />
+          <argument name="type" value="BSW" />
+        </ng.jetgen>
+      </sequential> 
+    </macrodef>
+
+    <ng.property
+        name="bswModNames"
+        dctxt="MemMap"
+        xpath="asc_memmap:getBswModuleNames()"
+        override="false">
+    </ng.property>
+
+    <for param="bswModName"
+         list="${bswModNames}"
+         delimiter=" "
+         trim="true">
+      <sequential>
+        <generate-bsw-module bswModName="@{bswModName}" />
+      </sequential>
+    </for>
+    
+    <macrodef name="generate-swcbsw-module">
+      <attribute name="swcbswModName" default=""/>
+      <sequential>
+        <echo message="Generating SchM header files for module: @{swcbswModName}" />
+        <ng.jetgen class="dreisoft.tresos.memmap.generated.jet.Module_MemMapHeader" file="include/@{swcbswModName}_MemMap.h">
+          <argument name="modName" value="@{swcbswModName}" />
+          <argument name="type" value="BSWSWC" />
+        </ng.jetgen>
+      </sequential> 
+    </macrodef>
+
+    <ng.property
+        name="swcbswModNames"
+        dctxt="MemMap"
+        xpath="asc_memmap:getCommonModuleNames()"
+        override="false">
+    </ng.property>
+
+    <for param="swcbswModName"
+         list="${swcbswModNames}"
+         delimiter=" "
+         trim="true">
+      <sequential>
+        <generate-swcbsw-module swcbswModName="@{swcbswModName}" />
+      </sequential>
+    </for>
+
+    <ng.jetgen class="dreisoft.tresos.memmap.generated.jet.MemMapHeader" file="include/MemMap.h">
+        <argument name="type" value="Bsw" />
+    </ng.jetgen>
+
+    <ng.property
+       name="finalFunction"
+       dctxt="MemMap"
+       xpath="asc_memmap:fin()"
+       override="false">
+   </ng.property>
+
+  </target>
+</project>

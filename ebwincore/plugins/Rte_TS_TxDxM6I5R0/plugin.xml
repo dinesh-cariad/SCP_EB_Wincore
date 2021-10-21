@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+    AUTOSAR Rte_TS_TxDxM6I5R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Rte_TS_TxDxM6I5R0_ModuleId"
+             name="Rte_TS_TxDxM6I5R0 Module">
+    <module id="Rte_TS_TxDxM6I5R0"
+            label="Rte"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-RTE: AUTOSAR Runtime Environment"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="6"
+            swVersionMinor="5"
+            swVersionPatch="3"
+            swVersionSuffix="B439717"
+            specVersionMajor="3"
+            specVersionMinor="2"
+            specVersionPatch="0"
+            specVersionSuffix="0003"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="Rte"
+            categoryLayer="Rte"
+            categoryCategory="OS/RTE"
+            categoryComponent="ECUC">
+      <cluster name="OS/RTE"/>
+      <importer importerId="SysdImporter"/>
+      <modelExtender
+            extenderId="SystemModel2">
+      </modelExtender>
+    </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Rte_TS_TxDxM6I5R0_ConfigId"
+             name="Rte_TS_TxDxM6I5R0 Configuration">
+    <configuration moduleId="Rte_TS_TxDxM6I5R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Rte.xdm" type="xdm"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM6I5R0/Rte"/>
+      </data>
+
+      <editor id="Rte_TS_TxDxM6I5R0_GenEditorId"
+              label="Generic Editor"
+              tooltip="Generic configuration editor for the Rte module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM6I5R0/Rte"/>
+          <parameter name="title" value="Rte"/>
+          <parameter name="groupLinks" value="true"/>
+        </class>
+      </editor>
+
+      <editor id="Rte_TS_TxDxM6I5R0_AsEditorId"
+              label="Rte Editor"
+              tooltip="Edit the Rte module configuration">
+        <class class="dreisoft.tresos.guidedconfig.api.gui.editor.GuidedConfigEditor">
+          <!-- value of wizardId must not contain an underscore -->
+          <parameter name="wizardId" value="RteAsEditor65"/>
+        </class>
+      </editor>
+
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+    <guidedconfigwizard id="RteAsEditor65"  basePathPlugin="RteAsExt_TS_TxDxM6I5R0">
+      <gui class="dreisoft.tresos.guidedconfig.api.gui.xform.XFormMultiPage">
+        <parameter name="pageDescription" value="pages/RteEditor.xml"/>
+        <parameter name="pageDescriptionPlugin" value="RteAsExt_TS_TxDxM6I5R0"/>
+        <parameter name="features" value="EB asr40"/>
+      </gui>
+      <backend class="dreisoft.tresos.rteas.backend.RteEditorBackend" />
+    </guidedconfigwizard>
+  </extension>
+
+</plugin>
+

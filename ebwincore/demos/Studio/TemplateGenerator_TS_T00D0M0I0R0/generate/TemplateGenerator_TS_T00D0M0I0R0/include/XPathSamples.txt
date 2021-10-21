@@ -1,0 +1,118 @@
+[!/*
+   * This sample provides XPath expressions that access all elements of the
+   * Sample Configuration
+*/!]
+
+
+====
+Root
+====
+
+/
+-
+name  = [!"node:name(/)"!]
+value = [!"/"!]
+
+/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TS_T00D0M0I0R0
+----------------
+name  = [!"node:name(/AUTOSAR/TOP-LEVEL-PACKAGES/TS_T00D0M0I0R0)"!]
+value = [!"/AUTOSAR/TOP-LEVEL-PACKAGES/TS_T00D0M0I0R0"!]
+
+/AUTOSAR/TOP-LEVEL-PACKAGES/TemplateGenerator/ELEMENTS/TemplateGenerator
+----------------------------
+name  = [!"node:name(/AUTOSAR/TOP-LEVEL-PACKAGES/TemplateGenerator/ELEMENTS/TemplateGenerator)"!]
+value = [!"/AUTOSAR/TOP-LEVEL-PACKAGES/TemplateGenerator/ELEMENTS/TemplateGenerator"!]
+
+
+=========
+Container
+=========
+
+Container
+--------------------------------------
+name  = [!"node:name(Container)"!]
+value = [!"Container"!]
+
+Container/Container_1
+-------------------------------------------------
+name  = [!"node:name(Container/Container_1)"!]
+value = [!"Container/Container_1"!]
+
+
+======
+Choice
+======
+
+Container/Container_1/Choice
+--------------------------------------------------------
+name  = [!"node:name(Container/Container_1/Choice)"!]
+value = [!"Container/Container_1/Choice"!]
+
+Container/Container_1/Choice/Choice_0
+------------------------------------------------------------------
+name  = [!"node:name(Container/Container_1/Choice/Choice_0)"!]
+value = [!"Container/Container_1/Choice/Choice_0"!]
+
+
+======================
+Parameters (Choice_0)
+======================
+
+Container/Container_1/Choice/Choice_0/String
+---------------------------------------------------------------------------------
+name  = [!"name(Container/Container_1/Choice/Choice_0/String)"!]
+value = [!"Container/Container_1/Choice/Choice_0/String"!]
+
+Container/Container_1/Choice/Choice_0/Choice1/Bool
+-------------------------------------------------------------------------------
+name  = [!"name(Container/Container_1/Choice/Choice_0/Bool)"!]
+value = [!"Container/Container_1/Choice/Choice_0/Bool"!]
+
+Container/Container_1/Choice/Choice_0/Choice1/Int
+------------------------------------------------------------------------------
+name  = [!"name(Container/Container_1/Choice/Choice_0/Int)"!]
+value = [!"Container/Container_1/Choice/Choice_0/Int"!]
+
+Container/Container_1/Choice/Choice_0/Choice1/Float/*
+----------------------------------------------------------------------------------
+[!SELECT "Container/Container_1/Choice/Choice_0/Float/*"!]
+name  = [!"name(.)"!]
+value = [!"."!]
+[!ENDSELECT!]
+
+Container/Container_1/Choice/Choice_0/Choice1/Func
+-------------------------------------------------------------------------------
+name  = [!"name(Container/Container_1/Choice/Choice_0/Func)"!]
+value = [!"Container/Container_1/Choice/Choice_0/Func"!]
+
+Container/Container_1/Choice/Choice_0/Choice1/Enum
+-------------------------------------------------------------------------------
+name  = [!"name(Container/Container_1/Choice/Choice_0/Enum)"!]
+value = [!"Container/Container_1/Choice/Choice_0/Enum"!]
+
+
+==========
+References
+==========
+
+node:name(node:ref(Container/Container_1/Choice/Choice_1/Ref)/Choice/Choice_0)
+---------------------------------------------------------------------------------------------------------
+name  = [!"node:name(node:ref(Container/Container_1/Choice/Choice_1/Ref)/Choice/Choice_0)"!]
+
+node:name(node:ref(Container/Container_1/Choice/Choice_1/ChoiceRef))
+---------------------------------------------------------------------------------------------------------
+name  = [!"node:name(node:ref(Container/Container_1/Choice/Choice_1/ChoiceRef/*[1]))"!]
+
+node:ref('/AUTOSAR/TOP-LEVEL-PACKAGES/TS_T00D0M0I0R0/ELEMENTS/TemplateGenerator')[1]/TemplateGenerator/../TemplateGenerator
+-------------------------------------------------------------
+name  = [!"name(node:ref('/AUTOSAR/TOP-LEVEL-PACKAGES/TS_T00D0M0I0R0/ELEMENTS/TemplateGenerator')[1]/../TemplateGenerator)"!]
+
+as:ref('/TS_T00D0M0I0R0/TemplateGenerator')
+-------------------------------------
+name  = [!"name(as:ref('/TS_T00D0M0I0R0/TemplateGenerator'))"!]
+
+SELECT "as:ref('/TS_T00D0M0I0R0/TemplateGenerator')"
+-------------------------------------
+[!SELECT "as:ref('/TS_T00D0M0I0R0/TemplateGenerator')"!][!//
+name = [!"name(.)"!]
+[!ENDSELECT!]

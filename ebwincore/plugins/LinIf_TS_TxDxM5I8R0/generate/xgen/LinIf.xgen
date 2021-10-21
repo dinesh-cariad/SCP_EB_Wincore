@@ -1,0 +1,1322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?module LinIf?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+[!CODE!]
+[!AUTOSPACING!]
+[!INCLUDE "../include/LinIf_Macros.m"!]
+[!INCLUDE "../include/LinIf_Checks.m"!]
+
+[!VAR "destIdEx"="0"!]
+[!/*-----------------------------------Configuration checks-----------------------------------*/!]
+[!/*-- pretty ugly check for range of timebase --*/!]
+[!ASSERT "num:i(as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfTimeBase * 1000000) = (as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfTimeBase * 1000000)"!]Timebase precision exceeds microseconds. ([!"."!])[!ENDASSERT!]
+
+[!/*-- set timebase variable and print infos --*/!]
+[!VAR "timebase"="num:i(as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfTimeBase * 1000000)"!]
+[!IF "$timebase < 1000"!]
+  [!WARNING "Timebase is less than 1ms!"!]
+[!ENDIF!]
+[!INFO!]LinIf_MainFunction() needs to be called every [!"$timebase"!] microseconds.[!ENDINFO!]
+
+[!/*
+*/!][!VAR "LINIF_CHECKSUM_ENHANCED"="num:i(16)"!][!/*
+*/!][!VAR "LINIF_SERIALNUM_ENABLED"="num:i(16)"!][!/*
+*/!][!VAR "LINIF_STARTUP_NORMAL"="num:i(1)"!][!/*
+*/!][!VAR "LINIF_STARTUP_SLEEP"="num:i(2)"!][!/*
+*/!][!VAR "LINIF_RUN_ONCE"="num:i(0)"!][!/*
+*/!][!VAR "LINIF_RUN_CONTINUOUS_RESTART"="num:i(1)"!][!/*
+*/!][!VAR "LINIF_RUN_CONTINUOUS_RESUME"="num:i(2)"!][!/*
+*/!][!VAR "LINIF_INVALID_ENTRY"="num:i(65535)"!][!/*
+*/!][!VAR "LINIF_NULL_ENTRY"="num:i(0)"!][!/*
+*/!][!VAR "LINIF_INVALID_SCHEDULE_TABLE"="num:i(255)"!][!/*
+*/!][!VAR "LINIF_UNUSED_VARIABLE"="num:i(0)"!][!/*
+*/!][!VAR "LINIF_COMM_INVALIDCHANNELID"="num:i(255)"!][!/*
+*/!][!VAR "LINIF_INVALIDECUMWAKEUPSOURCEID"="num:i(255)"!][!/*
+*/!][!VAR "LINIF_TRCV_INVALIDCHANNELID"="num:i(255)"!][!/*
+*/!]
+  <module name="LinIf" version="[!"$moduleSoftwareVer"!]">
+    <configuration class="PreCompile">
+      [!IF "$numTrcvs > 0"!]
+      <?artifact directory="include" file="LinIf_TrcvTypes.h" type="types-h" generate="no"?>
+      [!ENDIF!]
+      <?artifact directory="include" file="LinIf_CfgTypes.h" type="types-h" ?>
+      <parameter name="relocatable-enable">
+        <boolean-value>
+[!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('LinIf')) = 'true'"!][!//
+        [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!]true[!ELSE!]false[!ENDIF!]
+[!ELSE!][!//
+        [!IF "LinIfGeneral/LinIfRelocatablePbcfgEnable = 'true'"!]true[!ELSE!]false[!ENDIF!]
+[!ENDIF!][!//
+        </boolean-value>
+      </parameter>
+      <type name="LinIf_ConfigType">
+       <struct>
+        <member name="PlatformSignature" type="uint32" comment="Used to validate the platform." />
+        <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration." />
+        <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the pre-compile time configuration." />
+        <member name="PublicInfoSignature" type="uint32" comment="Used to validate published information configuration." />
+        [!IF "$numChannelsMaster > 0"!]
+        <member name="LinIfSchTableRef" type="LinIfScheduleTableType" comment="Reference to an array which includes all configured schedules of all channels.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        <member name="LinIfEntryRef" type="LinIfEntryType" comment="Reference to an array which includes all configured entries of all schedules.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        <member name="LinIfRxFrameRef" type="LinIfFrameInfoType" comment="Reference to an array which includes all configured unconditional frames (RX).">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        <member name="LinIfTxFrameRef" type="LinIfFrameInfoType" comment="Reference to an array which includes all configured unconditional frames (TX).">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!IF "$numChannelsMaster > 0"!]
+        <member name="LinIf_FrameListsRef" type="uint16" comment="Reference to an array which includes all unconditional frames which are associated with all configured sporadic frames.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        <member name="LinIf_FixedFramesRef" type="LinIfFixedFrameSduBytesType" comment="Reference to an array which includes all configured fixed frames.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        [!IF "$numSlaveChannels > 0"!]
+        <member name="LinIf_SlaveETFrameListsRef" type="LinIf_SlaveETFrameListType" comment="Reference to an array which includes all unconditional frames which are associated with configured slave event triggerd frames.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        <member name="LinIf_SlaveETFrmListSepRef" type="LinIf_SlaveETFrmListSepType" comment="Reference to LinIf_SlaveETFrameLists separator array.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        <member name="LinIfChannelRef" type="LinIfChannelType" comment="Reference to an array which includes channel specific configurations.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!IF "$numChannelsMaster > 0"!]
+        <member name="LinIfMasterRef" type="LinIfMasterChannelType" comment="Reference to an array which includes Master specific channel configurations">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        [!IF "$numSlaveChannels > 0"!]
+        [!CALL "EnumerateErrSigFrames"!]
+        <member name="LinIfSlaveRef" type="LinIfSlaveChannelType" comment="Reference to an array which includes Slave specific channel configurations">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        [!IF "$ulCddSupported = 'true'"!]
+        [!CALL "EnumerateStateHandleFuncs"!]
+        <member name="LinIf_StateHandFuncAssocRef" type="LinIf_StateHandFuncAssocType" comment="Reference to an array which includes UL state handling function indices.">
+          <compiler-abstraction>
+            <ref2cfg/>
+          </compiler-abstraction>
+        </member>
+        [!CALL "EnumeratePduHandleFuncs"!]
+        <member name="LinIf_PduHandFuncAssocRef" type="LinIf_PduHandFuncAssocType" comment="Reference to an array which includes UL Pdu handling function indices.">
+          <compiler-abstraction>
+            <ref2cfg/>
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        [!IF "LinIfGeneral/LinIfMapComMChannelIdDirect = 'false'"!]
+        <member name="LinIf_ComMChannelIdMapRef" type="uint8" comment="Reference to an array which maps ComM channel ids to LinIf channel ids.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        [!IF "$numChannelsMaster > 0"!]
+        <member name="LinIf_Slave2SlaveFramesRef" type="uint8" comment="Reference to an array which includes all configured Slave2Slave frames.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        <member name="LinIf_EventTriggeredFramesRef" type="LinIfFrameInfoType" comment="Reference to an array which includes all configured Event triggered frames.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!IF "$numChannelsMaster > 0"!]
+        <member name="LinIf_FrameListSepRef" type="uint16" comment="Reference to a lookup table which indicates which unconditional frames (TX) belong to an sporadic frame.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        <member name="LinIf_RxFrameListSepRef" type="uint16" comment="Reference to a lookup table indicating the event triggered frames (RX).">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        [!IF "$areDemEventsConfigured < 1"!]
+        <member name="LinIf_FrameDemEventsRef" type="LinIfFrameDemEventsType" comment="Reference to a lookup table indicating the Dem Events of the configured frames.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        [!IF "$numSlaveChannels > 0"!]
+        <member name="LinIf_SlaveFrameTypesRef" type="LinIf_SlaveFrameTypesType" comment="Reference to a lookup table for slave frametypes.">
+          <compiler-abstraction>
+            <ref2cfg />
+          </compiler-abstraction>
+        </member>
+        [!ENDIF!]
+        <member name="NumChannelsMaster" type="uint8" comment="Number of configured Master channels" />
+        <member name="NumSlaveChannels" type="uint8" comment="Number of configured Slave channels" />
+        [!IF "LinIfGeneral/LinIfDevErrorDetect = 'true'"!]
+        <member name="NumSchTables" type="uint16" comment="Number of configured schedules" />
+        [!ENDIF!]
+        <member name="NumTxPdus" type="uint8" comment="Number of configured unconditional frames (TX)" />
+       </struct>
+      </type>
+
+      [!IF "$numChannelsMaster != 0"!]
+      <type name="LinIfEntryType">
+       <struct>
+        <member name="Delay" type="uint16" comment="Time until the next entry of the schedule is sent" />
+        <member name="EntryIndex" type="uint16" comment="Index of the frame" />
+        [!IF "$areDemEventsConfigured < 1"!]
+        <member name="DemEventId" type="uint16" comment="Dem id if it exists within the frame of the entry" />
+        [!ENDIF!]
+        <member name="FrameType" type="uint8" comment="Indicates the frame type of the entry" />
+        <member name="CollisionRef" type="uint8" comment="Index of the collision resolution schedule table" />
+       </struct>
+      </type>
+
+      <type name="LinIfScheduleTableType">
+       <struct>
+        <member name="EntryStartInd" type="uint16" comment="index of the start from reference array" />
+        <member name="EntryStopInd" type="uint16" comment="index of the stop from reference array" />
+        <member name="RunMode" type="uint8" comment="run mode of the schedule (RUN_CONTINUOUS or RUN_ONCE)" />
+        [!IF "$endOfSchedNotifSupported = 'true'"!]
+        <member name="SchedEndFuncInd" type="uint8" comment="index of the end-of-schedule notification function"/>
+        [!ENDIF!]
+       </struct>
+      </type>
+      [!ENDIF!][!/* $numChannelsMaster > 0 */!]
+
+      <type name="LinIfFrameInfoType">
+       <struct>
+        <member name="ULPduHandleId" type="uint16">
+          <comment>
+            <![CDATA[unconditional TX: id of the PduR/UL Cdd where data is copied from
+                     unconditional RX: id of the PduR/UL Cdd where received data is forwarded
+                     event triggered:  variable is not used
+            ]]>
+          </comment>
+        </member>
+        <member name="DLFlags" type="uint8">
+          <comment>
+            <![CDATA[   Bit 4: Checksum model of unconditional Tx frames (Enhanced or Classic)
+                     Bits 3-0: Data length of the frame
+            ]]>
+          </comment>
+        </member>
+        <member name="PID" type="uint8">
+          <comment><![CDATA[Protected ID of the LIN frame]]></comment>
+        </member>
+        <member name="LinIfChannelId" type="uint8">
+          <comment><![CDATA[LinIf channel Id]]></comment>
+        </member>
+        [!IF "$ulCddSupported = 'true'"!]
+        <member name="ULFuncIdx" type="uint8">
+          <comment>
+            <![CDATA[unconditional TX: id of the PduR/UL Cdd RxIndication function
+                     unconditional RX: id of the PduR/UL Cdd TriggerTransmit and TxConfirmation functions
+                     event triggered:  variable is not used
+            ]]>
+          </comment>
+        </member>
+        [!ENDIF!]
+       </struct>
+      </type>
+
+      [!IF "$numChannelsMaster != 0"!]
+      <type name="LinIfFixedFrameSduBytesType">
+       <struct>
+        <member name="FixedFrameSduBytes" type="uint8" count="8" comment="Data bytes for the Fixed frames Sdu" />
+       </struct>
+      </type>
+      [!ENDIF!]
+
+      <type name="LinIfChannelType">
+       <struct>
+        [!IF "LinIfGeneral/LinIfMapComMChannelIdDirect = 'false'"!]
+        <member name="ComMChannelId" type="uint8" comment="Id of the referenced ComM Channel" />
+        [!ENDIF!]
+        [!IF "LinIfGeneral/LinIfMapChannelIdDirect = 'false'"!]
+        <member name="LinChannelId" type="uint8" comment="Id of the referenced Lin Channel" />
+        [!ENDIF!]
+        [!IF "LinIfGeneral/LinIfMultipleDriversSupported = 'true'"!]
+        <member name="LinIndex" type="uint8" comment="Id of the Lin Driver that contains the channel" />
+        [!ENDIF!]
+        [!IF "$numTrcvs > 0"!]
+        <member name="LinTrcvChannelId" type="uint8" comment="Id of the referenced LinTrcv Channel" />
+        [!ENDIF!]
+        [!IF "$numTrcvs > 1"!]
+        <member name="FuncPtrIdx" type="uint8" comment="Index of associated function pointers" />
+        [!ENDIF!]
+        [!IF "(LinIfGeneral/LinIfCheckWakeupSupported = 'true')"!]
+        [!IF "(LinIfGeneral/LinIfLinDriverAPI != 'REV2')"!]
+        <member name="LinWakeupSourceId" type="uint8" comment="Used to identify the source of a wake up event." />
+        [!ENDIF!]
+        [!IF "$cwuNeeded = 'true'"!]
+        <member name="LinTrcvWakeupSourceId" type="uint8" comment="Used to identify the source of a wake up event (LinTrcv)" />
+        [!ENDIF!]
+        [!ENDIF!][!//Wakeup
+        <member name="CfgFlags" type="uint8" comment="Configuration flags of the LinIf channel" />
+        [!IF "$ulCddSupported = 'true'"!]
+        <member name="StateHandFuncIdx" type="uint8" comment="State handling function idx" />
+        [!ENDIF!]
+       </struct>
+      </type>
+
+      [!IF "$numChannelsMaster != 0"!]
+      <type name="LinIfMasterChannelType">
+       <struct>
+        <member name="DelayTime" type="uint16" count="8" comment="Maximum transmission times for packets of different lengths" />
+        <member name="SchTableInd" type="uint16" comment="Indicates which schedule tables belong to a channel" />
+       </struct>
+      </type>
+      [!ENDIF!]
+
+      [!IF "$numSlaveChannels != 0"!]
+      <type name="LinIfSlaveChannelType">
+       <struct>
+        <member name="NCNasTimeout" type="uint16" comment="Nas timeout in ticks" />
+        <member name="BusIdleTimeout" type="uint16" comment="Bus idle timeout in ticks" />
+        <!-- Safe according to SWS_Com_00820 -->
+        <member name="ErrRespSigId" type="uint16" comment="error_response SignalId" />
+        <member name="FrameStartInd" type="uint16" comment="Assoc. frame start index" />
+        <member name="NCSerialNumB0" type="uint8" comment="LinIfSerialNumber LB LW" />
+        <member name="NCSerialNumB1" type="uint8" comment="LinIfSerialNumber HB LW" />
+        <member name="NCSerialNumB2" type="uint8" comment="LinIfSerialNumber LB HW" />
+        <member name="NCSerialNumB3" type="uint8" comment="LinIfSerialNumber HB HW" />
+        <member name="NCFuncIdB0" type="uint8" comment="LinIfFunctionId LB" />
+        <member name="NCFuncIdB1" type="uint8" comment="LinIfFunctionId HB" />
+        <member name="NCSupIdB0" type="uint8" comment="LinIfSupplierId LB" />
+        <member name="NCSupIdB1" type="uint8" comment="LinIfSupplierId HB" />
+        <member name="NCConfNad" type="uint8" comment="LinIfConfiguredNAD" />
+        <member name="NCInitNad" type="uint8" comment="LinIfInitialNAD" />
+        <member name="NCVarId" type="uint8" comment="LinIfVariantId" />
+        <member name="FrameNumAssoc" type="uint8" comment="Number of assoc. frames" />
+        <member name="IdxErrRespSig" type="uint8" comment="Index of error_response signal carrying frame" />
+       </struct>
+      </type>
+
+      <type name="LinIf_SlaveETFrameListType">
+        <struct>
+          <member name="SduId" type="PduIdType" comment="SduId" />
+          <member name="FrameIdx" type="uint16" comment="Idx of UNCONDITIONAL frame" />
+        </struct>
+      </type>
+
+      <type name="LinIf_SlaveETFrmListSepType">
+        <struct>
+          <member name="StartIdx" type="uint16" comment="Start index in LinIf_SlaveETFrameLists" />
+          <member name="EndIdx" type="uint16" comment="End index in LinIf_SlaveETFrameLists" />
+        </struct>
+      </type>
+      [!ENDIF!]
+
+      [!IF "$ulCddSupported = 'true'"!]
+      <type name="LinIf_StateHandFuncAssocType">
+        <struct>
+          <member name="GotoSleepFuncIdx" type="uint8" comment="Index in LinIf_SleepConfFuncs"/>
+          <member name="SchedReqConfFuncIdx" type="uint8" comment="Index in LinIf_SchedReqConfFuncs"/>
+          <member name="WuConfFuncIdx" type="uint8" comment="Index in LinIf_WuConfFuncs"/>
+          [!IF "$numSlaveChannels != 0"!]
+          <member name="GotoSleepIndFuncIdx" type="uint8" comment="Index in LinIf_SleepIndFuncs"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="LinIf_PduHandFuncAssocType">
+        <struct>
+          <member name="TrgTxFuncIdx" type="uint8" comment="Index in LinIf_ULTrgTxFuncs"/>
+          <member name="TxConfFuncIdx" type="uint8" comment="Index in LinIf_ULTxConfFuncs"/>
+        </struct>
+      </type>
+      [!ENDIF!]
+
+      [!IF "$areDemEventsConfigured < 1"!]
+      <type name="LinIfFrameDemEventsType">
+       <struct>
+        <member name="LinIfTxBitErrorDemEventId" type="uint16" comment="DemEvent id of the LinIfDemTxBitErrorRef configured event" />
+        <member name="LinIfRxChecksumErrorDemEventId" type="uint16" comment="DemEvent id of the LinIfDemRxChecksumErrorRef configured event" />
+        <member name="LinIfRxNoResponseErrorDemEventId" type="uint16" comment="DemEvent id of the LinIfDemRxNoResponseErrorRef configured event" />
+       </struct>
+      </type>
+      [!ENDIF!]
+
+      [!IF "$numSlaveChannels > 0"!]
+      <type name="LinIf_SlaveFrameTypesType">
+        <struct>
+          <member name="LinIfFrameIdx" type="uint16" comment="Index of the frame" />
+        [!IF "$areDemEventsConfigured < 1"!]
+        <member name="DemEventId" type="uint16" comment="Dem id if it exists within the frame of the entry" />
+        [!ENDIF!]
+          <member name="LinIfFrameType" type="uint8" comment="Frame type" />
+        </struct>
+      </type>
+      [!ENDIF!]
+    </configuration>
+
+    <configuration class="PostBuild">
+      <?artifact directory="include" file="LinIf_PBcfg.h" type="postbuild-h" ?>
+      <?artifact directory="src" file="LinIf_PBcfg.c" type="postbuild-c" ?>
+      <type name="LinIf_ConfigLayoutType">
+       <struct>
+        <member name="RootCfg" type="LinIf_ConfigType" />
+        [!IF "$numChannelsMaster > 0"!]
+        <member name="LinIf_ScheduleTables" type="LinIfScheduleTableType" count="[!"num:i($numSchTables+$numChannels)"!]" />
+        <member name="LinIf_Entries" type="LinIfEntryType" count="[!"num:i($numEntries)"!]" />
+        [!ENDIF!]
+        [!IF "$numRxPdus > 0"!]
+        <member name="LinIf_RxFrames" type="LinIfFrameInfoType" count="[!"num:i($numRxPdus)"!]" />
+        [!ENDIF!]
+        [!IF "$numTxPdus > 0"!]
+        <member name="LinIf_TxFrames" type="LinIfFrameInfoType" count="[!"num:i($numTxPdus)"!]" />
+        [!ENDIF!]
+        [!IF "$numChannelsMaster > 0"!]
+        [!IF "$numSporadic > 0"!]
+        <member name="LinIf_FrameLists" type="uint16" count="[!"num:i($numSubsFrames)"!]" />
+        [!ENDIF!]
+        [!IF "$numFixedFrames > 0"!]
+        <member name="LinIf_FixedFrames" type="LinIfFixedFrameSduBytesType" count="[!"num:i($numFixedFrames)"!]" />
+        [!ENDIF!]
+        [!ENDIF!]
+        [!IF "$numSlaveSubstFrames > 0"!]
+        <member name="LinIf_SlaveETFrameLists" type="LinIf_SlaveETFrameListType" count="[!"num:i($numSlaveSubstFrames)"!]" />
+        <member name="LinIf_SlaveETFrmListSep" type="LinIf_SlaveETFrmListSepType" count="[!"num:i($numSlaveETFrameListSeps)"!]" />
+        [!ENDIF!]
+        <member name="LinIf_Channels" type="LinIfChannelType" count="[!"num:i($numChannels)"!]" />
+        [!IF "$numChannelsMaster > 0"!]
+        <member name="LinIf_MasterData" type="LinIfMasterChannelType" count="[!"num:i($numChannelsMaster)"!]" />
+        [!ENDIF!]
+        [!IF "$numSlaveChannels > 0"!]
+        <member name="LinIf_SlaveData" type="LinIfSlaveChannelType" count="[!"num:i($numSlaveChannels)"!]" />
+        [!ENDIF!]
+        [!IF "$ulCddSupported = 'true'"!]
+        [!CALL "GetStateHandFuncAssocArray"!]
+        <member name="LinIf_StateHandFuncAssoc" type="LinIf_StateHandFuncAssocType" count="[!"num:i($numLinIf_StateHandFuncAssocArray)"!]" />
+        [!CALL "GetPduHandFuncAssocArray"!]
+        <member name="LinIf_PduHandFuncAssoc" type="LinIf_PduHandFuncAssocType" count="[!"num:i($numLinIf_PduHandFuncAssocArray)"!]" />
+        [!ENDIF!]
+        <!-- !LINKSTO LinIf.EB.LinIfCddRef.Contribution.HandleID.LinSMSurrogate,1 -->
+        [!IF "LinIfGeneral/LinIfMapComMChannelIdDirect = 'false'"!]
+        <member name="LinIf_ComMChannelIdMap" type="uint8" count="[!"num:i(num:max(node:refs(LinIfGlobalConfig/*[1]/LinIfChannel/*/LinIfComMNetworkHandleRef)/ComMChannelId) + 1)"!]" />
+        [!ENDIF!]
+        [!IF "$numS2S > 0"!]
+        <member name="LinIf_Slave2SlaveFrames" type="uint8" count="[!"num:i($numS2S)"!]" />
+        [!ENDIF!]
+        [!IF "$numEvTrgd > 0"!]
+        <member name="LinIf_EventTriggeredFrames" type="LinIfFrameInfoType" count="[!"num:i($numEvTrgd)"!]" />
+        [!ENDIF!]
+        [!IF "$numChannelsMaster > 0"!]
+        [!IF "$numSporadic > 0"!]
+        <member name="LinIf_FrameListSep" type="uint16" count="[!"num:i($numFrameListSeps)"!]" />
+        [!ENDIF!]
+        [!IF "$numEvTrgd > 0"!]
+        <member name="LinIf_RxFrameListSep" type="uint16" count="[!"num:i($numRxFrameSeps)"!]" />
+        [!ENDIF!]
+        [!ENDIF!]
+        [!IF "$areDemEventsConfigured < 1"!]
+        <member name="LinIf_FrameDemEvents" type="LinIfFrameDemEventsType" count="[!"num:i(count(text:split($framesWithDemEvents, ';')))"!]" />
+        [!ENDIF!]
+        [!IF "$numSlaveChannels > 0"!]
+        <member name="LinIf_SlaveFrameTypes" type="LinIf_SlaveFrameTypesType" count="[!"num:i($numSlaveFrames)"!]" />
+        [!ENDIF!]
+       </struct>
+      </type>
+
+      <type name="LinIf_ConstConfigLayoutType">
+        <reference type="LinIf_ConfigLayoutType">
+          <compiler-abstraction>
+            <const memory-class="LINIF_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <memory-section  name="CONFIG_DATA_UNSPECIFIED">
+        <instance type="LinIf_ConstConfigLayoutType" name="LinIf_ConfigLayout">
+          <parameter name="postbuild-configuration-name">
+            <symbolic-value>[!"as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/@name"!]</symbolic-value>
+          </parameter>
+          <field>
+            <field>
+              <int>[!"asc:getPlatformSignature()"!]</int>
+            </field>
+            <field>
+              <int>[!"asc:getConfigSignature(as:modconf('LinIf')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+            </field>
+            <field>
+              <int>[!"asc:getConfigSignature(as:modconf('LinIf')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int>
+            </field>
+            <field>
+              <int>[!"asc:getConfigSignature(node:difference(as:modconf('LinIf')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('LinIf')[1]/CommonPublishedInformation/Release))"!]</int>
+            </field>
+            [!IF "$numChannelsMaster > 0"!]
+            <field>
+              <ref>
+                <struct-field name="LinIf_ScheduleTables" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            <field>
+              <ref>
+                <struct-field name="LinIf_Entries" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            [!ENDIF!]
+            <field>
+              <ref>
+            [!IF "$numRxPdus>0"!]
+                <struct-field name="LinIf_RxFrames" />
+                <array-field index="0" />
+            [!ENDIF!]
+              </ref>
+            </field>
+            <field>
+              <ref>
+            [!IF "$numTxPdus>0"!]
+                <struct-field name="LinIf_TxFrames" />
+                <array-field index="0" />
+            [!ENDIF!]
+              </ref>
+            </field>
+            [!IF "$numChannelsMaster > 0"!]
+            <field>
+              <ref>
+            [!IF "$numSporadic > 0"!]
+                <struct-field name="LinIf_FrameLists" />
+                <array-field index="0" />
+            [!ENDIF!]
+              </ref>
+            </field>
+            <field>
+              <ref>
+            [!IF "$numFixedFrames>0"!]
+                <struct-field name="LinIf_FixedFrames" />
+                <array-field index="0" />
+            [!ENDIF!]
+              </ref>
+            </field>
+            [!ENDIF!]
+            [!IF "$numSlaveChannels > 0"!]
+            <field>
+              <ref>
+                [!IF "$numSlaveSubstFrames > 0"!]
+                <struct-field name="LinIf_SlaveETFrameLists" />
+                <array-field index="0" />
+                [!ENDIF!]
+              </ref>
+            </field>
+            <field>
+              <ref>
+                [!IF "$numSlaveSubstFrames > 0"!]
+                <struct-field name="LinIf_SlaveETFrmListSep" />
+                <array-field index="0" />
+                [!ENDIF!]
+              </ref>
+            </field>
+            [!ENDIF!]
+            <field>
+              <ref>
+                <struct-field name="LinIf_Channels" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            [!IF "$numChannelsMaster != 0"!]
+            <field>
+              <ref>
+                <struct-field name="LinIf_MasterData" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            [!ENDIF!]
+            [!IF "$numSlaveChannels != 0"!]
+            <field>
+              <ref>
+                <struct-field name="LinIf_SlaveData" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            [!ENDIF!]
+            [!IF "$ulCddSupported = 'true'"!]
+            <field>
+              <ref>
+                <struct-field name="LinIf_StateHandFuncAssoc" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            <field>
+              <ref>
+                <struct-field name="LinIf_PduHandFuncAssoc" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            [!ENDIF!]
+            [!IF "LinIfGeneral/LinIfMapComMChannelIdDirect = 'false'"!]
+            <field>
+              <ref>
+                <struct-field name="LinIf_ComMChannelIdMap" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            [!ENDIF!]
+            [!IF "$numChannelsMaster > 0"!]
+            <field>
+              <ref>
+            [!IF "$numS2S > 0"!]
+                <struct-field name="LinIf_Slave2SlaveFrames" />
+                <array-field index="0" />
+            [!ENDIF!]
+              </ref>
+            </field>
+            [!ENDIF!]
+            <field>
+              <ref>
+            [!IF "$numEvTrgd > 0"!]
+                <struct-field name="LinIf_EventTriggeredFrames" />
+                <array-field index="0" />
+            [!ENDIF!]
+              </ref>
+            </field>
+            [!IF "$numChannelsMaster > 0"!]
+            <field>
+              <ref>
+            [!IF "$numSporadic > 0"!]
+                <struct-field name="LinIf_FrameListSep" />
+                <array-field index="0" />
+            [!ENDIF!]
+              </ref>
+            </field>
+            <field>
+              <ref>
+            [!IF "$numEvTrgd > 0"!]
+                <struct-field name="LinIf_RxFrameListSep" />
+                <array-field index="0" />
+            [!ENDIF!]
+              </ref>
+            </field>
+            [!ENDIF!]
+            [!IF "$areDemEventsConfigured < 1"!]
+            <field>
+              <ref>
+                <struct-field name="LinIf_FrameDemEvents" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            [!ENDIF!]
+            [!IF "$numSlaveChannels > 0"!]
+            <field>
+              <ref>
+                <struct-field name="LinIf_SlaveFrameTypes" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            [!ENDIF!]
+            <field>
+              <int>[!"num:i($numChannelsMaster)"!]</int>
+            </field>
+            <field>
+              <int>[!"num:i($numSlaveChannels)"!]</int>
+            </field>
+            [!IF "LinIfGeneral/LinIfDevErrorDetect = 'true'"!]
+            <field>
+              <int>[!"num:i($numSchTables+$numChannelsMaster)"!]</int>
+            </field>
+            [!ENDIF!]
+            <field>
+              <int>[!"num:i($numTxPdus)"!]</int>
+            </field>
+          </field>
+          [!IF "$numChannelsMaster > 0"!]
+          <field>
+            [!VAR "idx"="0"!]
+            [!VAR "idx_sch"="0"!]
+            <!-- Had to change from LOOPs to FORs, though it's slower, they can be nested
+                 and external references (outside of current context) are resolved
+              -->
+            [!FOR "lctr_channel" = "1" TO "$numChannelsMaster"!]
+            [!SELECT "node:order(as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*[LinIfNodeType = 'LinIfMaster'], 'LinIfChannelId')[position() = $lctr_channel]"!]
+              [!IF "num:i($idx_sch) != 0"!]
+                [!VAR "idx_sch"="$idx_sch + 1"!]
+              [!ENDIF!]
+            <field>
+              <field>
+                <int>[!"$LINIF_INVALID_ENTRY"!]</int>
+              </field>
+              <field>
+                <int>[!"$LINIF_INVALID_ENTRY"!]</int>
+              </field>
+              <field>
+                <int>[!"$LINIF_RUN_CONTINUOUS_RESTART"!]</int>
+              </field>
+              [!IF "$endOfSchedNotifSupported = 'true'"!]
+              <field>
+                <int>0</int>
+              </field>
+              [!ENDIF!]
+            </field>
+              [!FOR "lctr_schtable" = "1" TO "$numSchTables"!]
+              [!SELECT "node:order(LinIfScheduleTable/*[@name != 'NULL_SCHEDULE'], 'LinIfScheduleTableIndex')[position() = $lctr_schtable]"!]
+                [!VAR "numEntriesForSchTable"="count(LinIfEntry/*)"!]
+                [!IF "$numEntriesForSchTable != 0"!]
+                  [!VAR "entryIndexStart" = "$idx"!]
+                  [!VAR "entryIndexStop" = "$idx + $numEntriesForSchTable - 1"!]
+                [!ELSE!]
+                  [!VAR "entryIndexStart" = "'LINIF_INVALID_ENTRY'"!]
+                  [!VAR "entryIndexStop" = "'LINIF_INVALID_ENTRY'"!]
+                [!ENDIF!]
+                [!VAR "idx_sch"="$idx_sch + 1"!]
+            <field>
+              <field>
+               <int>
+              [!IF "$entryIndexStart='LINIF_INVALID_ENTRY'"!]
+                [!"$LINIF_INVALID_ENTRY"!]
+              [!ELSE!]
+                [!"num:i($entryIndexStart)"!]
+               [!ENDIF!]
+                </int>
+              </field>
+              <field>
+                <int>
+              [!IF "$entryIndexStop='LINIF_INVALID_ENTRY'"!]
+                [!"$LINIF_INVALID_ENTRY"!]
+              [!ELSE!]
+                [!"num:i($entryIndexStop)"!]
+              [!ENDIF!]
+                </int>
+              </field>
+              [!IF "LinIfRunMode = 'RUN_CONTINUOUS'"!]
+                  <field>
+                    <int>
+                [!IF "LinIfResumePosition = 'CONTINUE_AT_IT_POINT'"!]
+                    [!"$LINIF_RUN_CONTINUOUS_RESUME"!]
+                [!ELSE!]
+                    [!"$LINIF_RUN_CONTINUOUS_RESTART"!]
+                [!ENDIF!]
+                    </int>
+                  </field>
+              [!ELSE!]
+              <field>
+                <int>[!"$LINIF_RUN_ONCE"!]</int>
+              </field>
+              [!ENDIF!]
+              [!IF "$endOfSchedNotifSupported = 'true'"!]
+              [!CALL "GetEOSCalloutIdx", "SchedTablePath" = "as:path(.)"!]
+              <field>
+                <int>[!"$eosCalloutIdx"!]</int>
+              </field>
+              [!ENDIF!]
+            </field>
+              [!VAR "idx"="$idx + $numEntriesForSchTable"!]
+              [!ENDSELECT!]
+              [!ENDFOR!]
+            [!ENDSELECT!]
+            [!ENDFOR!]
+          </field>
+
+          <field>
+            [!VAR "idx"="0"!]
+            [!LOOP "node:order(as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*[LinIfNodeType = 'LinIfMaster'], 'LinIfChannelId')"!]
+              [!VAR "channelid"="LinIfChannelId"!]
+              [!LOOP "node:order(LinIfScheduleTable/*[@name != 'NULL_SCHEDULE'], 'LinIfScheduleTableIndex')"!]
+                [!VAR "numEntries"="num:i(count(LinIfEntry/*))"!]
+                [!IF "$numEntries != 0"!]
+                [!ENDIF!]
+                [!LOOP "node:order(LinIfEntry/*, 'LinIfEntryIndex')"!]
+                  [!IF "node:exists(LinIfCollisionResolvingRef)"!]
+                    [!VAR "CollisionRef" = "LinIfCollisionResolvingRef"!]
+                    [!VAR "CollisionName" = "node:name(as:ref($CollisionRef))"!]
+                    [!VAR "CollisionSchId" = "node:value(as:ref($CollisionRef)/LinIfScheduleTableIndex)"!]
+                  [!ELSE!]
+                    [!VAR "CollisionName" = "'Not configured'"!]
+                    [!VAR "CollisionSchId" = "'LINIF_INVALID_SCHEDULE_TABLE'"!]
+                  [!ENDIF!]
+                  [!VAR "destIdEx"="0"!]
+                  [!IF "node:exists(LinIfFrameRef/*[1])"!]
+                    [!CALL "getDestAndTypeEx", "frameRef"="LinIfFrameRef/*[1]"!]
+                  [!ELSE!]
+                    [!VAR "destIdEx"="0"!]
+                  [!ENDIF!]
+                  [!VAR "EntryDelay"="LinIfDelay"!]
+                  [!VAR "TimeBase"="as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfTimeBase"!]
+            <field>
+              <field>
+                <int>[!"num:i($EntryDelay div $TimeBase)"!]</int>
+              </field>
+              <field>
+                <int>
+                [!IF "$destIdEx = ''"!]
+                  [!"$LINIF_NULL_ENTRY"!]
+                [!ELSE!]
+                  [!"num:i($destIdEx)"!]
+                [!ENDIF!]
+                </int>
+              </field>
+              [!IF "$areDemEventsConfigured < 1"!]
+              <field>
+                <int>
+                [!IF "node:exists(LinIfFrameRef/*[1])"!]
+                  [!CALL "frameGetDemEventsIndex", "frameRef"="LinIfFrameRef/*[1]"!]
+                  [!"$frameDemEventIndex"!]
+                [!ELSE!]
+                  65535
+                [!ENDIF!]
+                </int>
+              </field>
+              [!ENDIF!]
+              <field>
+                <int>[!"$frametype"!]</int>
+              </field>
+              <field>
+                <int>
+                   [!IF "$CollisionSchId = 'LINIF_INVALID_SCHEDULE_TABLE'"!]
+                     [!"$LINIF_INVALID_SCHEDULE_TABLE"!]
+                   [!ELSE!]
+                     [!"num:i($CollisionSchId)"!]
+                   [!ENDIF!]
+                </int>
+              </field>
+            </field>
+                  [!VAR "idx"="$idx + 1"!]
+                [!ENDLOOP!]
+              [!ENDLOOP!]
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!][!/* $numChannelsMaster > 0 */!]
+
+          [!IF "$numRxPdus > 0"!]
+          <field>
+            [!VAR "idx_rx"="0"!]
+            [!VAR "frameIndex"="0"!]
+            [!VAR "IndexFixedFrame_mcr" = "0"!]
+            [!FOR "I"="0" TO "$numRxPdus - 1"!]
+              [!VAR "frameRefAndSrcPduHandleId"!][!CALL "getRxFrameRefAndSrcPduHandleId", "index"="$I"!][!ENDVAR!]
+              [!VAR "frameRef"="substring-after($frameRefAndSrcPduHandleId, '-')"!]
+              [!VAR "SrcPduHandleId"="substring-after(substring-before($frameRefAndSrcPduHandleId, '-'), '+')"!]
+              [!SELECT "as:ref($frameRef)"!]
+              <field comment="[!"node:name(.)"!]">
+                [!ASSERT "$SrcPduHandleId!=''", "HandleId was not correctly extracted from PduR/Cdd config"!]
+                <field>
+                  <int>[!"num:i($SrcPduHandleId)"!]</int>
+                </field>
+                <field>
+                  <int>
+                [!IF "LinIfChecksumType = 'ENHANCED'"!]
+                  [!"num:i($LINIF_CHECKSUM_ENHANCED + LinIfLength)"!]
+                [!ELSE!]
+                  [!"num:i(LinIfLength)"!]
+                [!ENDIF!]
+                  </int>
+                </field>
+                <field>
+                  [!IF "node:exists(LinIfFrameId)"!]
+                    [!CALL "CalcPID", "ID"="LinIfFrameId"!]
+                  <int>[!"$PID"!]</int>
+                  [!ELSE!]
+                  <int>[!"num:i(LinIfPid)"!]</int>
+                  [!ENDIF!]
+                </field>
+                <field>
+                  <int>[!"num:i(./../../LinIfChannelId)"!]</int>
+                </field>
+                [!IF "$ulCddSupported = 'true'"!]
+                <field>
+                  [!CALL "GetPduHandFuncIdx", "LinIfFrameRef"="as:path(.)"!]
+                  <int>[!"$LinIf_PduHandFuncIdx"!]</int>
+                </field>
+                [!ENDIF!]
+              </field>
+             [!ENDSELECT!]
+             [!VAR "frameIndex"="$frameIndex + 1"!]
+           [!ENDFOR!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "$numTxPdus > 0"!]
+          <field>
+            [!VAR "frameIndex"="0"!]
+            [!FOR "I"="0" TO "$numTxPdus - 1"!]
+              [!VAR "frameRefAndDestPduHandleId"!][!CALL "getTxFrameRefAndDestPduHandleId", "sduId"="$I"!][!ENDVAR!]
+              [!VAR "frameRef"="substring-after($frameRefAndDestPduHandleId, '-')"!]
+              [!VAR "DestPduHandleId"="substring-after(substring-before($frameRefAndDestPduHandleId, '-'), '+')"!]
+              [!SELECT "as:ref($frameRef)"!]
+            <field comment="[!"node:name(.)"!]">
+              [!ASSERT "$DestPduHandleId!=''", "HandleId was not correctly extracted from PduR config"!]
+              <field>
+                <int>[!"num:i($DestPduHandleId)"!]</int>
+              </field>
+              <field>
+                <int>
+              [!IF "LinIfChecksumType = 'ENHANCED'"!]
+                [!"num:i($LINIF_CHECKSUM_ENHANCED + LinIfLength)"!]
+              [!ELSE!]
+                [!"num:i(LinIfLength)"!]
+              [!ENDIF!]
+                </int>
+              </field>
+              <field>
+                [!IF "node:exists(LinIfFrameId)"!]
+                  [!CALL "CalcPID", "ID"="LinIfFrameId"!]
+                <int>[!"$PID"!]</int>
+                [!ELSE!]
+                <int>[!"num:i(LinIfPid)"!]</int>
+                [!ENDIF!]
+              </field>
+              <field>
+                <int>[!"num:i(./../../LinIfChannelId)"!]</int>
+              </field>
+              [!IF "$ulCddSupported = 'true'"!]
+                <field>
+                  [!CALL "GetPduHandFuncIdx", "LinIfFrameRef"="as:path(.)"!]
+                  <int>[!"$LinIf_PduHandFuncIdx"!]</int>
+                </field>
+              [!ENDIF!]
+            </field>
+              [!ENDSELECT!]
+              [!VAR "frameIndex"="$frameIndex + 1"!]
+            [!ENDFOR!]
+          </field>
+          [!ENDIF!]
+
+          [!VAR "idx" = "0"!]
+          [!VAR "fidx" = "0"!]
+          [!IF "$numSporadic > 0"!]
+          <field>
+            [!LOOP "LinIfGlobalConfig/*[1]/LinIfChannel/*/LinIfFrame/*[LinIfFrameType='SPORADIC']"!]
+              [!LOOP "node:order(LinIfSubstitutionFrames/*/LinIfSubstitutionFrameRef, '../LinIfFramePriority')"!]
+                [!IF "as:ref(.)/LinIfFrameType = 'UNCONDITIONAL'"!]
+                  [!VAR "sduId"!][!CALL "getTxSduIdByFrameRef", "frameRef" = "substring-after(., 'ASPath:')"!][!ENDVAR!]
+                   <field>
+                    <int>[!"num:i($sduId)"!]</int>
+                   </field>
+                  [!VAR "idx" = "$idx + 1"!]
+                [!ENDIF!]
+              [!ENDLOOP!]
+              [!VAR "fidx" = "$fidx + 1"!]
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "$numFixedFrames > 0"!]
+          <field>
+            [!LOOP "as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*/LinIfFrame/*[count(LinIfFixedFrameSdu/*) > 0]"!]
+            <field>
+            <field>
+              [!FOR "D"="0" TO "7"!]
+              <field>
+                <int>[!"./LinIfFixedFrameSdu/LinIfFixedFrameSduByte/*[LinIfFixedFrameSduBytePos=$D]/LinIfFixedFrameSduByteVal"!]</int>
+              </field>
+              [!ENDFOR!]
+            </field>
+            </field>
+           [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "$numSlaveSubstFrames > 0"!]
+          <field>
+            [!LOOP "as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*[LinIfNodeType = 'LinIfSlave']/LinIfFrame/*[LinIfFrameType='EVENT_TRIGGERED']"!]
+              [!LOOP "node:order(LinIfSubstitutionFrames/*/LinIfSubstitutionFrameRef, '../LinIfFramePriority')"!]
+                [!VAR "frmRef" = "substring-after(., 'ASPath:')"!]
+                [!VAR "sduId"!][!CALL "getTxSduIdByFrameRef", "frameRef" = "$frmRef"!][!ENDVAR!]
+                [!CALL "getDestAndTypeEx", "frameRef" = "$frmRef"!]
+                <field comment="[!"text:split(.,'/')[last()]"!]">
+                  <field>
+                    <int>[!"num:i($sduId)"!]</int>
+                  </field>
+                  <field>
+                    <int>[!"$destIdEx"!]</int>
+                  </field>
+                </field>
+              [!ENDLOOP!]
+            [!ENDLOOP!]
+          </field>
+
+          <field>
+            [!LOOP "text:split($slaveETSeps, ';')"!]
+            <field>
+              <field>
+                <int>[!"text:split(.,':')[1]"!]</int>
+              </field>
+              <field>
+                <int>[!"text:split(.,':')[2]"!]</int>
+              </field>
+            </field>
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+          <field>
+            [!LOOP "node:order(as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*, 'LinIfChannelId')"!]
+            <field>
+              [!IF "../../../../LinIfGeneral/LinIfMapComMChannelIdDirect = 'false'"!]
+              <!-- !LINKSTO LinIf.EB.LinIfCddRef.Contribution.HandleID.LinSMSurrogate,1 -->
+              <field>
+                <int>[!"num:i(as:ref(LinIfComMNetworkHandleRef)/ComMChannelId)"!]</int>
+              </field>
+              [!ENDIF!]
+              [!IF "../../../../LinIfGeneral/LinIfMapChannelIdDirect = 'false'"!]
+              <field>
+                <int>
+                [!IF "node:refvalid(LinIfChannelRef)"!]
+                  [!"num:i(as:ref(LinIfChannelRef)/LinChannelId)"!]
+                [!ELSE!]
+                  0
+                [!ENDIF!]
+                </int>
+              </field>
+              [!ENDIF!]
+              [!IF "../../../../LinIfGeneral/LinIfMultipleDriversSupported = 'true'"!]
+              <field>
+                <int>
+                [!IF "node:refvalid(LinIfChannelRef)"!]
+                  [!CALL "getDriverIdx", "channelRef" = "node:path(as:ref(LinIfChannelRef))"!]
+                  [!"$driverIdx"!]
+                [!ELSE!]
+                  0
+                [!ENDIF!]
+                </int>
+              </field>
+              [!ENDIF!]
+              [!IF "$numTrcvs > 0"!]
+              <field>
+                <int>
+                [!IF "node:refvalid(./LinIfTransceiverDrvConfig/LinIfTrcvIdRef)"!]
+                  [!"num:i(node:ref(./LinIfTransceiverDrvConfig/LinIfTrcvIdRef)/LinTrcvChannelId)"!]
+                [!ELSE!]
+                  [!"$LINIF_TRCV_INVALIDCHANNELID"!]
+                [!ENDIF!]
+                </int>
+              </field>
+              [!ENDIF!]
+              [!IF "$numTrcvs > 1"!]
+              <field>
+                <int>
+                [!CALL "GetTrcvFuncIdx","LinIfChannelPth"="as:path(.)"!]
+                [!"$trcvFuncIdx"!]
+                </int>
+              </field>
+              [!ENDIF!]
+              [!IF "(../../../../LinIfGeneral/LinIfCheckWakeupSupported = 'true')"!]
+              [!IF "(../../../../LinIfGeneral/LinIfLinDriverAPI != 'REV2')"!]
+              <field>
+                <int>
+                [!IF "node:refvalid(LinIfChannelRef) and node:refvalid(node:ref(LinIfChannelRef)/LinChannelEcuMWakeupSource)"!]
+                  [!"node:ref(node:ref(LinIfChannelRef)/LinChannelEcuMWakeupSource)/EcuMWakeupSourceId"!]
+                [!ELSE!]
+                  [!"$LINIF_INVALIDECUMWAKEUPSOURCEID"!]
+                [!ENDIF!]
+                </int>
+              </field>
+              [!ENDIF!]
+              [!IF "$cwuNeeded = 'true'"!]
+              <field>
+                <int>
+                [!IF "node:refvalid(LinIfTransceiverDrvConfig/LinIfTrcvIdRef) and node:refvalid(node:ref(LinIfTransceiverDrvConfig/LinIfTrcvIdRef)/LinTrcvWakeupSourceRef)"!]
+                  [!"node:ref(node:ref(LinIfTransceiverDrvConfig/LinIfTrcvIdRef)/LinTrcvWakeupSourceRef)/EcuMWakeupSourceId"!]
+                [!ELSE!]
+                  [!"$LINIF_INVALIDECUMWAKEUPSOURCEID"!]
+                [!ENDIF!]
+                </int>
+              </field>
+              [!ENDIF!]
+
+              [!ENDIF!]
+              [!IF "LinIfStartupState='SLEEP'"!]
+                [!VAR "CfgFlagVal" = "$LINIF_STARTUP_SLEEP"!]
+                [!VAR "CfgFlagComment" = "'STARTUP_SLEEP'"!]
+              [!ELSE!]
+                [!VAR "CfgFlagVal" = "$LINIF_STARTUP_NORMAL"!]
+                [!VAR "CfgFlagComment" = "'STARTUP_NORMAL'"!]
+              [!ENDIF!]
+              [!IF "LinIfNodeType = 'LinIfSlave' and node:exists(LinIfNodeType/LinIfNodeConfigurationIdentification/LinIfSerialNumber)"!]
+                [!VAR "CfgFlagVal" = "num:i($CfgFlagVal + $LINIF_SERIALNUM_ENABLED)"!]
+                [!VAR "CfgFlagComment" = "concat($CfgFlagComment, ' | LinIfSerialNumber')"!]
+              [!ENDIF!]
+              <field comment="[!"$CfgFlagComment"!]">
+                <int>[!"$CfgFlagVal"!]</int>
+              </field>
+              [!IF "$ulCddSupported = 'true'"!]
+              <field>
+                [!CALL "GetStateHandFuncIdx", "LinIfChanRef" = "as:path(.)"!]
+                <int>[!"$LinIf_StateHandFuncIdx"!]</int>
+              </field>
+              [!ENDIF!]
+            </field>
+            [!ENDLOOP!]
+          </field>
+
+          [!IF "$numChannelsMaster != 0"!]
+          <field>
+            [!VAR "schStartIndex"="0"!]
+            [!VAR "numSchForCh"="0"!]
+            [!LOOP "node:order(as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*[LinIfNodeType = 'LinIfMaster'], 'LinIfChannelId')"!]
+            [!VAR "schStartIndex" = "$schStartIndex + $numSchForCh"!]
+            [!VAR "numSchForCh"="num:i(count(LinIfScheduleTable/*[@name != 'NULL_SCHEDULE'])) + 1"!]
+            <field>
+              <field>
+              [!FOR "J"="1" TO "8"!]
+                <field>
+                  <int>[!"num:integer(ceiling( 1.4*1000000*(44+10*$J) div (as:ref(LinIfChannelRef)/LinChannelBaudRate * $timebase)))"!]</int>
+                </field>
+              [!ENDFOR!]
+              </field>
+              <field>
+                <int>[!"num:i($schStartIndex)"!]</int>
+              </field>
+            </field>
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "$numSlaveChannels != 0"!]
+          <field>
+            [!VAR "fStartIdx" = "0"!]
+            [!VAR "fNumAssoc" = "0"!]
+            [!LOOP "node:order(as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*[LinIfNodeType = 'LinIfSlave'], 'LinIfChannelId')"!]
+              [!VAR "fStartIdx" = "$fStartIdx + $fNumAssoc"!]
+              [!VAR "fNumAssoc" = "num:i(count(./LinIfFrame/*[LinIfFrameType != 'MRF' and LinIfFrameType != 'SRF']))"!]
+            <field>
+              <field>
+                <int>[!CALL "TimeoutToTicks", "Time"="LinIfNodeType/LinIfNodeConfigurationIdentification/LinIfNasTimeout"!]</int>
+              </field>
+              <field>
+                <int>[!CALL "TimeoutToTicks", "Time"="LinIfBusIdleTimeoutPeriod"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i(node:ref(./LinIfNodeType/LinIfResponseErrorSignal)/ComHandleId)"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i($fStartIdx)"!]</int>
+              </field>
+              [!SELECT "./LinIfNodeType/LinIfNodeConfigurationIdentification"!]
+              [!CALL "GetNumBytes", "Val"="node:fallback('->num:i(./LinIfSerialNumber)', num:i(0))"!]
+              <field>
+                <int>[!"$NumValB0"!]</int>
+              </field>
+              <field>
+                <int>[!"$NumValB1"!]</int>
+              </field>
+              <field>
+                <int>[!"$NumValB2"!]</int>
+              </field>
+              <field>
+                <int>[!"$NumValB3"!]</int>
+              </field>
+              [!CALL "GetNumBytes", "Val"="./LinIfFunctionId"!]
+              <field>
+                <int>[!"$NumValB0"!]</int>
+              </field>
+              <field>
+                <int>[!"$NumValB1"!]</int>
+              </field>
+              [!CALL "GetNumBytes", "Val"="./LinIfSupplierId"!]
+              <field>
+                <int>[!"$NumValB0"!]</int>
+              </field>
+              <field>
+                <int>[!"$NumValB1"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i(./LinIfConfiguredNAD)"!]</int>
+              </field>
+              <!-- !LINKSTO LinIf.ASR20-11.SWS_LinIf_00767.Initial_1,1 -->
+              <field>
+                <int>[!"num:i(./LinIfInitialNAD)"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i(./LinIfVariantId)"!]</int>
+              </field>
+              [!ENDSELECT!]
+              <field>
+                <int>[!"$fNumAssoc"!]</int>
+              </field>
+              <field>
+                [!CALL "GetErrSigFrameIdx", "chName" = "node:name(.)"!]
+                <int>[!"num:i($fStartIdx + $errSigFrmIdx)"!]</int>
+              </field>
+            </field>
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "$ulCddSupported = 'true'"!]
+          [!CALL "GetStateHandFuncAssocArray"!]
+          [!"$LinIf_StateHandFuncAssocArray"!]
+          [!CALL "GetPduHandFuncAssocArray"!]
+          [!"$LinIf_PduHandFuncAssocArray"!]
+          [!ENDIF!]
+
+          [!IF "LinIfGeneral/LinIfMapComMChannelIdDirect = 'false'"!]
+          <field>
+            [!FOR "I"="0" TO "num:max(node:refs(LinIfGlobalConfig/*[1]/LinIfChannel/*/LinIfComMNetworkHandleRef)/ComMChannelId)"!]
+              [!VAR "linChanFound" = "0"!]
+              [!LOOP "node:order(as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*, 'LinIfChannelId')"!]
+                [!IF "num:i(as:ref(LinIfComMNetworkHandleRef)/ComMChannelId) = $I"!]
+            <field>
+              <int>[!"num:i(LinIfChannelId)"!]</int>
+            </field>
+                  [!VAR "linChanFound" = "1"!]
+                [!ENDIF!]
+              [!ENDLOOP!]
+              [!IF "$linChanFound = 0"!]
+            <field>
+              <int>[!"$LINIF_COMM_INVALIDCHANNELID"!]</int>
+            </field>
+              [!ENDIF!]
+            [!ENDFOR!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "($numChannelsMaster > 0) and ($numS2S > 0)"!]
+          <field>
+            [!LOOP "LinIfGlobalConfig/*[1]/LinIfChannel/*/LinIfFrame/*[LinIfFrameType='UNCONDITIONAL' and LinIfPduDirection='LinIfSlaveToSlavePdu']"!]
+            <field>
+              [!IF "node:exists(LinIfFrameId)"!]
+                [!CALL "CalcPID", "ID"="LinIfFrameId"!]
+              <int>[!"num:i($PID)"!]</int>
+              [!ELSE!]
+              <int>[!"num:i(LinIfPid)"!]</int>
+              [!ENDIF!]
+            </field>
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "$numEvTrgd > 0"!]
+          <field>
+            [!LOOP "LinIfGlobalConfig/*[1]/LinIfChannel/*/LinIfFrame/*[LinIfFrameType='EVENT_TRIGGERED']"!]
+            <field>
+              <field>
+                <int>[!"$LINIF_UNUSED_VARIABLE"!]</int>
+              </field>
+              <field>
+                <int>
+              [!IF "LinIfChecksumType = 'ENHANCED'"!]
+                [!"num:i($LINIF_CHECKSUM_ENHANCED + LinIfLength)"!]
+              [!ELSE!]
+                [!"num:i(LinIfLength)"!]
+              [!ENDIF!]
+                </int>
+              </field>
+              <field>
+                [!IF "node:exists(LinIfFrameId)"!]
+                  [!CALL "CalcPID", "ID"="LinIfFrameId"!]
+                <int>[!"$PID"!]</int>
+                [!ELSE!]
+                <int>[!"num:i(LinIfPid)"!]</int>
+                [!ENDIF!]
+              </field>
+              <field>
+                <int>[!"num:i(./../../LinIfChannelId)"!]</int>
+              </field>
+              [!IF "$ulCddSupported = 'true'"!]
+              <field>
+                <int>[!"$LINIF_UNUSED_VARIABLE"!]</int>
+              </field>
+              [!ENDIF!]
+            </field>
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "$numChannelsMaster > 0"!]
+          [!IF "$numSporadic > 0"!]
+          <field>
+            [!LOOP "text:split($frameListSeps, ';')"!]
+            <field>
+              <int>[!"num:i(.)"!]</int>
+            </field>
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "$numEvTrgd > 0"!]
+          <field>
+            [!LOOP "text:split($RxframeSeps, ';')"!]
+            <field>
+              <int>[!"num:i(.)"!]</int>
+            </field>
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+          [!ENDIF!][!/* $numChannelsMaster > 0 */!]
+
+          [!IF "$areDemEventsConfigured < 1"!]
+          <field>
+            [!LOOP "text:split($framesWithDemEvents,';')"!]
+            <field>
+              <field>
+                <int>[!"num:i(text:split(.,',')[3])"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i(text:split(.,',')[4])"!]</int>
+              </field>
+              <field>
+                <int>[!"num:i(text:split(.,',')[5])"!]</int>
+              </field>
+            </field>
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+          [!IF "$numSlaveChannels > 0"!]
+          <field>
+            [!LOOP "node:order(as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*[LinIfNodeType = 'LinIfSlave'], 'LinIfChannelId')"!]
+              <!-- !LINKSTO LinIf.ASR20-11.SWS_LinIf_00817.Exclude.MRF,1,
+                            LinIf.ASR20-11.SWS_LinIf_00817.Exclude.SRF,1
+                -->
+              [!LOOP "node:order(./LinIfFrame/*[LinIfFrameType != 'MRF' and LinIfFrameType != 'SRF'], 'LinIfFrameIndex')"!]
+              [!NOCODE!][!CALL "getDestAndTypeEx", "frameRef"="as:path(.)"!][!ENDNOCODE!]
+              <field comment="[!"node:name(.)"!]">
+                <field>
+                  <int>[!"$destIdEx"!]</int>
+                </field>
+                [!IF "$areDemEventsConfigured < 1"!]
+                <field>
+                  [!CALL "frameGetDemEventsIndex", "frameRef"="as:path(.)"!]
+                  <int>[!"$frameDemEventIndex"!]</int>
+                </field>
+                [!ENDIF!]
+                <field>
+                  <int>[!"$frametype"!]</int>
+                </field>
+              </field>
+              [!ENDLOOP!]
+            [!ENDLOOP!]
+          </field>
+          [!ENDIF!]
+
+        </instance>
+      </memory-section>
+    </configuration>
+  </module>
+  <xi:include href="Base.xgen" xpointer="element(/1/1)" />
+[!ENDCODE!]
+</xgen>

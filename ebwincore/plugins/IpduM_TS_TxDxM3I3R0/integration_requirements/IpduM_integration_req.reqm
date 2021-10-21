@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+
+    <specobject>
+      <id>lim.IpduM.EB_INTREQ_IpduM_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Ensuring that the configured data retrieval mechanisms (the configuration parameters <code>IpduMContainerTxTriggerMode</code> and <code>IpduMContainedTxPduCollectionSemantics</code>)
+      are compatible with the associated modules is the responsibility of the integrator.
+      </description>
+      <rationale>
+      For example by choosing <code>IPDUM_COLLECT_LAST_IS_BEST</code> as <code>IpduMContainedTxPduCollectionSemantics</code> it is expected that
+      the module initiating the transmission exposes the interface <code>&lt;module&gt;_TriggerTransmit()</code>.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.IpduM.EB_INTREQ_IpduM_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      An <code>IpduMContainerTxPdu</code> container with <code>IpduMContainerQueueSize</code> not configured will have no queue buffer.
+      The effect is that <code>IpduM_Transmit()</code> will return <code>E_NOT_OK</code> for a contained IPDU within a container for which <code>IpduM_TxConfirmation()</code> is awaited from an ongoing transmission.
+      </description>
+      <rationale>
+        Previously, an <code>IpduMContainerTxPdu</code> container with <code>IpduMContainerQueueSize</code> not configured would have had the same behavior as if <code>IpduMContainerQueueSize</code> was configured to 1.
+        The change is meant to bring a clear distinction between the above two configurations and
+        brings the expectation of the user from the IpduM configuration into actual sequence of events.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.IpduM.EB_INTREQ_IpduM_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      API <code>IpduM_Transmit()</code> is not reentrant for contained IPDUs belonging to the same <code>IpduMContainerTxPdu</code> container.
+      </description>
+      <rationale>
+        The measure is necessary to assure the order and consistency of contained IPDUs and their data within an instance of a TX container.
+      </rationale>
+    </specobject>
+
+  </specobjects>
+</specdocument>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+   Plug-in with demos for the EB tresos Studio Public API.
+ -->
+
+  <!--***************************************************************
+    DEMO 4
+    Custom module editor with:
+    - all predefined widgets
+    - data validation
+  ***************************************************************-->
+  
+  <!--
+    Standard module definition extension point
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+         id="GCDemo4_TS_T00D0M0I0R0"
+         name="Guided Config Demo4 Module Extension">
+
+    <module id="GCDemo4_TS_T00D0M0I0R0"
+            label="GCDemo4_TS_T00D0M0I0R0"
+            mandatory="false"
+            allowMultiple="false"
+            description="Description here"
+            copyright="(c) Elektrobit Automotive"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            relVersionMajor="2"
+            relVersionMinor="1"
+            relVersionPatch="0"
+            categoryType="GCDemo4"
+            categoryLayer="Examples"
+            categoryCategory="Demo"
+            categoryComponent="ECUC">
+       <ecuType target="Demo" derivate="GuidedConfig"/>
+    </module>
+   </extension>
+
+   <!--
+    extension point defining the schema and data structure of the module
+   -->
+   <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+              id="GCDemo4_TS_T00D0M0I0R0ConfExt"
+              name="GCDemo4_TS_T00D0M0I0R0 Config Extension">
+       <configuration moduleId="GCDemo4_TS_T00D0M0I0R0">
+
+         <!-- schema definition -->
+           <schema>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+               <resource value="config/GCDemo4_TS_T00D0M0I0R0.xdm"
+                         type="xdm"/>
+           </schema>
+
+           <!-- data definition -->
+           <data>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+               <schemaNode path="ASPath:/TS_T00D0M0I0R0/GCDemo4"/>
+           </data>
+
+           <!-- generic editor definition -->
+           <editor id="GCDemo4_TS_T00D0M0I0R0Editor"
+                   label="GCDemo4_TS_T00D0M0I0R0"
+                   tooltip="Editor for the GCDemo4_TS_T00D0M0I0R0Editor module">
+               <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+                 <parameter name="schema" value="ASPath:/TS_T00D0M0I0R0/GCDemo4"/>
+                 <parameter name="title" value="GCDemo4_TS_T00D0M0I0R0Editor editor"/>
+               </class>
+           </editor>
+  
+        <!-- ///////////////////////////////////////////////////////////////////
+            Custom Module Editor
+              This editor is a guided config editor, but is not visible in the wizard sidebar view
+              but in the project explorer.
+      ///////////////////////////////////////////////////////////////////////// -->
+           <!-- This editor shows all possible standard widgets -->
+           <editor id="Demo4CustomModuleEditor"
+                  label="Demo4CustomModuleEditor"
+                  tooltip="Demo4CustomModuleEditor">
+            <class class="dreisoft.tresos.guidedconfig.api.gui.editor.GuidedConfigEditor"
+                   plugin="dreisoft.tresos.guidedconfig.api.plugin">
+              <parameter
+                    name="wizardId"
+                    value="guidedDemo4">
+              </parameter>
+            </class>
+        </editor>
+           
+       </configuration>
+   </extension>
+  
+  
+  <extension
+         point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+      <guidedconfigwizard id="guidedDemo4" basePath="icons">
+         <backend class="dreisoft.tresos.guidedconfig.demo4.Demo4Backend"/>
+         <gui class="dreisoft.tresos.guidedconfig.demo4.Demo4Page"/>
+      </guidedconfigwizard>
+  </extension>
+
+
+</plugin>

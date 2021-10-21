@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.3"?>
+<plugin>
+
+   <extension
+         id="fibeximporter"
+         name="fibeximporter"
+         point="dreisoft.tresos.launcher2.plugin.imandexporter">
+      <imandexporter
+            id="dreisoft.tresos.fibeximporter.plugin.importer"
+           label="%NLS.FIBEX_IMPORTER_LABEL"
+           description="%NLS.FIBEX_IMPORTER_DESCRIPTION">
+         <importerexporter
+               class="dreisoft.tresos.fibeximporter.importer.FIBEXImporter"
+               supported_mode="import"
+               default_mode="import">
+         </importerexporter>
+         <templateaddition
+               class="dreisoft.tresos.comimporter.importer.ComImporterTemplateAddition"
+               plugin="dreisoft.tresos.comimporter.plugin"
+               id="dreisoft.tresos.comimporter.ComImporterTemplateAdditionId">
+         </templateaddition>
+         
+         <!-- File Config Tab -->
+         <tabaddition
+               id="dreisoft.tresos.fibeximporter.FIBEXTabAdditionFile"
+               position="1"
+               class="dreisoft.tresos.comimporter.gui.FileTabAddition"
+               plugin="dreisoft.tresos.comimporter.plugin"
+               title="%NLS.FIBEX_FILE_TABADDITION_TITLE"
+               tooltip="%NLS.FIBEX_FILE_TABADDITION_TOOLTIP">
+         </tabaddition>
+         
+        <!-- Sys Config Tab -->
+         <tabaddition
+               id="dreisoft.tresos.fibeximporter.FIBEXTabAdditionECUSys"
+               position="2"
+               class="dreisoft.tresos.comimporter.gui.SysImporterTabAddition"
+               plugin="dreisoft.tresos.comimporter.plugin"
+               title="%NLS.FIBEX_SYS_TABADDITION_TITLE"
+               tooltip="%NLS.FIBEX_SYS_TABADDITION_TOOLTIP">
+         </tabaddition>                                  
+         <parameter name="extensions" value="*.xml,*.*" />
+         <parameter name="default_package_name" value="FIBEXImport"/>
+         <parameter name="custom_file_widget_2" value ="importE2EInfoParserOption" />
+         <parameter name="custom_file_widget_3" value ="importSignalEnumerationConstants" />     
+         <parameter name="custom_file_widget_4" value ="Validate" />         
+         <parameter name="contentType" value="fibex" />
+         
+      </imandexporter>
+   </extension>
+
+<!--
+  <extension
+        point="dreisoft.tresos.comimporter.plugin.dataprovider">
+        <dataprovider id="optionSigGrpsAsPdus">
+          <providerclass class="dreisoft.tresos.fibeximporter.importer.OptionImportSigGrpsAsPdusDataProvider" />
+        </dataprovider>
+  </extension>
+ -->
+  
+ <extension
+        point="dreisoft.tresos.comimporter.plugin.dataprovider">
+        <dataprovider id="importSignalEnumerationConstants">
+          <providerclass class="dreisoft.tresos.fibeximporter.importer.ImportSignalEnumsDataProvider" />
+        </dataprovider>
+  </extension>
+  
+  <extension
+        point="dreisoft.tresos.comimporter.plugin.dataprovider">
+        <dataprovider id="Validate">
+          <providerclass class="dreisoft.tresos.fibeximporter.importer.ValidateDataProvider" />
+        </dataprovider>
+  </extension>    
+  
+  <extension
+        point="dreisoft.tresos.comimporter.plugin.dataprovider">
+        <dataprovider id="importE2EInfoParserOption">
+          <providerclass class="dreisoft.tresos.fibeximporter.importer.ImportE2EInfoDataProvider" />
+        </dataprovider>
+  </extension>
+  
+  <extension
+        id="fibexlegacyhandler"
+        name="FIBEX LegacyHandler"
+        point="dreisoft.tresos.launcher2.plugin.legacyhandler">
+    <legacyhandler>
+      <handler class="dreisoft.tresos.fibeximporter.handler.FIBEXLegacyHandler"/>
+    </legacyhandler>
+  </extension>  
+ 
+  <extension
+          point="dreisoft.tresos.datamodel2.plugin.parserfactory">
+    <factory>
+      <classregistration
+              class="dreisoft.tresos.fibeximporter.parser.FIBEXParserFactory"
+              description="FIBEX parser"
+              plugin="dreisoft.tresos.fibeximporter.plugin"/>
+    </factory>
+  </extension>
+
+</plugin>

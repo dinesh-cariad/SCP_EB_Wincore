@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+   Plug-in with demos for the EB tresos Studio Public API.
+ -->
+
+  <!-- *********************************************************
+    DEMO 1
+    Standalone editor with:
+    - visibility restriction
+    - own MementoFactory
+    - XForms Gui description
+    - data validation
+  ***************************************************************-->
+  
+  <!--
+    Standard module definition extension point
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+         id="GCDemo1_TS_T00D0M0I0R0"
+         name="Guided Config Demo1 Module Extension">
+
+    <module id="GCDemo1_TS_T00D0M0I0R0"
+            label="GCDemo1_TS_T00D0M0I0R0"
+            mandatory="false"
+            allowMultiple="false"
+            description="Description here"
+            copyright="(c) Elektrobit Automotive"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            relVersionMajor="2"
+            relVersionMinor="1"
+            relVersionPatch="0"
+            categoryType="GCDemo1"
+            categoryLayer="Examples"
+            categoryCategory="Demo"
+            categoryComponent="ECUC">
+       <ecuType target="Demo" derivate="GuidedConfig"/>
+    </module>
+   </extension>
+
+   <!--
+    extension point defining the schema and data structure of the module
+   -->
+   <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+              id="GCDemo1_TS_T00D0M0I0R0ConfExt"
+              name="GCDemo1_TS_T00D0M0I0R0 Config Extension">
+       <configuration moduleId="GCDemo1_TS_T00D0M0I0R0">
+
+         <!-- schema definition -->
+           <schema>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+               <resource value="config/GCDemo1_TS_T00D0M0I0R0.xdm"
+                         type="xdm"/>
+           </schema>
+
+           <!-- data definition -->
+           <data>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+               <schemaNode path="ASPath:/TS_T00D0M0I0R0/GCDemo1"/>
+           </data>
+
+           <!-- generic editor definition -->
+           <editor id="GCDemo1_TS_T00D0M0I0R0Editor"
+                   label="GCDemo1_TS_T00D0M0I0R0"
+                   tooltip="Editor for the GCDemo1_TS_T00D0M0I0R0Editor module">
+               <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+                 <parameter name="schema" value="ASPath:/TS_T00D0M0I0R0/GCDemo1"/>
+                 <parameter name="title" value="GCDemo1_TS_T00D0M0I0R0Editor editor"/>
+               </class>
+           </editor>
+       </configuration>
+   </extension>
+  
+  <extension
+         point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+      <guidedconfigwizard id="guidedDemo1">
+          <!-- use an XML description of the pages (XForms) -->
+          <gui class="dreisoft.tresos.guidedconfig.api.gui.xform.XFormMultiPage">
+          <parameter name="pageDescription" value="pages/Pages.xml"/>
+          </gui>
+          <backend class="dreisoft.tresos.guidedconfig.demo1.Demo1Backend" />
+      </guidedconfigwizard>
+
+  </extension>
+  
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.trigger">
+     <trigger>
+       <sidebar
+              categoryId="Demos"
+              id="guidedDemo1"
+              wizardId="guidedDemo1"
+              wizardType="editor">
+              <!-- restrict visibility:
+                  wizard is only visible if a loaded project with target="Demo" is selected AND
+                  an enabled module of type="GCDemo1" is added to the project.
+               -->
+           <visibility>
+              <and>
+                 <with variable="ECUConfigContext.target">
+                    <equals value="Demo"/>
+                 </with>
+                 <with variable="ECUConfigContext.moduleType.GCDemo1">
+                    <equals value="true"/>
+                 </with>
+              </and>
+           </visibility>
+           <display
+                 label="Demo1 Standalone Editor"
+                 tooltip="Demo1 Standalone Editor">
+           </display>
+        </sidebar>
+     </trigger>
+  </extension>
+
+</plugin>

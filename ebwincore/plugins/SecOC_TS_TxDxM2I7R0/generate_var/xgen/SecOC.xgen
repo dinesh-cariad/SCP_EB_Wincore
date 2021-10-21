@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module SecOC?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!CODE!]
+[!AUTOSPACING!]
+[!INCLUDE "../../generate_macros/SecOC_Macros.m"!]
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "SECOC_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "SECOC_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat('SecOC_Config','_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="string("SecOC_Config")"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+*/!][!VAR "SECOC_PBCFG_C_VARIANT"="concat('SecOC',$SECOC_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "SECOC_PBCFG_H_VARIANT"="concat('SecOC',$SECOC_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "SECOC_CONFIG_LAYOUT_VARIANT"="concat('SecOC',$SECOC_VARIANT_SUFIX,'ConfigLayout')"!]
+[!/* Current Config Type variant based
+*/!][!VAR "SECOC_CONFIGLAYOUTTYPE_VARIANT"="concat('SecOC',$SECOC_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "SECOC_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('SecOC',$SECOC_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+[!/* Required function in order to map the required internal buffer size to each same buffer configured
+*/!][!VAR "dummy"="asc_secoc:getIntBufferSize(as:modconf('SecOC')/SecOCGeneral/SecOCMaxIntBufferSize)"!]
+[!/* Required function in order to map the required internal buffer size to each same buffer configured
+*/!][!VAR "dummy"="asc_secoc:getPduBufferSize(as:modconf('SecOC')/SecOCGeneral/SecOCMaxPduBufferSize)"!]
+[!//
+
+  <!-- This is the configuration of module SecOC -->
+  <module name="SecOC" version="[!"$moduleSoftwareVer"!]">
+    <!-- This is the precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+[!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+      <?artifact directory="include" file="SecOC_Types_Int.h" type="types-h" generate="yes" ?>
+[!ELSE!]
+      <?artifact directory="include" file="SecOC_Types_Int.h" type="types-h" generate="no" ?>
+[!ENDIF!]
+
+      [!VAR "relocatable" = "'false'"!]
+      <!-- !LINKSTO SecOC.PB.Impl.PbcfgM.Relocatable,1 -->
+      [!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('SecOC')) = 'true'"!]
+      [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ELSE!]
+      <!-- !LINKSTO SecOC.PB.Impl.NoPbcfgM.Relocatable,1 -->
+      [!IF "as:modconf('SecOC')[1]/SecOCGeneral/SecOCRelocatablePbcfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ENDIF!]
+
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <!--
+          Type declarations:
+          Specifies the content of SecOC_Types_Int.h
+      -->
+
+      <!-- This is the type definition of the root structure -->
+      <!-- !LINKSTO SecOC.Dsn.interface.RxTx.SecOC_ConfigType,2 -->
+      <type name="SecOC_ConfigType">
+        <comment><![CDATA[ \brief Type for the SecOC configuration
+ This type defines the global configuration of the SecOC.]]></comment>
+        <struct>
+          <!-- !LINKSTO SecOC.PB.Impl.Hash,1 -->
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform"/>
+          <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration"/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration"/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time published information configuration"/>
+          <member name="PduBufferSize" type="uint32" comment="Required buffer size for storing PDUs"/>
+          <member name="IntBufferSize" type="uint32" comment="Required buffer size for internal processing"/>
+          [!IF "$RxPduNum > 0"!]
+          <member name="RxPduConfigPtr" type="SecOC_RxPduConfigType" comment="ptr. to array of Rx PDU configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!ENDIF!]
+          [!IF "$TxPduNum > 0"!]
+          <member  name="TxPduConfigPtr" type="SecOC_TxPduConfigType" comment="ptr. to array of Tx PDU configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      [!IF "$RxPduNum > 0"!]
+      <!-- This type is used for configuration of Rx PDUs. -->
+      <!-- !LINKSTO SecOC.Dsn.interface.Rx.SecOC_RxPduConfigType,1 -->
+      <type name="SecOC_RxPduConfigType">
+        <comment><![CDATA[ \brief Rx PDU configuration type
+
+ This type is used for configuration of Rx PDUs.]]></comment>
+        <struct>
+          <member name="BuffersConfig" type="SecOC_RxBuffersConfigType" comment="Rx PDU buffer lengths"/>
+          [!IF "node:value(as:modconf('SecOC')/SecOCGeneral/SecOCDataIdLength) = 'UINT8'"!]
+          <member name="DataId" type="uint8" comment="Data ID"/>
+          [!ELSEIF "node:value(SecOCGeneral/SecOCDataIdLength) = 'UINT16'"!]
+          <member name="DataId" type="uint16" comment="Data ID"/>
+          [!ELSE!]
+          <member name="DataId" type="uint32" comment="Data ID"/>
+          [!ENDIF!]
+          <member name="AuthenticLayerPduIdAtPduR" type="uint16" comment="ID of authentic Pdu (ID defined in PduR used for PduR_SecOCRxIndication)"/>
+          [!IF "$SecuredAreaEn = 'true'"!]
+          <member name="SecuredRxPduLength" type="uint16" comment="Length (in bytes) of the area within the Pdu which is secured"/>
+          <member name="SecuredRxPduOffset" type="uint16" comment="Start position (offset in bytes) of the area within the Pdu which is secured"/>
+          [!ENDIF!]
+          <member name="AuthInfoTxLength" type="uint16" comment="Truncated MAC length in bits"/>
+          <member name="FreshnessValueId" type="uint16" comment="Freshness value ID"/>
+          <member name="FreshnessValueLength" type="uint8" comment="Freshness value length in bits"/>
+          <member name="FreshnessValueTxLength" type="uint8" comment="Truncated freshness value length in bits"/>
+          [!IF "$PropVerStatusEn = 'true'"!]
+          <member name="VerificationStatusPropagationMode" type="uint8" comment="The propagation mode of the verification status"/>
+          [!ENDIF!]
+          [!IF "$SecuredAreaEn = 'true'"!]
+          <member name="UseRxSecuredArea" type="boolean" comment="Use the secured area within the Pdu"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+      [!ENDIF!]
+
+      [!IF "$TxPduNum > 0"!]
+      <!-- This type is used for configuration of Tx PDUs. -->
+      <!-- !LINKSTO SecOC.Dsn.interface.Tx.SecOC_TxPduConfigType,1 -->
+      <type name="SecOC_TxPduConfigType">
+        <comment><![CDATA[ \brief Tx PDU configuration type
+
+ This type is used for configuration of Tx PDUs.]]></comment>
+        <struct>
+          <member name="BuffersConfig" type="SecOC_TxBuffersConfigType" comment="Tx PDU buffer lengths"/>
+          [!IF "node:value(as:modconf('SecOC')/SecOCGeneral/SecOCDataIdLength) = 'UINT8'"!]
+          <member name="DataId" type="uint8" comment="Data ID"/>
+          [!ELSEIF "node:value(SecOCGeneral/SecOCDataIdLength) = 'UINT16'"!]
+          <member name="DataId" type="uint16" comment="Data ID"/>
+          [!ELSE!]
+          <member name="DataId" type="uint32" comment="Data ID"/>
+          [!ENDIF!]
+          <member name="SecuredLayerPduIdAtPduR" type="uint16" comment="ID of secured Pdu at PduR (used for e.g. PduR_SecOCTpTransmit)"/>
+          [!IF "$TxSecuredColEn = 'true'"!]
+          <member name="SentAuthLayerPduIdAtPduR" type="uint16" comment="ID of sent authentic Pdu at PduR (used for e.g. PduR_SecOCTpTransmit)"/>
+          <member name="CryptoLayerPduIdAtPduR" type="uint16" comment="ID of cryptographic Pdu at PduR (used for e.g. PduR_SecOCTpTransmit)"/>
+          [!ENDIF!]
+          <member name="ULAuthLayerPduIdAtPduR" type="uint16" comment="ID of authentic Pdu at PduR (used for e.g. PduR_SecOCTxConfirmation)"/>
+          [!IF "$SecuredAreaEn = 'true'"!]
+          <member name="SecuredTxPduLength" type="uint16" comment="Length (in bytes) of the area within the Pdu which is secured"/>
+          <member name="SecuredTxPduOffset" type="uint16" comment="Start position (offset in bytes) of the area within the Pdu which is secured"/>
+          [!ENDIF!]
+          <member name="AuthInfoTxLength" type="uint16" comment="Truncated MAC length in bits"/>
+          <member name="FreshnessValueId" type="uint16" comment="Freshness value ID"/>
+          <member name="FreshnessValueLength" type="uint8" comment="Freshness value length in bits"/>
+          <member name="FreshnessValueTxLength" type="uint8" comment="Truncated freshness value length in bits"/>
+          [!IF "$SecuredAreaEn = 'true'"!]
+          <member name="UseTxSecuredArea" type="boolean" comment="Use the secured area within the Pdu"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+      [!ENDIF!]
+
+      [!IF "$RxPduNum > 0"!]
+      <!-- This type is used for configuration of Rx buffers that will be used during the receiving, verification and forwarding procedure. -->
+      <!-- !LINKSTO SecOC.Dsn.interface.Rx.SecOC_RxBuffersConfigType,3 -->
+      <!-- !LINKSTO SWS_SecOC_Rx_00204,1 -->
+      <type name="SecOC_RxBuffersConfigType">
+        <comment><![CDATA[ \brief Rx buffers configuration type
+
+ This type is used for configuration of Rx buffers that will be used during the receiving, verification and forwarding procedure.]]></comment>
+        <struct>
+          <member name="ReceivedSecuredPduBufferIndex" type="uint32" comment="Buffer index where the Received Secured PDU will be stored"/>
+          [!IF "$RxSecuredColEn = 'true'"!]
+          <member name="ReceivedAuthPduBufferIndex" type="uint32" comment="Buffer index where the Received Authentic PDU will be stored"/>
+          <member name="CryptoPduBufferIndex" type="uint32" comment="Buffer index where the Cryptographic PDU will be stored"/>
+          [!ENDIF!]
+          <member name="SecuredPduBufferIndex" type="uint32" comment="Buffer index where the Secured PDU will be stored"/>
+          <member name="AuthenticatorIndex" type="uint32" comment="Buffer index where the Authenticator will be stored"/>
+          <member name="DataToAuthenticatorIndex" type="uint32" comment="Buffer index where the data to authenticator will be stored"/>
+          <member name="SecuredPduBufferLength" type="PduLengthType" comment="Buffer length where the Secured PDU will be stored"/>
+          <member name="AuthPduBufferLength" type="PduLengthType" comment="Buffer length where the Authentic PDU will be stored"/>
+          [!IF "$RxSecuredColEn = 'true'"!]
+          <member name="CryptoPduBufferLength" type="PduLengthType" comment="Buffer length where the Cryptographic PDU will be stored"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+      [!ENDIF!]
+
+      [!IF "$TxPduNum > 0"!]
+      <!-- This type is used for configuration of Tx buffers that will be used during the authentication and transmission procedure. -->
+      <!-- !LINKSTO SecOC.Dsn.interface.Tx.SecOC_TxBuffersConfigType,3 -->
+      <!-- !LINKSTO SWS_SecOC_Tx_00057,1, SWS_SecOC_Tx_00146,1, SWS_SecOC_Tx_00058,1 -->
+      <type name="SecOC_TxBuffersConfigType">
+        <comment><![CDATA[ \brief Tx buffers configuration type
+
+ This type is used for configuration of Tx buffers that will be used during the receiving, verification and transmission procedure.]]></comment>
+        <struct>
+          <member name="ULAuthPduBufferIndex" type="uint32" comment="Buffer index where the upper layer Authentic PDU will be stored"/>
+          <member name="SecuredPduBufferIndex" type="uint32" comment="Buffer index where the Secured PDU will be stored"/>
+          [!IF "$TxSecuredColEn = 'true'"!]
+          <member name="SentAuthPduBufferIndex" type="uint32" comment="Buffer index where the Sent Authentic PDU will be stored"/>
+          <member name="CryptoPduBufferIndex" type="uint32" comment="Buffer index where the Cryptographic PDU will be stored"/>
+          [!ENDIF!]
+          <member name="AuthenticatorIndex" type="uint32" comment="Buffer index where the Authenticator will be stored"/>
+          <member name="DataToAuthenticatorIndex" type="uint32" comment="Buffer index where the data to authenticator will be stored"/>
+          <member name="SecuredPduBufferLength" type="PduLengthType" comment="Buffer length where the Secured PDU will be stored"/>
+          <member name="AuthPduBufferLength" type="PduLengthType" comment="Buffer length where the Authentic PDU will be stored"/>
+          [!IF "$TxSecuredColEn = 'true'"!]
+          <member name="CryptoPduBufferLength" type="PduLengthType" comment="Buffer length where the Cryptographic PDU will be stored"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+      [!ENDIF!]
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <?artifact directory="include" file="[!"$SECOC_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$SECOC_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of SecOC_PBcfg.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' post-build configuration structure -->
+      <type name="[!"$SECOC_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <member name="RootCfg" type="SecOC_ConfigType"/>
+          [!IF "$RxPduNum > 0"!]
+          <member name="RxPduConfig" type="SecOC_RxPduConfigType" count="[!"$RxPduNum"!]"/>
+          [!ENDIF!]
+          [!IF "$TxPduNum > 0"!]
+          <member name="TxPduConfig" type="SecOC_TxPduConfigType" count="[!"$TxPduNum"!]"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="[!"$SECOC_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$SECOC_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="SECOC_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialization:
+          Specifies the content of SecOC_Pbcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="[!"$SECOC_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+             name="[!"$SECOC_CONFIG_LAYOUT_VARIANT"!]">
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+
+        <!-- SecOC_ConfigType -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('SecOC')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('SecOC')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('SecOC')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('SecOC')[1]/CommonPublishedInformation/Release))"!]</int>
+          </field>
+          <field>
+            <int>[!"node:value(as:modconf('SecOC')/SecOCGeneral/SecOCMaxPduBufferSize)"!]</int>
+          </field>
+          <field>
+            <int>[!"node:value(as:modconf('SecOC')/SecOCGeneral/SecOCMaxIntBufferSize)"!]</int>
+          </field>
+          [!IF "$RxPduNum > 0"!]
+          <field>
+            <ref>
+              <struct-field name="RxPduConfig" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          [!ENDIF!]
+          [!IF "$TxPduNum > 0"!]
+          <field>
+            <ref>
+              <struct-field name="TxPduConfig" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          [!ENDIF!]
+        </field>
+
+
+        [!VAR "currPduBufferIndex" = "asc_secoc:getRxPduStartBufferIndex()"!]
+        [!VAR "currIntBufferIndex" = "asc_secoc:getRxIntStartBufferIndex()"!]
+
+        [!IF "$RxPduNum > 0"!]
+        <!-- SecOC_RxPduConfigType RxPduConfigPtr -->
+        <field>
+          [!LOOP "node:order(as:modconf('SecOC')/SecOCRxPduProcessing/*)"!]
+            [!VAR "AuthenticPduLength" = "num:i(node:value(as:ref(./SecOCRxAuthenticPduLayer/SecOCRxAuthenticLayerPduRef)/PduLength))"!]
+            [!IF "$RxSecuredColEn = 'true'"!]
+              [!IF "SecOCRxSecuredPduLayer = 'SecOCRxSecuredPdu'"!]
+                [!VAR "RecvAuthenticPduLength" = "num:i(0)"!]
+                [!VAR "CryptographicPduLength" = "num:i(0)"!]
+                [!VAR "SecuredPduLength" = "num:i(node:value(as:ref(./SecOCRxSecuredPduLayer/SecOCRxSecuredLayerPduRef)/PduLength))"!]
+              [!ELSE!]
+                [!VAR "RecvAuthenticPduLength" = "num:i(node:value(as:ref(./SecOCRxSecuredPduLayer/SecOCRxAuthenticPdu/SecOCRxAuthenticPduRef)/PduLength))"!]
+                [!VAR "CryptographicPduLength" = "num:i(node:value(as:ref(./SecOCRxSecuredPduLayer/SecOCRxCryptographicPdu/SecOCRxCryptographicPduRef)/PduLength))"!]
+                [!VAR "SecuredPduLength" = "num:i($RecvAuthenticPduLength + $CryptographicPduLength)"!]
+              [!ENDIF!]
+            [!ELSE!]
+              [!VAR "SecuredPduLength" = "num:i(node:value(as:ref(./SecOCRxSecuredPduLayer/SecOCRxSecuredLayerPduRef)/PduLength))"!]
+            [!ENDIF!]
+
+            [!VAR "AuthenticatorLength" = "num:i((((node:value(./SecOCAuthInfoTxLength))- 1 )div 8)+1)"!]
+            [!IF "((node:value(./SecOCFreshnessValueTxLength)) mod 8) != 0"!]
+              [!VAR "AuthenticatorLength" = "num:i((($AuthenticatorLength)+1 ))"!]
+            [!ENDIF!]
+
+            [!VAR "FreshnessValueLength" = "node:value(./SecOCFreshnessValueLength)"!]
+            [!IF "$FreshnessValueLength > 0"!]
+              [!IF "node:value(as:modconf('SecOC')/SecOCGeneral/SecOCQueryFreshnessValue) = 'RTE'"!]
+                [!VAR "FreshnessValueByteLength" = "8"!]
+              [!ELSE!]
+                [!VAR "FreshnessValueByteLength" = "num:i(((($FreshnessValueLength)- 1 )div 8)+1)"!]
+              [!ENDIF!]
+            [!ELSE!]
+              [!VAR "FreshnessValueByteLength" = "0"!]
+            [!ENDIF!]
+            [!IF "node:value(as:modconf('SecOC')/SecOCGeneral/SecOCQueryFreshnessValue) = 'RTE' and node:value(./SecOCUseAuthDataFreshness) = 'true'"!]
+              [!IF "node:value(./SecOCAuthDataFreshnessLen) > 0"!]
+                [!VAR "FreshnessValueByteLength" = "8"!]
+              [!ENDIF!]
+            [!ENDIF!]
+            [!IF "'true' = node:exists(./SecOCRxPduSecuredArea)"!]
+              [!VAR "DataToAuthenticatorLength" = "num:i($DataIdLen + node:value(./SecOCRxPduSecuredArea/SecOCSecuredRxPduLength) + num:i($FreshnessValueByteLength))"!]
+            [!ELSE!]
+              [!VAR "DataToAuthenticatorLength" = "num:i($DataIdLen + $AuthenticPduLength + num:i($FreshnessValueByteLength))"!]
+            [!ENDIF!]
+            [!IF "$SecuredAreaEn = 'true'"!]
+              [!IF "'true' = node:exists(./SecOCRxPduSecuredArea)"!]
+                [!VAR "SecuredRxPduLength" = "num:i(node:value(./SecOCRxPduSecuredArea/SecOCSecuredRxPduLength))"!]
+                [!VAR "SecuredRxPduOffset" = "num:i(node:value(./SecOCRxPduSecuredArea/SecOCSecuredRxPduOffset))"!]
+              [!ELSE!]
+                [!VAR "SecuredRxPduLength" = "num:i(0)"!]
+                [!VAR "SecuredRxPduOffset" = "num:i(0)"!]
+              [!ENDIF!]
+            [!ENDIF!]
+          <field>
+            <!-- SecOC_RxBuffersConfigType BuffersConfig[[!"@index"!]] -->
+            <field>
+              [!IF "$RxUseSameBufferPdu = 'true' and node:exists(./SecOCSameBufferPduRef) = 'true'"!]
+                <!-- ReceivedSecuredPduBufferIndex -->
+                <field>
+                  <int>[!"asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef)))"!]</int>
+                </field>
+                [!IF "$RxSecuredColEn = 'true'"!]
+                  [!IF "SecOCRxSecuredPduLayer = 'SecOCRxSecuredPduCollection'"!]
+                    <!-- ReceivedAuthPduBufferIndex -->
+                    <field>
+                      <int>[!"asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef)))"!]</int>
+                    </field>
+                    <!-- CryptoPduBufferIndex -->
+                    <field>
+                      <int>[!"num:i(asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef))) + $RecvAuthenticPduLength)"!]</int>
+                    </field>
+                  [!ELSE!]
+                    <!-- ReceivedAuthPduBufferIndex -->
+                    <field>
+                      <int>[!"asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef)))"!]</int>
+                    </field>
+                    <!-- CryptoPduBufferIndex -->
+                    <field>
+                      <int>[!"asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef)))"!]</int>
+                    </field>
+                  [!ENDIF!]
+                [!ENDIF!]
+                [!IF "$RxRecvStrategyReplaceEn = 'true' and node:value(./SecOCReceptionOverflowStrategy) = 'REPLACE'"!]
+                  <!-- SecuredPduBufferIndex -->
+                  <field>
+                    <int>[!"num:i(asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef))) + $SecuredPduLength)"!]</int>
+                  </field>
+                [!ELSE!]
+                  <!-- SecuredPduBufferIndex -->
+                  <field>
+                    <int>[!"asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef)))"!]</int>
+                  </field>
+                [!ENDIF!]
+              [!ELSE!]
+                <!-- ReceivedSecuredPduBufferIndex -->
+                <field>
+                  <int>[!"$currPduBufferIndex"!]</int>
+                </field>
+                [!IF "$RxSecuredColEn = 'true'"!]
+                  [!IF "SecOCRxSecuredPduLayer = 'SecOCRxSecuredPduCollection'"!]
+                    <!-- ReceivedAuthPduBufferIndex -->
+                    <field>
+                      <int>[!"$currPduBufferIndex"!]</int>
+                    </field>
+                    <!-- CryptoPduBufferIndex -->
+                    <field>
+                      <int>[!"num:i($currPduBufferIndex + $RecvAuthenticPduLength)"!]</int>
+                    </field>
+                  [!ELSE!]
+                    <!-- ReceivedAuthPduBufferIndex -->
+                    <field>
+                      <int>[!"$currPduBufferIndex"!]</int>
+                    </field>
+                    <!-- CryptoPduBufferIndex -->
+                    <field>
+                      <int>[!"$currPduBufferIndex"!]</int>
+                    </field>
+                  [!ENDIF!]
+                [!ENDIF!]
+                [!IF "$RxRecvStrategyReplaceEn = 'true' and node:value(./SecOCReceptionOverflowStrategy) = 'REPLACE'"!]
+                  [!VAR "currPduBufferIndex" = "num:i($currPduBufferIndex + $SecuredPduLength)"!]
+                [!ENDIF!]
+                <!-- SecuredPduBufferIndex -->
+                <field>
+                  <int>[!"$currPduBufferIndex"!]</int>
+                  [!VAR "currPduBufferIndex" = "num:i($currPduBufferIndex + $SecuredPduLength)"!]
+                </field>
+              [!ENDIF!]
+              [!IF "$RxUseSameBufferPdu = 'true' and node:exists(./SecOCSameBufferPduRef) = 'true'"!]
+                <!-- AuthenticatorIndex -->
+                <field>
+                  <int>[!"asc_secoc:getIntSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef)))"!]</int>
+                </field>
+                <!-- DataToAuthenticatorIndex -->
+                <field>
+                  <int>[!"num:i(asc_secoc:getIntSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef))) + $AuthenticatorLength)"!]</int>
+                </field>
+              [!ELSE!]
+                <!-- AuthenticatorIndex -->
+                <field>
+                  <int>[!"$currIntBufferIndex"!]</int>
+                  [!VAR "currIntBufferIndex" = "num:i($currIntBufferIndex + $AuthenticatorLength)"!]
+                </field>
+                <!-- DataToAuthenticatorIndex -->
+                <field>
+                  <int>[!"$currIntBufferIndex"!]</int>
+                  [!VAR "currIntBufferIndex" = "num:i($currIntBufferIndex + $DataToAuthenticatorLength)"!]
+                </field>
+              [!ENDIF!]
+              <!-- SecuredPduBufferLength -->
+              <field>
+                <int>[!"$SecuredPduLength"!]</int>
+              </field>
+              <!-- AuthPduBufferLength -->
+              <field>
+                <int>[!"$AuthenticPduLength"!]</int>
+              </field>
+              [!IF "$RxSecuredColEn = 'true'"!]
+              <!-- CryptoPduBufferLength -->
+              <field>
+                <int>[!"$CryptographicPduLength"!]</int>
+              </field>
+              [!ENDIF!]
+            </field>
+            <!-- DataId -->
+            <field>
+              <int>[!"node:value(./SecOCDataId)"!]</int>
+            </field>
+            <!-- AuthenticLayerPduIdAtPduR -->
+            <field>
+              [!IF "node:exists(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[as:path(as:ref(PduRSrcPdu/PduRSrcPduRef)) = as:path(as:ref(node:current()/SecOCRxAuthenticPduLayer/SecOCRxAuthenticLayerPduRef))])"!]
+              <int>[!"node:value(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[as:path(as:ref(PduRSrcPdu/PduRSrcPduRef)) = as:path(as:ref(node:current()/SecOCRxAuthenticPduLayer/SecOCRxAuthenticLayerPduRef))]/PduRSrcPdu/PduRSourcePduHandleId)"!]</int>
+              [!ELSE!]
+                [!ERROR!]No Rx PDU found in upper layer PduR that is assigned to PDU [!"node:current()/SecOCRxAuthenticPduLayer/SecOCRxAuthenticLayerPduRef"!][!ENDERROR!]
+              [!ENDIF!]
+            </field>
+            [!IF "$SecuredAreaEn = 'true'"!]
+            <!-- SecuredRxPduLength -->
+            <field>
+              <int>[!"$SecuredRxPduLength"!]</int>
+            </field>
+            <!-- SecuredRxPduOffset -->
+            <field>
+              <int>[!"$SecuredRxPduOffset"!]</int>
+            </field>
+            [!ENDIF!]
+            <!-- AuthInfoTxLength -->
+            <field>
+              <int>[!"node:value(./SecOCAuthInfoTxLength)"!]</int>
+            </field>
+            <!-- FreshnessValueId -->
+            <field>
+              <int>[!"node:value(./SecOCFreshnessValueId)"!]</int>
+            </field>
+            <!-- FreshnessValueLength -->
+            <field>
+              <int>[!"node:value(./SecOCFreshnessValueLength)"!]</int>
+            </field>
+            <!-- FreshnessValueTxLength -->
+            <field>
+              <int>[!"node:value(./SecOCFreshnessValueTxLength)"!]</int>
+            </field>
+            [!IF "$PropVerStatusEn = 'true'"!]
+            <!-- VerificationStatusPropagationMode -->
+            <field>
+            [!IF "node:value(./SecOCVerificationStatusPropagationMode) = 'NONE'"!]
+              <int>0</int>
+            [!ELSEIF "node:value(./SecOCVerificationStatusPropagationMode) = 'FAILURE_ONLY'"!]
+              <int>1</int>
+            [!ELSE!]
+              <int>2</int>
+            [!ENDIF!]
+            </field>
+            [!ENDIF!]
+            [!IF "$SecuredAreaEn = 'true'"!]
+            <!-- UseRxSecuredArea -->
+            <field>
+              <int>[!IF "'true' = node:exists(./SecOCRxPduSecuredArea)"!]1[!ELSE!]0[!ENDIF!]</int>
+            </field>
+            [!ENDIF!]
+          </field>
+          [!ENDLOOP!]
+        </field>
+        [!ENDIF!]
+
+
+        [!VAR "currPduBufferIndex" = "asc_secoc:getTxPduStartBufferIndex()"!]
+        [!VAR "currIntBufferIndex" = "asc_secoc:getTxIntStartBufferIndex()"!]
+
+        [!IF "$TxPduNum > 0"!]
+        <!-- SecOC_TxPduConfigType TxPduConfigPtr -->
+        <field>
+          [!LOOP "node:order(as:modconf('SecOC')/SecOCTxPduProcessing/*, 'SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduId')"!]
+            [!VAR "AuthenticPduLength" = "num:i(node:value(as:ref(./SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduRef)/PduLength))"!]
+            [!IF "$TxSecuredColEn = 'true'"!]
+              [!IF "SecOCTxSecuredPduLayer = 'SecOCTxSecuredPdu'"!]
+                [!VAR "SentAuthenticPduLength" = "num:i(0)"!]
+                [!VAR "CryptographicPduLength" = "num:i(0)"!]
+                [!VAR "SecuredPduLength" = "num:i(node:value(as:ref(./SecOCTxSecuredPduLayer/SecOCTxSecuredLayerPduRef)/PduLength))"!]
+              [!ELSE!]
+                [!VAR "SentAuthenticPduLength" = "num:i(node:value(as:ref(./SecOCTxSecuredPduLayer/SecOCTxAuthenticPdu/SecOCTxAuthenticPduRef)/PduLength))"!]
+                [!VAR "CryptographicPduLength" = "num:i(node:value(as:ref(./SecOCTxSecuredPduLayer/SecOCTxCryptographicPdu/SecOCTxCryptographicPduRef)/PduLength))"!]
+                [!VAR "SecuredPduLength" = "num:i($SentAuthenticPduLength + $CryptographicPduLength)"!]
+              [!ENDIF!]
+            [!ELSE!]
+              [!VAR "SecuredPduLength" = "num:i(node:value(as:ref(./SecOCTxSecuredPduLayer/SecOCTxSecuredLayerPduRef)/PduLength))"!]
+            [!ENDIF!]
+
+            [!VAR "AuthenticatorLength" = "num:i((((node:value(./SecOCAuthInfoTxLength))- 1 )div 8)+1)"!]
+
+            [!VAR "FreshnessValueLength" = "node:value(./SecOCFreshnessValueLength)"!]
+            [!IF "$FreshnessValueLength > 0"!]
+              [!IF "node:value(as:modconf('SecOC')/SecOCGeneral/SecOCQueryFreshnessValue) = 'RTE'"!]
+                [!VAR "FreshnessValueByteLength" = "8"!]
+              [!ELSE!]
+                [!VAR "FreshnessValueByteLength" = "num:i(((($FreshnessValueLength)- 1 )div 8)+1)"!]
+              [!ENDIF!]
+            [!ELSE!]
+              [!VAR "FreshnessValueByteLength" = "0"!]
+            [!ENDIF!]
+            [!IF "'true' = node:exists(./SecOCTxPduSecuredArea)"!]
+              [!VAR "DataToAuthenticatorLength" = "num:i($DataIdLen + node:value(./SecOCTxPduSecuredArea/SecOCSecuredTxPduLength) + num:i($FreshnessValueByteLength))"!]
+            [!ELSE!]
+              [!VAR "DataToAuthenticatorLength" = "num:i($DataIdLen + $AuthenticPduLength + num:i($FreshnessValueByteLength))"!]
+            [!ENDIF!]
+            [!IF "$SecuredAreaEn = 'true'"!]
+              [!IF "'true' = node:exists(./SecOCTxPduSecuredArea)"!]
+                [!VAR "SecuredTxPduLength" = "num:i(node:value(./SecOCTxPduSecuredArea/SecOCSecuredTxPduLength))"!]
+                [!VAR "SecuredTxPduOffset" = "num:i(node:value(./SecOCTxPduSecuredArea/SecOCSecuredTxPduOffset))"!]
+              [!ELSE!]
+                [!VAR "SecuredTxPduLength" = "num:i(0)"!]
+                [!VAR "SecuredTxPduOffset" = "num:i(0)"!]
+              [!ENDIF!]
+            [!ENDIF!]
+          <field>
+            <!-- SecOC_TxBuffersConfigType BuffersConfig[[!"@index"!]] -->
+            <field>
+              [!IF "$TxUseSameBufferPdu = 'true' and node:exists(./SecOCSameBufferPduRef) = 'true'"!]
+                <!-- ULAuthPduBufferIndex -->
+                <field>
+                  <int>[!"asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef)))"!]</int>
+                </field>
+                <!-- SecuredPduBufferIndex -->
+                <field>
+                  <int>[!"num:i(asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef))) + $AuthenticPduLength)"!]</int>
+                </field>
+                [!IF "$TxSecuredColEn = 'true'"!]
+                  [!IF "SecOCTxSecuredPduLayer = 'SecOCTxSecuredPduCollection'"!]
+                    <!-- SentAuthPduBufferIndex -->
+                    <field>
+                      <int>[!"num:i(asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef))) + $AuthenticPduLength)"!]</int>
+                    </field>
+                    <!-- CryptoPduBufferIndex -->
+                    <field>
+                      <int>[!"num:i(asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef))) + $AuthenticPduLength + $SentAuthenticPduLength)"!]</int>
+                    </field>
+                  [!ELSE!]
+                    <!-- SentAuthPduBufferIndex -->
+                    <field>
+                      <int>[!"asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef)))"!]</int>
+                    </field>
+                    <!-- CryptoPduBufferIndex -->
+                    <field>
+                      <int>[!"asc_secoc:getPduSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef)))"!]</int>
+                    </field>
+                  [!ENDIF!]
+                [!ENDIF!]
+                <!-- AuthenticatorIndex -->
+                <field>
+                  <int>[!"asc_secoc:getIntSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef)))"!]</int>
+                </field>
+                <!-- DataToAuthenticatorIndex -->
+                <field>
+                  <int>[!"num:i(asc_secoc:getIntSameBufferIndex(node:name(as:ref(./SecOCSameBufferPduRef))) + $AuthenticatorLength)"!]</int>
+                </field>
+              [!ELSE!]
+                <!-- ULAuthPduBufferIndex -->
+                <field>
+                  <int>[!"$currPduBufferIndex"!]</int>
+                  [!VAR "currPduBufferIndex" = "num:i($currPduBufferIndex + $AuthenticPduLength)"!]
+                </field>
+                <!-- SecuredPduBufferIndex -->
+                <field>
+                  <int>[!"$currPduBufferIndex"!]</int>
+                </field>
+                [!IF "$TxSecuredColEn = 'true'"!]
+                  [!IF "SecOCTxSecuredPduLayer = 'SecOCTxSecuredPduCollection'"!]
+                    <!-- SentAuthPduBufferIndex -->
+                    <field>
+                      <int>[!"$currPduBufferIndex"!]</int>
+                    </field>
+                    <!-- CryptoPduBufferIndex -->
+                    <field>
+                      <int>[!"num:i($currPduBufferIndex + $SentAuthenticPduLength)"!]</int>
+                    </field>
+                    [!VAR "currPduBufferIndex" = "num:i($currPduBufferIndex + $SentAuthenticPduLength + $CryptographicPduLength)"!]
+                  [!ELSE!]
+                    <!-- SentAuthPduBufferIndex -->
+                    <field>
+                      <int>[!"$currPduBufferIndex"!]</int>
+                    </field>
+                    <!-- CryptoPduBufferIndex -->
+                    <field>
+                      <int>[!"$currPduBufferIndex"!]</int>
+                    </field>
+                    [!VAR "currPduBufferIndex" = "num:i($currPduBufferIndex + $SecuredPduLength)"!]
+                  [!ENDIF!]
+                [!ELSE!]
+                  [!VAR "currPduBufferIndex" = "num:i($currPduBufferIndex + $SecuredPduLength)"!]
+                [!ENDIF!]
+                <!-- AuthenticatorIndex -->
+                <field>
+                  <int>[!"$currIntBufferIndex"!]</int>
+                  [!VAR "currIntBufferIndex" = "num:i($currIntBufferIndex + $AuthenticatorLength)"!]
+                </field>
+                <!-- DataToAuthenticatorIndex -->
+                <field>
+                  <int>[!"$currIntBufferIndex"!]</int>
+                  [!VAR "currIntBufferIndex" = "num:i($currIntBufferIndex + $DataToAuthenticatorLength)"!]
+                </field>
+              [!ENDIF!]
+              <!-- SecuredPduBufferLength -->
+              <field>
+                <int>[!"$SecuredPduLength"!]</int>
+              </field>
+              <!-- AuthPduBufferLength -->
+              <field>
+                <int>[!"$AuthenticPduLength"!]</int>
+              </field>
+              [!IF "$TxSecuredColEn = 'true'"!]
+              <!-- CryptoPduBufferLength -->
+              <field>
+                <int>[!"$CryptographicPduLength"!]</int>
+              </field>
+              [!ENDIF!]
+            </field>
+            <!-- DataId -->
+            <field>
+              <int>[!"node:value(./SecOCDataId)"!]</int>
+            </field>
+            [!IF "SecOCTxSecuredPduLayer = 'SecOCTxSecuredPdu'"!]
+            <!-- SecuredLayerPduIdAtPduR -->
+            <field>
+              [!IF "node:exists(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[as:path(as:ref(PduRSrcPdu/PduRSrcPduRef)) = as:path(as:ref(node:current()/SecOCTxSecuredPduLayer/SecOCTxSecuredLayerPduRef))])"!]
+              <int>[!"node:value(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[as:path(as:ref(PduRSrcPdu/PduRSrcPduRef)) = as:path(as:ref(node:current()/SecOCTxSecuredPduLayer/SecOCTxSecuredLayerPduRef))]/PduRSrcPdu/PduRSourcePduHandleId)"!]</int>
+              [!ELSE!]
+                [!ERROR!]No Tx PDU found in lower layer PduR that is assigned to PDU [!"node:current()/SecOCTxSecuredPduLayer/SecOCTxSecuredLayerPduRef"!][!ENDERROR!]
+              [!ENDIF!]
+            </field>
+            [!IF "$TxSecuredColEn = 'true'"!]
+            <!-- SentAuthLayerPduIdAtPduR -->
+            <field>
+              <int>0</int>
+            </field>
+            <!-- CryptoLayerPduIdAtPduR -->
+            <field>
+              <int>0</int>
+            </field>
+            [!ENDIF!]
+            [!ELSE!]
+            <!-- SecuredLayerPduIdAtPduR -->
+            <field>
+              <int>0</int>
+            </field>
+            <!-- SentAuthLayerPduIdAtPduR -->
+            <field>
+              [!IF "node:exists(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[as:path(as:ref(PduRSrcPdu/PduRSrcPduRef)) = as:path(as:ref(node:current()/SecOCTxSecuredPduLayer/SecOCTxAuthenticPdu/SecOCTxAuthenticPduRef))])"!]
+              <int>[!"node:value(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[as:path(as:ref(PduRSrcPdu/PduRSrcPduRef)) = as:path(as:ref(node:current()/SecOCTxSecuredPduLayer/SecOCTxAuthenticPdu/SecOCTxAuthenticPduRef))]/PduRSrcPdu/PduRSourcePduHandleId)"!]</int>
+              [!ELSE!]
+                [!ERROR!]No Tx PDU found in lower layer PduR that is assigned to PDU [!"node:current()/SecOCTxSecuredPduLayer/SecOCTxAuthenticPdu/SecOCTxAuthenticPduRef"!][!ENDERROR!]
+              [!ENDIF!]
+            </field>
+            <!-- CryptoLayerPduIdAtPduR -->
+            <field>
+              [!IF "node:exists(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[as:path(as:ref(PduRSrcPdu/PduRSrcPduRef)) = as:path(as:ref(node:current()/SecOCTxSecuredPduLayer/SecOCTxCryptographicPdu/SecOCTxCryptographicPduRef))])"!]
+              <int>[!"node:value(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[as:path(as:ref(PduRSrcPdu/PduRSrcPduRef)) = as:path(as:ref(node:current()/SecOCTxSecuredPduLayer/SecOCTxCryptographicPdu/SecOCTxCryptographicPduRef))]/PduRSrcPdu/PduRSourcePduHandleId)"!]</int>
+              [!ELSE!]
+                [!ERROR!]No Tx PDU found in lower layer PduR that is assigned to PDU [!"node:current()/SecOCTxSecuredPduLayer/SecOCTxCryptographicPdu/SecOCTxCryptographicPduRef"!][!ENDERROR!]
+              [!ENDIF!]
+            </field>
+            [!ENDIF!]
+            <!-- ULAuthLayerPduIdAtPduR -->
+            <field>
+              [!IF "node:exists(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef = node:current()/SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduRef])"!]
+              <int>[!"node:value((as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef = node:current()/SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduRef])[1]/PduRDestPduHandleId)"!]</int>
+              [!ELSE!]
+                [!ERROR!]No Tx PDU found in upper layer PduR that is assigned to PDU [!"node:current()/SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduRef"!][!ENDERROR!]
+              [!ENDIF!]
+            </field>
+            [!IF "$SecuredAreaEn = 'true'"!]
+            <!-- SecuredTxPduLength -->
+            <field>
+              <int>[!"$SecuredTxPduLength"!]</int>
+            </field>
+            <!-- SecuredTxPduOffset -->
+            <field>
+              <int>[!"$SecuredTxPduOffset"!]</int>
+            </field>
+            [!ENDIF!]
+            <!-- AuthInfoTxLength -->
+            <field>
+              <int>[!"node:value(./SecOCAuthInfoTxLength)"!]</int>
+            </field>
+            <!-- FreshnessValueId -->
+            <field>
+              <int>[!"node:value(./SecOCFreshnessValueId)"!]</int>
+            </field>
+            <!-- FreshnessValueLength -->
+            <field>
+              <int>[!"node:value(./SecOCFreshnessValueLength)"!]</int>
+            </field>
+            <!-- FreshnessValueTxLength -->
+            <field>
+              <int>[!"node:value(./SecOCFreshnessValueTxLength)"!]</int>
+            </field>
+            [!IF "$SecuredAreaEn = 'true'"!]
+            <!-- UseTxSecuredArea -->
+            <field>
+              <int>[!IF "'true' = node:exists(./SecOCTxPduSecuredArea)"!]1[!ELSE!]0[!ENDIF!]</int>
+            </field>
+            [!ENDIF!]
+          </field>
+          [!ENDLOOP!]
+        </field>
+        [!ENDIF!]
+
+
+        </instance>
+      </memory-section>
+    </configuration>  <!-- PostBuild -->
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+</xgen>
+
+[!ENDCODE!]

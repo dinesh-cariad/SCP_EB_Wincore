@@ -1,0 +1,98 @@
+<%@ jet package="eb.tresos.someipxf.generated.jet" class="SomeIpXf_OsApp_PartitionApi_h" skeleton="File.skeleton"
+    imports="eb.tresos.someipxf.generator.output.entity.AbstractFunctionOutputElement
+             eb.tresos.someipxf.generator.intermediate.GeneratorPartitionHandler"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final OutModel outmodel = (OutModel)context.gen.getVariable( OutModel.ARG_NAME, OutModel.class, null );
+    final String includeGuardName = getIncludeGuardName( context );
+    final GeneratorPartitionHandler partitionHandler = outmodel.getGeneratorPartitionHandler();
+    final String partitionName = partitionHandler.getPartitionName();
+    final boolean isSafePartition = partitionHandler.isSafePartition(partitionName);
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+
+#include <TransformerTypes.h>    /* Module types and error definitions */
+#include <SchM_SomeIpXfType.h>   /* Module interlink types */
+
+#include <SomeIpXf<%= isSafePartition ? "_S" : "" %>_Int.h>      /* Internal functions and types */
+#include <SomeIpXf_Version.h>    /* module's version declaration (e.g. SOMEIPXF_MODULE_ID) */
+#include <SomeIpXf_Int_Cfg.h> /* global config data */
+
+/*==================[macros]================================================*/
+
+/*------------------[Client/Server operation arguments - serialization]--------------------*/
+
+
+<%
+  for (AbstractFunctionOutputElement func : outmodel.funcSer.get(partitionName).values())
+  {
+    stringBuffer.append(func.generateMacroDoubleDeclarationProtections(NL));
+  }
+%>
+
+/*-----------------[Client/Server operation arguments - deserialization]-------------------*/
+
+
+<%
+  for (AbstractFunctionOutputElement func : outmodel.funcDeSer.get(partitionName).values())
+  {
+    stringBuffer.append(func.generateMacroDoubleDeclarationProtections(NL));
+  }
+%>
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+#define SOMEIPXF_START_SEC_CODE
+#include <SomeIpXf_MemMap.h>
+
+/*----------- S e r i a l i z a t i o n   o f   S O M E / I P --------------*/
+
+
+<%
+  for (AbstractFunctionOutputElement func : outmodel.funcSer.get(partitionName).values())
+  {
+    stringBuffer.append(func.generateFunctionDoc(NL));
+    stringBuffer.append(func.generateFunctionDeclaration(NL, isSafePartition));
+  }
+%>
+
+/*--------- D e s e r i a l i z a t i o n   o f   S O M E / I P ------------*/
+
+
+<%
+  for (AbstractFunctionOutputElement func : outmodel.funcDeSer.get(partitionName).values())
+  {
+    stringBuffer.append(func.generateFunctionDoc(NL));
+    stringBuffer.append(func.generateFunctionDeclaration(NL, isSafePartition));
+  }
+%>
+#define SOMEIPXF_STOP_SEC_CODE
+#include <SomeIpXf_MemMap.h>
+
+
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

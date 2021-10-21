@@ -1,0 +1,2219 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<AUTOSAR xmlns="http://autosar.org/3.2.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/3.2.2 AUTOSAR.xsd">
+[!AUTOSPACING!]
+[!VAR "AutosarTypeList"="'sint8 sint16 sint32 uint8 uint16 uint32 sint8_least sint16_least sint32_least uint8_least uint16_least uint32_least'"!][!/*
+
+* GetTypeInfo
+*   Retrieve Native Type, Size and Alignment of an AUTOSAR Base type
+*
+*   Parameters:
+*     AutosarType: Name of the AUTOSAR Base type
+*
+*/!][!MACRO "GetTypeInfo","AutosarType"!][!/*
+
+  --- get Native Type --- */!][!//
+  [!VAR "property"="concat('BaseType_',$AutosarType)"!]
+  [!IF "node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$property])"!]
+    [!VAR "NativeType"="as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$property]"!]
+    [!VAR "NativeTypeBase"="normalize-space(text:replace($NativeType,'(un)?signed',''))"!]
+  [!ELSE!]
+    [!ERROR!]
+      Base: No mapping to C type found for AUTOSAR type [!"$AutosarType"!]
+    [!ENDERROR!]
+  [!ENDIF!][!/*
+
+  --- get Size --- */!][!//
+  [!VAR "property"="concat('BaseType_Size_',text:replace($NativeTypeBase,' ',''))"!]
+  [!IF "node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$property])"!]
+    [!VAR "Size"="as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$property]"!]
+    [!VAR "Size"="num:i(number($Size) * 8)"!]
+  [!ELSE!]
+    [!ERROR!]
+      Base: Property '[!"$property"!]' not found for type '[!"$NativeTypeBase"!]'
+    [!ENDERROR!]
+  [!ENDIF!][!/*
+
+  --- get Alignment --- */!][!//
+  [!VAR "property"="concat('BaseType_Alignment_',text:replace($NativeTypeBase,' ',''))"!]
+  [!IF "node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$property])"!]
+    [!VAR "Alignment"="as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$property]"!]
+    [!VAR "Alignment"="num:i(number($Alignment) * 8)"!]
+  [!ELSE!]
+    [!ERROR!]
+      Base: Property '[!"$property"!]' not found for type '[!"$NativeTypeBase"!]'
+    [!ENDERROR!]
+  [!ENDIF!][!/*
+
+  --- determine Encoding --- */!][!//
+  [!IF "text:match($NativeType,'(float)|(double)')"!]
+    [!VAR "Encoding"="'IEEE754'"!]
+  [!ELSEIF "not(text:match($NativeType,'^\s*unsigned\s+.*$'))"!]
+    [!VAR "Encoding"="'2C'"!]
+  [!ELSE!]
+    [!VAR "Encoding"="'NONE'"!]
+  [!ENDIF!][!/*
+
+  --- get LowerLimit and UpperLimit ---
+      don't use size of type, as the size MIGHT be bigger than the allowed values
+      instead use the bit width expected by AUTOSAR*/!][!//
+  [!VAR "AutosarTypeBitWidth" = "normalize-space(text:replace($AutosarType,'^\s*[su]int(\d\d?)(_least)?\s*$','$1'))"!]
+  [!IF "$Encoding = 'NONE'"!]
+    [!VAR "LowerLimit"="num:i(0)"!]
+    [!VAR "UpperLimit"="num:i(bit:shl(1,$AutosarTypeBitWidth) - 1)"!]
+  [!ELSEIF "$Encoding = '2C'"!]
+    [!VAR "LowerLimit"="num:i(- bit:shl(1,$AutosarTypeBitWidth - 1))"!]
+    [!VAR "UpperLimit"="num:i(bit:shl(1,$AutosarTypeBitWidth - 1) - 1)"!]
+  [!ELSE!]
+    [!VAR "LowerLimit"="num:i(0)"!]
+    [!VAR "UpperLimit"="num:i(0)"!]
+  [!ENDIF!]
+[!ENDMACRO!][!/*
+
+
+* GetPduType
+*   Get the base type of types in EcucPduCollection
+*
+*   Parameters:
+*     TypeName: Name of the type in EcucPduCollection
+*
+*/!][!MACRO "GetPduTypeInfo","TypeName"!]
+  [!IF "node:exists(as:modconf('EcuC')[1]/EcucPduCollection/*[node:name(.)=$TypeName])"!]
+    [!VAR "Type"="text:tolower(as:modconf('EcuC')[1]/EcucPduCollection/*[node:name(.)=$TypeName])"!]
+  [!ELSE!]
+    [!VAR "Type" = "'uint16'"!]
+  [!ENDIF!]
+  [!IF "$Type = 'uint8'"!]
+    [!VAR "TypeLowerLimit"="0"!]
+    [!VAR "TypeUpperLimit"="255"!]
+  [!ELSEIF "$Type = 'uint16'"!]
+    [!VAR "TypeLowerLimit"="'0'"!]
+    [!VAR "TypeUpperLimit"="'65535'"!]
+  [!ELSEIF "$Type = 'uint32'"!]
+    [!VAR "TypeLowerLimit"="'0'"!]
+    [!VAR "TypeUpperLimit"="'4294967295'"!]
+  [!ELSE!]
+    [!ERROR!]
+      Base: Basetype of '[!"$TypeName"!]' is none of uint8, uint16, or uint32
+    [!ENDERROR!]
+  [!ENDIF!]
+[!ENDMACRO!]
+  <TOP-LEVEL-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_StandardTypes</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Std_ReturnType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <RECORD-TYPE>
+              <SHORT-NAME>Std_VersionInfoType</SHORT-NAME>
+              <CATEGORY>STRUCTURE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <ELEMENTS>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>vendorID</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint16</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>moduleID</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint16</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>instanceID</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint16</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>sw_major_version</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>sw_minor_version</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>sw_patch_version</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                </RECORD-ELEMENT>
+              </ELEMENTS>
+            </RECORD-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_PlatformTypes</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>BaseTypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+[!FOR "i"="1" TO  "num:i(count(text:split($AutosarTypeList)))"!]
+  [!VAR "AutosarType"="text:split($AutosarTypeList)[num:i($i)]"!]
+  [!CALL "GetTypeInfo","AutosarType"="$AutosarType"!]
+            <SW-BASE-TYPE>
+              <SHORT-NAME>[!"$AutosarType"!]</SHORT-NAME>
+              <CATEGORY>FIXED_LENGTH</CATEGORY>
+              <BASE-TYPE-SIZE>[!"$Size"!]</BASE-TYPE-SIZE>
+              <BASE-TYPE-ENCODING>[!"$Encoding"!]</BASE-TYPE-ENCODING>
+              <MEM-ALIGNMENT>[!"$Alignment"!]</MEM-ALIGNMENT>
+            </SW-BASE-TYPE>
+[!ENDFOR!]
+            <SW-BASE-TYPE>
+              <SHORT-NAME>float32</SHORT-NAME>
+              <CATEGORY>FIXED_LENGTH</CATEGORY>
+              <BASE-TYPE-SIZE>32</BASE-TYPE-SIZE>
+              <BASE-TYPE-ENCODING>IEEE754</BASE-TYPE-ENCODING>
+              <MEM-ALIGNMENT>32</MEM-ALIGNMENT>
+            </SW-BASE-TYPE>
+            <SW-BASE-TYPE>
+              <SHORT-NAME>float64</SHORT-NAME>
+              <CATEGORY>FIXED_LENGTH</CATEGORY>
+              <BASE-TYPE-SIZE>64</BASE-TYPE-SIZE>
+              <BASE-TYPE-ENCODING>IEEE754</BASE-TYPE-ENCODING>
+              <MEM-ALIGNMENT>64</MEM-ALIGNMENT>
+            </SW-BASE-TYPE>
+            <SW-BASE-TYPE>
+              <SHORT-NAME>boolean</SHORT-NAME>
+              <CATEGORY>FIXED_LENGTH</CATEGORY>
+              <BASE-TYPE-SIZE>8</BASE-TYPE-SIZE>
+              <BASE-TYPE-ENCODING>NONE</BASE-TYPE-ENCODING>
+              <MEM-ALIGNMENT>8</MEM-ALIGNMENT>
+            </SW-BASE-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <ARRAY-TYPE> <!-- No way to really specify a (const) void pointer in AUTOSAR 3.x - This is as close as it gets -->
+              <SHORT-NAME>ConstVoidPtr</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <ELEMENT>
+                 <SHORT-NAME>ConstVoidPtr</SHORT-NAME>
+                 <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                <MAX-NUMBER-OF-ELEMENTS>1</MAX-NUMBER-OF-ELEMENTS>
+              </ELEMENT>
+            </ARRAY-TYPE>
+            <ARRAY-TYPE>
+              <SHORT-NAME>VoidPtr</SHORT-NAME> <!-- No way to really specify a (const) void pointer in AUTOSAR 3.x - This is as close as it gets -->
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <ELEMENT>
+                 <SHORT-NAME>VoidPtr</SHORT-NAME>
+                 <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                <MAX-NUMBER-OF-ELEMENTS>1</MAX-NUMBER-OF-ELEMENTS>
+              </ELEMENT>
+            </ARRAY-TYPE>
+            <BOOLEAN-TYPE>
+              <SHORT-NAME>boolean</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/boolean</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+            </BOOLEAN-TYPE>
+[!FOR "i"="1" TO  "num:i(count(text:split($AutosarTypeList)))"!]
+  [!VAR "AutosarType"="text:split($AutosarTypeList)[num:i($i)]"!]
+  [!CALL "GetTypeInfo","AutosarType"="$AutosarType"!]
+            <INTEGER-TYPE>
+              <SHORT-NAME>[!"$AutosarType"!]</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/[!"$AutosarType"!]</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">[!"$LowerLimit"!]</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">[!"$UpperLimit"!]</UPPER-LIMIT>
+            </INTEGER-TYPE>
+[!ENDFOR!]
+            <REAL-TYPE>
+              <SHORT-NAME>float32</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/float32</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">-INF</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">INF</UPPER-LIMIT>
+              <ALLOW-NAN>true</ALLOW-NAN>
+              <ENCODING>SINGLE</ENCODING>
+            </REAL-TYPE>
+            <REAL-TYPE>
+              <SHORT-NAME>float64</SHORT-NAME>
+              <CATEGORY>VALUE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/float64</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">-INF</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">INF</UPPER-LIMIT>
+              <ALLOW-NAN>true</ALLOW-NAN>
+              <ENCODING>DOUBLE</ENCODING>
+            </REAL-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>boolean_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FALSE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>TRUE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_CommunicationStackTypes</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <INTEGER-TYPE>
+              <SHORT-NAME>PduIdType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                [!CALL "GetPduTypeInfo", "TypeName"="'PduIdTypeEnum'"!]
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/[!"$Type"!]</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">[!"$TypeLowerLimit"!]</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">[!"$TypeUpperLimit"!]</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>PduLengthType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                [!CALL "GetPduTypeInfo", "TypeName"="'PduLengthTypeEnum'"!]
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/[!"$Type"!]</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">[!"$TypeLowerLimit"!]</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">[!"$TypeUpperLimit"!]</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <ARRAY-TYPE>
+              <SHORT-NAME>SduDataPtrType</SHORT-NAME>
+              <ELEMENT>
+                <SHORT-NAME>SduDataPtrType</SHORT-NAME>
+                <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                <MAX-NUMBER-OF-ELEMENTS>[!"$TypeUpperLimit"!]</MAX-NUMBER-OF-ELEMENTS>
+              </ELEMENT>
+            </ARRAY-TYPE>
+            <RECORD-TYPE>
+              <SHORT-NAME>PduInfoType</SHORT-NAME>
+              <CATEGORY>STRUCTURE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <ELEMENTS>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>SduDataPtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="ARRAY-TYPE">/AUTOSAR_CommunicationStackTypes/Datatypes/SduDataPtrType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>SduLength</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_CommunicationStackTypes/Datatypes/PduLengthType</TYPE-TREF>
+                </RECORD-ELEMENT>
+              </ELEMENTS>
+            </RECORD-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>TPParameterType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_CommunicationStackTypes/CompuMethods/TPParameterType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>BufReq_ReturnType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_CommunicationStackTypes/CompuMethods/BufReq_ReturnType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>NotifResultType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>BusTrcvErrorType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>NetworkHandleType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>PNCHandleType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+            </INTEGER-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>TPParameterType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>TP_STMIN</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>TP_BS</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>TP_BC</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>BufReq_ReturnType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>BUFREQ_OK</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>BUFREQ_E_NOT_OK</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>BUFREQ_E_BUSY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>BUFREQ_E_OVFL</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+[!IF "node:exists(as:modconf('Fr')) or node:exists(as:modconf('FrIf')) or node:exists(as:modconf('FrTrcv'))"!]
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_Fr</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_SyncStateType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_SyncStateType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_OffsetCorrectionType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_OffsetCorrectionType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_RateCorrectionType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_RateCorrectionType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_POCStateType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_POCStateType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_SlotModeType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_SlotModeType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_ErrorModeType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_ErrorModeType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_WakeupStatusType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_WakeupStatusType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_StartupStateType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_StartupStateType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <RECORD-TYPE>
+              <SHORT-NAME>Fr_POCStatusType</SHORT-NAME>
+              <CATEGORY>STRUCTURE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <ELEMENTS>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>CHIHaltRequest</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>CHIReadyRequest</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>ColdstartNoise</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>ErrorMode</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_Fr/Datatypes/Fr_ErrorModeType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>Freeze</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="BOOLEAN-TYPE">/AUTOSAR_PlatformTypes/Datatypes/boolean</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>SlotMode</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_Fr/Datatypes/Fr_SlotModeType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>StartupState</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_Fr/Datatypes/Fr_StartupStateType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>State</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_Fr/Datatypes/Fr_POCStateType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>WakeupStatus</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_Fr/Datatypes/Fr_WakeupStatusType</TYPE-TREF>
+                </RECORD-ELEMENT>
+              </ELEMENTS>
+            </RECORD-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_TxLPduStatusType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_TxLPduStatusType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_RxLPduStatusType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_RxLPduStatusType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_MTSStatusType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_MTSStatusType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Fr_ChannelType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Fr/CompuMethods/Fr_ChannelType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_SyncStateType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_ASYNC</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_SYNC</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_OffsetCorrectionType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_OFFSET_INC</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_OFFSET_DEC</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_OFFSET_NOCHANGE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_RateCorrectionType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_RATE_INC</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_RATE_DEC</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_RATE_NOCHANGE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_POCStateType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_POCSTATE_CONFIG</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_POCSTATE_DEFAULT_CONFIG</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_POCSTATE_HALT</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_POCSTATE_NORMAL_ACTIVE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_POCSTATE_NORMAL_PASSIVE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">5</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_POCSTATE_READY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">6</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">6</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_POCSTATE_STARTUP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">7</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">7</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_POCSTATE_WAKEUP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_SlotModeType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_SLOTMODE_KEYSLOT</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_SLOTMODE_ALL_PENDING</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_SLOTMODE_ALL</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_ErrorModeType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_ERRORMODE_ACTIVE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_ERRORMODE_PASSIVE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_ERRORMODE_COMM_HALT</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_WakeupStatusType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_WAKEUP_UNDEFINED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_WAKEUP_RECEIVED_HEADER</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_WAKEUP_RECEIVED_WUP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_WAKEUP_COLLISION_HEADER</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_WAKEUP_COLLISION_WUP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">5</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_WAKEUP_COLLISION_UNKNOWN</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">6</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">6</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_WAKEUP_TRANSMITTED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_StartupStateType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_UNDEFINED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_COLDSTART_LISTEN</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_INTEGRATION_COLDSTART_CHECK</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_COLDSTART_JOIN</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_COLDSTART_COLLISION_RESOLUTION</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">5</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_COLDSTART_CONSISTENCY_CHECK</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">6</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">6</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_INTEGRATION_LISTEN</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">7</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">7</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_INITIALIZE_SCHEDULE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">8</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">8</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_INTEGRATION_CONSISTENCY_CHECK</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">9</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">9</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_COLDSTART_GAP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">10</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">10</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_STARTUP_EXTERNAL_STARTUP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_TxLPduStatusType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_TRANSMITTED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_NOT_TRANSMITTED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_RxLPduStatusType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_RECEIVED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_NOT_RECEIVED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_RECEIVED_MORE_DATA_AVAILABLE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_MTSStatusType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_MTS_RCV</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_MTS_RCV_SYNERR</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_MTS_RCV_BVIO</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_MTS_RCV_SYNERR_BVIO</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_MTS_NOT_RCV</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">5</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_MTS_NOT_RCV_SYNERR</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">6</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">6</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_MTS_NOT_RCV_BVIO</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">7</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">7</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_MTS_NOT_RCV_SYNERR_BVIO</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Fr_ChannelType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_CHANNEL_A</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_CHANNEL_B</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FR_CHANNEL_AB</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_FrTrcv</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <INTEGER-TYPE>
+              <SHORT-NAME>FrTrcv_TrcvModeType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_FrTrcv/CompuMethods/FrTrcv_TrcvModeType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>FrTrcv_TrcvWUReasonType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_FrTrcv/CompuMethods/FrTrcv_TrcvWUReasonType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>FrTrcv_TrcvModeType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FRTRCV_TRCVMODE_NORMAL</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FRTRCV_TRCVMODE_STANDBY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FRTRCV_TRCVMODE_SLEEP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FRTRCV_TRCVMODE_RECEIVEONLY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>FrTrcv_TrcvWUReasonType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FRTRCV_WU_NOT_SUPPORTED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FRTRCV_WU_BY_BUS</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FRTRCV_WU_BY_PIN</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FRTRCV_WU_INTERNALLY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FRTRCV_WU_RESET</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">5</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                    <COMPU-CONST><VT>FRTRCV_WU_POWER_ON</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+[!ENDIF!]
+[!IF "node:exists(as:modconf('CanTrcv')) or node:exists(as:modconf('Can')) or node:exists(as:modconf('CanIf')) or node:exists(as:modconf('CanSm'))"!]
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_Can</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Can_IdType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+  [!IF "node:exists(as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicCanIdTypeEnum) and (as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicCanIdTypeEnum = 'UINT16')"!]
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint16</BASE-TYPE-REF>
+    [!ELSE!]
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+  [!ENDIF!]
+              </SW-DATA-DEF-PROPS>
+  [!IF "node:exists(as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicCanIdTypeEnum) and (as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicCanIdTypeEnum = 'UINT16')"!]
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">65535</UPPER-LIMIT>
+    [!ELSE!]
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+  [!ENDIF!]
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Can_HwHandleType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+  [!IF "node:exists(as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicHandleTypeEnum) and (as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicHandleTypeEnum = 'UINT16')"!]
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint16</BASE-TYPE-REF>
+    [!ELSE!]
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+  [!ENDIF!]
+
+              </SW-DATA-DEF-PROPS>
+  [!IF "node:exists(as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicHandleTypeEnum) and (as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicHandleTypeEnum = 'UINT16')"!]
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">65535</UPPER-LIMIT>
+    [!ELSE!]
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+  [!ENDIF!]
+            </INTEGER-TYPE>
+            <RECORD-TYPE>
+              <SHORT-NAME>Can_PduType</SHORT-NAME>
+              <CATEGORY>STRUCTURE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <ELEMENTS>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>id</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_Can/Datatypes/Can_IdType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>length</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>sdu</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="ARRAY-TYPE">/AUTOSAR_CommunicationStackTypes/Datatypes/SduDataPtrType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>swPduHandle</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_CommunicationStackTypes/Datatypes/PduIdType</TYPE-TREF>
+                </RECORD-ELEMENT>
+              </ELEMENTS>
+            </RECORD-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Can_StateTransitionType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Can/CompuMethods/Can_StateTransitionType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Can_ReturnType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Can/CompuMethods/Can_ReturnType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>Can_StateTransitionType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CAN_T_START</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CAN_T_STOP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CAN_T_SLEEP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CAN_T_WAKEUP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Can_ReturnType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CAN_OK</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CAN_NOT_OK</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                   <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CAN_BUSY</VT></COMPU-CONST>
+                   </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_CanTrcv</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <INTEGER-TYPE>
+              <SHORT-NAME>CanTrcv_TrcvModeType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_CanTrcv/CompuMethods/CanTrcv_TrcvModeType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>CanTrcv_TrcvWakeupReasonType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_CanTrcv/CompuMethods/CanTrcv_TrcvWakeupReasonType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>CanTrcv_TrcvWakeupModeType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_CanTrcv/CompuMethods/CanTrcv_TrcvWakeupModeType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>CanTrcv_PNActivationType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_CanTrcv/CompuMethods/CanTrcv_PNActivationType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>CanTrcv_TrcvFlagStateType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_CanTrcv/CompuMethods/CanTrcv_TrcvFlagStateType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>CanTrcv_TrcvModeType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_TRCVMODE_NORMAL</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_TRCVMODE_SLEEP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_TRCVMODE_STANDBY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>CanTrcv_TrcvWakeupReasonType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_WU_BY_BUS</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_WU_BY_PIN</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_WU_ERROR</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_WU_INTERNALLY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_WU_NOT_SUPPORTED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">5</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_WU_POWER_ON</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">6</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">6</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_WU_RESET</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>CanTrcv_TrcvWakeupModeType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_WUMODE_CLEAR</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_WUMODE_DISABLE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_WUMODE_ENABLE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>CanTrcv_PNActivationType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>PN_ENABLED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>PN_DISABLED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>CanTrcv_TrcvFlagStateType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_FLAG_SET</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>CANTRCV_FLAG_CLEARED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+[!ENDIF!]
+[!IF "node:exists(as:modconf('Lin')) or node:exists(as:modconf('LinIf')) or node:exists(as:modconf('LinTp')) or node:exists(as:modconf('LinTrcv')) or node:exists(as:modconf('LinSM'))"!]
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_Lin</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Lin_FramePidType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Lin_FrameCsModelType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Lin/CompuMethods/Lin_FrameCsModelType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Lin_FrameResponseType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Lin/CompuMethods/Lin_FrameResponseType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Lin_FrameDlType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint8</BASE-TYPE-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">255</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <RECORD-TYPE>
+              <SHORT-NAME>Lin_PduType</SHORT-NAME>
+              <CATEGORY>STRUCTURE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <ELEMENTS>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>Pid</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_Lin/Datatypes/Lin_FramePidType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>Cs</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_Lin/Datatypes/Lin_FrameCsModelType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>Drc</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_Lin/Datatypes/Lin_FrameResponseType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>Dl</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_Lin/Datatypes/Lin_FrameDlType</TYPE-TREF>
+                </RECORD-ELEMENT>
+                <RECORD-ELEMENT>
+                  <SHORT-NAME>SduPtr</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <TYPE-TREF DEST="ARRAY-TYPE">/AUTOSAR_CommunicationStackTypes/Datatypes/SduDataPtrType</TYPE-TREF>
+                </RECORD-ELEMENT>
+              </ELEMENTS>
+            </RECORD-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>Lin_StatusType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_Lin/CompuMethods/Lin_StatusType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>Lin_FrameCsModelType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_ENHANCED_CS</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_CLASSIC_CS</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Lin_FrameResponseType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_MASTER_RESPONSE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_SLAVE_RESPONSE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_SLAVE_TO_SLAVE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>Lin_StatusType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_NOT_OK</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_TX_OK</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_TX_BUSY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_TX_HEADER_ERROR</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_TX_ERROR</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">5</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_RX_OK</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">6</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">6</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_RX_BUSY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">7</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">7</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_RX_ERROR</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">8</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">8</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_RX_NO_RESPONSE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">9</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">9</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_OPERATIONAL</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">10</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">10</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LIN_CH_SLEEP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_LinTrcv</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <INTEGER-TYPE>
+              <SHORT-NAME>LinTrcv_TrcvModeType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_LinTrcv/CompuMethods/LinTrcv_TrcvModeType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>LinTrcv_TrcvWakeupModeType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_LinTrcv/CompuMethods/LinTrcv_TrcvWakeupModeType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+            <INTEGER-TYPE>
+              <SHORT-NAME>LinTrcv_TrcvWakeupReasonType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:TypeEmitter">
+                    <SD GID="EB:TypeEmitter">BSW</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_PlatformTypes/BaseTypes/uint32</BASE-TYPE-REF>
+                <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_LinTrcv/CompuMethods/LinTrcv_TrcvWakeupReasonType_Literals</COMPU-METHOD-REF>
+              </SW-DATA-DEF-PROPS>
+              <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+              <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4294967295</UPPER-LIMIT>
+            </INTEGER-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>LinTrcv_TrcvModeType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_TRCV_MODE_NORMAL</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_TRCV_MODE_SLEEP</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_TRCV_MODE_STANDBY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>LinTrcv_TrcvWakeupModeType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_WUMODE_ENABLE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_WUMODE_DISABLE</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_WUMODE_CLEAR</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+            <COMPU-METHOD>
+              <SHORT-NAME>LinTrcv_TrcvWakeupReasonType_Literals</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">0</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_WU_ERROR</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">1</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">1</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_WU_NOT_SUPPORTED</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">2</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">2</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_WU_BY_BUS</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">3</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">3</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_WU_BY_PIN</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">4</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">4</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_WU_INTERNALLY</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">5</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">5</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_WU_RESET</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">6</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">6</UPPER-LIMIT>
+                    <COMPU-CONST><VT>LINTRCV_WU_POWER_ON</VT></COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+[!ENDIF!]
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_MemoryMapping</SHORT-NAME>
+      <CATEGORY>STANDARD</CATEGORY>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>SwAddrMethods</SHORT-NAME>
+          <CATEGORY>STANDARD</CATEGORY>
+          <ELEMENTS>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>CODE</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>VAR_NOINIT</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>VAR_NO_INIT</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>VAR_POWER_ON_INIT</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>VAR_FAST</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>INTERNAL_VAR</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>VAR_SAVED_ZONE</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>VAR_SAVED_RECOVERY_ZONE</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>VAR</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>CONST</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>CALIB</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>CARTO</SHORT-NAME>
+            </SW-ADDR-METHOD>
+            <SW-ADDR-METHOD>
+              <SHORT-NAME>DATA</SHORT-NAME>
+            </SW-ADDR-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+  </TOP-LEVEL-PACKAGES>
+</AUTOSAR>

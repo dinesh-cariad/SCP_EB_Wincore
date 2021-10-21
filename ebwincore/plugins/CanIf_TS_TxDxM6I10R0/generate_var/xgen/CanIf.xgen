@@ -1,0 +1,1440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module CanIf?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!CODE!]
+[!AUTOSPACING!]
+[!INCLUDE "../../generate_macros/CanIf_PreCompileMacros.m"!]
+[!INCLUDE "../../generate_macros/CanIf_Macros.m"!]
+
+[!/*
+     To estimate the array size of CanIf_SortedRxLPduConfigType we must count the number of needed entries beforehand.
+     Each RxPdu assigned to an HRH gets:
+     - 2 entries if the PDU shall accept messages regardless if the message is a CAN 2.0 or a CAN FD message
+       Reason: the PDU gets two entries (one with a CAN Id with FD flag set and one without) to abstract the CAN Id match
+       handling of the binary search alorithm
+     - 1 entry for all other PDUs (with explicit choice if the message is a CAN FD message or not)
+*/!]
+[!VAR "sortedPduListEntries" = "0"!]
+[!LOOP "as:modconf('CanIf')[1]/CanIfInitCfg/*[1]/CanIfInitHohCfg/*"!]
+  [!LOOP "node:order(CanIfHrhCfg/*, 'as:ref(CanIfHrhIdSymRef)/CanObjectId')"!]
+    [!VAR "hrh" = "as:path(as:ref(CanIfHrhIdSymRef)/CanObjectId/..)"!]
+    [!LOOP "as:modconf('CanIf')[1]/CanIfInitCfg/*[1]/CanIfRxPduCfg/*[num:i(count(CanIfRxPduHrhIdRef/*[as:path(as:ref(as:ref(.)/CanIfHrhIdSymRef)/CanObjectId/..) = $hrh])) > 0]"!]
+      [!IF "(node:current()/CanIfRxPduCanIdType = 'EXTENDED_CAN') or (node:current()/CanIfRxPduCanIdType = 'STANDARD_CAN')"!]
+        [!VAR "sortedPduListEntries" = "num:i($sortedPduListEntries + 2)"!]
+      [!ELSE!]
+        [!VAR "sortedPduListEntries" = "num:i($sortedPduListEntries + 1)"!]
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDLOOP!]
+[!ENDLOOP!]
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "CANIF_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "CANIF_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat('CanIf_Config','_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="string("CanIf_Config")"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+*/!][!VAR "CANIF_PBCFG_C_VARIANT"="concat('CanIf',$CANIF_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "CANIF_PBCFG_H_VARIANT"="concat('CanIf',$CANIF_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "CANIF_CONFIG_LAYOUT_VARIANT"="concat('CanIf',$CANIF_VARIANT_SUFIX,'ConfigLayout')"!]
+[!/* Current Config Type variant based
+*/!][!VAR "CANIF_CONFIGLAYOUTTYPE_VARIANT"="concat('CanIf',$CANIF_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "CANIF_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('CanIf',$CANIF_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+[!/* Binary software filtering used for this L-PDU
+*/!][!VAR "CANIF_BINARY_SOFTWARE_FILTERING"="num:i(0)"!]
+[!/* No software filtering used for this L-PDU
+*/!][!VAR "CANIF_NO_SOFTWARE_FILTERING"="num:i(255)"!]
+[!/* Block the Tx PDU by the partial networking filter
+*/!][!VAR "CANIF_PN_FILTER_BLOCK_PDU"="num:i(0)"!]
+[!/* Allow the Tx PDU by the partial networking filter
+*/!][!VAR "CANIF_PN_FILTER_ALLOW_PDU"="num:i(1)"!]
+[!/* Symbol to indicate no wakeup source
+*/!][!VAR "CANIF_NO_WAKEUP_SOURCE"="num:i(0)"!]
+[!/* Invalid HOH ID index
+*/!][!VAR "CANIF_INVALID_HOH_ID"="num:i(65535)"!]
+[!/* Mask to identify HTHs
+*/!][!IF "$canifDetEnabled"!]
+[!VAR "CANIF_HTH_ID_MASK"="num:i(32768)"!]
+[!ELSE!]
+[!VAR "CANIF_HTH_ID_MASK"="num:i(0)"!]
+[!ENDIF!]
+[!/* Invalid index for Tx L-PDU buffers
+*/!][!VAR "CANIF_INVALID_TX_BUFFER_INDEX"="num:i(65535)"!]
+[!/* Invalid index for Rx L-PDU buffers
+*/!][!VAR "CANIF_INVALID_RX_BUFFER_INDEX"="num:i(65535)"!]
+[!/* Invalid L-PDU index constant
+*/!][!VAR "CANIF_INVALID_LPDU_INDEX"="num:i(65535)"!]
+[!/* User type for upper layers for which no callback function shall be called
+*/!][!VAR "CANIF_NO_UPPER_LAYER_CBK"="num:i(255)"!]
+[!/* No range configuration index
+*/!][!VAR "CANIF_NO_RANGE_CONFIG"="num:i(4294967295)"!]
+[!/* No decoupled processing used for this L-PDU
+*/!][!VAR "CANIF_NO_DECOUPLED_PROCESSING"="num:i(255)"!]
+
+  <!-- This is the configuration of module CanIf -->
+  <module name="CanIf" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+
+      [!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+        <?artifact directory="include" file="CanIf_Types_Int.h" type="types-h" generate="yes" ?>
+      [!ELSE!]
+        <?artifact directory="include" file="CanIf_Types_Int.h" type="types-h" generate="no" ?>
+      [!ENDIF!]
+
+      [!VAR "relocatable" = "'false'"!]
+      [!VAR "usingpbcfgm" = "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('CanIf'))"!]
+      [!IF "$usingpbcfgm = 'true'"!]
+      [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ELSE!]
+      [!IF "as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfRelocatablePbcfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ENDIF!]
+
+
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <!--
+          Type declarations:
+          Specifies the content of CanIf_Types_Int.h
+      -->
+
+      <type name="CanIf_TxBufferIndexType">
+        <comment><![CDATA[ \brief Index type for Tx buffers
+
+ This type defines the index width for Tx buffers.]]></comment>
+        <reference type="uint16" />
+      </type>
+
+      <type name="CanIf_RxBufferIndexType">
+        <comment><![CDATA[ \brief Index type for Rx buffers
+
+ This type defines the index width for Rx buffers.]]></comment>
+        <reference type="uint16" />
+      </type>
+
+      <type name="CanIf_LPduIndexType">
+        <comment><![CDATA[ \brief Index type for L-PDU related data
+
+ This type defines the index type for L-PDU related data.]]></comment>
+        <reference type="uint16" />
+      </type>
+
+      <!-- This is the type definition of the root structure -->
+      <type name="CanIf_ConfigType">
+        <comment><![CDATA[ \brief Type for the CAN interface configuration
+
+ This type defines the global configuration of the CAN interface.]]></comment>
+        <struct>
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform"/>
+          <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration"/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration"/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time published information configuration"/>
+          <member name="txLPduConfigPtr" type="CanIf_TxLPduConfigType" comment="ptr. to array of Tx L-PDU configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member  name="rxLPduConfigPtr" type="CanIf_RxLPduConfigType" comment="ptr. to array of Rx L-PDU configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="sortedRxLPduConfigPtr" type="CanIf_SortedRxLPduConfigType" comment="ptr. to array of sorted Rx L-PDU configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="driverConfigPtr" type="CanIf_CanDriverConfigType" comment="pointer a driver configuration">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!IF "$canTrcvSupport"!]
+          <member name="trcvChnlConfigPtr" type="CanIf_CanTrcvChnlConfigType" comment="pointer a transceiver channel configuration">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!ENDIF!]
+          <member name="nrOfStaticTxLPdus" type="CanIf_LPduIndexType" comment="number of static Tx L-PDUs"/>
+          <member name="nrOfTxLPdus" type="CanIf_LPduIndexType" comment="number of Tx L-PDUs"/>
+          <member name="nrOfRxLPdus" type="CanIf_LPduIndexType" comment="number of Rx L-PDUs"/>
+          [!IF "$canifReadTxNotifStatusApi"!]
+          <member name="nrOfTxNotifyPdus" type="uint16"/>
+          [!ENDIF!]
+          [!IF "$canifReadRxNotifStatusApi"!]
+          <member name="nrOfRxNotifyPdus" type="uint16"/>
+          [!ENDIF!]
+          [!IF "CanIfPublicCfg/CanIfPublicTxBuffering = 'true'"!]
+          <member name="nrOfTxBuffers" type="CanIf_TxBufferIndexType" comment="number of Tx buffers"/>
+          [!ENDIF!]
+          [!IF "$canifDetEnabled"!]
+          <member name="maxCanControllerId" type="uint8" comment="maximum Can controller index"/>
+          [!ENDIF!]
+          [!IF "$canTrcvSupport"!]
+          <member name="nrOfTransceivers" type="uint8" comment="number of transceivers configured"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <!-- This type is used for configuration of Tx L-PDUs. -->
+      <type name="CanIf_TxLPduConfigType">
+        <comment><![CDATA[ \brief Tx L-PDU configuration type
+
+ This type is used for configuration of Tx L-PDUs.]]></comment>
+        <struct>
+          <member name="canId" type="Can_IdType" comment="CAN ID"/>
+          [!IF "$CanIfMetaDataSupport"!]
+          <member name="CanIfTxPduCanIdMask" type="uint32" comment="Mask which denotes what parts of the CanId are taken from the configuration and what parts are taken from Metadata."/>
+          [!ENDIF!]
+          <member name="hth" type="Can_HwHandleType" comment="HTH"/>
+          [!IF "$canifReadTxNotifStatusApi"!]
+          <member name="notifyIndex" type="CanIf_LPduIndexType" comment="CANIF_INVALID_LPDU_INDEX if L-PDU is not configured for extended API. index of notification flag otherwise"/>
+          [!ENDIF!]
+          [!IF "CanIfPublicCfg/CanIfPublicTxBuffering = 'true'"!]
+          <member name="bufferIndex" type="CanIf_TxBufferIndexType" comment="index of Tx buffer"/>
+          <member name="memIndex" type="CanIf_TxBufferIndexType" comment="index in Tx memory"/>
+          [!ENDIF!]
+          [!IF "$canIfBusMirrorSupport"!]
+          <member name="mirrBuffOfs" type="CanIf_TxBufferIndexType" comment="index of Tx Mirror mem buffer"/>
+          [!ENDIF!]
+          <member name="sourcePduId_UL" type="PduIdType" comment="source PDU ID of upper layer"/>
+          [!IF "$CanIfMetaDataSupport"!]
+          <member name="getMetadataPduId" type="PduIdType" comment="Id to call EcuC to retrieve the Metadata."/>
+          [!ENDIF!]
+          [!IF "$canifMFSupport"!]
+          <member name="MFIndex" type="uint8" comment="Index of the referenced TxProcessing"/>
+          [!ENDIF!]
+          <member name="userType" type="uint8" comment="type of callback function"/>
+          [!IF "$canifPNSupport"!]
+          <member name="pNFilterFlag" type="uint8" comment="partial networking filter flag"/>
+          [!ENDIF!]
+          [!IF "$canifSingleCtrlOpt = 'false'"!]
+          <member name="intCtrlIdx" type="uint8" comment="CanIf internal controller index"/>
+          [!ENDIF!]
+          <member name="PduLength" type="PduLengthType" comment="PDU length in EcuC"/>
+          <member name="truncateOptions" type="uint8" comment="PDU options regarding its truncation"/>
+        </struct>
+      </type>
+
+      <!-- This type defines the configuration of the index table for Rx L-PDUs. -->
+      <type name="CanIf_SortedRxLPduConfigType">
+        <comment><![CDATA[ \brief Rx L-PDU index type
+
+ This type is the index table to select a Rx L-Pdu.]]></comment>
+        <struct>
+          [!IF "$rangeReceptionUsed = 'true'"!]
+          <member name="upperRangeCanId" type="uint32"  comment="Upper range CAN ID/no range flag"/>
+          [!ENDIF!]
+          <member name="canId" type="Can_IdType" comment="CAN ID"/>
+          [!IF "$CanIfMetaDataSupport"!]
+          <member name="CanIfRxPduCanIdMask" type="uint32" comment="Mask which denotes what bits of the configured CanId must match the received CanId."/>
+          [!ENDIF!]
+          <member name="rxLPduIndex" type="CanIf_LPduIndexType"/>
+          [!IF "$CanIfMetaDataSupport"!]
+          <member name="setMetadataPduId" type="PduIdType" comment="Id to call EcuC to set the Metadata for a received PDU."/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <!-- This type defines the configuration of a Rx L-PDU. -->
+      <type name="CanIf_RxLPduConfigType">
+        <comment><![CDATA[ \brief Rx L-PDU configuration type
+
+ This type defines the configuration of a Rx L-PDU.]]></comment>
+        <struct>
+          [!IF "$canifReadRxNotifStatusApi"!]
+          <member name="notifyIndex" type="CanIf_LPduIndexType" comment="CANIF_INVALID_LPDU_INDEX if L-PDU is not configured for extended API. index of notification flag otherwise."/>
+          [!ENDIF!]
+          [!IF "$canifReadRxPduDataApi"!]
+          <member name="rxBufferIndex" type="CanIf_RxBufferIndexType" comment="CANIF_INVALID_RX_BUFFER_INDEX if L-PDU is not configured for data read API. start index for the Rx buffer otherwise."/>
+          [!ENDIF!]
+          <member name="targetPduId" type="PduIdType" comment="target PDU ID"/>
+          [!IF "$canifMFSupport"!]
+          <member name="MFIndex" type="uint8" comment="Index of the referenced RxProcessing"/>
+          [!ENDIF!]
+          <member name="limitedPduLength" type="uint8" comment="target PDU length"/>
+          <member name="userType" type="uint8" comment="type of callback function"/>
+          [!IF "$canifDLCCheck"!]
+          <member name="dlc" type="uint8" comment="CAN DLC"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <!-- This is the data type used for HTH configuration. -->
+      <type name="CanIf_HthConfigType">
+        <comment><![CDATA[ \brief HTH configuration type
+
+ This is the data type used for HTH configuration.]]></comment>
+        <struct>
+          <member name="firstIndex" type="CanIf_LPduIndexType" comment="index of first pending Tx request"/>
+          [!IF "$canifSingleCtrlOpt = 'false'"!]
+          <member type="uint8" name="intCtrlIdx" comment="CanIf internal controller index"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <!-- This is the data type used for HRH configuration. -->
+      <type name="CanIf_HrhConfigType">
+        <comment><![CDATA[ \brief HRH configuration type
+
+ This is the data type used for HRH configuration.]]></comment>
+        <struct>
+          <member name="firstIndex" type="CanIf_LPduIndexType" comment="index of first Rx L-PDU for this HRH"/>
+          <member name="lastIndex" type="CanIf_LPduIndexType" comment="index of last Rx L-PDU for this HRH"/>
+          [!IF "$CanIfMetaDataSupport"!]
+          <member name="lastMaskedIndex" type="CanIf_LPduIndexType" comment="index of last Rx L-PDU with mask for this HRH"/>
+          [!ENDIF!]
+          <member name="swFiltering" type="uint8">
+            <comment>
+              <![CDATA[CANIF_BINARY_SOFTWARE_FILTERING - binary search;
+                       CANIF_NO_SOFTWARE_FILTERING - no sw filtering.
+              ]]>
+            </comment>
+          </member>
+          [!IF "$canifSingleCtrlOpt = 'false'"!]
+          <member name="intCtrlIdx" type="uint8" comment="CanIf internal controller index"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <!-- This is the type used for controller configuration. -->
+      <type name="CanIf_CanControllerConfigType">
+        <comment><![CDATA[ \brief Controller configuration
+
+ This is the type used for controller configuration.]]></comment>
+        <struct>
+          [!IF "$wakeupNotificationCalled = 'true'"!]
+          <member name="wakeupSourceIn" type="uint32" comment="wakeup source (input)"/>
+          <member name="wakeupSourceOut" type="uint32" comment="wakeup source (output and validation)"/>
+          [!ENDIF!]
+          [!IF "$canifPNSupport"!]
+          <member name="pNFilterEnabled" type="boolean" comment="partial networking filter support"/>
+          [!ENDIF!]
+          <member name="controllerId" type="uint8" comment="CAN controller ID"/>
+          [!IF "$canIfPublicMultipleDrvSupport = 'true'"!]
+          <member name="driverIndex" type="uint8" comment="CAN driver index"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <!-- This type defines the driver configuration used in the CAN interface. -->
+      <type name="CanIf_CanDriverConfigType">
+        <comment><![CDATA[ \brief Driver configuration type
+
+ This type defines the driver configuration used in the CAN interface.]]></comment>
+        <struct>
+          <member name="ctrlConfigPtr" type="CanIf_CanControllerConfigType" comment="array of controller configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!IF "$canifHOHTransOpt = 'false'"!]
+          <member name="hohIdToCanIfIdxPtr" type="uint16" comment="HOH ID translation array">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!ENDIF!]
+          <member name="hthConfigPtr" type="CanIf_HthConfigType" comment="array of HTH configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="hrhConfigPtr" type="CanIf_HrhConfigType" comment="array of HRH configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!IF "$canifHOHTransOpt = 'true'"!]
+          <member name="nrOfHrhs" type="Can_HwHandleType" comment="number of configured HRHs (== hthOffset )"/>
+          [!ELSEIF "$canifDetEnabled = 'true'"!]
+          <member name="upperHohIdLimit" type="Can_HwHandleType" comment="maximum configured HOH ID + 1"/>
+          [!ENDIF!]
+          [!IF "CanIfPublicCfg/CanIfPublicTxBuffering = 'true'"!]
+          <member name="nrOfHths" type="Can_HwHandleType" comment="number of configured HTHs"/>
+          [!ENDIF!]
+          [!IF "$canifSingleCtrlOpt = 'false'"!]
+          <member name="nrOfControllers" type="uint8" comment="Number of CAN controllers contained in this driver"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      [!IF "$canTrcvSupport"!]
+      <!-- This type is used for configuring the wakable CAN Transceiver Driver channels. -->
+      <type name="CanIf_CanTrcvChnlConfigType">
+        <comment> <![CDATA[ \brief CAN Transceiver Driver channel configuration
+
+ This type is used for configuring the wakable CAN Transceiver Driver
+ channels.]]></comment>
+        <struct>
+          [!IF "CanIfPublicCfg/CanIfPublicTrcvWakeupSupport = 'true'"!]
+          <member name="wakeupSourceIn" type="uint32" comment="wakeup source (input)"/>
+          <member name="wakeupSourceOut" type="uint32" comment="wakeup source (output)"/>
+          [!ENDIF!]
+          <member name="trcvChnlId" type="uint8" comment="transceiver channel ID"/>
+          <member name="trcvDrvIdx" type="uint8" comment="driver index"/>
+        </struct>
+      </type>
+      [!ENDIF!][!/* trcv support */!]
+
+      [!IF "$canIfBusMirrorSupport = 'true'"!]
+      <!-- This type is used to temporarily store PDU data while mirroring -->
+      <type name="CanIf_MirrorBuffType">
+        <comment><![CDATA[ \brief Type used to temporarily store PDU data while mirroring.]]></comment>
+        <struct>
+          <member name="status" type="uint8" comment="Internal status for mirroring"/>
+          <member name="length" type="uint8" comment="length of the payload"/>
+        </struct>
+      </type>
+      [!ENDIF!]
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <?artifact directory="include" file="[!"$CANIF_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$CANIF_PBCFG_C_VARIANT"!]" type="postbuild-c" generate="[!IF "$usingpbcfgm = 'true'"!]no[!ELSE!]yes[!ENDIF!]" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of CanIf_PBcfg.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' post-build configuration structure -->
+      <!-- !LINKSTO dsn.CanIf.PostBuildConfigurationData,1 -->
+      <type name="[!"$CANIF_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <member name="RootCfg" type="CanIf_ConfigType"/>
+          [!IF "$txPduNum > 0"!]
+          <member name="txLPduConfig" type="CanIf_TxLPduConfigType" count="[!"$txPduNum"!]"/>
+          [!ENDIF!]
+          [!IF "$rxPduNum > 0"!]
+          <member name="rxLPduConfig" type="CanIf_RxLPduConfigType" count="[!"$rxPduNum"!]"/>
+          [!ENDIF!]
+          [!IF "$hthNum > 0"!]
+          <member name="driverHthConfig" type="CanIf_HthConfigType" count="[!"$hthNum"!]"/>
+          [!ENDIF!]
+          [!IF "$hrhNum > 0"!]
+          <member name="driverHrhConfig" type="CanIf_HrhConfigType" count="[!"$hrhNum"!]"/>
+          [!ENDIF!]
+          [!IF "(($hthNum > 0) or ($hrhNum > 0)) and ($canifHOHTransOpt = 'false')"!]
+          <member name="hohIdToCanIfIdx" type="uint16" count="[!"num:i($maxCanHohId)"!]"/>
+          [!ENDIF!]
+          <member name="canControllerConfig" type="CanIf_CanControllerConfigType" count="[!"num:i(count(CanIfCtrlDrvCfg/*/CanIfCtrlCfg/*))"!]"/>
+          <!-- this implementation supports a single can driver only -->
+          <member name="canDriverConfig" type="CanIf_CanDriverConfigType" count="1"/>
+          [!IF "$sortedPduListEntries > 0"!]
+          <member name="sortedRxLPduConfig" type="CanIf_SortedRxLPduConfigType" count="[!"num:i($sortedPduListEntries)"!]"/>
+          [!ENDIF!]
+          [!IF "$canTrcvSupport"!]
+          <member name="canTrcvChnlConfig" type="CanIf_CanTrcvChnlConfigType" count="[!"$trcvChannelsNum"!]"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="[!"$CANIF_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$CANIF_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="CANIF_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialisation:
+          Specifies the content of CanIf_Pbcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="[!"$CANIF_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+             name="[!"$CANIF_CONFIG_LAYOUT_VARIANT"!]">
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+        [!IF "not(var:defined('postBuildVariant')) and not(node:name(CanIfInitCfg/*[1]) = $initPredefinedCfgName)"!]
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"node:name(CanIfInitCfg/*[1])"!]</symbolic-value>
+        </parameter>
+        [!ENDIF!]
+
+        <!-- CanIf_ConfigType -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('CanIf')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('CanIf')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('CanIf')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('CanIf')[1]/CommonPublishedInformation/Release))"!]</int>
+          </field>
+          <field>
+            <ref>
+              [!IF "$txPduNum > 0"!]
+              <struct-field name="txLPduConfig" />
+              <array-field index="0" />
+              [!ENDIF!]
+            </ref>
+          </field>
+          <field>
+            <ref>
+              [!IF "$rxPduNum > 0"!]
+              <struct-field name="rxLPduConfig" />
+              <array-field index="0" />
+              [!ENDIF!]
+            </ref>
+          </field>
+          <field>
+            <ref>
+              [!IF "$sortedPduListEntries > 0"!]
+              <struct-field name="sortedRxLPduConfig" />
+              <array-field index="0" />
+              [!ENDIF!]
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="canDriverConfig" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          [!IF "$canTrcvSupport"!]
+          <field>
+            <ref>
+              <struct-field name="canTrcvChnlConfig" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          [!ENDIF!]
+          <field>
+            <int>[!"$staticTxPduNum"!]</int>
+          </field>
+          <field>
+            <int>[!"$txPduNum"!]</int>
+          </field>
+          <field>
+            <int>[!"$rxPduNum"!]</int>
+          </field>
+          [!IF "$canifReadTxNotifStatusApi"!]
+          <field>
+            <int>[!"num:i(count(CanIfInitCfg/*[1]/CanIfTxPduCfg/*[CanIfTxPduReadNotifyStatus = 'true']))"!]</int>
+          </field>
+          [!ENDIF!]
+          [!IF "$canifReadRxNotifStatusApi"!]
+          <field>
+            <int>[!"num:i(count(CanIfInitCfg/*[1]/CanIfRxPduCfg/*[CanIfRxPduReadNotifyStatus = 'true']))"!]</int>
+          </field>
+          [!ENDIF!]
+          [!IF "CanIfPublicCfg/CanIfPublicTxBuffering = 'true'"!]
+          <field>
+            <int>[!"$txBuffersNum"!]</int>
+          </field>
+          [!ENDIF!]
+          [!IF "$canifDetEnabled"!]
+          <field>
+            <int>[!"$maxCanControllerId"!]</int>
+          </field>
+          [!ENDIF!]
+          [!IF "$canTrcvSupport"!]
+          <field>
+            <int>[!"$trcvChannelsNum"!]</int>
+          </field>
+          [!ENDIF!]
+        </field>
+
+        <!-- CanIf_TxLPduConfigType -->
+        [!VAR "currTxNotifyIndex" = "0"!]
+        [!VAR "currTxBufferIndex" = "0"!]
+        [!VAR "currTxMemoryIndex" = "0"!]
+        [!VAR "currTxMirrBuffIdx" = "0"!]
+        [!IF "$txPduNum > 0"!]
+          [!VAR "TxProcessingList" = "''"!]
+          [!LOOP "as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfTxProcessing/*"!]
+            [!LOOP "CanIfTxPduProcessingRef/*"!]
+              [!VAR "TxProcessingList"!][!"$TxProcessingList"!];[!"as:path(as:ref(.))"!]:[!"node:name(../..)"!]:[!"../../@index"!][!ENDVAR!]
+            [!ENDLOOP!]
+          [!ENDLOOP!]
+        <!-- txLPduConfig[] -->
+        <field>
+          [!FOR "i" = "0" TO "$txPduNum - 1"!]
+            [!SELECT "CanIfInitCfg/*[1]/CanIfTxPduCfg/*[CanIfTxPduId = $i]"!]
+          <field>
+            <field>
+              [!VAR "CurrentCanId" = "4294967295"!]
+              [!IF "node:exists(CanIfTxPduCanId)"!]
+                [!VAR "CurrentCanId" = "CanIfTxPduCanId"!]
+                [!IF "(CanIfTxPduCanIdType = 'EXTENDED_FD_CAN') or (CanIfTxPduCanIdType = 'STANDARD_FD_CAN')"!]
+                  [!VAR "CurrentCanId" = "num:i($CurrentCanId + 1073741824)"!]
+                [!ENDIF!]
+                [!IF "(CanIfTxPduCanIdType = 'EXTENDED_FD_CAN') or (CanIfTxPduCanIdType = 'EXTENDED_CAN')"!]
+                  [!VAR "CurrentCanId" = "num:i($CurrentCanId + 2147483648)"!]
+                [!ENDIF!]
+              [!ENDIF!]
+              <int>[!"num:i($CurrentCanId)"!]</int>
+            </field>
+            [!IF "$CanIfMetaDataSupport"!]
+            <field>
+              [!VAR "CurrentMetadataMask" = "0"!]
+              [!IF "node:exists(CanIfTxPduCanIdMask)"!]
+                [!VAR "CurrentMetadataMask" = "num:i(CanIfTxPduCanIdMask + 3221225472)"!]
+              [!ENDIF!]
+                <int>[!"num:i($CurrentMetadataMask)"!]</int>
+            </field>
+              [!ENDIF!]
+            <field>
+              <int>[!"as:ref(as:ref(as:ref(CanIfTxPduBufferRef)/CanIfBufferHthRef/*[1])/CanIfHthIdSymRef)/CanObjectId"!]</int>
+            </field>
+            [!IF "$canifReadTxNotifStatusApi"!]
+            <field>
+              [!IF "CanIfTxPduReadNotifyStatus = 'true'"!]
+              <int>[!"num:i($currTxNotifyIndex)"!]</int>
+              [!VAR "currTxNotifyIndex" = "num:i($currTxNotifyIndex + 1)"!]
+              [!ELSE!]
+              <int>[!"$CANIF_INVALID_LPDU_INDEX"!]</int>
+              [!ENDIF!]
+            </field>
+            [!ENDIF!]
+            [!IF "as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicTxBuffering = 'true'"!]
+            <field>
+              <!-- !LINKSTO dsn.CanIf.PBconfig.bufferindex,1 -->
+              [!IF "node:value(as:ref(as:ref(as:ref(CanIfTxPduBufferRef)/CanIfBufferHthRef/*[1])/CanIfHthIdSymRef)/CanHandleType)='BASIC'"!]
+              <int>[!"num:i($currTxBufferIndex)"!]</int>
+              [!VAR "currTxBufferIndex" = "num:i($currTxBufferIndex + 1)"!]
+              [!ELSE!]
+              <int>[!"$CANIF_INVALID_TX_BUFFER_INDEX"!]</int>
+              [!ENDIF!]
+            </field>
+            <field>
+              [!IF "node:value(as:ref(as:ref(as:ref(CanIfTxPduBufferRef)/CanIfBufferHthRef/*[1])/CanIfHthIdSymRef)/CanHandleType)='BASIC'"!]
+              <int>[!"num:i($currTxMemoryIndex)"!]</int>
+                [!IF "(CanIfTxPduCanIdType = 'EXTENDED_FD_CAN') or (CanIfTxPduCanIdType = 'STANDARD_FD_CAN')"!]
+                  [!VAR "currTxMemoryIndex" = "num:i($currTxMemoryIndex + 64)"!]
+                [!ELSE!]
+                  [!VAR "currTxMemoryIndex" = "num:i($currTxMemoryIndex + 8)"!]
+                [!ENDIF!]
+              [!ELSE!]
+              <int>[!"$CANIF_INVALID_TX_BUFFER_INDEX"!]</int>
+              [!ENDIF!]
+            </field>
+            [!ENDIF!]
+            [!IF "$canIfBusMirrorSupport"!]
+            <field>
+              <int>[!"num:i($currTxMirrBuffIdx)"!]</int>
+              [!VAR "currTxMirrBuffIdx" = "$currTxMirrBuffIdx + node:ref(CanIfTxPduRef)/PduLength"!]
+            </field>
+            [!ENDIF!]
+            [!VAR "upperLayer" = "''"!]
+            <field>
+            [!IF "node:exists(CanIfTxPduUserTxConfirmationUL)"!]
+              [!VAR "upperLayer"="CanIfTxPduUserTxConfirmationUL"!]
+              [!IF "$upperLayer = 'PDUR'"!]
+                [!IF "node:exists(as:modconf('PduR')[1]/PduRRoutingTables/*[1]/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef = node:current()/CanIfTxPduRef])"!]
+              <int>[!"(as:modconf('PduR')[1]/PduRRoutingTables/*[1]/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef = node:current()/CanIfTxPduRef])[1]/PduRDestPduHandleId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Tx PDU found in upper layer PduR that is assigned to PDU [!"CanIfTxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSEIF "$upperLayer = 'CAN_NM'"!]
+                [!IF "node:exists(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*/CanNmTxPdu[CanNmTxPduRef = node:current()/CanIfTxPduRef])"!]
+              <int>[!"(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*/CanNmTxPdu[CanNmTxPduRef = node:current()/CanIfTxPduRef])[1]/CanNmTxConfirmationPduId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Tx PDU found in upper layer CanNm that is assigned to PDU [!"CanIfTxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSEIF "$upperLayer = 'CAN_TP'"!]
+                [!IF "node:exists(as:modconf('CanTp')[1]/CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[CanTpTxNPdu/CanTpTxNPduRef = node:current()/CanIfTxPduRef])"!]
+              <int>[!"(as:modconf('CanTp')[1]/CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[CanTpTxNPdu/CanTpTxNPduRef = node:current()/CanIfTxPduRef])[1]/CanTpTxNPdu/CanTpTxNPduConfirmationPduId"!]</int>
+                [!ELSEIF "node:exists(as:modconf('CanTp')[1]/CanTpConfig/*[1]/CanTpChannel/*/CanTpRxNSdu/*[CanTpTxFcNPdu/CanTpTxFcNPduRef = node:current()/CanIfTxPduRef])"!]
+              <int>[!"(as:modconf('CanTp')[1]/CanTpConfig/*[1]/CanTpChannel/*/CanTpRxNSdu/*[CanTpTxFcNPdu/CanTpTxFcNPduRef = node:current()/CanIfTxPduRef])[1]/CanTpTxFcNPdu/CanTpTxFcNPduConfirmationPduId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Tx PDU found in upper layer CanTp that is assigned to PDU [!"CanIfTxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSEIF "$upperLayer = 'CAN_TSYN'"!]
+                [!IF "node:exists(as:modconf('CanTSyn')[1]/CanTSynGlobalTimeDomain/*/CanTSynGlobalTimeMaster/CanTSynGlobalTimeMasterPdu[CanTSynGlobalTimePduRef = node:current()/CanIfTxPduRef])"!]
+              <int>[!"(as:modconf('CanTSyn')[1]/CanTSynGlobalTimeDomain/*/CanTSynGlobalTimeMaster/CanTSynGlobalTimeMasterPdu[CanTSynGlobalTimePduRef = node:current()/CanIfTxPduRef])[1]/CanTSynGlobalTimeMasterConfirmationHandleId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Tx PDU found in upper layer CanTSyn that is assigned to PDU [!"CanIfTxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSEIF "$upperLayer = 'J1939NM'"!]
+                [!IF "node:exists(as:modconf('J1939Nm')[1]/J1939NmConfigSet/*[1]/J1939NmChannel/*[J1939NmTxPdu/J1939NmTxPduRef = node:current()/CanIfTxPduRef])"!]
+              <int>[!"(as:modconf('J1939Nm')[1]/J1939NmConfigSet/*[1]/J1939NmChannel/*[J1939NmTxPdu/J1939NmTxPduRef = node:current()/CanIfTxPduRef])/J1939NmTxPdu/J1939NmTxPduId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Tx PDU found in upper layer J1939Nm that is assigned to PDU [!"CanIfTxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSEIF "$upperLayer = 'J1939TP'"!]
+                [!IF "node:exists(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpTxChannel/*[J1939TpTxCmNPdu/J1939TpTxCmNPduRef = node:current()/CanIfTxPduRef])"!]
+              <int>[!"(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpTxChannel/*[J1939TpTxCmNPdu/J1939TpTxCmNPduRef = node:current()/CanIfTxPduRef])/J1939TpTxCmNPdu/J1939TpTxCmNPduTxConfId"!]</int>
+                [!ELSEIF "node:exists(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpTxChannel/*[J1939TpTxDtNPdu/J1939TpTxDtNPduRef = node:current()/CanIfTxPduRef])"!]
+              <int>[!"(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpTxChannel/*[J1939TpTxDtNPdu/J1939TpTxDtNPduRef = node:current()/CanIfTxPduRef])/J1939TpTxDtNPdu/J1939TpTxDtNPduTxConfId"!]</int>
+                [!ELSEIF "node:exists(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpTxChannel/*/J1939TpTxPg/*[J1939TpTxDirectNPdu/J1939TpTxDirectNPduRef = node:current()/CanIfTxPduRef])"!]
+              <int>[!"(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpTxChannel/*/J1939TpTxPg/*[J1939TpTxDirectNPdu/J1939TpTxDirectNPduRef = node:current()/CanIfTxPduRef])/J1939TpTxDirectNPdu/J1939TpTxDirectNPduTxConfId"!]</int>
+                [!ELSEIF "node:exists(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpRxChannel/*[J1939TpTxFcNPdu/J1939TpTxFcNPduRef = node:current()/CanIfTxPduRef])"!]
+              <int>[!"(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpRxChannel/*[J1939TpTxFcNPdu/J1939TpTxFcNPduRef = node:current()/CanIfTxPduRef])/J1939TpTxFcNPdu/J1939TpTxFcNPduTxConfId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Tx PDU found in upper layer J1939Tp that is assigned to PDU [!"CanIfTxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSE!]
+              <!-- user specific upper layer -->
+                [!IF "node:value(node:ref(./CanIfTxPduUpperLayerRef)/CanIfUseCddHandleIds) = 'true'"!]
+                  [!VAR "cddName" = "node:name(node:ref(./CanIfTxPduUpperLayerRef))"!]
+                  [!IF "not(node:exists(as:modconf($cddName)))"!]
+                    [!ERROR!]No Cdd was found with the name [!"$cddName"!][!ENDERROR!]
+                  [!ELSE!]
+                    [!IF "not(node:empty(as:modconf($cddName)/CddComStackContribution/CddComIfUpperLayerContribution/CddComIfUpperLayerTxPdu/*[CddComIfPduRef = node:current()/CanIfTxPduRef]/CddComIfHandleId))"!]
+                    <!-- !LINKSTO CanIf.EB.UseCddComIfHandleId.HandleIds,1 -->
+              <int>[!"num:i(node:value((as:modconf($cddName)/CddComStackContribution/CddComIfUpperLayerContribution/CddComIfUpperLayerTxPdu/*[CddComIfPduRef = node:current()/CanIfTxPduRef])/CddComIfHandleId))"!]</int>
+                    [!ELSE!]
+                      [!ERROR!]No Tx PDU found in upper layer Cdd that is assigned to PDU [!"node:name(as:ref(CanIfTxPduRef))"!] or cannot find handle id for it in UL.[!ENDERROR!]
+                    [!ENDIF!]
+                  [!ENDIF!]
+                [!ELSE!]
+              <!-- !LINKSTO CanIf.EB.UseCddComIfHandleId.TargetPduId,1 -->
+              <int>[!"CanIfTxPduSourcePduID"!]</int>
+                [!ENDIF!]
+              [!ENDIF!]
+            [!ELSE!]
+              <int>0</int>
+            [!ENDIF!]
+            </field>
+            <!-- !LINKSTO CanIf.EB.Metadata.Config.1,1 -->
+            [!IF "$CanIfMetaDataSupport"!]
+              [!VAR "CurrentMetadataGetId" = "65535"!]
+            <field>
+              [!IF "(node:exists(as:ref(CanIfTxPduRef)/MetaDataTypeRef)) and (node:exists(as:ref(as:ref(CanIfTxPduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = 'CAN_ID_32']))"!]
+                [!VAR "CurrentMetadataGetId" = "num:i(as:ref(CanIfTxPduRef)/PduId)"!]
+              [!ENDIF!]
+              <int>[!"num:i($CurrentMetadataGetId)"!]</int>
+        </field>
+          [!ENDIF!]
+            [!IF "$canifMFSupport"!]
+            <field>
+              [!VAR "FoundTxProcessing" = "'false'"!]
+              [!VAR "TxPduShName" = "as:path(.)"!]
+              [!LOOP "text:split($TxProcessingList,';')"!]
+                [!IF "text:split(.,':')[1] = $TxPduShName"!]
+                  [!VAR "FoundTxProcessing" = "'true'"!]
+                <int>[!"(text:split(.,':')[3])"!]</int>
+                [!ENDIF!]
+              [!ENDLOOP!]
+              [!IF "$FoundTxProcessing = 'false'"!]
+                <int>[!"$CANIF_NO_DECOUPLED_PROCESSING"!]</int>
+              [!ENDIF!]
+            </field>
+            [!ENDIF!]
+            <field>
+            [!IF "node:exists(CanIfTxPduUserTxConfirmationUL)"!]
+              [!IF "$upperLayer = 'CDD'"!]
+                [!VAR "upperLayerIndex"="num:i(node:pos(node:ref(CanIfTxPduUpperLayerRef)))"!]
+              [!ELSE!]
+                [!VAR "upperLayerIndex"="num:i(node:pos(as:modconf('CanIf')[1]/CanIfUpperLayerConfig/*[@name = $upperLayer]))"!]
+              [!ENDIF!]
+              <int>[!"$upperLayerIndex"!]</int>
+            [!ELSE!]
+              <int>[!"$CANIF_NO_UPPER_LAYER_CBK"!]</int>
+            [!ENDIF!]
+            </field>
+            [!IF "$canifPNSupport"!]
+            <field>
+              [!IF "CanIfTxPduPnFilterPdu = 'true'"!]
+              <int>[!"$CANIF_PN_FILTER_ALLOW_PDU"!]</int>
+              [!ELSE!]
+              <int>[!"$CANIF_PN_FILTER_BLOCK_PDU"!]</int>
+              [!ENDIF!]
+            </field>
+            [!ENDIF!]
+            [!IF "$canifSingleCtrlOpt = 'false'"!]
+            <field>
+              <int>[!CALL "GetControllerIndex", "controllerCfgPath" = "node:path(as:ref(as:ref(as:ref(CanIfTxPduBufferRef)/CanIfBufferHthRef/*[1])/CanIfHthCanCtrlIdRef))"!]</int>
+            </field>
+            [!ENDIF!]
+            <field>
+              <!-- Pdu Length from EcuC -->
+              [!VAR "PduLengthFromEcuc" = "num:i(node:ref(CanIfTxPduRef)/PduLength)"!]
+              <!-- Check if Can FD -->
+              [!IF "(CanIfTxPduCanIdType = 'EXTENDED_FD_CAN') or (CanIfTxPduCanIdType = 'STANDARD_FD_CAN')"!]
+                <!-- Check if the PDU length from EcuC is larger than the max CAN FD frame length -->
+                [!IF "num:i($PduLengthFromEcuc) > num:i(64)"!]
+                  <!-- Set the length in the configuration to 64 since we will never use more than this -->
+                  [!VAR "PduLengthFromEcuc" = "num:i(64)"!]
+                [!ENDIF!]
+              [!ELSE!]
+                <!-- Check if the PDU length from EcuC is larger than the max CAN 2.0 frame length -->
+                [!IF "num:i($PduLengthFromEcuc) > num:i(8)"!]
+                  <!-- Set the length in the configuration to 8 since we will never use more than this -->
+                  [!VAR "PduLengthFromEcuc" = "num:i(8)"!]
+                [!ENDIF!]
+              [!ENDIF!]
+              <int>[!"num:i($PduLengthFromEcuc)"!]</int>
+            </field>            
+            <field>
+              <!-- Truncating options -->
+              [!VAR "truncateOptions" = "0"!]
+              <!-- Check if parameter CanIfTxPduTruncation is ON -->
+              [!IF "CanIfTxPduTruncation = 'true'"!]
+                <!-- Set bit 0 for the truncating options -->
+                [!VAR "truncateOptions" = "bit:bitset($truncateOptions, 0)"!]              
+                <!-- Check if CanIfTxPduTruncateToFrame is enabled and ON -->
+                [!IF "node:exists(CanIfTxPduTruncateToFrame)"!]
+                  [!IF "CanIfTxPduTruncateToFrame = 'true'"!]
+                    <!-- Set bit 1 for the truncating options -->
+                    [!VAR "truncateOptions" = "bit:bitset($truncateOptions, 1)"!]
+                  [!ENDIF!]
+                [!ENDIF!]
+              [!ENDIF!]
+              <int>[!"num:i($truncateOptions)"!]</int>
+            </field>
+          </field>
+            [!ENDSELECT!]
+          [!ENDFOR!]
+        </field>
+        [!ENDIF!]
+
+        [!VAR "currRxNotifyIndex" = "0"!]
+        [!VAR "currRxBufferPos" = "0"!]
+        [!IF "$rxPduNum > 0"!]
+          [!VAR "RxProcessingList" = "''"!]
+          [!LOOP "as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfRxProcessing/*"!]
+            [!LOOP "CanIfRxPduProcessingRef/*"!]
+              [!VAR "RxProcessingList"!][!"$RxProcessingList"!];[!"as:path(as:ref(.))"!]:[!"node:name(../..)"!]:[!"../../@index"!][!ENDVAR!]
+            [!ENDLOOP!]
+          [!ENDLOOP!]
+
+        <!-- rxLPduConfig -->
+        <field>
+          [!FOR "pduId" = "0" TO "$rxPduNum - 1"!]
+            [!SELECT "as:modconf('CanIf')[1]/CanIfInitCfg/*[1]/CanIfRxPduCfg/*[CanIfRxPduId = $pduId]"!]
+          <field>
+            <!-- Rx-PDU [!"$pduId"!] -->
+            [!IF "$canifReadRxNotifStatusApi"!]
+            <field>
+              [!IF "CanIfRxPduReadNotifyStatus = 'true'"!]
+              <int>[!"num:i($currRxNotifyIndex)"!]</int>
+              [!VAR "currRxNotifyIndex" = "num:i($currRxNotifyIndex + 1)"!]
+              [!ELSE!]
+              <int>[!"$CANIF_INVALID_LPDU_INDEX"!]</int>
+              [!ENDIF!]
+            </field>
+            [!ENDIF!]
+            [!// estimate the maximum DLC during reception, CanIf shall pass payload with the received DLC (not the configured one)
+            [!VAR "pduLen" = "node:ref(node:current()/CanIfRxPduRef)/PduLength"!]
+            [!IF "(CanIfRxPduCanIdType = 'STANDARD_NO_FD_CAN') or (CanIfRxPduCanIdType = 'EXTENDED_NO_FD_CAN')"!]
+              [!IF "$pduLen > 8"!]
+                [!VAR "pduLen" = "num:i(8)"!]
+              [!ENDIF!]
+            [!ELSE!]
+              [!IF "$pduLen > 64"!]
+                [!VAR "pduLen" = "num:i(64)"!]
+              [!ENDIF!]
+            [!ENDIF!]
+            [!IF "$canifReadRxPduDataApi"!]
+            <field>
+              [!IF "CanIfRxPduReadData = 'true'"!]
+              <int>[!"num:i($currRxBufferPos)"!]</int>
+                [!VAR "currRxBufferPos" = "num:i($currRxBufferPos + $pduLen + 1)"!]
+              [!ELSE!]
+              <int>[!"$CANIF_INVALID_RX_BUFFER_INDEX"!]</int>
+              [!ENDIF!]
+            </field>
+            [!ENDIF!]
+            [!VAR "upperLayer" = "''"!]
+            <field>
+            [!IF "node:exists(CanIfRxPduUserRxIndicationUL)"!]
+              [!VAR "upperLayer"="CanIfRxPduUserRxIndicationUL"!]
+              [!IF "$upperLayer = 'PDUR'"!]
+                [!IF "node:exists(as:modconf('PduR')[1]/PduRRoutingTables/*[1]/PduRRoutingTable/*[1]/PduRRoutingPath/*/PduRSrcPdu[PduRSrcPduRef = node:current()/CanIfRxPduRef])"!]
+              <int>[!"(as:modconf('PduR')[1]/PduRRoutingTables/*[1]/PduRRoutingTable/*[1]/PduRRoutingPath/*/PduRSrcPdu[PduRSrcPduRef = node:current()/CanIfRxPduRef])[1]/PduRSourcePduHandleId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Rx PDU found in upper layer PduR that is assigned to PDU [!"CanIfRxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSEIF "$upperLayer = 'CAN_NM'"!]
+                [!IF "node:exists(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*/CanNmRxPdu/*[CanNmRxPduRef = node:current()/CanIfRxPduRef])"!]
+              <int>[!"(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*/CanNmRxPdu/*[CanNmRxPduRef = node:current()/CanIfRxPduRef])[1]/CanNmRxPduId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Rx PDU found in upper layer CanNm that is assigned to PDU [!"CanIfRxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSEIF "$upperLayer = 'CAN_TP'"!]
+                [!IF "node:exists(as:modconf('CanTp')[1]/CanTpConfig/*[1]/CanTpChannel/*/CanTpRxNSdu/*[CanTpRxNPdu/CanTpRxNPduRef = node:current()/CanIfRxPduRef])"!]
+              <int>[!"(as:modconf('CanTp')[1]/CanTpConfig/*[1]/CanTpChannel/*/CanTpRxNSdu/*[CanTpRxNPdu/CanTpRxNPduRef = node:current()/CanIfRxPduRef])[1]/CanTpRxNPdu/CanTpRxNPduId"!]</int>
+                [!ELSEIF "node:exists(as:modconf('CanTp')[1]/CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[CanTpRxFcNPdu/CanTpRxFcNPduRef = node:current()/CanIfRxPduRef])"!]
+              <int>[!"(as:modconf('CanTp')[1]/CanTpConfig/*[1]/CanTpChannel/*/CanTpTxNSdu/*[CanTpRxFcNPdu/CanTpRxFcNPduRef = node:current()/CanIfRxPduRef])[1]/CanTpRxFcNPdu/CanTpRxFcNPduId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Rx PDU found in upper layer CanTp that is assigned to PDU [!"CanIfRxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSEIF "$upperLayer = 'CAN_TSYN'"!]
+                [!IF "node:exists(as:modconf('CanTSyn')[1]/CanTSynGlobalTimeDomain/*/CanTSynGlobalTimeSlave/CanTSynGlobalTimeSlavePdu[CanTSynGlobalTimePduRef = node:current()/CanIfRxPduRef])"!]
+              <int>[!"(as:modconf('CanTSyn')[1]/CanTSynGlobalTimeDomain/*/CanTSynGlobalTimeSlave/CanTSynGlobalTimeSlavePdu[CanTSynGlobalTimePduRef = node:current()/CanIfRxPduRef])[1]/CanTSynGlobalTimeSlaveHandleId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Rx PDU found in upper layer CanTSyn that is assigned to PDU [!"CanIfRxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSEIF "$upperLayer = 'J1939NM'"!]
+                [!IF "node:exists(as:modconf('J1939Nm')[1]/J1939NmConfigSet/*[1]/J1939NmChannel/*[J1939NmRxPdu/J1939NmRxPduRef = node:current()/CanIfRxPduRef])"!]
+              <int>[!"(as:modconf('J1939Nm')[1]/J1939NmConfigSet/*[1]/J1939NmChannel/*[J1939NmRxPdu/J1939NmRxPduRef = node:current()/CanIfRxPduRef])/J1939NmRxPdu/J1939NmRxPduId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Rx PDU found in upper layer J1939Nm that is assigned to PDU [!"CanIfRxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSEIF "$upperLayer = 'J1939TP'"!]
+                [!IF "node:exists(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpRxChannel/*[J1939TpRxCmNPdu/J1939TpRxCmNPduRef = node:current()/CanIfRxPduRef])"!]
+              <int>[!"(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpRxChannel/*[J1939TpRxCmNPdu/J1939TpRxCmNPduRef = node:current()/CanIfRxPduRef])/J1939TpRxCmNPdu/J1939TpRxCmNPduId"!]</int>
+                [!ELSEIF "node:exists(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpRxChannel/*[J1939TpRxDtNPdu/J1939TpRxDtNPduRef = node:current()/CanIfRxPduRef])"!]
+              <int>[!"(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpRxChannel/*[J1939TpRxDtNPdu/J1939TpRxDtNPduRef = node:current()/CanIfRxPduRef])/J1939TpRxDtNPdu/J1939TpRxDtNPduId"!]</int>
+                [!ELSEIF "node:exists(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpRxChannel/*/J1939TpRxPg/*[J1939TpRxDirectNPdu/J1939TpRxDirectNPduRef = node:current()/CanIfRxPduRef])"!]
+              <int>[!"(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpRxChannel/*/J1939TpRxPg/*[J1939TpRxDirectNPdu/J1939TpRxDirectNPduRef = node:current()/CanIfRxPduRef])/J1939TpRxDirectNPdu/J1939TpRxDirectNPduId"!]</int>
+                [!ELSEIF "node:exists(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpTxChannel/*[J1939TpRxFcNPdu/J1939TpRxFcNPduRef = node:current()/CanIfRxPduRef])"!]
+              <int>[!"(as:modconf('J1939Tp')[1]/J1939TpConfiguration/*[1]/J1939TpTxChannel/*[J1939TpRxFcNPdu/J1939TpRxFcNPduRef = node:current()/CanIfRxPduRef])/J1939TpRxFcNPdu/J1939TpRxFcNPduId"!]</int>
+                [!ELSE!]
+                  [!ERROR!]No Rx PDU found in upper layer J1939Tp that is assigned to PDU [!"CanIfRxPduRef"!][!ENDERROR!]
+                [!ENDIF!]
+              [!ELSE!]
+              <!-- user specific upper layer -->
+                [!IF "node:value(node:ref(./CanIfRxPduUpperLayerRef)/CanIfUseCddHandleIds) = 'true'"!]
+                  [!VAR "cddName" = "node:name(node:ref(./CanIfRxPduUpperLayerRef))"!]
+                  [!IF "not(node:exists(as:modconf($cddName)))"!]
+                    [!ERROR!]No Cdd was found with the name [!"$cddName"!][!ENDERROR!]
+                  [!ELSE!]
+                    [!IF "not(node:empty(as:modconf($cddName)/CddComStackContribution/CddComIfUpperLayerContribution/CddComIfUpperLayerRxPdu/*[CddComIfPduRef = node:current()/CanIfRxPduRef]/CddComIfHandleId))"!]
+                    <!-- !LINKSTO CanIf.EB.UseCddComIfHandleId.HandleIds,1 -->
+              <int>[!"num:i(node:value((as:modconf($cddName)/CddComStackContribution/CddComIfUpperLayerContribution/CddComIfUpperLayerRxPdu/*[CddComIfPduRef = node:current()/CanIfRxPduRef])/CddComIfHandleId))"!]</int>
+                    [!ELSE!]
+                      [!ERROR!]No Rx PDU found in upper layer Cdd that is assigned to PDU [!"node:name(as:ref(CanIfRxPduRef))"!] or cannot find handle id for it in UL.[!ENDERROR!]
+                    [!ENDIF!]
+                  [!ENDIF!]
+                [!ELSE!]
+              <!-- !LINKSTO CanIf.EB.UseCddComIfHandleId.TargetPduId,1 -->
+              <int>[!"CanIfRxPduTargetPduID"!]</int>
+                [!ENDIF!]
+              [!ENDIF!]
+            [!ELSE!]
+              <int>0</int>
+            [!ENDIF!]
+            </field>
+            [!IF "$canifMFSupport"!]
+              <field>
+              [!VAR "RxPduShName" = "as:path(.)"!]
+              [!VAR "FoundRxProcessing" = "'false'"!]
+              [!LOOP "text:split($RxProcessingList,';')"!]
+                [!IF "text:split(.,':')[1] = $RxPduShName"!]
+                  [!VAR "FoundRxProcessing" = "'true'"!]
+                <int>[!"(text:split(.,':')[3])"!]</int>
+                [!ENDIF!]
+              [!ENDLOOP!]
+              [!IF "$FoundRxProcessing = 'false'"!]
+                <int>[!"$CANIF_NO_DECOUPLED_PROCESSING"!]</int>
+              [!ENDIF!]
+              </field>
+            [!ENDIF!]
+            <field>
+              [!/* cut PDU length to 8/64 bytes (Non-FD/FD) to a avoid buffer overflows
+                   or wrong indication of Pdu length to upper layers */!]
+              <int>[!"num:i($pduLen)"!]</int>
+            </field>
+            <field>
+            [!IF "node:exists(CanIfRxPduUserRxIndicationUL)"!]
+              [!IF "$upperLayer = 'CDD'"!]
+                [!VAR "upperLayerIndex"="num:i(node:pos(node:ref(CanIfRxPduUpperLayerRef)))"!]
+              [!ELSE!]
+                [!VAR "upperLayerIndex"="num:i(node:pos(as:modconf('CanIf')[1]/CanIfUpperLayerConfig/*[@name = $upperLayer]))"!]
+              [!ENDIF!]
+              <int>[!"$upperLayerIndex"!]</int>
+            [!ELSE!]
+              <int>[!"$CANIF_NO_UPPER_LAYER_CBK"!]</int>
+            [!ENDIF!]
+            </field>
+            [!IF "$canifDLCCheck"!]
+            <field>
+              <int>[!"CanIfRxPduDlc"!]</int>
+            </field>
+            [!ENDIF!]
+          </field>
+            [!ENDSELECT!]
+            [!ENDFOR!]
+        </field>
+        [!ENDIF!]
+
+        [!VAR "first_index" = "0"!]
+        [!VAR "hthIndex" = "0"!]
+        [!VAR "hthIndexTable" = "''"!]
+        [!IF "$hthNum > 0"!]
+        <!-- driverHthConfig -->
+        <field>
+          [!FOR "k" = "1" TO "$canDriverNum"!]
+            [!LOOP "node:order(as:ref(as:modconf('CanIf')[1]/CanIfCtrlDrvCfg/*[num:i($k)]/CanIfCtrlDrvInitHohConfigRef)/CanIfHthCfg/*, 'as:ref(CanIfHthIdSymRef)/CanObjectId')"!]
+              [!VAR "hthId" = "as:ref(CanIfHthIdSymRef)/CanObjectId"!]
+              [!VAR "hth"   = "as:path(as:ref(CanIfHthIdSymRef)/CanObjectId/..)"!]
+            <field>
+              <field>
+                <int>[!"num:i($first_index)"!]</int>
+              </field>
+              [!IF "$canifSingleCtrlOpt = 'false'"!]
+              <field>
+                <int>[!CALL "GetControllerIndex", "controllerCfgPath" = "node:path(as:ref(CanIfHthCanCtrlIdRef))"!]</int>
+              </field>
+              [!ENDIF!]
+            </field>
+              [!IF "as:ref(CanIfHthIdSymRef)/CanHandleType = 'BASIC'"!]
+                [!VAR "first_index" = "num:i($first_index + count(as:modconf('CanIf')[1]/CanIfInitCfg/*[1]/CanIfTxPduCfg/*[as:path(as:ref(as:ref(as:ref(CanIfTxPduBufferRef)/CanIfBufferHthRef/*[1])/CanIfHthIdSymRef)/CanObjectId/..) = $hth]))"!]
+              [!ENDIF!]
+              [!VAR "hthIndexTable" = "concat($hthIndexTable,' ',num:i($hthId),':',num:i($k),':',num:i($hthIndex),' ')"!]
+              [!VAR "hthIndex" = "num:i($hthIndex +1)"!]
+            [!ENDLOOP!]
+          [!ENDFOR!]
+        </field>
+        [!ENDIF!]
+
+[!/*
+     HRH configuration
+     - Loop over all HRHs sorted by their referenced CanObjectId
+     - count the number of Rx LPDUs assigned to each HRH to get an offset value into the sortedRxLPduConfig list for the
+       index variables firstIndex and lastIndex
+     - reserve two entries for a PDU which shall accept messages regardless if the message is a CAN 2.0 or a CAN FD message
+       Reason: the PDU gets two entries (one with a CAN Id with FD flag set and one without) to abstract the CAN Id match
+       handling of the binary search alorithm
+     - reserve one entry for all other PDUs (with explicit choice if the message is a CAN FD message or not)
+     - a HRH without any Rx LPdu assigned gets a special value for the both index variables (CANIF_INVALID_LPDU_INDEX)
+     - store the number (HrhId) of each HRH to use it for the translation table hohIdToCanIfIdx (translates a CanObjectId to the HrH index)
+*/!]
+        [!IF "$hrhNum > 0"!]
+        <!-- driverHrhConfig -->
+        <field>
+          [!VAR "startIndex" = "0"!]
+          [!VAR "endIndex" = "0"!]
+          [!VAR "hrhIndex" = "0"!]
+          [!VAR "hrhIndexTable" = "''"!]
+          [!FOR "m" = "1" TO "$canDriverNum"!]
+            [!LOOP "node:order(as:ref(as:modconf('CanIf')[1]/CanIfCtrlDrvCfg/*[num:i($m)]/CanIfCtrlDrvInitHohConfigRef)/CanIfHrhCfg/*, 'as:ref(CanIfHrhIdSymRef)/CanObjectId')"!]
+              [!VAR "filter"!][!IF "CanIfHrhSoftwareFilter"!][!"$CANIF_BINARY_SOFTWARE_FILTERING"!][!ELSE!][!"$CANIF_NO_SOFTWARE_FILTERING"!][!ENDIF!][!ENDVAR!]
+              [!VAR "controllerIdx"!][!CALL "GetControllerIndex", "controllerCfgPath" = "node:path(as:ref(CanIfHrhCanCtrlIdRef))"!][!ENDVAR!]
+              [!VAR "hrh" = "as:path(as:ref(CanIfHrhIdSymRef)/CanObjectId/..)"!]
+            <field>
+              [!VAR "hrhPduListNumber" = "0"!]
+              [!VAR "hrhPduListNumberMasked" = "0"!]
+              [!LOOP "as:modconf('CanIf')[1]/CanIfInitCfg/*[1]/CanIfRxPduCfg/*[num:i(count(CanIfRxPduHrhIdRef/*[as:path(as:ref(as:ref(.)/CanIfHrhIdSymRef)/CanObjectId/..) = $hrh])) > 0]"!]
+                [!VAR "rxPduCanIdMaskExists" = "node:exists(node:current()/CanIfRxPduCanIdMask)"!]
+                [!IF "(node:current()/CanIfRxPduCanIdType = 'EXTENDED_CAN') or (node:current()/CanIfRxPduCanIdType = 'STANDARD_CAN')"!]
+                  [!IF "$rxPduCanIdMaskExists"!]
+                    [!VAR "hrhPduListNumberMasked" = "num:i($hrhPduListNumberMasked + 2)"!]
+                  [!ENDIF!]
+                  [!VAR "hrhPduListNumber" = "num:i($hrhPduListNumber + 2)"!]
+                [!ELSE!]
+                  [!IF "$rxPduCanIdMaskExists"!]
+                    [!VAR "hrhPduListNumberMasked" = "num:i($hrhPduListNumberMasked + 1)"!]
+                  [!ENDIF!]
+                  [!VAR "hrhPduListNumber" = "num:i($hrhPduListNumber + 1)"!]
+                [!ENDIF!]
+              [!ENDLOOP!]
+              [!IF "($hrhPduListNumber > 0) and ($hrhPduListNumber = $hrhPduListNumberMasked)"!]
+                [!VAR "allHrhPduListAreMasked" = "1"!]
+              [!ELSE!]
+                [!VAR "allHrhPduListAreMasked" = "0"!]
+              [!ENDIF!]
+              <field>
+              [!IF "($hrhPduListNumber > 0) and ($allHrhPduListAreMasked = 0)"!]
+                <int>[!"num:i($startIndex)"!]</int>
+              [!ELSE!]
+                <int>[!"$CANIF_INVALID_LPDU_INDEX"!]</int>
+              [!ENDIF!]
+              </field>
+              <field>
+              [!IF "($hrhPduListNumber > 0) and ($allHrhPduListAreMasked = 0)"!]
+                [!VAR "endIndex" = "num:i($startIndex + $hrhPduListNumber - $hrhPduListNumberMasked - 1)"!]
+                <int>[!"num:i($endIndex)"!]</int>
+              [!ELSE!]
+                [!IF "($hrhPduListNumber > 0) and ($allHrhPduListAreMasked = 1)"!]
+                  [!VAR "endIndex" = "num:i($startIndex)"!]
+                  <int>[!"num:i($endIndex)"!]</int>
+                [!ELSE!]
+                  <int>[!"$CANIF_INVALID_LPDU_INDEX"!]</int>
+                [!ENDIF!]
+              [!ENDIF!]
+              </field>
+              [!IF "$CanIfMetaDataSupport"!]
+              <field>
+              [!IF "($hrhPduListNumberMasked > 0) and ($allHrhPduListAreMasked = 0)"!]
+                [!VAR "lastMaskedIndex" = "num:i($endIndex + $hrhPduListNumberMasked)"!]
+                <int>[!"num:i($lastMaskedIndex)"!]</int>
+              [!ELSE!]
+                [!IF "($hrhPduListNumberMasked > 0) and ($allHrhPduListAreMasked = 1)"!]
+                  [!VAR "lastMaskedIndex" = "num:i($endIndex + $hrhPduListNumberMasked - 1)"!]
+                  <int>[!"num:i($lastMaskedIndex)"!]</int>
+                [!ELSE!]
+                  <int>[!"$CANIF_INVALID_LPDU_INDEX"!]</int>
+                [!ENDIF!]
+              [!ENDIF!]
+              </field>
+              [!ENDIF!]
+              [!VAR "startIndex" = "num:i($startIndex + $hrhPduListNumber)"!]
+              <field>
+                <int>[!"$filter"!]</int>
+              </field>
+              [!IF "$canifSingleCtrlOpt = 'false'"!]
+              <field>
+                <int>[!"$controllerIdx"!]</int>
+              </field>
+              [!ENDIF!]
+            </field>
+              [!VAR "hrhIndexTable" = "concat($hrhIndexTable,' ',num:i(as:ref($hrh)/CanObjectId),':',num:i($m),':',num:i($hrhIndex),' ')"!]
+              [!VAR "hrhIndex" = "$hrhIndex +1"!]
+            [!ENDLOOP!]
+          [!ENDFOR!]
+        </field>
+        [!ENDIF!]
+
+        [!IF "(($hthNum > 0) or ($hrhNum > 0)) and ($canifHOHTransOpt = 'false')"!]
+        [!VAR "i" = "0"!]
+        <!-- hohIdToCanIfIdx -->
+        <field>
+        [!FOR "j" = "1" TO "$canDriverNum"!]
+          [!VAR "tempDrvPos" = "text:split($driverInfo,'#')[position() = $j]"!]
+          [!VAR "maxCanHohIdPerDrv" = "num:i(text:split($tempDrvPos, '|')[2])"!]
+
+          [!FOR "i" = "0" TO "$maxCanHohIdPerDrv"!]
+           <field>
+             [!IF "text:match($hthIndexTable,concat(' ',num:i($i),':',num:i($j),':[^ ]+ '))"!]
+             <int>[!"num:i(num:i(text:split(text:grep(text:split($hthIndexTable),concat(num:i($i),':',num:i($j),':[^ ]+'))[1],':')[3]) + $CANIF_HTH_ID_MASK)"!]</int>
+             [!ELSEIF "text:match($hrhIndexTable,concat(' ',num:i($i),':',num:i($j),':[^ ]+ '))"!]
+             <int>[!"text:split(text:grep(text:split($hrhIndexTable),concat(num:i($i),':',num:i($j),':[^ ]+'))[1],':')[3]"!]</int>
+             [!ELSE!]
+             <int>[!"$CANIF_INVALID_HOH_ID"!]</int>
+             [!ENDIF!]
+           </field>
+          [!ENDFOR!]
+        [!ENDFOR!]
+        </field>
+        [!ENDIF!]
+
+        <!-- canControllerConfig -->
+        <field>
+          [!VAR "controllerNum" = "num:i(count(CanIfCtrlDrvCfg/*/CanIfCtrlCfg/*))"!]
+          [!IF "$controllerNum > 0"!]
+            [!FOR "i" = "0" TO "$controllerNum - 1"!]
+              [!VAR "currentCtrlCfg"="text:split($sortedCtrlCfgs,',')[position()-1 = $i]"!]
+              [!SELECT "node:ref($currentCtrlCfg)"!]
+          <field>
+              [!IF "$wakeupNotificationCalled = 'true'"!]
+            <field>
+                [!IF "CanIfCtrlWakeupSupport = 'true'"!]
+              <int>[!"num:i(bit:bitset(0, node:value(node:ref(CanIfCtrlWakeupSourceInRef)/EcuMWakeupSourceId)))"!]</int>
+                [!ELSE!]
+              <int>[!"$CANIF_NO_WAKEUP_SOURCE"!]</int>
+                [!ENDIF!]
+            </field>
+            <field>
+                [!IF "$canDriverCompatibility = 'ASR402'"!]
+                  [!IF "node:exists(CanIfCtrlWakeupSourceOutRef)"!]
+              <int>[!"num:i(bit:bitset(0, node:value(node:ref(CanIfCtrlWakeupSourceOutRef)/EcuMWakeupSourceId)))"!]</int>
+                  [!ELSE!]
+              <int>[!"$CANIF_NO_WAKEUP_SOURCE"!]</int>
+                  [!ENDIF!]
+                [!ELSE!]
+                  [!IF "node:exists(as:ref(CanIfCtrlCanCtrlRef)/CanWakeupSourceRef/*[1])"!]
+                    [!IF "node:refvalid(as:ref(CanIfCtrlCanCtrlRef)/CanWakeupSourceRef/*[1])"!]
+              <int>[!"num:i(bit:bitset(0, node:value(node:ref(node:ref(CanIfCtrlCanCtrlRef)/CanWakeupSourceRef/*[1])/EcuMWakeupSourceId)))"!]</int>
+                    [!ELSE!]
+              <int>[!"$CANIF_NO_WAKEUP_SOURCE"!]</int>
+                    [!ENDIF!]
+                  [!ELSEIF "node:exists(as:ref(CanIfCtrlCanCtrlRef)/CanWakeupSourceRef)"!]
+                    [!IF "node:refvalid(as:ref(CanIfCtrlCanCtrlRef)/CanWakeupSourceRef)"!]
+              <int>[!"num:i(bit:bitset(0, node:value(node:ref(node:ref(CanIfCtrlCanCtrlRef)/CanWakeupSourceRef)/EcuMWakeupSourceId)))"!]</int>
+                    [!ELSE!]
+              <int>[!"$CANIF_NO_WAKEUP_SOURCE"!]</int>
+                    [!ENDIF!]
+                  [!ELSEIF "node:exists(CanIfCtrlWakeupSourceOutRef)"!]
+              <int>[!"num:i(bit:bitset(0, node:value(node:ref(CanIfCtrlWakeupSourceOutRef)/EcuMWakeupSourceId)))"!]</int>
+                  [!ELSE!]
+              <int>[!"$CANIF_NO_WAKEUP_SOURCE"!]</int>
+                  [!ENDIF!]
+                [!ENDIF!]
+            </field>
+              [!ENDIF!]
+              [!IF "$canifPNSupport"!]
+            <field>
+                [!IF "count(../../../../CanIfInitCfg/*/CanIfTxPduCfg/*[(as:path(as:ref(as:ref(as:ref(CanIfTxPduBufferRef)/CanIfBufferHthRef/*[1])/CanIfHthCanCtrlIdRef))=as:path(node:current())) and (CanIfTxPduPnFilterPdu='true')]) > 0"!]
+              <int>1</int>
+                [!ELSE!]
+              <int>0</int>
+                [!ENDIF!]
+            </field>
+              [!ENDIF!]
+            <field>
+              <int>[!"as:ref(CanIfCtrlCanCtrlRef)/CanControllerId"!]</int>
+            </field>
+            [!IF "$canIfPublicMultipleDrvSupport = 'true'"!]
+            <field>
+            [!IF "$canDriverCompatibility = 'ASR402' or $canDriverCompatibility = 'ASR403'"!]
+              <int>[!CALL "GetCanDriverIndex", "VendorId" = "as:ref(CanIfCtrlCanCtrlRef)/../../../../CommonPublishedInformation/VendorId", "ApiInfix" = "as:ref(CanIfCtrlCanCtrlRef)/../../../../CommonPublishedInformation/VendorApiInfix"!]</int>
+            [!ELSE!]
+              <int>[!CALL "GetCanDriverIndex", "VendorId" = "as:ref(CanIfCtrlCanCtrlRef)/../../../CommonPublishedInformation/VendorId", "ApiInfix" = "as:ref(CanIfCtrlCanCtrlRef)/../../../CommonPublishedInformation/VendorApiInfix"!]</int>
+            [!ENDIF!]
+            </field>
+            [!ENDIF!]
+          </field>
+              [!ENDSELECT!]
+            [!ENDFOR!]
+          [!ENDIF!]
+        </field>
+
+        <!-- canDriverConfig -->
+        <field>
+          <field>
+            <field>
+              <ref>
+                <struct-field name="canControllerConfig" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            [!IF "$canifHOHTransOpt = 'false'"!]
+            <field>
+              <ref>
+                <struct-field name="hohIdToCanIfIdx" />
+                <array-field index="0" />
+              </ref>
+            </field>
+            [!ENDIF!]
+            <field>
+              <ref>
+                [!IF "$hthNum > 0"!]
+                <struct-field name="driverHthConfig" />
+                <array-field index="0" />
+                [!ENDIF!]
+              </ref>
+            </field>
+            <field>
+              <ref>
+                [!IF "$hrhNum > 0"!]
+                <struct-field name="driverHrhConfig" />
+                <array-field index="0" />
+                [!ENDIF!]
+              </ref>
+            </field>
+            [!IF "$canifHOHTransOpt = 'true'"!]
+            <field>
+              <int>[!"$hrhNum"!]</int>
+            </field>
+            [!ELSEIF "$canifDetEnabled"!]
+            <field>
+              <int>[!"num:i($maxCanHohId)"!]</int>
+            </field>
+            [!ENDIF!]
+            [!IF "as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicTxBuffering='true'"!]
+            <field>
+             <int>[!"$hthNum"!]</int>
+            </field>
+            [!ENDIF!]
+            [!IF "$canifSingleCtrlOpt = 'false'"!]
+            <field>
+             <int>[!"$controllerNum"!]</int>
+            </field>
+            [!ENDIF!]
+          </field>
+        </field>
+
+[!/*
+     Rx-LPDU configuration
+     - Loop over all HRHs sorted by their referenced CanObjectId
+     - loop over all Rx LPDUs assigned to each HRH
+     - calculate the Can Id(s), including the most significant bit if the CanId is of type 'EXTENDED'
+       and including the 2nd most significant bit if the CanId is of type 'FD'
+     - for a single HRH each Rx LPdu is appended to a list (hrhSortedPduList) of the following syntax:
+       <previous list entry>;<LowerCanId>:<PduId>:<UpperCanId>;<next list entry>
+       where as the combination of LowerCanId, PduId and UpperCanId counts as one list entry.
+       The list is sorted by their numeric value of each list entry. This means the list is sorted by the LowerCanId.
+       This works because:
+         - The numeric sort algorithm (num:order) stops with the ':' char.
+         - The LowerCanId is unique (ensured by xdm check)
+       A Rx LPdu which shall handle both FD and non FD frames is put twice to the list (once with the FD flag and once without)
+       The result is a list sorted by the (lower) CanId, which can be used for the binary search algorithm.
+     - The list containing the content of the HRH is appended to a bigger list containing the content of all HRHs (sortedPduList)
+       which is sorted by HRH (CanObjectId)
+     - Note: It is mandatory that looping over the HRHs and the RxPdus is done in the same order as for the HRH configuration
+             (otherwise the calculated variables FirstIndex and LastIndex are inconsistent to the order of sortedRxLPduConfig)
+*/!]
+        [!IF "$sortedPduListEntries > 0"!]
+        <!-- sortedRxLPduConfig -->
+        [!VAR "sortedPduList" = "''"!]
+        [!LOOP "as:modconf('CanIf')[1]/CanIfInitCfg/*[1]/CanIfInitHohCfg/*"!]
+          [!LOOP "node:order(CanIfHrhCfg/*, 'as:ref(CanIfHrhIdSymRef)/CanObjectId')"!]
+            [!VAR "hrh" = "as:path(as:ref(CanIfHrhIdSymRef)/CanObjectId/..)"!]
+            [!VAR "hrhSortedPduList" = "''"!]
+            [!VAR "hrhMaskedPduList" = "''"!]
+            [!LOOP "as:modconf('CanIf')[1]/CanIfInitCfg/*[1]/CanIfRxPduCfg/*[num:i(count(CanIfRxPduHrhIdRef/*[as:path(as:ref(as:ref(.)/CanIfHrhIdSymRef)/CanObjectId/..) = $hrh])) > 0]"!]
+              <!-- Get and store the Mask and the Id to call EcuC -->
+              [!IF "$CanIfMetaDataSupport"!]
+                [!VAR "currentRxMask" = "4294967295"!]
+                [!VAR "rxMaskExists" = "node:exists(node:current()/CanIfRxPduCanIdMask)"!]
+                [!IF "$rxMaskExists"!]
+                  [!VAR "currentRxMask" = "node:current()/CanIfRxPduCanIdMask"!]
+                  [!VAR "currentRxMask" = "num:i($currentRxMask + 3221225472)"!]
+                [!ENDIF!]
+                <!-- !LINKSTO CanIf.EB.Metadata.Config.1,1 -->
+                [!VAR "currentSetMetadataPduId" = "65535"!]
+                [!IF "(node:exists(as:ref(CanIfRxPduRef)/MetaDataTypeRef)) and (node:exists(as:ref(as:ref(CanIfRxPduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = 'CAN_ID_32']))"!]
+                  [!VAR "currentSetMetadataPduId" = "num:i(as:ref(node:current()/CanIfRxPduRef)/PduId)"!]
+                [!ENDIF!]
+              [!ENDIF!]
+              [!VAR "hrhPduId" = "node:current()/CanIfRxPduId"!]
+              [!// obtain the CAN ID
+              [!IF "node:exists(node:current()/CanIfRxPduCanId)"!]
+                [!VAR "hrhPduCanIdLower" = "node:current()/CanIfRxPduCanId"!]
+                [!VAR "hrhPduCanIdUpper" = "$CANIF_NO_RANGE_CONFIG"!]
+              [!ELSE!]
+                [!VAR "hrhPduCanIdLower" = "node:current()/CanIfRxPduCanIdRange/CanIfRxPduCanIdRangeLowerCanId"!]
+                [!VAR "hrhPduCanIdUpper" = "node:current()/CanIfRxPduCanIdRange/CanIfRxPduCanIdRangeUpperCanId"!]
+              [!ENDIF!]
+              [!// store 'Extended bit (MSB)' as part of the CAN ID
+              [!IF "(node:current()/CanIfRxPduCanIdType = 'EXTENDED_CAN') or (node:current()/CanIfRxPduCanIdType = 'EXTENDED_FD_CAN') or (node:current()/CanIfRxPduCanIdType = 'EXTENDED_NO_FD_CAN')"!]
+                [!VAR "hrhPduCanIdLower" = "num:i($hrhPduCanIdLower + 2147483648)"!]
+                [!IF "$hrhPduCanIdUpper != $CANIF_NO_RANGE_CONFIG"!]
+                  [!VAR "hrhPduCanIdUpper" = "num:i($hrhPduCanIdUpper + 2147483648)"!]
+                [!ENDIF!]
+              [!ENDIF!]
+              [!// store 'FD bit (2nd MSB)' as part of the CAN ID (only if CAN message must be of type FD)
+              [!IF "(node:current()/CanIfRxPduCanIdType = 'EXTENDED_FD_CAN') or (node:current()/CanIfRxPduCanIdType = 'STANDARD_FD_CAN')"!]
+                [!VAR "hrhPduCanIdLower" = "num:i($hrhPduCanIdLower + 1073741824)"!]
+                [!IF "$hrhPduCanIdUpper != $CANIF_NO_RANGE_CONFIG"!]
+                  [!VAR "hrhPduCanIdUpper" = "num:i($hrhPduCanIdUpper + 1073741824)"!]
+                [!ENDIF!]
+              [!ENDIF!]
+              <!-- !LINKSTO CanIf.EB.Metadata.Config.5,1 -->
+              [!IF "$CanIfMetaDataSupport"!]
+                [!IF "$rxMaskExists"!]
+                  [!VAR "hrhPduCanIdLower" = "bit:and(num:i($hrhPduCanIdLower), num:i($currentRxMask))"!]
+                  [!VAR "hrhMaskedPduList"!][!"$hrhMaskedPduList"!];[!"num:i($hrhPduCanIdLower)"!]:[!"num:i($hrhPduId)"!]:[!"num:i($hrhPduCanIdUpper)"!]:[!"num:i($currentRxMask)"!]:[!"num:i($currentSetMetadataPduId)"!][!ENDVAR!]
+                [!ELSE!]
+                  [!VAR "hrhSortedPduList"!][!"$hrhSortedPduList"!];[!"num:i($hrhPduCanIdLower)"!]:[!"num:i($hrhPduId)"!]:[!"num:i($hrhPduCanIdUpper)"!]:[!"num:i($currentRxMask)"!]:[!"num:i($currentSetMetadataPduId)"!][!ENDVAR!]
+                [!ENDIF!]
+              [!ELSE!]
+                [!VAR "hrhSortedPduList"!][!"$hrhSortedPduList"!];[!"num:i($hrhPduCanIdLower)"!]:[!"num:i($hrhPduId)"!]:[!"num:i($hrhPduCanIdUpper)"!][!ENDVAR!]
+              [!ENDIF!]
+              [!IF "(node:current()/CanIfRxPduCanIdType = 'EXTENDED_CAN') or (node:current()/CanIfRxPduCanIdType = 'STANDARD_CAN')"!]
+                [!VAR "hrhPduCanIdLower" = "num:i($hrhPduCanIdLower + 1073741824)"!]
+                [!IF "$hrhPduCanIdUpper != $CANIF_NO_RANGE_CONFIG"!]
+                  [!VAR "hrhPduCanIdUpper" = "num:i($hrhPduCanIdUpper + 1073741824)"!]
+                [!ENDIF!]
+                <!-- !LINKSTO CanIf.EB.Metadata.Config.5,1 -->
+                [!IF "$CanIfMetaDataSupport"!]
+                  [!IF "$rxMaskExists"!]
+                    [!VAR "hrhPduCanIdLower" = "bit:and(num:i($hrhPduCanIdLower), num:i($currentRxMask))"!]
+                    [!VAR "hrhMaskedPduList"!][!"$hrhMaskedPduList"!];[!"num:i($hrhPduCanIdLower)"!]:[!"num:i($hrhPduId)"!]:[!"num:i($hrhPduCanIdUpper)"!]:[!"num:i($currentRxMask)"!]:[!"num:i($currentSetMetadataPduId)"!][!ENDVAR!]
+                  [!ELSE!]
+                    [!VAR "hrhSortedPduList"!][!"$hrhSortedPduList"!];[!"num:i($hrhPduCanIdLower)"!]:[!"num:i($hrhPduId)"!]:[!"num:i($hrhPduCanIdUpper)"!]:[!"num:i($currentRxMask)"!]:[!"num:i($currentSetMetadataPduId)"!][!ENDVAR!]
+                  [!ENDIF!]
+                [!ELSE!]
+                  [!VAR "hrhSortedPduList"!][!"$hrhSortedPduList"!];[!"num:i($hrhPduCanIdLower)"!]:[!"num:i($hrhPduId)"!]:[!"num:i($hrhPduCanIdUpper)"!][!ENDVAR!]
+                [!ENDIF!]
+              [!ENDIF!]
+            [!ENDLOOP!]
+            [!VAR "hrhSortedPduList"!][!"text:join( num:order( text:split($hrhSortedPduList,';') ), ';' )"!][!ENDVAR!]
+            [!VAR "hrhMaskedPduList"!][!"text:join( num:order( text:split($hrhMaskedPduList,';') ), ';' )"!][!ENDVAR!]
+            [!VAR "hrhSortedPduList"!][!"$hrhSortedPduList"!];[!"$hrhMaskedPduList"!][!ENDVAR!]
+            [!VAR "sortedPduList"!][!"$sortedPduList"!];[!"$hrhSortedPduList"!][!ENDVAR!]
+          [!ENDLOOP!]
+        [!ENDLOOP!]
+        <field>
+          [!LOOP "text:split($sortedPduList,';')"!]
+          <field>
+            [!IF "$rangeReceptionUsed = 'true'"!]
+            <field>
+              <int>[!"num:i(text:split(.,':')[3])"!]</int>
+            </field>
+            [!ENDIF!]
+            <field>
+              <int>[!"num:i(text:split(.,':')[1])"!]</int>
+            </field>
+            [!IF "$CanIfMetaDataSupport"!]
+            <field>
+              <int>[!"num:i(text:split(.,':')[4])"!]</int>
+            </field>
+            [!ENDIF!]
+            <field>
+              <int>[!"num:i(text:split(.,':')[2])"!]</int>
+            </field>
+            [!IF "$CanIfMetaDataSupport"!]
+            <field>
+              <int>[!"num:i(text:split(.,':')[5])"!]</int>
+            </field>
+            [!ENDIF!]
+          </field>
+          [!ENDLOOP!]
+        </field>
+        [!ENDIF!]
+
+        [!IF "$canTrcvSupport"!]
+        <!-- canTrcvChnlConfig -->
+        <field>
+          [!FOR "i"="0" TO "num:i($trcvChannelsNum - 1)"!]
+            [!SELECT "CanIfTrcvDrvCfg/*/CanIfTrcvCfg/*[$i = CanIfTrcvId]"!]
+          <field>
+            [!IF "as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicTrcvWakeupSupport = 'true'"!]
+            <field>
+              [!IF "CanIfTrcvWakeupSupport = 'false'"!]
+              <int>[!"$CANIF_NO_WAKEUP_SOURCE"!]</int>
+              [!ELSE!]
+              <int>[!"num:i(bit:bitset(0, node:value(node:ref(CanIfTrcvWakeupSourceInRef)/EcuMWakeupSourceId)))"!]</int>
+              [!ENDIF!]
+            </field>
+            <field>
+              [!IF "$canDriverCompatibility = 'ASR402'"!]
+                [!IF "node:exists(CanIfTrcvWakeupSourceOutRef)"!]
+              <int>[!"num:i(bit:bitset(0, node:value(node:ref(CanIfTrcvWakeupSourceOutRef)/EcuMWakeupSourceId)))"!]</int>
+                [!ELSE!]
+              <int>[!"$CANIF_NO_WAKEUP_SOURCE"!]</int>
+                [!ENDIF!]
+              [!ELSE!]
+                [!IF "node:exists(as:ref(CanIfTrcvCanTrcvRef)/CanTrcvWakeupSourceRef)"!]
+              <int>[!"num:i(bit:bitset(0, node:value(node:ref(node:ref(CanIfTrcvCanTrcvRef)/CanTrcvWakeupSourceRef)/EcuMWakeupSourceId)))"!]</int>
+                [!ELSE!]
+              <int>[!"$CANIF_NO_WAKEUP_SOURCE"!]</int>
+                [!ENDIF!]
+              [!ENDIF!]
+            </field>
+            [!ENDIF!]
+            <field>
+              <int>[!"as:ref(CanIfTrcvCanTrcvRef)/CanTrcvChannelId"!]</int>
+            </field>
+            <field>
+              <int>[!"../../@index"!]</int>
+            </field>
+          </field>
+           [!ENDSELECT!]
+         [!ENDFOR!]
+        </field>
+        [!ENDIF!]
+
+      </instance>
+      </memory-section>
+    </configuration>  <!-- PostBuild -->
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>
+
+[!INCLUDE "../../generate_macros/CanIf_Checks.m"!]
+[!ENDCODE!]

@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>intgr.Dlt.PDAV</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        To integrate the DLT module with a Software Component(SW-C), the right ports needs to be
+        defined for the SW-C. The SW-C description shall be built as follows:
+        For each group of ports which belong to one SessionID and shall be handled with one
+        PortDefinedArgumentValue by the Dlt service:
+        <pre>
+            - For each used SessionID create one <code>SwcServiceDependency</code> as part of the
+              <code>SwcInternalBehavior</code>.
+            - Add the <code>DltUserNeeds</code> to this <code>SwcServiceDependency</code>.
+            - For each included Port add one <code>RoleBasedPortAssignment</code> with a reference
+              to the <code>PortPrototype</code>.
+            - The role of <code>RoleBasedPortAssignment</code> can be left empty.
+            - Create  a  new  <code>PortAPIOption</code>  with the value of the SessionID as
+              <code>PortDefinedArgumentValue</code>.
+            - Attach to <code>RoleBasedPortAssignment</code> all <code>PortPrototype</code> elements
+              which shall belong to this SessionID.
+        </pre>
+        To create the port defined argument values for DLT, the Tresos plugin <code>DltAsExt</code>
+        is required. The <code>Create Dlt Port Defined Argument Values</code> unattended wizard
+        creates the required ports, based on the SW-C description.
+      </description>
+      <rationale>
+        The DLT SWS specifies this method to create the port defined arguments values. The DLT
+        module does not know all components from the module configuration that send log messages.
+        The DLT software component description is updated by the <code>Create Dlt Port Defined
+        Argument Values</code> unattended wizard directly in the the Tresos database when the
+        complete project configuration is loaded.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.NvMBlockLength</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the NvM blocks are created via Calculate Service Needs Unattended Wizard, the
+        <code>NvMNvBlockLength</code> should be adjusted to the correct size based on the
+        information from the DLT user's guide.
+      </description>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.UniqueAppIdContextId</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        AppId/ContextId registration cannot differ only by SessionId. If an AppId/ContextId
+        tuple is registered from a SW-C with a sessionId, it cannot be registered from another
+        or same SW-C with different sessionId.
+      </description>
+      <rationale>
+        To have more optimal data handling, the current internal data structures do not offer
+        this flexibility.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.TrafficShaping.MinimumThroughput</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The minimum limit for traffic shaping is 1kByte/sec.
+      </description>
+      <rationale>
+        The configuration parameter DltBandwidthForComModule expects the value in kbit/sec, but
+        in the current implementation, the calculation is based on bytes.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.Multicore.CoreInitialization</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        When basic software distribution support is enabled for Dlt, in order
+        to ensure a consistent initialization state for both Dlt master and Dlt satellite cores,
+        the following initialization sequence must be ensured during the start-up phase of the project:
+        1. Initialize all Dlt satellite cores
+        2. Initialize Dlt master core.
+      </description>
+      <rationale>
+        This sequence is necessary in order to protect the project of inconsistent data storage in the system
+        and invalid run-time data exchange between the cores.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.Multicore.Limits</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In case of multi-core configuration, the maximum number of possible contexts registered
+        is limited to 4095 and the maximum message length is limited to 8188. These values
+        depend on the architecture on which the stack is configured.
+      </description>
+      <rationale>
+        When multi-core is enabled, IOC communication is involved between the cores. The above
+        mentioned limits were introduced as a result of the limitations of the IOC communication
+        channel.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.Multicore.APIRestriction</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In case of multi-core configuration, the control APIs can only be called from the
+        master context. If the control functions are called from the slave context, a negative
+        return value is reported.
+      </description>
+      <rationale>
+        Run-time variables are only stored in the master core. The data is not replicated on slave
+        cores.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.Multicore.CallingContext.MasterCoreOnly</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the Dlt BSW distribution functionality is enabled, the following Dlt APIs should always be called only in the context of a Dlt master instance:
+        - Dlt_ComCopyTxData()
+        - Dlt_ComTxConfirmation()
+        - Dlt_ComCopyRxData()
+        - Dlt_ComRxIndication()
+        - Dlt_MainFunction()
+        - Dlt_IssueWriteRequestToNvM()
+        - Dlt_ComStartOfReception()
+        NvM callbacks:
+        - Dlt_NvMWriteRamBlockToNvMDataSetCbk()
+        - Dlt_NvMWriteRamBlockToNvMNativeCbk()
+        - Dlt_NvMInitDataSetBlockCbk()
+        - Dlt_NvMInitNativeBlockCbk()
+        - Dlt_NvMReadRamBlockFromNvMDataSetCbk()
+        - Dlt_NvMReadRamBlockFromNvMNativeCbk()
+        - Dlt_NvMSingleBlockCallbackDataSet()
+        - Dlt_NvMSingleBlockCallbackNative()
+        Also, the Dlt events which are triggering the following Runnable Entities should be mapped to an Os task which belongs to the same Os core identifier as the Dlt master instance:
+        - Dlt_SetLogLevelRunnableEntity()
+        - Dlt_SetTraceStatusRunnableEntity()
+        - Dlt_SetVerboseModeRunnableEntity()
+      </description>
+      <rationale>
+        Communication is always processed in the context of the master Dlt instance.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.ParameterDescription</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In Autosar 4.2 or older version Dlt_RegisterContext() API will not use the input parameters app_description,
+        len_app_description, context_description, len_context_description.
+      </description>
+      <rationale>
+        To reduce the size of memory footprint, app_description and context_description is ignored
+        in the current implementation.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.TaskMapping.LogTraceStatusChangedNotification</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In case of multi-core configuration, Rte_Task and Dlt_MainFunction need to be mapped to same
+        core.
+      </description>
+      <rationale>
+        Dlt_ASR42_SetLogLevel and Dlt_ASR42_SetTraceStatus functions are writing the global variable
+        ContextIdTable.Flags. The same variable is read from Dlt_SetLogLevelRunnableEntity and
+        Dlt_SetTraceStatusRunnableEntity.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.SingleTuple.LogChannelTotalNumberLimitation</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If only one AppId/ContextId tuple is present in the configuration (DltServiceAPI = AUTOSAR_431),
+        the maximum number of configured log channels cannot exceed 131.
+      </description>
+      <rationale>
+        The internal handling of the control messages limits the total number of configurable
+        log channels. If the GetLogChannelNames command is sent to the Dlt and only one tuple
+        is present in the configuration, the Dlt will correctly respond with the total number
+        of configured log channels but will not respond with the log channel names beyond 131.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.Multicore.ContextRegistration</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        When basic software distribution support is enabled for Dlt, the exact same context shall not be registered
+        from two different cores.
+      </description>
+      <rationale>
+        There is no conceivable use case where the exact same context should be registered from two distinct cores which
+        would warrant supporting this feature. Registering the context on two cores succeeds because the cores do not check
+        the masters table before registering, but do send an update to the master afterwards which will fail due to the context
+        being already registered. The second core will have the context registered but no other core will have any knowledege
+        about it and hence, unpredictable behaviour may arise.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.RtePrototypes.ArrayBaseType</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The definition of the RTE_PTR2ARRAYTYPE_PASSING macro is necessary before Rte-generated
+        header files (Rte_Dlt.h) are included into the project.
+      </description>
+      <rationale>
+        The Rte provides this macro in order to enforce the usage of the array type instead of the
+        array base type for arrays passed to functions. This maintains consistency with the AUTOSAR
+        specifications (for operations like SetLogChannelAssignment).
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+    <specobject>
+      <id>intgr.Dlt.Multicore.ContextUnregister</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        When <parameter>DltServiceAPI</parameter> parameter is set to AUTOSAR_431 and basic software
+        distribution support is enabled for Dlt, the unregister of a context shall be done
+        on the same core on which it was registered.
+      </description>
+      <rationale>
+        Information about the tuples registered is kept locally, on every core, with the tuples
+        that are registered on that core. If the unregister API is called from a different core,
+        the tuple will not be found in the local tables.
+      </rationale>
+      <tags>
+        <tag>Integration requirement</tag>
+      </tags>
+    </specobject>
+  </specobjects>
+</specdocument>

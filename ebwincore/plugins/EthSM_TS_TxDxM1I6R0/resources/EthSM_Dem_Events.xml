@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dem:events xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd"
+    xmlns:dem="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd">
+
+  <event name="ETHSM_E_LINK_DOWN"
+        base="as:modconf('EthSM')[1]/EthSMNetwork/*">
+    <enable type="XPATH"
+        value="as:modconf('EthSM')[1]/ReportToDem/EthSMDemCtrlTestResultReportToDem='DEM'" />
+    <updateReference
+        value="./EthSMDemEventParameterRefs/ETHSM_E_LINK_DOWN" />
+    <diagEventDebounceAlgorithm value="DiagEventDebounceTimeBased" />
+    <timePassedThreshold value="0.001" />
+    <timeFailedThreshold value="0.001" />
+  </event>
+
+</dem:events>

@@ -1,0 +1,104 @@
+#
+# \file
+#
+# \brief AUTOSAR Compiler
+#
+# This file contains the implementation of the AUTOSAR
+# module Compiler.
+#
+# \version 1.0.8
+#
+# \author Elektrobit Automotive GmbH, 91058 Erlangen, Germany
+#
+# Copyright 2017 - 2021 Elektrobit Automotive GmbH
+# All rights exclusively reserved for Elektrobit Automotive GmbH,
+# unless expressly agreed to otherwise.
+
+
+include mak/make.inc
+
+# ------ general files (used in common rules)
+CC              = cctc
+CTC             = ctc
+CCLIB           = artc
+ASM             = astc
+LINK            = ltc
+GCC             = gcc
+OBJCPY          = objcopy
+ASM_FILE_SUFFIX = s
+HEX_FILE_SUFFIX = mot
+
+# --- check if tools are available
+ifeq ($(shell which $(CC)),)
+$(error ERROR: compiler not defined in PATH)
+endif
+
+DEPEND_DIR      = ./dep
+OBJ_DIR         = ./obj
+DEPEND_INC      = ./mak/dep.inc
+MAKE_INC        = ./mak/c.inc
+MAKE_INCPP      = ./mak/cpp.inc
+ASM_INC         = ./mak/asm.inc
+MAPFILE         = ./bin/$(basename $(PROJECT_BINARY)).map
+EXT_LOCATOR_FILE= $(LOC_FILE)
+LNK_INC         = ./mak/lnk.inc
+
+# ------------  name of the executable  ----------------------------------------
+EXECUTABLE      = ./bin/$(PROJECT_BINARY)
+OUTPUT_LIB      = ./obj/$(basename $(PROJECT_BINARY)).a
+
+# ------------  list of all source files  --------------------------------------
+include mak/src.inc
+
+ASM_SOURCES    = $(filter %.$(ASM_FILE_SUFFIX), $(SRC_FILE_TO_BUILD))
+SOURCES        = $(filter %.c %cpp, $(SRC_FILE_TO_BUILD)) $(ASM_SOURCES)
+
+#===============================================================================
+BASENAMES       = $(basename $(SOURCES))
+# ------------  generate the names of the object files  ------------------------
+OBJECTS         = $(addprefix ./obj/,$(addsuffix .o,$(notdir $(BASENAMES))))
+LIB_OBJECTS_TMP = $(addprefix ./obj/,$(LINK_ONLY_OBJ))
+LIB_OBJECTS     = $(filter-out $(LIB_OBJECTS_TMP), $(OBJECTS))
+
+all: $(EXECUTABLE)
+
+
+$(EXECUTABLE): $(OUTPUT_LIB) $(OBJECTS) 
+	$(build-exe-file)
+
+include mak/lib.inc
+include compiler_rules.mak
+
+# ------------  make the objects  ----------------------------------------------
+./obj/%.o:	./src/%.c
+	$(build-c-file)
+
+./obj/%.o:	./src/%.cpp
+	$(build-cpp-file)
+
+./obj/%.o:	./src/%.$(ASM_FILE_SUFFIX)
+	$(build-s-file)
+
+# ------------  recursive helper  ----------------------------------------------
+# this helper seperates a long list into defined slices. this is necessary on windows systems due
+# the limitation of the longest string passed as a command on the commandline to 16k.
+
+SC_CMD_LISTPERFORM = $(if $(5),\
+	$(call $(1),$(2) $(wordlist 1, $(3), $(5))) \
+	$(call SC_CMD_LISTPERFORM, $(1), $(2), $(3), \
+		$(4),$(wordlist $(4), $(words $(5)), $(5))) )
+
+define SC_CMD_AR_HELPER
+	$(1)
+
+endef
+
+# ------------  make the lib  --------------------------------------------------
+# slice the list of objects passed over $+ parameter into 160 objects per archiver call
+$(OUTPUT_LIB): $(LIB_OBJECTS)
+	$(build-lib-file)
+
+clean:
+	@rm -f ./obj/*
+	@rm -f ./dep/*
+	@rm -f ./bin/*

@@ -1,0 +1,1249 @@
+<?xml version='1.0'?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>TS_TxDxM3I7R0</SHORT-NAME>
+      <ELEMENTS>
+        <ECUC-MODULE-DEF UUID="5a9b4e94-32fa-45ec-a227-197e7b2160f0">
+          <SHORT-NAME>CanSM</SHORT-NAME>
+          <DESC>
+            <L-2 L="FOR-ALL">&lt;html&gt;
+                        Configuration of the CanSM module.
+                      &lt;/html&gt;</L-2>
+          </DESC>
+          <ADMIN-DATA>
+            <LANGUAGE>EN</LANGUAGE>
+            <DOC-REVISIONS>
+              <DOC-REVISION>
+                <REVISION-LABEL>4.2.0</REVISION-LABEL>
+                <ISSUED-BY>AUTOSAR</ISSUED-BY>
+                <DATE>2011-11-09T11:36:22Z</DATE>
+              </DOC-REVISION>
+              <DOC-REVISION>
+                <REVISION-LABEL>3.7.5</REVISION-LABEL>
+                <ISSUED-BY>Elektrobit Automotive GmbH</ISSUED-BY>
+                <DATE>2021-07-14T23:59:59Z</DATE>
+              </DOC-REVISION>
+            </DOC-REVISIONS>
+          </ADMIN-DATA>
+          <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+          <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+          <REFINED-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/AUTOSAR/EcucDefs/CanSM</REFINED-MODULE-DEF-REF>
+          <SUPPORTED-CONFIG-VARIANTS>
+            <SUPPORTED-CONFIG-VARIANT>VARIANT-POST-BUILD</SUPPORTED-CONFIG-VARIANT>
+          </SUPPORTED-CONFIG-VARIANTS>
+          <CONTAINERS>
+            <ECUC-PARAM-CONF-CONTAINER-DEF>
+              <SHORT-NAME>CanSMDefensiveProgramming</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                &lt;p&gt;Parameters for defensive programming&lt;/p&gt;
+                &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMDefProgEnabled</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                    &lt;p&gt;Enables or disables the defensive
+                    programming feature for the module CanSM.&lt;/p&gt;
+                    &lt;p&gt;Note: This feature is dependent on the use of the development error detection module.
+                    To use the defensive programming feature, proceed as follows:
+                    &lt;ol&gt;
+                    &lt;li&gt;Enable development error detection&lt;/li&gt;
+                    &lt;li&gt;Enable defensive programming&lt;/li&gt;
+                    &lt;li&gt;Enable assertions as required&lt;/li&gt;
+                    &lt;/ol&gt;
+                    &lt;/p&gt;
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMPrecondAssertEnabled</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                  &lt;p&gt;Enables handling of precondition assertion checks reported from
+                  the module CanSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMPostcondAssertEnabled</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                  &lt;p&gt;Enables handling of postcondition assertion checks reported from
+                  the module CanSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMStaticAssertEnabled</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                  &lt;p&gt;Enables handling of static assertion checks reported from
+                  the module CanSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMUnreachAssertEnabled</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                  &lt;p&gt;Enables handling of unreachable code assertion checks
+                  reported from the module CanSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMInvariantAssertEnabled</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                  &lt;p&gt;Enables handling of invariant assertion checks
+                  reported from functions of the module CanSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF UUID="8105fb1e-e320-4dc0-857f-fb3449bf554b">
+              <SHORT-NAME>CanSMConfiguration</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                          This container contains the global parameters of the CanSM and sub
+                          containers, which are for the CAN network specific configuration.
+                        &lt;/html&gt;</L-2>
+              </DESC>
+              <MULTIPLE-CONFIGURATION-CONTAINER>true</MULTIPLE-CONFIGURATION-CONTAINER>
+              <PARAMETERS>
+                <ECUC-INTEGER-PARAM-DEF UUID="577375da-cd24-480c-a603-ee8d7212265a">
+                  <SHORT-NAME>CanSMModeRequestRepetitionMax</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                            Specifies the maximal amount of mode request repetitions without a
+                            respective mode indication from the CanIf module until the CanSM module
+                            reports a development error to the DET and tries to go back to no
+                            communication.
+                          &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                  <MAX>255</MAX>
+                  <MIN>0</MIN>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-FLOAT-PARAM-DEF UUID="1f394810-3490-4786-8d70-a272341d7d1d">
+                  <SHORT-NAME>CanSMModeRequestRepetitionTime</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                            Specifies in which time duration the CanSM module shall repeat mode
+                            change requests by using the API of the CanIf module.
+                          &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>0.0</DEFAULT-VALUE>
+                  <MAX>65.534</MAX>
+                  <MIN>0.0</MIN>
+                </ECUC-FLOAT-PARAM-DEF>
+              </PARAMETERS>
+              <SUB-CONTAINERS>
+                <ECUC-PARAM-CONF-CONTAINER-DEF UUID="760a4b82-38e4-4566-8722-d52678f99c09">
+                  <SHORT-NAME>CanSMManagerNetwork</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                              &lt;p&gt;This container contains the CAN network specific parameters of
+                              each CAN network.&lt;/p&gt;
+                              &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                  &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                  Using only one container of this type reduces the ROM consumption
+                                  of the module configuration.
+                                &lt;/li&gt;
+                                &lt;li class=&quot;optimization.config.ram.reduction&quot;&gt;
+                                  &lt;strong&gt;RAM reduction (config):&lt;/strong&gt;
+                                  Using only one container of this type reduces the RAM consumption
+                                  of the module configuration.
+                                &lt;/li&gt;
+                                &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                  &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                  Using only one container of this type reduces the ROM consumption
+                                  of the module code.
+                                &lt;/li&gt;
+                                &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                  &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                  Using only one container of this type reduces the execution time of
+                                  the module code.
+                                &lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</L-2>
+                  </DESC>
+                  <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                  <UPPER-MULTIPLICITY>255</UPPER-MULTIPLICITY>
+                  <PARAMETERS>
+                    <ECUC-INTEGER-PARAM-DEF UUID="4e786285-cd83-4775-9a05-d2a5d6767e1c">
+                      <SHORT-NAME>CanSMBorCounterL1ToL2</SHORT-NAME>
+                      <DESC>
+                        <L-2 L="FOR-ALL">&lt;html&gt;
+                                &lt;p&gt;If the count of bus-offs is &lt;em&gt;greater than or equal to&lt;/em&gt; this
+                                threshold, the bus-off recovery switches from level 1 (short
+                                recovery time) to level 2 (long recovery time).&lt;/p&gt;
+                                &lt;p&gt;&lt;em&gt;Remark:&lt;/em&gt; By comparison, the &quot;BOR L2 Error Reporting
+                                Threshold&quot; is a &quot;greater than&quot; threshold.
+                                &lt;/p&gt;
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                    &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the execution
+                                    time of the module code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</L-2>
+                      </DESC>
+                      <IMPLEMENTATION-CONFIG-CLASSES>
+                        <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                          <CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+                          <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                        </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      </IMPLEMENTATION-CONFIG-CLASSES>
+                      <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                      <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                      <DEFAULT-VALUE>2</DEFAULT-VALUE>
+                      <MAX>255</MAX>
+                      <MIN>0</MIN>
+                    </ECUC-INTEGER-PARAM-DEF>
+                    <ECUC-FLOAT-PARAM-DEF UUID="3e67becb-0a64-448c-968c-4c58b400312f">
+                      <SHORT-NAME>CanSMBorTimeL1</SHORT-NAME>
+                      <DESC>
+                        <L-2 L="FOR-ALL">&lt;html&gt;
+                                This time parameter defines in seconds the duration of the bus-off
+                                recovery time in level 1 (short recovery time).
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                    &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the execution
+                                    time of the module code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</L-2>
+                      </DESC>
+                      <IMPLEMENTATION-CONFIG-CLASSES>
+                        <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                          <CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+                          <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                        </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      </IMPLEMENTATION-CONFIG-CLASSES>
+                      <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                      <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                      <DEFAULT-VALUE>0.5</DEFAULT-VALUE>
+                      <MAX>65.535</MAX>
+                      <MIN>0.0</MIN>
+                    </ECUC-FLOAT-PARAM-DEF>
+                    <ECUC-FLOAT-PARAM-DEF UUID="8d424bc5-ae4c-4572-be7c-d6d8f2ef476a">
+                      <SHORT-NAME>CanSMBorTimeL2</SHORT-NAME>
+                      <DESC>
+                        <L-2 L="FOR-ALL">&lt;html&gt;
+                                This time parameter defines in seconds the duration of the bus-off
+                                recovery time in level 2 (long recovery time).
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                    &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the execution
+                                    time of the module code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</L-2>
+                      </DESC>
+                      <IMPLEMENTATION-CONFIG-CLASSES>
+                        <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                          <CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+                          <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                        </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      </IMPLEMENTATION-CONFIG-CLASSES>
+                      <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                      <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                      <DEFAULT-VALUE>1.5</DEFAULT-VALUE>
+                      <MAX>65.535</MAX>
+                      <MIN>0.0</MIN>
+                    </ECUC-FLOAT-PARAM-DEF>
+                    <ECUC-FLOAT-PARAM-DEF UUID="91028b07-ab39-4c1a-8501-22ddac63992c">
+                      <SHORT-NAME>CanSMBorTimeTxEnsured</SHORT-NAME>
+                      <DESC>
+                        <L-2 L="FOR-ALL">&lt;html&gt;
+                                &lt;p&gt;This parameter defines in seconds the duration of the bus-off
+                                event check.&lt;/p&gt;
+                                &lt;p&gt;This parameter is ignored if parameter
+                                CanSMBorTxConfirmationPolling is enabled.&lt;/p&gt;
+                                &lt;p&gt;This check assesses, if the recovery has been successful after
+                                the recovery reenables the transmit path. If a new bus-off occurs
+                                during this time period, the CanSM assesses this bus-off as
+                                sequential bus-off without successful recovery.&lt;/p&gt;
+                                &lt;p&gt;Because a bus-off only can be detected, when PDUs are
+                                transmitted, the time has to be great enough to ensure that PDUs
+                                are transmitted again (e. g. time period of the fastest cyclic
+                                transmitted PDU of the COM module / ComTxModeTimePeriodFactor).&lt;/p&gt;
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the ROM
+                                    consumption of the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                    &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                    Using the same value for all networks reduces the execution
+                                    time of the module code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</L-2>
+                      </DESC>
+                      <IMPLEMENTATION-CONFIG-CLASSES>
+                        <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                          <CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+                          <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                        </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      </IMPLEMENTATION-CONFIG-CLASSES>
+                      <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                      <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                      <DEFAULT-VALUE>5.0</DEFAULT-VALUE>
+                      <MAX>65.534</MAX>
+                      <MIN>0.0</MIN>
+                    </ECUC-FLOAT-PARAM-DEF>
+                    <ECUC-BOOLEAN-PARAM-DEF UUID="099ea3af-a0b0-4c38-8b91-bb1729ea81c0">
+                      <SHORT-NAME>CanSMBorTxConfirmationPolling</SHORT-NAME>
+                      <DESC>
+                        <L-2 L="FOR-ALL">&lt;html&gt;
+                                This parameter shall configure, if the CanSM polls the
+                                CanIf_GetTxConfirmationState API to decide the bus-off state to be
+                                recovered instead of using the CanSMBorTimeTxEnsured parameter for
+                                this decision.
+                              &lt;/html&gt;</L-2>
+                      </DESC>
+                      <IMPLEMENTATION-CONFIG-CLASSES>
+                        <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                          <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                          <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                        </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      </IMPLEMENTATION-CONFIG-CLASSES>
+                      <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                      <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                      <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                    </ECUC-BOOLEAN-PARAM-DEF>
+                    <ECUC-BOOLEAN-PARAM-DEF>
+                      <SHORT-NAME>CanSMActivatePN</SHORT-NAME>
+                      <DESC>
+                        <L-2 L="FOR-ALL">&lt;html&gt;
+                                Activate/deactivate the partial networking for this network.
+                                &lt;ul&gt;
+                                  &lt;li&gt;true: Partial Networking activated for this network&lt;/li&gt;
+                                  &lt;li&gt;false: Partial Networking deactivated for this network&lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</L-2>
+                      </DESC>
+                      <IMPLEMENTATION-CONFIG-CLASSES>
+                        <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                          <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                          <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                        </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      </IMPLEMENTATION-CONFIG-CLASSES>
+                      <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                      <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                      <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                    </ECUC-BOOLEAN-PARAM-DEF>
+                  </PARAMETERS>
+                  <REFERENCES>
+                    <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="01779727-b662-483b-99dc-2831d6994ede">
+                      <SHORT-NAME>CanSMComMNetworkHandleRef</SHORT-NAME>
+                      <DESC>
+                        <L-2 L="FOR-ALL">&lt;html&gt;
+                                Unique handle to identify one certain CAN network. Reference to one
+                                of the network handles configured for the ComM.
+                              &lt;/html&gt;</L-2>
+                      </DESC>
+                      <IMPLEMENTATION-CONFIG-CLASSES>
+                        <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                          <CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+                          <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                        </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      </IMPLEMENTATION-CONFIG-CLASSES>
+                      <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                      <DESTINATION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/ComM/ComMConfigSet/ComMChannel</DESTINATION-REF>
+                    </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                    <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="fed7d1c2-b6d9-47b7-9f6b-f6146ad3f684">
+                      <SHORT-NAME>CanSMTransceiverId</SHORT-NAME>
+                      <DESC>
+                        <L-2 L="FOR-ALL">&lt;html&gt;
+                                ID of the CAN transceiver assigned to the configured network
+                                handle. Reference to one of the transceivers managed by the CanIf
+                                module.
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.increase&quot;&gt;
+                                    &lt;strong&gt;ROM increase (config):&lt;/strong&gt;
+                                    Using this parameter increases the ROM consumption of the
+                                    module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                                    &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                                    Using this parameter increases the ROM consumption of the
+                                    module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.increase&quot;&gt;
+                                    &lt;strong&gt;Execution time increase (code):&lt;/strong&gt;
+                                    Using this parameter increases the execution time of the module
+                                    code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</L-2>
+                      </DESC>
+                      <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                      <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                      <IMPLEMENTATION-CONFIG-CLASSES>
+                        <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                          <CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+                          <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                        </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      </IMPLEMENTATION-CONFIG-CLASSES>
+                      <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                      <DESTINATION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/CanIf/CanIfTrcvDrvCfg/CanIfTrcvCfg</DESTINATION-REF>
+                    </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                  </REFERENCES>
+                  <SUB-CONTAINERS>
+                    <ECUC-PARAM-CONF-CONTAINER-DEF UUID="2f1c3e0a-fde1-420e-a6d6-b34b9793d38e">
+                      <SHORT-NAME>CanSMController</SHORT-NAME>
+                      <DESC>
+                        <L-2 L="FOR-ALL">&lt;html&gt;
+                                  This container contains the controller IDs assigned to a CAN
+                                  network.
+                                  &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                  &lt;ul&gt;
+                                    &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                      &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                      Using a single controller for each network reduces the ROM
+                                      consumption of the module configuration.
+                                    &lt;/li&gt;
+                                    &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                      &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                      Using a single controller for each network reduces the ROM
+                                      consumption of the module code.
+                                    &lt;/li&gt;
+                                    &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                      &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                      Using a single controller for each network reduces the
+                                      execution time of the module code.
+                                    &lt;/li&gt;
+                                  &lt;/ul&gt;
+                                &lt;/html&gt;</L-2>
+                      </DESC>
+                      <LOWER-MULTIPLICITY>1</LOWER-MULTIPLICITY>
+                      <UPPER-MULTIPLICITY>255</UPPER-MULTIPLICITY>
+                      <REFERENCES>
+                        <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="5240945c-e44e-4547-933f-7aca1f2eaec5">
+                          <SHORT-NAME>CanSMControllerId</SHORT-NAME>
+                          <DESC>
+                            <L-2 L="FOR-ALL">&lt;html&gt;
+                                    Unique handle to identify one certain CAN controller. Reference
+                                    to one of the CAN controllers managed by the CanIf module.
+                                  &lt;/html&gt;</L-2>
+                          </DESC>
+                          <IMPLEMENTATION-CONFIG-CLASSES>
+                            <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                              <CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+                              <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                            </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                          </IMPLEMENTATION-CONFIG-CLASSES>
+                          <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                          <DESTINATION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/CanIf/CanIfCtrlDrvCfg/CanIfCtrlCfg</DESTINATION-REF>
+                        </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                      </REFERENCES>
+                    </ECUC-PARAM-CONF-CONTAINER-DEF>
+                    <ECUC-PARAM-CONF-CONTAINER-DEF UUID="a1c8ec88-6541-4d4d-bc45-9ff9f57b0607">
+                      <SHORT-NAME>CanSMDemEventParameterRefs</SHORT-NAME>
+                      <DESC>
+                        <L-2 L="FOR-ALL">&lt;html&gt;
+                                Container for the references to DemEventParameter elements which
+                                shall be invoked using the API Dem_ReportErrorStatus API in case
+                                the corresponding error occurs. The EventId is taken from the
+                                referenced DemEventParameter&apos;s DemEventId value. The
+                                standardized errors are provided in the container and can be
+                                extended by vendor specific error references.
+                              &lt;/html&gt;</L-2>
+                      </DESC>
+                      <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                      <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                      <REFERENCES>
+                        <ECUC-SYMBOLIC-NAME-REFERENCE-DEF UUID="580d5bf4-b56e-47fe-b9f5-ead77241cce6">
+                          <SHORT-NAME>CANSM_E_BUS_OFF</SHORT-NAME>
+                          <DESC>
+                            <L-2 L="FOR-ALL">&lt;html&gt;
+                                  Reference to the configured DEM event to report bus-off errors for
+                                  this CAN network.
+                                  &lt;p&gt;Dependency on parameter(s):&lt;/p&gt;
+                                  &lt;ul&gt;
+                                  &lt;li&gt;&lt;code&gt;CanSMBusOffReportToDem&lt;/code&gt;: Select DEM to enable the reporting of
+                                  &lt;code&gt;CANSM_E_BUS_OFF&lt;/code&gt;.&lt;/li&gt;
+                                  &lt;/ul&gt;
+                                  &lt;p&gt;Further notes:&lt;/p&gt;
+                                  &lt;ul&gt;
+                                  &lt;li&gt;Activation: Thrown if there is a notification of a bus-off event
+                                  on a CAN controller. &lt;/li&gt;
+                                  &lt;li&gt;Healing: Will be healed if communication goes on within the configurable
+                                  timespan of bus-off recovery timers &lt;code&gt;CanSMBorTimeL1&lt;/code&gt; and
+                                  &lt;code&gt;CanSMBorTimeL2&lt;/code&gt;.&lt;/li&gt;
+                                  &lt;li&gt;Trigger debounce: None. The error is reported on first occurrence.&lt;/li&gt;
+                                  &lt;li&gt;Rate of diagnostic checks: Checked cyclically within &lt;code&gt;CanSM_MainFunction()&lt;/code&gt;.&lt;/li&gt;
+                                  &lt;/ul&gt;
+                                &lt;/html&gt;</L-2>
+                          </DESC>
+                          <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                          <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                          <IMPLEMENTATION-CONFIG-CLASSES>
+                            <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                              <CONFIG-CLASS>POST-BUILD</CONFIG-CLASS>
+                              <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                            </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                          </IMPLEMENTATION-CONFIG-CLASSES>
+                          <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                          <DESTINATION-REF DEST="ECUC-PARAM-CONF-CONTAINER-DEF">/AUTOSAR/EcucDefs/Dem/DemConfigSet/DemEventParameter</DESTINATION-REF>
+                        </ECUC-SYMBOLIC-NAME-REFERENCE-DEF>
+                      </REFERENCES>
+                    </ECUC-PARAM-CONF-CONTAINER-DEF>
+                  </SUB-CONTAINERS>
+                </ECUC-PARAM-CONF-CONTAINER-DEF>
+              </SUB-CONTAINERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF>
+              <SHORT-NAME>ReportToDem</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                      Production error handling
+                    &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-ENUMERATION-PARAM-DEF>
+                  <SHORT-NAME>CanSMBusOffReportToDem</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                        &lt;p&gt;Selects the handling of the production error:
+                          &lt;em&gt;bus off recovery state machine error&lt;/em&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;DEM&lt;/code&gt;: All errors are reported to the Diagnostics Event Manager (Dem).&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;DET&lt;/code&gt;: All errors are reported to the Development Error Tracer (Det) if enabled.&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;DISABLE&lt;/code&gt;: Production errors are not reported at all.&lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                            &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                            Setting this parameter to a value of DISABLE reduces the ROM consumption of the module code.
+                          &lt;/li&gt;
+                          &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                            &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                            Setting this parameter to a value of DISABLE reduces the execution time of the module code.
+                          &lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>DEM</DEFAULT-VALUE>
+                  <LITERALS>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>DEM</SHORT-NAME>
+                      <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>DET</SHORT-NAME>
+                      <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>DISABLE</SHORT-NAME>
+                      <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                  </LITERALS>
+                </ECUC-ENUMERATION-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>CanSMBusOffReportToDemDetErrorId</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                        &lt;p&gt;If a production error is reported towards the Det, this parameter defines
+                        the error id of the production errors CANSM_E_BUS_OFF for all networks.&lt;/p&gt;
+                        &lt;p&gt;The Det instance id is the ComM channel ID (parameter ComMChannelId of the ComM
+                        channel referenced by parameter CanSMComMNetworkHandleRef).&lt;/p&gt;
+                      &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM3I7R0/CanSM/ReportToDem/CanSMBusOffReportToDemDetErrorId: ENABLE(XPath: ../CanSMBusOffReportToDem = &apos;DET&apos;)-->
+                  <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                  <!-- @CalculatedEnd -->
+                  <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>128</DEFAULT-VALUE>
+                  <MAX>255</MAX>
+                  <MIN>0</MIN>
+                </ECUC-INTEGER-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF UUID="feb6c666-61ee-416a-a6ec-3ada40812bba">
+              <SHORT-NAME>CanSMGeneral</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                        Container for general pre-compile parameters of the CanSM module.
+                      &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-BOOLEAN-PARAM-DEF UUID="bf84be52-4fcd-4dac-8705-9a9b183f417c">
+                  <SHORT-NAME>CanSMDevErrorDetect</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Enables and disables the development error detection and notification
+                          mechanism.&lt;/p&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                              &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.exetime.increase&quot;&gt;
+                              &lt;strong&gt;Execution time increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the execution time of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>true</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-FLOAT-PARAM-DEF UUID="2ff7ac83-5f42-4ec6-940a-3d73511b1ee2">
+                  <SHORT-NAME>CanSMMainFunctionTimePeriod</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          This parameter defines the cycle time of the function
+                          &lt;code&gt;CanSM_MainFunction&lt;/code&gt; in seconds.
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>0.02</DEFAULT-VALUE>
+                  <MAX>65.535</MAX>
+                  <MIN>0.001</MIN>
+                </ECUC-FLOAT-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF UUID="6cfe4a9a-e649-4e17-adcf-9c46e25bced7">
+                  <SHORT-NAME>CanSMVersionInfoApi</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          Activate/deactivate the version information API
+                          (&lt;code&gt;CanSM_GetVersionInfo&lt;/code&gt;).
+                          &lt;ul&gt;
+                            &lt;li&gt;true: Version information API activated&lt;/li&gt;
+                            &lt;li&gt;false: Version information API deactivated&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                              &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF UUID="ECUC:e867d5e0-54d8-4148-85f7-5b893481a47a">
+                  <SHORT-NAME>CanSMChangeBaudrateApi</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                        The support of the Can_ChangeBaudrate API is optional..
+                        &lt;ul&gt;
+                            &lt;li&gt;true: Can_ChangeBaudrate API shall be supported&lt;/li&gt;
+                            &lt;li&gt;false:Can_ChangeBaudrate API is not supported&lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                            &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                            Disabling this parameter decreases the ROM consumption of
+                            the module code.
+                          &lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;
+                          &lt;strong&gt;This feature is currently not supported.&lt;/strong&gt;
+                        &lt;/p&gt;
+                      &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>AUTOSAR_ECUC</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMPNSupport</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          Activate/deactivate the partial networking support.
+                          &lt;ul&gt;
+                            &lt;li&gt;true: Partial Networking enabled&lt;/li&gt;
+                            &lt;li&gt;false: Partial Networking disabled&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMSetBaudrateApi</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          Activate/deactivate the API function CanSM_SetBaudrate().
+                          &lt;ul&gt;
+                            &lt;li&gt;true: CanSM_SetBaudrate() enabled&lt;/li&gt;
+                            &lt;li&gt;false: CanSM_SetBaudrate() disabled&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMBusDeactivatedBusOff</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                        This parameter selects how Bus Off is handled.
+                        &lt;p&gt;Effect:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;Enabled: Bus Off will trigger No Communication until controller is restarted.&lt;/li&gt;
+                            &lt;li&gt;Disabled: Bus Off will trigger Silent Communication (AUTOSAR handling) until controller is restarted.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMEnhancedBusOffReporting</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          Activate/deactivate enhanced bus-off reporting to BswM.
+                          Concerning to enhanced bus-off reporting the range of
+                          enumeration CanSM_BswMCurrentStateType as defined in chapter
+                          8.2.3 of the CAN State Manager SWS has changed to:
+                          &lt;br/&gt;&lt;br/&gt;
+                          Range:&lt;br/&gt;
+                          CANSM_BSWM_NO_COMMUNICATION&lt;br/&gt;
+                          CANSM_BSWM_SILENT_COMMUNICATION&lt;br/&gt;
+                          CANSM_BSWM_FULL_COMMUNICATION&lt;br/&gt;
+                          CANSM_BSWM_BUS_OFF&lt;br/&gt;
+                          CANSM_BSWM_CHANGE_BAUDRATE&lt;br/&gt;
+                          CANSM_BSWM_BUS_OFF_L1&lt;br/&gt;
+                          CANSM_BSWM_BUS_OFF_L2&lt;br/&gt;
+                          &lt;br/&gt;
+                          If this parameter is enabled and a bus-off event occurs and
+                          the bus-off counter is lower than CanSMBorCounterL1ToL2,
+                          CanSM reports the value CANSM_BSWM_BUS_OFF_L1 to BswM.&lt;br/&gt;
+                          If a bus-off event occurs and the bus-off counter is greater than
+                          or equal to CanSMBorCounterL1ToL2, CanSM reports the value
+                          CANSM_BSWM_BUS_OFF_L2 to BswM.&lt;br/&gt;&lt;br/&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;true: CanSM reports the values CANSM_BSWM_BUS_OFF_L1 or
+                            CANSM_BSWM_BUS_OFF_L2 in case of bus-off.&lt;/li&gt;
+                            &lt;li&gt;false: CanSM always reports the value CANSM_BSWM_BUS_OFF
+                            in case of bus-off (= SWS defined behavior).&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMTxTimeoutExceptionApi</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          Activate/deactivate the API function CanSM_TxTimeoutException().
+                          &lt;ul&gt;
+                            &lt;li&gt;true: CanSM_TxTimeoutException() enabled&lt;/li&gt;
+                            &lt;li&gt;false: CanSM_TxTimeoutException() disabled&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CanSMMultiCoreSupport</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                        This parameter enables CanSM support for multicore.
+                        &lt;p&gt;Effect:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;Enabled: CanSM multicore support is enabled.&lt;/li&gt;
+                            &lt;li&gt;Disabled: CanSM multicore support is disabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>CanSMMaxNumberOfTransceivers</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          Since different variants can configure different number of transceivers,
+                          this parameter specifies the highest number of configured transceivers across
+                          all post-build variants.
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PRE-COMPILE</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-POST-BUILD</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF UUID="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6">
+              <SHORT-NAME>CommonPublishedInformation</SHORT-NAME>
+              <DESC>
+                <L-2 L="EN">
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1">
+                  <SHORT-NAME>ArMajorVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>2</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70">
+                  <SHORT-NAME>ArMinorVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>2</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e">
+                  <SHORT-NAME>ArPatchVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34">
+                  <SHORT-NAME>SwMajorVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>3</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f">
+                  <SHORT-NAME>SwMinorVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>7</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="a318d2d9-0e75-49da-ac43-e7e4e682e2f9">
+                  <SHORT-NAME>SwPatchVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>5</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:78bc8362-080f-4253-b3da-804ab69a7154">
+                  <SHORT-NAME>ModuleId</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>140</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449">
+                  <SHORT-NAME>VendorId</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>1</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF UUID="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89">
+                  <SHORT-NAME>Release</SHORT-NAME>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <DEFAULT-VALUE></DEFAULT-VALUE>
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF UUID="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07">
+              <SHORT-NAME>PublishedInformation</SHORT-NAME>
+              <DESC>
+                <L-2 L="EN">
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-BOOLEAN-PARAM-DEF UUID="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee">
+                  <SHORT-NAME>PbcfgMSupport</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Specifies whether or not the CanSM can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+          </CONTAINERS>
+        </ECUC-MODULE-DEF>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

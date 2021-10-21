@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     + Copyright (C) Elektrobit
+     + All rights reserved
+     +
+     + NAME: plugin.xml
+     +
+     + $Id$
+     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+	<extension point="dreisoft.tresos.generator.api.plugin.generator"
+		id="SoAd_TS_TxDxM1I8R0_GeneratorExt">
+		<generator id="SoAd_TS_TxDxM1I8R0_Generator"
+			moduleId="SoAd_TS_TxDxM1I8R0"
+			class="dreisoft.tresos.soad.generator.Generator">
+			
+			<!-- only having this parameter set to true, a generator is called once for each variant! -->
+			<parameter name="variantAware" value="true"/>
+		</generator>
+	</extension>
+
+	<extension
+		point="dreisoft.tresos.datamodel2.api.plugin.xpathregistration">
+		<xpathfunction>
+			<classregistration
+				class="dreisoft.tresos.soad.xpath.XPathFunctions"
+				description="xpath functions to retrieve routing group properties"
+				namespace="asc_soad"/>
+		</xpathfunction>
+	</extension>
+
+</plugin>

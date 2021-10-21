@@ -1,0 +1,58 @@
+<%@ jet package="dreisoft.tresos.soad.generated.jet" class="SoAd_xgen" skeleton="File_xgen.skeleton" 
+        imports="dreisoft.tresos.soad.tools.AuxiliaryMethods"
+%>
+<%@ include file="head.xgen.inc" %>
+
+
+<%
+    JavaGenContext context = getJavaGenContext(argument, stringBuffer);
+    if(context != null) {
+        CDSGenFile cdsGenFile = getCSDGenFile(context);
+
+        final PreCompileData preCompileData = (PreCompileData)context.gen.getVariable( PreCompileData.ARG_NAME,
+                                                                         PreCompileData.class,
+                                                                         null );
+        final PostBuildData postBuildData = (PostBuildData)context.gen.getVariable(PostBuildData.ARG_NAME,
+                                                                       PostBuildData.class,
+                                                                       null );
+        final String postBildVariantInfix = postBuildData.getSelectedPostBuildVariant();
+        final String fileName = MODULE_NAME + GENERATED_FILE_NAME_SEPARATOR + PostBuildData.FILE_NAME_INFIX;
+        final String generatedCSourceFileName = AuxiliaryMethods.getAddInfix(fileName, postBildVariantInfix);
+        final String constConfigLayoutName = postBuildData.getConstLayout().getName();
+        final String configName = postBildVariantInfix.isEmpty() ? 
+                                    postBuildData.getConfigName() : 
+                                    postBuildData.getConfigName() + GENERATED_FILE_NAME_SEPARATOR + postBildVariantInfix;
+%>
+        <!-- This is the precompile-time configuration of the module. -->
+        <configuration class="PreCompile">
+            <?artifact generate="no" <%@ include file="preCompileConfigData.xgen.inc" %>
+        </configuration> <!-- precompile -->
+
+
+        <!-- This is the post-build configuration of the module. -->
+        <configuration class="PostBuild">
+            <?artifact type="postbuild-h" directory="include" file="<%= generatedCSourceFileName %>.h" generate="yes"?>
+            <?artifact type="postbuild-c" directory="src" file="<%= generatedCSourceFileName %>.c" generate="yes"?>
+
+            <parameter name="postbuild-configuration-name.<%= constConfigLayoutName %>">
+                <symbolic-value><%= configName %></symbolic-value>
+            </parameter>
+
+            <!-- PostBuild type and variable definitions -->
+            <!-- START GENERATED PostBuild type and variable definitions -->
+<%
+            cdsGenFile.type(postBuildData.getLayout(), false);
+            cdsGenFile.type(postBuildData.getConstLayout(), false);
+%>
+            <memory-section name="CONFIG_DATA_UNSPECIFIED">
+<%
+            cdsGenFile.var(postBuildData.getConstLayout());
+%>
+            </memory-section>
+            <!-- END GENERATED PostBuild type and variable definitions -->
+        </configuration> <!-- post-build -->
+<%
+        context.cds.endFile(cdsGenFile);
+    }
+%>
+<%@ include file="foot.xgen.inc" %>

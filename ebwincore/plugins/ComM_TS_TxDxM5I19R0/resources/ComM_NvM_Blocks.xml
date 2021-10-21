@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nvm:blocks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/nvm.blocks_1.xsd"
+    xmlns:nvm="http://www.tresos.de/_project/AutoCore/nvm.blocks_1.xsd">
+
+    <block name="NVM_BLOCK_COMM">
+        <enable type="XPATH"
+            value="node:exists(as:modconf('ComM')[1]/ComMGeneral/ComMGlobalNvMBlockDescriptor) and ((as:modconf('ComM')[1]/ComMGeneral/ComMWakeupInhibitionEnabled = 'true') or (as:modconf('ComM')[1]/ComMGeneral/ComMModeLimitationEnabled = 'true'))" />
+        <updateReference
+            value="as:modconf('ComM')[1]/ComMGeneral/ComMGlobalNvMBlockDescriptor" />
+        <type value="native" />
+        <!-- InhibitionCounter 2 byte + ECUGroupClassification 1 byte + 1 byte for 8 channels-->
+        <length type="XPATH"
+            value="num:i(2 + 1 + num:i((((count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*))- 1 )div 8)+1))" />
+        <crc value="CRC16" />
+        <calcRamBlockCrc value="true" />
+        <ramBlockDataAddress value="&amp;ComM_EB_NvRAM" />
+        <romBlockDataAddress value="&amp;ComM_EB_NvROM" />
+        <readonly value="false" />
+        <resistantToChangedSw value="false" />
+        <restoreAtStart value="true" />
+        <storeAtShutdown value="true"/>
+        <writeOnlyOnce value="false" />
+        <writingPriority value="0" />
+    </block>
+
+</nvm:blocks>

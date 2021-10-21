@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nvm:blocks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/nvm.blocks_1.xsd"
+    xmlns:nvm="http://www.tresos.de/_project/AutoCore/nvm.blocks_1.xsd">
+
+    <block name="NVM_BLOCK_DEM_DEFAULT">
+        <enable type="XPATH" value="(not(node:refvalid(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_DEFAULT/DemNvRamBlockIdRef)) or
+                                    (node:name(as:ref(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_DEFAULT/DemNvRamBlockIdRef)) =  'NVM_BLOCK_DEM_DEFAULT')) and
+                                    (count(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/*) &gt; 0)"/>
+        <updateReference value="as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_DEFAULT/DemNvRamBlockIdRef"/>
+        <type value="native" />
+        <length value="0" />
+        <crc value="CRC32" /> <!-- CRC32 is intended as default value -->
+        <calcRamBlockCrc value="false" />
+        <ramBlockDataAddress value="&amp;Dem_NvData" />
+        <readonly value="false" />
+        <resistantToChangedSw value="false" />
+        <restoreAtStart value="true" />
+        <storeAtShutdown value="true" />
+        <writeOnlyOnce value="false" />
+        <writingPriority value="1" /> <!-- only blocks with priority > 0 are supporting CRC, highest possible priority configuration is used -->
+        <!-- singleBlockCallback cannot be set conditionally and need to configured manually because the schema of service needs calculator for NvM
+              doesnot allow enabling/disabling of NvMSingleBlockCallback container
+             ie singleBlockCallback needs to be updated with value(callback function name) and no conditional check is possible here -->
+        <blockUseSyncMechanism type="XPATH" value="(as:modconf('Dem')[1]/DemGeneral/DemClearDTCBehavior != 'DEM_CLRRESP_VOLATILE')"/>
+        <readRamBlockFromNvCallback value="Dem_NvMReadCopyEventStatusBlock" />
+        <writeRamBlockToNvCallback value="Dem_NvMWriteCopyEventStatusBlock" />
+       </block>
+
+    <block name="NVM_BLOCK_DEM_PRIMARY">
+        <enable type="XPATH" value="(not(node:refvalid(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_PRIMARY/DemNvRamBlockIdRef)) or
+                                    (node:name(as:ref(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_PRIMARY/DemNvRamBlockIdRef)) =  'NVM_BLOCK_DEM_PRIMARY')) and
+                                    ((count(as:modconf('Dem')[1]/DemConfigSet/*/DemEventParameter/*[node:refexists(DemDTCClassRef) and node:value(as:ref(DemDTCClassRef)/DemImmediateNvStorage) = 'true']) &gt; 0) or (as:modconf('Dem')[1]/DemGeneral/DemImmediateStorageInternalEvents = 'true') or (as:modconf('Dem')[1]/DemGeneral/DemClearDTCBehavior != 'DEM_CLRRESP_VOLATILE'))"/>
+        <updateReference value="as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_PRIMARY/DemNvRamBlockIdRef"/>
+        <type value="dataset" />
+        <length value="0" />
+        <nDataSets type="XPATH"
+            value="num:i(as:modconf('Dem')[1]/DemGeneral/DemMaxNumberEventEntryPrimary)" />
+        <crc value="CRC32" /> <!-- CRC32 is intended as default value -->
+        <calcRamBlockCrc value="false" />
+        <ramBlockDataAddress value="&amp;Dem_NvGateEntryPrimaryData" />
+        <readonly value="false" />
+        <resistantToChangedSw value="false" />
+        <restoreAtStart value="false" />
+        <storeAtShutdown value="false" />
+        <writeOnlyOnce value="false" />
+        <writingPriority value="1" /> <!-- only blocks with priority > 0 are supporting CRC, highest possible priority configuration is used -->
+        <singleBlockCallback value="Dem_NvMGateEntryPrimaryBlockCallback" />
+    </block>
+
+    <block name="NVM_BLOCK_DEM_MIRROR">
+        <enable type="XPATH" value="(not(node:refvalid(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_MIRROR/DemNvRamBlockIdRef)) or
+                                    (node:name(as:ref(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_MIRROR/DemNvRamBlockIdRef)) =  'NVM_BLOCK_DEM_MIRROR')) and
+                                    ((count(as:modconf('Dem')[1]/DemConfigSet/*/DemEventParameter/*[node:refexists(DemDTCClassRef) and node:value(as:ref(DemDTCClassRef)/DemImmediateNvStorage) = 'true']) &gt; 0) or (as:modconf('Dem')[1]/DemGeneral/DemImmediateStorageInternalEvents = 'true') or (as:modconf('Dem')[1]/DemGeneral/DemClearDTCBehavior != 'DEM_CLRRESP_VOLATILE')) and as:modconf('Dem')[1]/DemGeneral/DemMaxNumberEventEntryMirror != 0"/>
+        <updateReference value="as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_MIRROR/DemNvRamBlockIdRef"/>
+        <type value="dataset" />
+        <length value="0" />
+        <nDataSets type="XPATH"
+            value="num:i(as:modconf('Dem')[1]/DemGeneral/DemMaxNumberEventEntryMirror)" />
+        <crc value="CRC32" /> <!-- CRC32 is intended as default value -->
+        <calcRamBlockCrc value="false" />
+        <ramBlockDataAddress value="&amp;Dem_NvGateEntryMirrorData" />
+        <readonly value="false" />
+        <resistantToChangedSw value="false" />
+        <restoreAtStart value="false" />
+        <storeAtShutdown value="false" />
+        <writeOnlyOnce value="false" />
+        <writingPriority value="1" /> <!-- only blocks with priority > 0 are supporting CRC, highest possible priority configuration is used -->
+        <singleBlockCallback value="Dem_NvMGateEntryMirrorBlockCallback" />
+    </block>
+
+    <block name="NVM_BLOCK_DEM_PERMANENT">
+        <enable type="XPATH" value="(not(node:refvalid(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_PERMANENT/DemNvRamBlockIdRef)) or
+                                    (node:name(as:ref(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_PERMANENT/DemNvRamBlockIdRef)) =  'NVM_BLOCK_DEM_PERMANENT')) and
+                                     node:exists(as:modconf('Dem')[1]/DemGeneral/DemMaxNumberEventEntryPermanent) and as:modconf('Dem')[1]/DemGeneral/DemMaxNumberEventEntryPermanent &gt; 0"/>
+        <updateReference value="as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_PERMANENT/DemNvRamBlockIdRef"/>
+        <type value="native" />
+        <length type="XPATH" value="num:i(as:modconf('Dem')[1]/DemGeneral/DemMaxNumberEventEntryPermanent * 2)"/>
+        <crc value="CRC32" /> <!-- CRC32 is intended as default value -->
+        <calcRamBlockCrc value="false" />
+        <readonly value="false" />
+        <resistantToChangedSw value="false" />
+        <restoreAtStart value="true" />
+        <storeAtShutdown value="false" />
+        <writeOnlyOnce value="false" />
+        <writingPriority value="1" /> <!-- only blocks with priority > 0 are supporting CRC, highest possible priority configuration is used -->
+        <singleBlockCallback value="Dem_NvMWriteFinishedPermanentMemory" />
+        <blockUseSyncMechanism value="true" />
+        <readRamBlockFromNvCallback value="Dem_NvMReadCopyPermanentMemory" />
+        <writeRamBlockToNvCallback value="Dem_NvMWriteCopyPermanentMemory" />
+    </block>
+
+    <block name="NVM_BLOCK_DEM_SECONDARY">
+        <enable type="XPATH" value="(not(node:refvalid(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_SECONDARY/DemNvRamBlockIdRef)) or
+                                    (node:name(as:ref(as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_SECONDARY/DemNvRamBlockIdRef)) =  'NVM_BLOCK_DEM_SECONDARY')) and
+                                    ((count(as:modconf('Dem')[1]/DemConfigSet/*/DemEventParameter/*[node:refexists(DemDTCClassRef) and node:value(as:ref(DemDTCClassRef)/DemImmediateNvStorage) = 'true']) &gt; 0) or (as:modconf('Dem')[1]/DemGeneral/DemImmediateStorageInternalEvents = 'true') or (as:modconf('Dem')[1]/DemGeneral/DemClearDTCBehavior != 'DEM_CLRRESP_VOLATILE')) and as:modconf('Dem')[1]/DemGeneral/DemMaxNumberEventEntrySecondary != 0"/>
+        <updateReference value="as:modconf('Dem')[1]/DemGeneral/DemNvRamBlockId/DEM_NVM_BLOCK_ID_SECONDARY/DemNvRamBlockIdRef"/>
+        <type value="dataset" />
+        <length value="0" />
+        <nDataSets type="XPATH"
+            value="num:i(as:modconf('Dem')[1]/DemGeneral/DemMaxNumberEventEntrySecondary)" />
+        <crc value="CRC32" /> <!-- CRC32 is intended as default value -->
+        <calcRamBlockCrc value="false" />
+        <ramBlockDataAddress value="&amp;Dem_NvGateEntrySecondaryData" />
+        <readonly value="false" />
+        <resistantToChangedSw value="false" />
+        <restoreAtStart value="false" />
+        <storeAtShutdown value="false" />
+        <writeOnlyOnce value="false" />
+        <writingPriority value="1" /> <!-- only blocks with priority > 0 are supporting CRC, highest possible priority configuration is used -->
+        <singleBlockCallback value="Dem_NvMGateEntrySecondaryBlockCallback" />
+    </block>
+
+</nvm:blocks>

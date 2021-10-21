@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.FrNm.EB_INTREQ_FrNm_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      Length of <code>FrNmRxPduId</code> and <code>FrNmTxPduId</code>.
+      The length of the <code>FrNmRxPduId</code> configured in the ECU configuration must be equal
+      when separate PDUs are used for NM-Vote and NM-Data and length of the <code>FrNmTxPduId</code>
+      must not be greater than length of the <code>FrNmRxPduId</code>.
+      </description>
+      <rationale>
+      This limitation allows a more efficient implementation.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.FrNm.EB_INTREQ_FrNm_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      Requirement FRNM307 allows a reinitialization of the module. However, implementation does not
+      support concurrent access to <code>FrNm_Init()</code> and <code>FrNm_Mainfunction()</code>.
+      User has to ensure that <code>FrNm_Init()</code> shall not be called during the execution of
+      <code>FrNm_Mainfunction()</code> and vice versa.
+      </description>
+      <rationale>
+      This limitation allows a more efficient implementation.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>FrNm.EB_INTREQ_FrNm_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The data to be transmitted as part of the NM PDU is always updated in the FrNm main
+        processing function. The FlexRay job list shall be configured in such a way that the
+        PDU data is always updated after the execution of the FrNm_MainFunction and before
+        the beginning of the static segment in order to ensure that the latest data is always
+        visible also on the bus.
+      </description>
+      <rationale>
+        The FrNm PDU, including the vote bit, is always updated in the FrNm_MainFunction.
+        As long as all the state transitions in the Network Mode are aligned with the repetition
+        cycle, the update of the vote bit is also aligned with the repetition cycle. In order
+        to have the data on the bus aligned with the changes of the NM PDU from FrNm, the
+        configuration of the FlexRay job list shall ensure that the PDU data is updated after
+        the execution of the FrNM main processing function and before the start of the
+        static segment (especially for the case when the vote is sent in the static segment).
+      </rationale>
+    </specobject>	
+  </specobjects>
+</specdocument>

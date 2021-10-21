@@ -1,0 +1,258 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_GenApi_c"
+        imports="dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+         java.io.IOException
+         dreisoft.tresos.com.generator.Com_ConfigLayoutType
+         dreisoft.tresos.com.generator.Com_ConfigType
+         dreisoft.tresos.com.generator.ComRxIPduType
+         dreisoft.tresos.com.generator.ComRxSignalType
+         dreisoft.tresos.com.generator.output.GenApiHelper
+         dreisoft.tresos.com.generator.types.MapReceiveSignalType
+         dreisoft.tresos.com.generator.types.SignalTypeType
+         dreisoft.tresos.com.generator.ComCfgDataModel
+         dreisoft.tresos.com.generated.operationstatus.GeneratorOperationStatus" %>
+<%
+   JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    boolean comGenerationSuccessful = !context.gen.isVerifying();
+
+    Com_ConfigLayoutType comPBCfgDataModel = (Com_ConfigLayoutType) context.gen.getVariable("comPBCfgDataModel", Com_ConfigLayoutType.class, null);
+    Com_ConfigType rootConfig = comPBCfgDataModel.Com_RootConfig;
+
+    ComCfgDataModel comCfgDataModel = (ComCfgDataModel) context.gen.getVariable("comCfgDataModel", ComCfgDataModel.class, null);
+
+    final long rxPduStatusBase = rootConfig.ComRxIPduStatusBase.getValue();
+%>
+<%@ include file="head.c.inc" %>
+
+/* MISRA-C:2012 Deviation List
+ *
+ *
+ * MISRAC2012-1) Deviated Rule: 11.5 (advisory)
+ * A conversion should not be performed from pointer to
+ * void into pointer to object.
+ *
+ * Reason:
+ * The memory routines are optimized for dealing with aligned
+ * memory sections.
+ *
+ */
+
+/*==================[includes]==============================================*/
+
+<%
+if(comCfgDataModel.isComGeneratedRcvSigEnable()) {
+%>
+#include <Com_Priv.h>
+#include <Com_GenApi_Static.h>
+#include <Com_GenApi.h>
+#include <Com_PBcfg.h>
+#include <Com_Cfg.h>
+#include <Com_Api_Static.h>
+#include <Com_Api.h>
+#include <Com_Defs.h>
+#include <Compiler.h>
+#include <TSAutosar.h>
+#if (COM_DEV_ERROR_DETECT == STD_ON)
+#include <Det.h>
+#endif /* COM_DEV_ERROR_DETECT == STD_ON */
+
+
+/*==================[macros]================================================*/
+
+<%
+if(comPBCfgDataModel.ComRxSignal != null) {
+%>
+#if (COM_DEV_ERROR_DETECT == STD_ON)
+
+<%
+   for(final ComRxSignalType signal : comPBCfgDataModel.ComRxSignal.get()) {
+      if(signal.getType() != SignalTypeType.UINT8_DYN && signal.getExt() != null) {
+      final ComRxIPduType pdu = signal.getIPdu();
+      final long pduId = pdu.getHandleId();
+%>
+#define <%= GenApiHelper.getCheckStatusMacroName( signal ) %>( retval ) \
+   do { \
+      uint8 BitRes; \
+      TS_GetBit(&Com_gDataMemPtr[ <%= rxPduStatusBase + pduId %>U ], COM_RXPDU_STARTED, uint8, BitRes); \
+      if (BitRes == (uint8)(FALSE)) { (retval) = COM_SERVICE_NOT_AVAILABLE; } \
+   } while( 0 )
+<%
+      }
+   }
+%>
+
+#else /* COM_DEV_ERROR_DETECT == STD_ON */
+
+<%
+   for(final ComRxSignalType signal : comPBCfgDataModel.ComRxSignal.get()) {
+      if(signal.getType() != SignalTypeType.UINT8_DYN && signal.getExt() != null) {
+%>
+#define <%= GenApiHelper.getCheckStatusMacroName( signal ) %>( retval ) do { } while( 0 )
+<%
+      }
+   }
+%>
+
+#endif /* COM_DEV_ERROR_DETECT == STD_ON */
+<%
+}
+%>
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+/* start data section declaration */
+#define COM_START_SEC_CODE
+#include <Com_MemMap.h>
+
+/* Deviation MISRAC2012-1 <START> */
+
+FUNC(uint8,COM_CODE) Com_ReceiveSignal<%= comCfgDataModel.getComMapReceiveSignal() == MapReceiveSignalType.Com_ReceiveSignalGeneric ? "Generated" : "" %>
+(
+   Com_SignalIdType SignalId,
+   P2VAR(void, AUTOMATIC, COM_APPL_DATA) SignalDataPtr
+)
+{
+   uint8 retval = E_OK;
+
+#if (COM_DEV_ERROR_DETECT == STD_ON)
+   /* check whether Com is initialized */
+   if (Com_InitStatus == COM_EB_UNINIT)
+   {
+      COM_DET_REPORTERROR(COM_E_UNINIT, COMServiceId_ReceiveSignal);
+      retval = COM_SERVICE_NOT_AVAILABLE;
+   }
+   /* check SignalDataPtr */
+   else if (SignalDataPtr == NULL_PTR)
+   {
+      COM_DET_REPORTERROR(COM_E_PARAM_POINTER, COMServiceId_ReceiveSignal);
+      retval = COM_SERVICE_NOT_AVAILABLE;
+   }
+   else
+#endif /* COM_DEV_ERROR_DETECT == STD_ON */
+
+   {
+      switch(SignalId)
+      {
+      /* Rx signals */
+<%
+if(comPBCfgDataModel.ComRxSignal != null) {
+   for(final ComRxSignalType signal : comPBCfgDataModel.ComRxSignal.get()) {
+       if(signal.getType() != SignalTypeType.UINT8_DYN && signal.getExt() != null) {
+%>
+      case <%= signal.getHandleId() %>:
+         <%= GenApiHelper.getCheckStatusMacroName( signal ) %>( retval );
+         <%= GenApiHelper.getReceiveMacroName( signal ) %>( SignalDataPtr );
+         break;
+<%
+       }
+   }
+}
+%>
+      default:
+#if (COM_DEV_ERROR_DETECT == STD_ON)
+         COM_DET_REPORTERROR(COM_E_PARAM, COMServiceId_ReceiveSignal);
+#endif /* COM_DEV_ERROR_DETECT == STD_ON */
+         retval = COM_SERVICE_NOT_AVAILABLE;
+         break;
+      } /* switch(SignalId) */
+   }
+
+   return retval;
+}
+
+/*------------------[Com_ReceiveRxSignal]-----------------------------------*/
+
+<%
+if(comPBCfgDataModel.ComRxSignal != null) {
+   for(final ComRxSignalType signal : comPBCfgDataModel.ComRxSignal.get()) {
+      final SignalTypeType signalType = signal.getType();
+      if(signalType != SignalTypeType.UINT8_DYN && signal.getExt() != null) {
+%>
+FUNC(uint8,COM_CODE) <%= GenApiHelper.getReceiveFunctionName( signal ) %> /* <%= signal.getSignalName() %> */
+(
+   P2VAR(void, AUTOMATIC, COM_APPL_DATA) SignalDataPtr
+)
+{
+   /* <%= signalType.getTypedef() %> */
+
+   /* return value */
+   uint8 retval = E_OK;
+
+#if (COM_DEV_ERROR_DETECT == STD_ON)
+   /* check whether Com is initialized */
+   if (Com_InitStatus == COM_EB_UNINIT)
+   {
+      COM_DET_REPORTERROR(COM_E_UNINIT, COMServiceId_ReceiveSignal);
+      retval = COM_SERVICE_NOT_AVAILABLE;
+   }
+   /* check SignalDataPtr */
+   else if (SignalDataPtr == NULL_PTR)
+   {
+      COM_DET_REPORTERROR(COM_E_PARAM_POINTER, COMServiceId_ReceiveSignal);
+      retval = COM_SERVICE_NOT_AVAILABLE;
+   }
+   else
+#endif /* COM_DEV_ERROR_DETECT == STD_ON */
+
+   {
+      <%= GenApiHelper.getCheckStatusMacroName( signal ) %>( retval );
+      <%= GenApiHelper.getReceiveMacroName( signal ) %>( SignalDataPtr );
+   }
+
+   return retval;
+}
+
+<%
+      }
+   }
+}
+%>
+
+/* Deviation MISRAC2012-1 <STOP> */
+
+/* stop data section declaration */
+#define COM_STOP_SEC_CODE
+#include <Com_MemMap.h>
+<%
+} else { // if(comCfgDataModel.isComGeneratedRcvSigEnable()) {
+%>
+
+#include <TSAutosar.h>
+
+typedef uint8 Com_GenApi_c_is_not_empty;
+<%
+} // if(comCfgDataModel.isComGeneratedRcvSigEnable()) {
+%>
+
+<%@ include file="foot.c.inc" %>
+<%
+if (comGenerationSuccessful == true)
+{
+   context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE( "Com_GenApi.c" ) );
+}
+else {
+   return "";
+}
+%>

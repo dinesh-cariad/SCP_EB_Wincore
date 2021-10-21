@@ -1,0 +1,717 @@
+[!AUTOSPACING!][!//
+[!//
+[!MACRO "Create_Interface_Vars", "VarsAsrVersion", "VarsInterfaceName"!][!//
+[!IF "$VarsInterfaceName = ''"!][!//
+  [!VAR "NvmService" = "'NvMService'"!][!//
+  [!VAR "Mirror" = "'NvMMirror'"!][!//
+  [!VAR "NotifyJobFinished" = "'NvMNotifyJobFinished'"!][!//
+  [!VAR "NotifyInitBlock" = "'NvMNotifyInitBlock'"!][!//
+  [!IF "$AsrVersion = 'AUTOSAR_32'"!][!//
+    [!VAR "Admin" = "'NvMAdministration'"!][!//
+  [!ELSE!][!//
+    [!VAR "Admin" = "'NvMAdmin'"!][!//
+  [!ENDIF!][!//
+[!ELSE!][!//
+  [!VAR "NvmService" = "concat('NvM_',$VarsInterfaceName,'Service')"!]
+  [!VAR "Mirror" = "concat('NvM_',$VarsInterfaceName,'Mirror')"!][!//
+  [!VAR "NotifyJobFinished" = "concat('NvM_',$VarsInterfaceName,'NotifyJobFinished')"!][!//
+  [!VAR "NotifyInitBlock" = "concat('NvM_',$VarsInterfaceName,'NotifyInitBlock')"!][!//
+[!IF "$VarsAsrVersion = 'AUTOSAR_32'"!][!//
+  [!VAR "Admin" = "concat('NvM_',$VarsInterfaceName,'Administration')"!][!//
+[!ELSE!][!//
+  [!VAR "Admin" = "concat('NvM_',$VarsInterfaceName,'Admin')"!][!//
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!ENDMACRO!]
+[!MACRO "Build_Ports", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_NvM'"!][!//
+[!CALL "Create_Interface_Vars", "VarsAsrVersion"="$AsrVersion", "VarsInterfaceName"="$InterfaceName"!]
+[!LOOP "NvMBlockDescriptor/*[NvMNvramBlockIdentifier > 1]"!][!//
+[!IF "($ApiCfgClass = 'NVM_API_CONFIG_CLASS_3')"!][!//
+[!IF "NvMProvideRteAdminPort = 'true'"!][!//
+                    <!-- Should only be available for configuration class 3 -->
+                    <P-PORT-PROTOTYPE>
+                      <SHORT-NAME>PAdmin_[!"$InterfaceName"!][!"name(.)"!]</SHORT-NAME>
+                      <PROVIDED-COM-SPECS>
+                        <SERVER-COM-SPEC>
+                          <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$Admin"!]/SetBlockProtection</OPERATION-REF>
+                          <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                        </SERVER-COM-SPEC>
+                      </PROVIDED-COM-SPECS>
+                      <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/[!"$Admin"!]</PROVIDED-INTERFACE-TREF>
+                    </P-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!IF "NvMProvideRteServicePort = 'true'"!][!//
+                    <P-PORT-PROTOTYPE>
+                      <SHORT-NAME>PS_[!"$InterfaceName"!][!"name(.)"!]</SHORT-NAME>
+
+                      <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]</PROVIDED-INTERFACE-TREF>
+                    </P-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!//
+[!LOOP "NvMBlockDescriptor/*[NvMNvramBlockIdentifier]"!][!//
+[!IF "NvMProvideRteJobFinishedPort = 'true'"!][!//
+                    <R-PORT-PROTOTYPE>
+                      <SHORT-NAME>PNJobFinished_[!"$InterfaceName"!][!"name(.)"!]</SHORT-NAME>
+                       <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NotifyJobFinished"!]</REQUIRED-INTERFACE-TREF>
+                    </R-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!IF "NvMProvideRteInitBlockPort = 'true'"!][!//
+                    <R-PORT-PROTOTYPE>
+                      <SHORT-NAME>PNInitBlock_[!"$InterfaceName"!][!"name(.)"!]</SHORT-NAME>
+                       <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NotifyInitBlock"!]</REQUIRED-INTERFACE-TREF>
+                    </R-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!//
+[!LOOP "NvMBlockDescriptor/*[NvMNvramBlockIdentifier]"!][!//
+[!IF "NvMProvideRteMirrorPort = 'true'"!][!//
+                    <R-PORT-PROTOTYPE>
+                      <SHORT-NAME>PMirror_[!"$InterfaceName"!][!"name(.)"!]</SHORT-NAME>
+                       <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/[!"$Mirror"!]</REQUIRED-INTERFACE-TREF>
+                    </R-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!ENDMACRO!]
+[!MACRO "Build_Events", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_NvM'"!][!//
+[!CALL "Create_Interface_Vars", "VarsAsrVersion"="$AsrVersion", "VarsInterfaceName"="$InterfaceName"!]
+[!LOOP "NvMBlockDescriptor/*[NvMNvramBlockIdentifier > 1]"!][!//
+[!IF "($ApiCfgClass = 'NVM_API_CONFIG_CLASS_3')"!][!//
+[!IF "NvMProvideRteAdminPort = 'true'"!][!//
+                      <!-- Should only be available for configuration class 3 -->
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]SetBlockProtection_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]SetBlockProtection</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PAdmin_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$Admin"!]/SetBlockProtection</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!IF "NvMProvideRteServicePort = 'true'"!][!//
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]GetErrorStatus_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]GetErrorStatus</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/GetErrorStatus</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+
+[!IF "($ApiCfgClass = 'NVM_API_CONFIG_CLASS_2') or ($ApiCfgClass = 'NVM_API_CONFIG_CLASS_3')"!][!//
+                      <!-- Should only be available for configuration class 2,3 -->
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]SetDataIndex_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]SetDataIndex</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/SetDataIndex</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+                      <!-- Should only be available for configuration class 2,3 -->
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]GetDataIndex_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]GetDataIndex</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/GetDataIndex</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+
+[!IF "$RBSApi = 'true'"!][!//
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]SetRamBlockStatus_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]SetRamBlockStatus</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/SetRamBlockStatus</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+
+[!IF "($ApiCfgClass = 'NVM_API_CONFIG_CLASS_2') or ($ApiCfgClass = 'NVM_API_CONFIG_CLASS_3')"!][!//
+                      <!-- Should only be available for configuration class 2,3 -->
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]ReadBlock_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]ReadBlock</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/ReadBlock</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+[!IF "$AsrVersion = 'AUTOSAR_42'"!][!//
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]ReadPRAMBlock_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]ReadPRAMBlock</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/ReadPRAMBlock</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+                      <!-- Should only be available for configuration class 2,3 -->
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]WriteBlock_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]WriteBlock</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/WriteBlock</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+  [!IF "$AsrVersion = 'AUTOSAR_42'"!][!//
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]WritePRAMBlock_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]WritePRAMBlock</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/WritePRAMBlock</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+  [!ENDIF!][!//
+                      <!-- Should only be available for configuration class 2,3 -->
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]RestoreBlockDefaults_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]RestoreBlockDefaults</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/RestoreBlockDefaults</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+[!IF "$AsrVersion = 'AUTOSAR_42'"!][!//
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]RestorePRAMBlockDefaults_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]RestorePRAMBlockDefaults</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/RestorePRAMBlockDefaults</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+[!IF "$ApiCfgClass = 'NVM_API_CONFIG_CLASS_3'"!][!//
+                      <!-- Should only be available for configuration class 3 -->
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]EraseBlock_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]EraseBlock</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/EraseBlock</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+                      <!-- Should only be available for configuration class 3 -->
+                      <OPERATION-INVOKED-EVENT>
+                        <SHORT-NAME>EV_[!"$InterfaceName"!]InvalidateNvBlock_[!"name(.)"!]</SHORT-NAME>
+                        <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh/RE_[!"$InterfaceName"!]InvalidateNvBlock</START-ON-EVENT-REF>
+                        <OPERATION-IREF>
+                          <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-P-PORT-REF>
+                          <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NvmService"!]/InvalidateNvBlock</TARGET-PROVIDED-OPERATION-REF>
+                        </OPERATION-IREF>
+                      </OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!ENDMACRO!]
+[!MACRO "Build_Options", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_NvM'"!][!//
+[!CALL "Create_Interface_Vars", "VarsAsrVersion"="$AsrVersion", "VarsInterfaceName"="$InterfaceName"!]
+[!LOOP "NvMBlockDescriptor/*[NvMNvramBlockIdentifier > 1]"!][!//
+[!IF "($ApiCfgClass = 'NVM_API_CONFIG_CLASS_3')"!][!//
+[!IF "NvMProvideRteAdminPort = 'true'"!][!//
+                      <!-- Should only be available for configuration class 3 -->
+                      <PORT-API-OPTION>
+                        <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                        <INDIRECT-API>false</INDIRECT-API>
+                        <PORT-ARG-VALUES>
+                          <PORT-DEFINED-ARGUMENT-VALUE>
+                            <VALUE>
+                              <NUMERICAL-VALUE-SPECIFICATION>
+                                <VALUE>[!"num:i(NvMNvramBlockIdentifier)"!]</VALUE>
+                              </NUMERICAL-VALUE-SPECIFICATION>
+                            </VALUE>
+                            <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_[!"$InterfaceName"!]BlockIdType</VALUE-TYPE-TREF>
+                          </PORT-DEFINED-ARGUMENT-VALUE>
+                        </PORT-ARG-VALUES>
+                        <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PAdmin_[!"$InterfaceName"!][!"name(.)"!]</PORT-REF>
+                      </PORT-API-OPTION>
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!IF "NvMProvideRteServicePort = 'true'"!][!//
+                      <PORT-API-OPTION>
+                        <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                        <INDIRECT-API>false</INDIRECT-API>
+                        <PORT-ARG-VALUES>
+                          <PORT-DEFINED-ARGUMENT-VALUE>
+                            <VALUE>
+                              <NUMERICAL-VALUE-SPECIFICATION>
+                                <VALUE>[!"num:i(NvMNvramBlockIdentifier)"!]</VALUE>
+                              </NUMERICAL-VALUE-SPECIFICATION>
+                            </VALUE>
+                            <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">[!"$TopLevelPackage"!]/ImplementationDataTypes/NvM_[!"$InterfaceName"!]BlockIdType</VALUE-TYPE-TREF>
+                          </PORT-DEFINED-ARGUMENT-VALUE>
+                        </PORT-ARG-VALUES>
+                        <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PS_[!"$InterfaceName"!][!"name(.)"!]</PORT-REF>
+                      </PORT-API-OPTION>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!//
+[!LOOP "NvMBlockDescriptor/*[NvMNvramBlockIdentifier]"!][!//
+[!IF "NvMProvideRteJobFinishedPort = 'true'"!][!//
+                      <PORT-API-OPTION>
+                        <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                        <INDIRECT-API>false</INDIRECT-API>
+                        <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PNJobFinished_[!"$InterfaceName"!][!"name(.)"!]</PORT-REF>
+                      </PORT-API-OPTION>
+[!ENDIF!][!//
+[!IF "NvMProvideRteInitBlockPort = 'true'"!][!//
+                      <PORT-API-OPTION>
+                        <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                        <INDIRECT-API>false</INDIRECT-API>
+                        <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PNInitBlock_[!"$InterfaceName"!][!"name(.)"!]</PORT-REF>
+                      </PORT-API-OPTION>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+
+[!LOOP "NvMBlockDescriptor/*[NvMNvramBlockIdentifier]"!][!//
+[!IF "NvMProvideRteMirrorPort = 'true'"!][!//
+                      <PORT-API-OPTION>
+                        <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                        <INDIRECT-API>false</INDIRECT-API>
+                        <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PMirror_[!"$InterfaceName"!][!"name(.)"!]</PORT-REF>
+                      </PORT-API-OPTION>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!ENDMACRO!]
+[!MACRO "Build_MainFunction", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_NvM'"!][!//
+[!CALL "Create_Interface_Vars", "VarsAsrVersion"="$AsrVersion", "VarsInterfaceName"="$InterfaceName"!]
+[!LOOP "NvMBlockDescriptor/*[NvMNvramBlockIdentifier]"!][!//
+[!IF "NvMProvideRteJobFinishedPort = 'true'"!][!//
+                          <SYNCHRONOUS-SERVER-CALL-POINT>
+                            <SHORT-NAME>sscp_[!"$InterfaceName"!]JobFinished_[!"name(.)"!]</SHORT-NAME>
+                            <OPERATION-IREF>
+                              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PNJobFinished_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-R-PORT-REF>
+                              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NotifyJobFinished"!]/JobFinished</TARGET-REQUIRED-OPERATION-REF>
+                            </OPERATION-IREF>
+                            <TIMEOUT>0.0</TIMEOUT>
+                          </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!][!//
+[!IF "NvMProvideRteInitBlockPort = 'true'"!][!//
+                          <SYNCHRONOUS-SERVER-CALL-POINT>
+                            <SHORT-NAME>sscp_[!"$InterfaceName"!]InitBlock_[!"name(.)"!]</SHORT-NAME>
+                            <OPERATION-IREF>
+                              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PNInitBlock_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-R-PORT-REF>
+                              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$NotifyInitBlock"!]/InitBlock</TARGET-REQUIRED-OPERATION-REF>
+                            </OPERATION-IREF>
+                            <TIMEOUT>0.0</TIMEOUT>
+                          </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!LOOP "NvMBlockDescriptor/*[NvMNvramBlockIdentifier]"!][!//
+[!IF "NvMProvideRteMirrorPort = 'true'"!][!//
+                          <SYNCHRONOUS-SERVER-CALL-POINT>
+                            <SHORT-NAME>sscp_[!"$InterfaceName"!]ReadRamBlockFromNvm_[!"name(.)"!]</SHORT-NAME>
+                            <OPERATION-IREF>
+                              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PMirror_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-R-PORT-REF>
+                              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$Mirror"!]/ReadRamBlockFromNvm</TARGET-REQUIRED-OPERATION-REF>
+                            </OPERATION-IREF>
+                            <TIMEOUT>0.0</TIMEOUT>
+                          </SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SYNCHRONOUS-SERVER-CALL-POINT>
+                            <SHORT-NAME>sscp_[!"$InterfaceName"!]WriteRamBlockToNvm_[!"name(.)"!]</SHORT-NAME>
+                            <OPERATION-IREF>
+                              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/PMirror_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-R-PORT-REF>
+                              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$Mirror"!]/WriteRamBlockToNvm</TARGET-REQUIRED-OPERATION-REF>
+                            </OPERATION-IREF>
+                            <TIMEOUT>0.0</TIMEOUT>
+                          </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!ENDMACRO!]
+[!MACRO "Build_Runnables", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_NvM'"!][!//
+[!CALL "Create_Interface_Vars", "VarsAsrVersion"="$AsrVersion", "VarsInterfaceName"="$InterfaceName"!]
+[!IF "($ApiCfgClass = 'NVM_API_CONFIG_CLASS_3')"!][!//
+[!/* only generate runnable entity if there is at least one block admin port */!][!//
+[!IF "count(NvMBlockDescriptor/*[(NvMProvideRteAdminPort = 'true')]) > 0"!][!//
+                      <!-- Should only be available for configuration class 3 -->
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]SetBlockProtection</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>ProtectionEnabled</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_SetBlockProtection</SYMBOL>
+                      </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+[!/* only generate runnable entity if there is at least one block service port */!][!//
+[!IF "count(NvMBlockDescriptor/*[(NvMProvideRteServicePort = 'true')]) > 0"!][!//
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]GetErrorStatus</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>RequestResultPtr</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_GetErrorStatus</SYMBOL>
+                      </RUNNABLE-ENTITY>
+
+[!IF "($ApiCfgClass = 'NVM_API_CONFIG_CLASS_2') or ($ApiCfgClass = 'NVM_API_CONFIG_CLASS_3')"!][!//
+                      <!-- Should only be available for configuration class 2,3 -->
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]SetDataIndex</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>DataIndex</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_SetDataIndex</SYMBOL>
+                      </RUNNABLE-ENTITY>
+                      <!-- Should only be available for configuration class 2,3 -->
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]GetDataIndex</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>DataIndex</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_GetDataIndex</SYMBOL>
+                      </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+
+[!IF "$RBSApi = 'true'"!][!//
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]SetRamBlockStatus</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockChanged</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_SetRamBlockStatus</SYMBOL>
+                      </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+
+[!IF "($ApiCfgClass = 'NVM_API_CONFIG_CLASS_2') or ($ApiCfgClass = 'NVM_API_CONFIG_CLASS_3')"!][!//
+                      <!-- Should only be available for configuration class 2,3 -->
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]ReadBlock</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>NvM_DstPtr</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_ReadBlock</SYMBOL>
+                      </RUNNABLE-ENTITY>
+[!IF "$AsrVersion = 'AUTOSAR_42'"!][!//
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]ReadPRAMBlock</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_ReadPRAMBlock</SYMBOL>
+                      </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+                      <!-- Should only be available for configuration class 2,3 -->
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]WriteBlock</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>NvM_SrcPtr</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_WriteBlock</SYMBOL>
+                      </RUNNABLE-ENTITY>
+  [!IF "$AsrVersion = 'AUTOSAR_42'"!][!//
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]WritePRAMBlock</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_WritePRAMBlock</SYMBOL>
+                      </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+                      <!-- Should only be available for configuration class 2,3 -->
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]RestoreBlockDefaults</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>NvM_DestPtr</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_RestoreBlockDefaults</SYMBOL>
+                      </RUNNABLE-ENTITY>
+[!IF "$AsrVersion = 'AUTOSAR_42'"!][!//
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]RestorePRAMBlockDefaults</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_RestorePRAMBlockDefaults</SYMBOL>
+                      </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+[!IF "$ApiCfgClass = 'NVM_API_CONFIG_CLASS_3'"!][!//
+                      <!-- Should only be available for configuration class 3 -->
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]EraseBlock</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_EraseNvBlock</SYMBOL>
+                      </RUNNABLE-ENTITY>
+                      <!-- Should only be available for configuration class 3 -->
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_[!"$InterfaceName"!]InvalidateNvBlock</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <ARGUMENTS>
+                          <RUNNABLE-ENTITY-ARGUMENT>
+                            <SYMBOL>BlockId</SYMBOL>
+                          </RUNNABLE-ENTITY-ARGUMENT>
+                        </ARGUMENTS>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <SYMBOL>NvM_[!"$InterfaceName"!]Rte_InvalidateNvBlock</SYMBOL>
+                      </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!ENDMACRO!]
+<?xml version="1.0" encoding="UTF-8"?>
+[!AUTOSPACING!]
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+[!/* do not generate this file if RTE is not used */!][!//
+[!SKIPFILE "NvMCommon/NvMRteUsage = 'false'"!][!//
+[!VAR "RBSApi" = "NvMCommon/NvMSetRamBlockStatusApi"!][!//
+[!VAR "ApiCfgClass" = "NvMCommon/NvMApiConfigClass"!][!//
+[!VAR "JobPrio" = "NvMCommon/NvMJobPrioritization"!][!//
+[!IF "NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+[!VAR "swComponentTypePackageName" = "'ComponentTypes'"!][!//
+[!VAR "swcImplementationPackageName" = "'Implementations'"!][!//
+[!ELSE!][!//
+[!VAR "swComponentTypePackageName" = "'SwComponentTypes'"!][!//
+[!VAR "swcImplementationPackageName" = "'SwcImplementations'"!][!//
+[!ENDIF!][!//
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <!-- AUTOSAR_NvM -->
+      <SHORT-NAME>AUTOSAR_NvM</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE> <!-- SwComponentTypes -->
+          <SHORT-NAME>[!"$swComponentTypePackageName"!]</SHORT-NAME>
+          <ELEMENTS>
+            <SERVICE-SW-COMPONENT-TYPE>
+              <SHORT-NAME>NvM</SHORT-NAME>
+                <PORTS>
+                [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR32ServiceAPI = 'true'"!][!//
+                        <!-- Provide AUTOSAR 3.2 service interface -->
+                        [!CALL "Build_Ports", "AsrVersion"="'AUTOSAR_32'", "InterfaceName"="'ASR32_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR32'"!]
+                [!ENDIF!][!//
+                [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR40ServiceAPI = 'true'"!][!//
+                        <!-- Provide AUTOSAR 4.0 service interface -->
+                        [!CALL "Build_Ports", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR40'"!]
+                [!ENDIF!][!//
+                [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR42ServiceAPI = 'true'"!][!//
+                        <!-- Provide AUTOSAR 4.2 service interface -->
+                        [!CALL "Build_Ports", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR42'"!]
+                [!ENDIF!][!//
+                [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI != 'NONE'"!][!//
+                        <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 / 3.2 -->
+                        [!CALL "Build_Ports", "AsrVersion"="NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI"!]
+                [!ENDIF!][!//
+                </PORTS>
+
+                <INTERNAL-BEHAVIORS>
+                  <SWC-INTERNAL-BEHAVIOR>
+                    <SHORT-NAME>NvMIntBeh</SHORT-NAME>
+                    <EVENTS>
+                    [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR32ServiceAPI = 'true'"!][!//
+                            <!-- Provide AUTOSAR 3.2 service interface -->
+                            [!CALL "Build_Events", "AsrVersion"="'AUTOSAR_32'", "InterfaceName"="'ASR32_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR32'"!]
+                    [!ENDIF!][!//
+                    [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR40ServiceAPI = 'true'"!][!//
+                            <!-- Provide AUTOSAR 4.0 service interface -->
+                            [!CALL "Build_Events", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR40'"!]
+                    [!ENDIF!][!//
+                    [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR42ServiceAPI = 'true'"!][!//
+                            <!-- Provide AUTOSAR 4.2 service interface -->
+                            [!CALL "Build_Events", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR42'"!]
+                    [!ENDIF!][!//
+                    [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI != 'NONE'"!][!//
+                            <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 / 3.2 -->
+                            [!CALL "Build_Events", "AsrVersion"="NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI"!]
+                    [!ENDIF!][!//
+                    </EVENTS>
+                      <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+                    <PORT-API-OPTIONS>
+                    [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR32ServiceAPI = 'true'"!][!//
+                            <!-- Provide AUTOSAR 3.2 service interface -->
+                            [!CALL "Build_Options", "AsrVersion"="'AUTOSAR_32'", "InterfaceName"="'ASR32_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR32'"!]
+                    [!ENDIF!][!//
+                    [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR40ServiceAPI = 'true'"!][!//
+                            <!-- Provide AUTOSAR 4.0 service interface -->
+                            [!CALL "Build_Options", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR40'"!]
+                    [!ENDIF!][!//
+                    [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR42ServiceAPI = 'true'"!][!//
+                            <!-- Provide AUTOSAR 4.2 service interface -->
+                            [!CALL "Build_Options", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR42'"!]
+                    [!ENDIF!][!//
+                    [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI != 'NONE'"!][!//
+                            <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 / 3.2 -->
+                            [!CALL "Build_Options", "AsrVersion"="NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI"!]
+                    [!ENDIF!][!//
+                    </PORT-API-OPTIONS>
+                    <RUNNABLES>
+                      <RUNNABLE-ENTITY>
+                        <SHORT-NAME>RE_MainFunction</SHORT-NAME>
+                        <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                        <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                        <DATA-READ-ACCESSS/>
+                        <DATA-RECEIVE-POINT-BY-ARGUMENTS/>
+                        <DATA-SEND-POINTS/>
+                        <DATA-WRITE-ACCESSS/>
+                        <SERVER-CALL-POINTS>
+                        [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR32ServiceAPI = 'true'"!][!//
+                                <!-- Provide AUTOSAR 3.2 service interface -->
+                                [!CALL "Build_MainFunction", "AsrVersion"="'AUTOSAR_32'", "InterfaceName"="'ASR32_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR32'"!]
+                        [!ENDIF!][!//
+                        [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR40ServiceAPI = 'true'"!][!//
+                                <!-- Provide AUTOSAR 4.0 service interface -->
+                                [!CALL "Build_MainFunction", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR40'"!]
+                        [!ENDIF!][!//
+                        [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR42ServiceAPI = 'true'"!][!//
+                                <!-- Provide AUTOSAR 4.2 service interface -->
+                                [!CALL "Build_MainFunction", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR42'"!]
+                        [!ENDIF!][!//
+                        [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI != 'NONE'"!][!//
+                                <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 / 3.2 -->
+                                [!CALL "Build_MainFunction", "AsrVersion"="NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI"!]
+                        [!ENDIF!][!//
+                        </SERVER-CALL-POINTS>
+                        <SYMBOL>NvM_MainFunction</SYMBOL>
+                      </RUNNABLE-ENTITY>
+                      [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR32ServiceAPI = 'true'"!][!//
+                              <!-- Provide AUTOSAR 3.2 service interface -->
+                              [!CALL "Build_Runnables", "AsrVersion"="'AUTOSAR_32'", "InterfaceName"="'ASR32_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR32'"!]
+                      [!ENDIF!][!//
+                      [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR40ServiceAPI = 'true'"!][!//
+                              <!-- Provide AUTOSAR 4.0 service interface -->
+                              [!CALL "Build_Runnables", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR40'"!]
+                      [!ENDIF!][!//
+                      [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMEnableASR42ServiceAPI = 'true'"!][!//
+                              <!-- Provide AUTOSAR 4.2 service interface -->
+                              [!CALL "Build_Runnables", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_NvM/ASR42'"!]
+                      [!ENDIF!][!//
+                      [!IF "NvMCommon/NvMRteUsage = 'true' and NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI != 'NONE'"!][!//
+                              <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 / 3.2 -->
+                              [!CALL "Build_Runnables", "AsrVersion"="NvMCommon/NvMServiceAPI/NvMDefaultASRServiceAPI"!]
+                      [!ENDIF!][!//
+                    </RUNNABLES>
+                    <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+                  </SWC-INTERNAL-BEHAVIOR>
+                </INTERNAL-BEHAVIORS>
+                </SERVICE-SW-COMPONENT-TYPE>
+              </ELEMENTS>
+            </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_NvM</SHORT-NAME>
+        <AR-PACKAGES>
+            <AR-PACKAGE>
+              <SHORT-NAME>[!"$swcImplementationPackageName"!]</SHORT-NAME>
+              <ELEMENTS>
+                <SWC-IMPLEMENTATION>
+                  <SHORT-NAME>NvMImpl</SHORT-NAME>
+                  <CODE-DESCRIPTORS>
+                    <CODE>
+                      <SHORT-NAME>Code</SHORT-NAME>
+                      <ARTIFACT-DESCRIPTORS>
+                        <AUTOSAR-ENGINEERING-OBJECT>
+                          <SHORT-LABEL>EngObject</SHORT-LABEL>
+                          <CATEGORY>SWSRC</CATEGORY>
+                        </AUTOSAR-ENGINEERING-OBJECT>
+                      </ARTIFACT-DESCRIPTORS>
+                    </CODE>
+                  </CODE-DESCRIPTORS>
+                  <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+                  <RESOURCE-CONSUMPTION>
+                    <SHORT-NAME>Resources</SHORT-NAME>
+ 	                <MEMORY-SECTIONS>
+ 	                  <MEMORY-SECTION>
+ 	                    <SHORT-NAME>CODE</SHORT-NAME>
+ 	                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+ 	                  </MEMORY-SECTION>
+ 	                </MEMORY-SECTIONS>
+                  </RESOURCE-CONSUMPTION>
+                  <SW-VERSION>1.0.0</SW-VERSION>
+                  <VENDOR-ID>1</VENDOR-ID>
+                  <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_NvM/[!"$swComponentTypePackageName"!]/NvM/NvMIntBeh</BEHAVIOR-REF>
+                </SWC-IMPLEMENTATION>
+              </ELEMENTS>
+            </AR-PACKAGE>
+        </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

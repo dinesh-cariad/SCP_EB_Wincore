@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+    targetNamespace="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+    elementFormDefault="qualified" attributeFormDefault="unqualified"> 
+  <xsd:element name="workflow" type="WorkflowType"/>
+  <xsd:complexType name="WorkflowType">
+    <xsd:sequence>
+      <xsd:element name="group" type="GroupType" minOccurs="1" maxOccurs="1"/>
+    </xsd:sequence>
+    <xsd:attribute name="id" type="WorkflowID" use="required"/>
+    <xsd:attribute name="version" type="VersionType" use="required"/>
+    <xsd:attribute name="label" type="LabelType" use="required"/>
+    <xsd:attribute name="description" type="xsd:string" use="optional"/>
+    <xsd:attribute name="icon" type="IconType" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="GroupType">  
+    <xsd:sequence>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="group" type="GroupType"/>
+        <xsd:element name="action" type="ActionType"/>
+      </xsd:choice>
+      <xsd:element name="description" type="DescType" minOccurs="0" maxOccurs="1"/>
+      <xsd:choice minOccurs="0" maxOccurs="unbounded">
+        <xsd:element name="group" type="GroupType"/>
+        <xsd:element name="action" type="ActionType"/>
+      </xsd:choice>
+    </xsd:sequence>
+
+    <xsd:attribute name="id" type="StepID" use="required"/>
+    <xsd:attribute name="label" type="LabelType" use="required"/>
+    <xsd:attribute name="type" type="GroupChoiceType" use="optional" default="sequence"/>
+    <xsd:attribute name="repeatable" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="next" type="NextType" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="ActionType">
+    <xsd:all>
+      <xsd:element name="command" type="CommandType" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="command" type="CommandType" minOccurs="0" maxOccurs="1"/>
+      <xsd:element name="description" type="DescType" minOccurs="0" maxOccurs="1"/>
+    </xsd:all>
+    <xsd:attribute name="id" type="StepID" use="required"/>
+    <xsd:attribute name="label" type="LabelType" use="required"/>
+    <xsd:attribute name="repeatable" type="xsd:boolean" use="optional" default="false"/>
+    <xsd:attribute name="next" type="NextType" use="optional"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="CommandType">
+    <xsd:attribute name="type" type="CommandActionType" use="optional" default="default"/>
+    <xsd:attribute name="description" type="DescType" use="optional"/>
+    <xsd:attribute name="serialization" type="xsd:string" use="required" />
+    <xsd:attribute name="autoadvance" type="xsd:boolean" use="optional" default="true"/>
+  </xsd:complexType>
+
+
+  <xsd:simpleType name="GroupChoiceType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="choice"/>
+      <xsd:enumeration value="sequence"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="CommandActionType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="default"/>
+      <xsd:enumeration value="configure"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="NextType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern
+                value="workflow://([\i-[:]][\c-[:]]*)?/([\i-[:]][\c-[:]]*)"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="DescType">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="WorkflowID">
+    <xsd:restriction base="xsd:ID"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="StepID">
+    <xsd:restriction base="xsd:ID"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="VersionType">
+    <xsd:restriction base="xsd:float">
+      <xsd:minExclusive value="0.0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="IconType">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern
+                value=".*\.gif"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="LabelType">
+    <xsd:restriction base="xsd:normalizedString"/>
+  </xsd:simpleType>
+
+</xsd:schema>

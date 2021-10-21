@@ -1,0 +1,222 @@
+<%@ jet package="dreisoft.tresos.soad.generated.jet" class="SoAd_Types_h" skeleton="File.skeleton"
+        imports="dreisoft.tresos.soad.generator.output.postbuild.PostBuildData
+            dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException
+            dreisoft.tresos.generator.ng.api.cds.CDSGenFile
+            dreisoft.tresos.soad.generator.output.postbuild.ram.SoAd_PBRAMLayoutType"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final PostBuildData postBuildData = (PostBuildData)context.gen.getVariable(PostBuildData.ARG_NAME,
+                                                                       PostBuildData.class,
+                                                                       null );
+
+    final String includeGuardName = getIncludeGuardName( context );
+
+        CDSGenFile cdsGenFile;
+    try {
+        cdsGenFile = context.cds.startFile(context.getWriter(), postBuildData.getBackend() );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        throw new IllegalStateException( "Exception occurred: " + e.getLocalizedMessage() );
+    }
+
+%>
+<%@ include file="head.h.inc" %>
+
+/*
+ * Misra-C:2012 Deviations:
+ *
+ * MISRA-1) Deviated Rule: 20.5 (required)
+ * "#undef shall not be used"
+ *
+ * Reason:
+ * The macros TS_RELOCATABLE_CFG_ENABLE and TS_PB_CFG_PTR_CLASS
+ * might be used by more modules than the SoAd module.
+ * To avoid that these macros are used by other modules accidentally,
+ * an undef is used here.
+ */
+
+/*==================[includes]==============================================*/
+
+#include <SoAd_CfgTypes.h>     /* Generated types by XGEN */
+#include <TSAutosar.h>         /* EB AUTOSAR standard types */
+#include <ComStack_Types.h>    /* Com-stack types */
+#include <TcpIp.h>             /* TODO declare SoAd_TcpIp types instead */
+#include <SoAd_Cfg.h>          /* module pre-compile config */
+
+#define TS_RELOCATABLE_CFG_ENABLE SOAD_RELOCATABLE_CFG_ENABLE
+#define TS_PB_CFG_PTR_CLASS SOAD_APPL_DATA
+#include <TSPBConfig_Types.h>
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+<%
+cdsGenFile.type(postBuildData.getRingBufferAccess(), false);
+
+SoAd_PBRAMLayoutType dummyMemmoryLayout = postBuildData.getDummyMemoryLayout();
+if(dummyMemmoryLayout.soConTxData != null && dummyMemmoryLayout.soConTxData.getLength() > 0)
+{
+    //generates the soConTxData member which contains a pointer and can not be generated in the XGen (SoAd_CfgTypes.h)
+    cdsGenFile.type(dummyMemmoryLayout.soConTxData.get(0), false);
+}
+else
+{
+    throw new IllegalStateException("The " + dummyMemmoryLayout.toString() + " must have atleast one SoAd_SoConTxDataType!");
+}
+cdsGenFile.type(dummyMemmoryLayout, false);
+%>
+
+/*------------------[function pointer types]--------------------------------*/
+
+/** \brief Function pointer type used for indication functions of interface
+ ** modules **/
+typedef P2FUNC(void,SOAD_APPL_CODE,SoAd_IfRxIndFpType)
+(
+    PduIdType RxPduId,
+    P2VAR(PduInfoType,AUTOMATIC,SOAD_APPL_DATA) PduInfoPtr
+);
+
+/** \brief Function pointer type used for confirmation functions of interface
+ ** modules **/
+typedef P2FUNC(void,SOAD_APPL_CODE,SoAd_IfTxConfFpType)
+(
+    PduIdType TxPduId
+);
+
+/** \brief Function pointer type used for trigger functions of interface
+ ** modules **/
+typedef P2FUNC(Std_ReturnType,SOAD_APPL_CODE,SoAd_IfTrigTxFpType)
+(
+    PduIdType TxPduId,
+    P2VAR(PduInfoType,AUTOMATIC,SOAD_APPL_DATA) PduInfoPtr
+);
+
+/** \brief Function pointer type used for indication functions
+ ** of TP modules **/
+typedef P2FUNC(void,SOAD_APPL_CODE,SoAd_TpRxIndFpType)
+(
+    PduIdType id,
+    NotifResultType result
+);
+
+/** \brief Function pointer type used for CopyRxData functions of TP
+ ** modules **/
+typedef P2FUNC(BufReq_ReturnType,SOAD_APPL_CODE,SoAd_TpCopyRxDataFpType)
+(
+    PduIdType id,
+    P2CONST(PduInfoType,AUTOMATIC,SOAD_APPL_CONST) info,
+    P2VAR(PduLengthType,AUTOMATIC,SOAD_APPL_DATA) bufferSizePtr
+);
+
+/** \brief Function pointer type used for StartOfReception functions of TP
+ ** modules **/
+typedef P2FUNC(BufReq_ReturnType,SOAD_APPL_CODE,SoAd_TpStartOfReceptionFpType)
+(
+    PduIdType id,
+    PduLengthType TpSduLength,
+    P2VAR(PduLengthType,AUTOMATIC,SOAD_APPL_DATA) bufferSizePtr
+);
+
+/** \brief Function pointer type used for CopyTxData functions of TP
+ ** modules **/
+typedef P2FUNC(BufReq_ReturnType,SOAD_APPL_CODE,SoAd_TpCopyTxDataFpType)
+(
+    PduIdType id,
+    P2VAR(PduInfoType,AUTOMATIC,SOAD_APPL_DATA) info,
+    P2VAR(RetryInfoType,AUTOMATIC,SOAD_APPL_DATA) retry,
+    P2VAR(PduLengthType,AUTOMATIC,SOAD_APPL_DATA) availableDataPtr
+);
+
+/** \brief Function pointer type used for confirmation functions
+ ** of TP modules **/
+typedef P2FUNC(void,SOAD_APPL_CODE,SoAd_TpTxConfFpType)
+(
+    PduIdType id,
+    NotifResultType result
+);
+
+/** \brief Function pointer type used for SoConModeChg functions **/
+typedef P2FUNC(void,SOAD_APPL_CODE,SoAd_SoConModeChgFpType)
+(
+    SoAd_SoConIdType SoConId,
+    SoAd_SoConModeType Mode
+);
+
+/** \brief Function pointer type used for LocalIpAddrAssignmentChg functions **/
+typedef P2FUNC(void,SOAD_APPL_CODE,SoAd_LocalIpAddrAssignmentChgFpType)
+(
+    SoAd_SoConIdType SoConId,
+    TcpIp_IpAddrStateType State
+);
+
+
+
+/*------------------[Module API table type]---------------------------------*/
+
+/**
+ * type for If module API
+ */
+typedef struct
+{
+    SoAd_IfTxConfFpType IfTxConfirmation; /**< pointer to x_TxConfirmation() */
+    SoAd_IfRxIndFpType IfRxIndication; /**< pointer to x_RxIndication() */
+    SoAd_IfTrigTxFpType IfTriggerTransmit; /**< pointer to x_TriggerTransmit() */
+} SoAd_IfModuleAPIType;
+
+/**
+ * type for Tp module API
+ */
+typedef struct
+{
+    SoAd_TpTxConfFpType TpTxConfirmation; /**< pointer to x_TxConfirmation() */
+    SoAd_TpRxIndFpType TpRxIndication; /**< pointer to x_RxIndication() */
+    SoAd_TpCopyRxDataFpType TpCopyRxData; /**< pointer to x_CopyRxData() */
+    SoAd_TpStartOfReceptionFpType TpStartOfReception; /**< pointer to x_StartOfReception() */
+    SoAd_TpCopyTxDataFpType TpCopyTxData; /**< pointer to x_CopyTxData() */
+} SoAd_TpModuleAPIType;
+
+/**
+ * type for notification API
+ */
+typedef struct
+{
+    SoAd_SoConModeChgFpType SoConModeChg; /**< pointer to x_SoConModeChg() */
+    SoAd_LocalIpAddrAssignmentChgFpType LocalIpAddrAssignmentChg; /**< pointer to x_LocalIpAddrAssignmentChg() */
+} SoAd_NotificationAPIType;
+
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+/* Deviation MISRA-1 */
+#undef TS_RELOCATABLE_CFG_ENABLE
+/* Deviation MISRA-1 */
+#undef TS_PB_CFG_PTR_CLASS
+
+<%
+context.cds.endFile( cdsGenFile );
+%>
+<%@ include file="foot.h.inc" %>

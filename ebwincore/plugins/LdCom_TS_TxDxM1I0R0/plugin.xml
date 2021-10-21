@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR LdCom_TS_TxDxM1I0R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="LdCom_TS_TxDxM1I0R0_ModuleId"
+             name="LdCom_TS_TxDxM1I0R0 Module">
+    <module id="LdCom_TS_TxDxM1I0R0"
+            label="LdCom"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-ComServices: AUTOSAR LdCom module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="0"
+            swVersionPatch="26"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="2"
+            specVersionPatch="1"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="LdCom"
+            categoryLayer="Communication Services"
+            categoryCategory="Com Services"
+            categoryComponent="ECUC">
+      <cluster name="Com Stack"/>
+    </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="LdCom_TS_TxDxM1I0R0_ConfigId"
+             name="LdCom_TS_TxDxM1I0R0 Configuration">
+    <configuration moduleId="LdCom_TS_TxDxM1I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/LdCom.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM1I0R0/LdCom"/>
+      </data>
+
+      <editor id="LdCom_TS_TxDxM1I0R0_EditorId"
+              label="Default"
+              tooltip="ACG-ComServices: AUTOSAR LdCom module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM1I0R0/LdCom"/>
+          <parameter name="title" value="LdCom"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+    <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_LdCom_TS_TxDxM1I0R0"
+           moduleId="LdCom_TS_TxDxM1I0R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.LdComTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+    <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="LdCom_TS_TxDxM1I0R0_GeneratorId"
+             name="LdCom_TS_TxDxM1I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="LdCom_TS_TxDxM1I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="LdCom_TS_TxDxM1I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="LdCom_TS_TxDxM1I0R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+
+
+
+
+  <!-- handle id calculator for LdComHandleId -->
+  <!-- 4 zero-based ranges (built by Tp/If and Rx/Tx) -->
+  <!-- LdComHandleIdTpRx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="LdComHandleIdTpRx_LdCom_TS_TxDxM1I0R0"
+    name="LdCom/LdComHandleIdTpRx"
+    desc="">
+        <operationclass class="dreisoft.tresos.hidwiz.api.SimpleHandleIdGroupByXPathPushOperation">
+            <parameter name="moduleId" value="LdCom_TS_TxDxM1I0R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I0R0/ELEMENTS/LdCom/LdComConfig/LdComIPdu"/>
+            <parameter name="idPath" value="LdComHandleId"/>
+            <parameter name="groupBy" value="LdComIPduDirection = 'LDCOM_RECEIVE' and LdComApiType = 'LDCOM_TP'"/>
+            <parameter name="ignore" value="false"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.LdCom_TS_TxDxM1I0R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                  <equals value="4.0"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- LdComHandleIdTpTx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="LdComHandleIdTpTx_LdCom_TS_TxDxM1I0R0"
+    name="LdCom/LdComHandleIdTpTx"
+    desc="">
+        <operationclass class="dreisoft.tresos.hidwiz.api.SimpleHandleIdGroupByXPathPushOperation">
+            <parameter name="moduleId" value="LdCom_TS_TxDxM1I0R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I0R0/ELEMENTS/LdCom/LdComConfig/LdComIPdu"/>
+            <parameter name="idPath" value="LdComHandleId"/>
+            <parameter name="groupBy" value="LdComIPduDirection = 'LDCOM_SEND' and LdComApiType = 'LDCOM_TP'"/>
+            <parameter name="ignore" value="false"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.LdCom_TS_TxDxM1I0R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                  <equals value="4.0"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- LdComHandleIdIfRx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="LdComHandleIdIfRx_LdCom_TS_TxDxM1I0R0"
+    name="LdCom/LdComHandleIdIfRx"
+    desc="">
+        <operationclass class="dreisoft.tresos.hidwiz.api.SimpleHandleIdGroupByXPathPushOperation">
+            <parameter name="moduleId" value="LdCom_TS_TxDxM1I0R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I0R0/ELEMENTS/LdCom/LdComConfig/LdComIPdu"/>
+            <parameter name="idPath" value="LdComHandleId"/>
+            <parameter name="groupBy" value="LdComIPduDirection = 'LDCOM_RECEIVE' and LdComApiType = 'LDCOM_IF'"/>
+            <parameter name="ignore" value="false"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.LdCom_TS_TxDxM1I0R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                  <equals value="4.0"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- LdComHandleIdIfTx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="LdComHandleIdIfTx_LdCom_TS_TxDxM1I0R0"
+    name="LdCom/LdComHandleIdIfTx"
+    desc="">
+        <operationclass class="dreisoft.tresos.hidwiz.api.SimpleHandleIdGroupByXPathPushOperation">
+            <parameter name="moduleId" value="LdCom_TS_TxDxM1I0R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I0R0/ELEMENTS/LdCom/LdComConfig/LdComIPdu"/>
+            <parameter name="idPath" value="LdComHandleId"/>
+            <parameter name="groupBy" value="LdComIPduDirection = 'LDCOM_SEND' and LdComApiType = 'LDCOM_IF'"/>
+            <parameter name="ignore" value="false"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.LdCom_TS_TxDxM1I0R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                  <equals value="4.0"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+</plugin>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR KeyM_TS_TxDxM1I2R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="KeyM_TS_TxDxM1I2R0_ModuleId"
+             name="KeyM_TS_TxDxM1I2R0 Module">
+    <module id="KeyM_TS_TxDxM1I2R0"
+            label="KeyM"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-SECEXT: Key Manager"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="2"
+            swVersionPatch="11"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="4"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="3"
+            relVersionPatch="0"
+            categoryType="KeyM"
+            categoryLayer="System Services"
+            categoryCategory="System Services"
+            categoryComponent="ECUC">
+      <cluster name="Crypto"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="KeyM_TS_TxDxM1I2R0_ConfigId"
+             name="KeyM_TS_TxDxM1I2R0 Configuration">
+    <configuration moduleId="KeyM_TS_TxDxM1I2R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/KeyM.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM1I2R0/KeyM"/>
+      </data>
+
+      <editor id="KeyM_TS_TxDxM1I2R0_EditorId"
+              label="Default"
+              tooltip="ACG-SECEXT: Key Manager">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM1I2R0/KeyM"/>
+          <parameter name="title" value="KeyM"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="KeyM_TS_TxDxM1I2R0_GeneratorId"
+             name="KeyM_TS_TxDxM1I2R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="KeyM_TS_TxDxM1I2R0_TemplateBasedCodeGeneratorId"
+               moduleId="KeyM_TS_TxDxM1I2R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+  <extension point="org.eclipse.help.toc">
+    <toc file="anchors.xml" primary="true" />
+    <toc file="$nl$/toc.xml" primary="false"/>
+  </extension>
+
+</plugin>
+

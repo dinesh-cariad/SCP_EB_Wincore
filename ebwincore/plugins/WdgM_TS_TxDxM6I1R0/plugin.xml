@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR WdgM_TS_TxDxM6I1R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="WdgM_TS_TxDxM6I1R0_ModuleId"
+             name="WdgM_TS_TxDxM6I1R0 Module">
+    <module id="WdgM_TS_TxDxM6I1R0"
+            label="WdgM"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-WatchdogStack: AUTOSAR WdgM module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="6"
+            swVersionMinor="1"
+            swVersionPatch="39"
+            swVersionSuffix="B439717"
+            specVersionMajor="2"
+            specVersionMinor="2"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="WdgM"
+            categoryLayer="System Services"
+            categoryCategory="Mode Management"
+            categoryComponent="ECUC">
+      <cluster name="Watchdog Stack"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="WdgM_TS_TxDxM6I1R0_ConfigId"
+             name="WdgM_TS_TxDxM6I1R0 Configuration">
+    <configuration moduleId="WdgM_TS_TxDxM6I1R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/WdgM.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM6I1R0/WdgM"/>
+      </data>
+
+      <editor id="WdgM_TS_TxDxM6I1R0_EditorId"
+              label="Default"
+              tooltip="ACG-WatchdogStack: AUTOSAR WdgM module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM6I1R0/WdgM"/>
+          <parameter name="title" value="WdgM"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="WdgM_TS_TxDxM6I1R0_GeneratorId"
+             name="WdgM_TS_TxDxM6I1R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="WdgM_TS_TxDxM6I1R0_TemplateBasedCodeGeneratorId"
+               moduleId="WdgM_TS_TxDxM6I1R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+
+      <!-- swcd AUTOSAR 3.2 modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_asr32_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_asr32_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_asr32_swcd,verify_asr32_swcd" value="generate_asr32_swcd"/>
+
+      <!-- swcd AUTOSAR 4.0 modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_asr40_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_asr40_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_asr40_swcd,verify_asr40_swcd" value="generate_asr40_swcd"/>
+    </generator>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_WdgM_TS_TxDxM6I1R0"
+        name="WdgM service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="WdgM" />
+        <parameter name="req://dem.events:1" value="resources/WdgM_Dem_Events.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/WdgM_SchM_MainFunctions.xml" />
+        <parameter name="req://schm.exclusiveAreas:1" value="resources/WdgM_SchM_ExclusiveAreas.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.WdgM_TS_TxDxM6I1R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+</plugin>

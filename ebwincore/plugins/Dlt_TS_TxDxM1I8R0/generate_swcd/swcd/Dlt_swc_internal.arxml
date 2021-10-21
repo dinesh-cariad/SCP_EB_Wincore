@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8"?>
+[!INCLUDE "Dlt_Vars.m"!][!//
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-2-1_STRICT_COMPACT.xsd">
+[!/* do not generate this file if RTE is not used */!][!//
+[!SKIPFILE "DltGeneral/DltRteUsage = 'false'"!][!//
+  <!-- !LINKSTO Dlt.swdd.DltConfig.Template.Dlt_swc_internal.arxml.m4,1 -->
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_Dlt</SHORT-NAME>
+      <ELEMENTS/>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>SwComponentTypes</SHORT-NAME>
+          <ELEMENTS>
+            <SERVICE-SW-COMPONENT-TYPE>
+              <SHORT-NAME>Dlt</SHORT-NAME>
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI = 'AUTOSAR_431')"!][!//
+              <PORTS>
+  [!LOOP "DltSwc/*"!][!//
+    [!IF "(./DltProvideLogTraceSessionControlPort = 'true')"!][!//
+                <!-- !LINKSTO Dlt.Swc.LogTraceSessionControlPort.Generation, 1 -->
+                <!-- !LINKSTO Dlt.ASR431.SWS_Dlt_00646, 1, Dlt.ASR431.SWS_Dlt_00779, 1 -->
+                <R-PORT-PROTOTYPE>
+                  <SHORT-NAME>SessionControlCallback_[!"node:name(.)"!]</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_Dlt/PortInterfaces/LogTraceSessionControl</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+    [!ENDIF!][!//
+    [!IF "(./DltProvideSwcMessageServicePort = 'true')"!][!//
+               <!-- !LINKSTO Dlt.Swc.MessageServicePort.Generation, 1 -->
+               <!-- !LINKSTO Dlt.ASR431.Ref_SWS_Dlt_00644, 1, Dlt.ASR431.SWS_Dlt_91001, 1 -->
+               <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>SwcMessageService_[!"node:name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltSwcMessageService/RegisterContext</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltSwcMessageService/UnregisterContext</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltSwcMessageService/SendLogMessage</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltSwcMessageService/SendTraceMessage</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_Dlt/PortInterfaces/DltSwcMessageService</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+    [!ENDIF!][!//
+    [!IF "(./DltProvideControlServicePort = 'true')"!][!//
+                <!-- !LINKSTO Dlt.Swc.ControlServicePort.Generation, 1 -->
+                <!-- !LINKSTO Dlt.ASR431.SWS_Dlt_00499, 1 -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>ControlService_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_Dlt/PortInterfaces/DltControlService</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+    [!ENDIF!][!//
+  [!ENDLOOP!][!//
+                </PORTS>
+[!ENDIF!][!//
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>DltIntBeh</SHORT-NAME>
+                  <EVENTS>
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI != 'AUTOSAR_431') or ( (num:i($DltNumSwcsToNotify) > 0) and (DltSwc/*/DltProvideLogTraceSessionControlPort = 'true') )"!][!//
+                    <INTERNAL-TRIGGER-OCCURRED-EVENT>
+                     <SHORT-NAME>BswInternalTriggerOccurredEvent_SetLogLevel</SHORT-NAME>
+                     <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetLogLevel_Notify</START-ON-EVENT-REF>
+                     <EVENT-SOURCE-REF DEST="INTERNAL-TRIGGERING-POINT">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetLogLevel_Notify/SetLogLevelTriggeringPoint</EVENT-SOURCE-REF>
+                    </INTERNAL-TRIGGER-OCCURRED-EVENT>
+                    <INTERNAL-TRIGGER-OCCURRED-EVENT>
+                     <SHORT-NAME>BswInternalTriggerOccurredEvent_SetTraceStatus</SHORT-NAME>
+                     <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetTraceStatus_Notify</START-ON-EVENT-REF>
+                     <EVENT-SOURCE-REF DEST="INTERNAL-TRIGGERING-POINT">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetTraceStatus_Notify/SetTraceStatusTriggeringPoint</EVENT-SOURCE-REF>
+                    </INTERNAL-TRIGGER-OCCURRED-EVENT>
+[!ENDIF!][!//
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI != 'AUTOSAR_431')"!][!//
+  [!IF "DltGeneral/DltImplementVerboseMode = 'true'"!][!//
+                    <INTERNAL-TRIGGER-OCCURRED-EVENT>
+                     <SHORT-NAME>BswInternalTriggerOccurredEvent_SetVerboseMode</SHORT-NAME>
+                     <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetVerboseMode_Notify</START-ON-EVENT-REF>
+                     <EVENT-SOURCE-REF DEST="INTERNAL-TRIGGERING-POINT">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetVerboseMode_Notify/SetVerboseModeTriggeringPoint</EVENT-SOURCE-REF>
+                    </INTERNAL-TRIGGER-OCCURRED-EVENT>
+  [!ENDIF!][!//
+[!ELSE!][!//
+  [!LOOP "DltSwc/*"!][!//
+    [!IF "(./DltProvideControlServicePort = 'true')"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_GetDefaultLogLevel</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_GetDefaultLogLevel</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/GetDefaultLogLevel</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_SetDefaultLogLevel</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetDefaultLogLevel</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/SetDefaultLogLevel</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_GetDefaultTraceStatus</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_GetDefaultTraceStatus</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/GetDefaultTraceStatus</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_SetDefaultTraceStatus</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetDefaultTraceStatus</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/SetDefaultTraceStatus</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_SetMessageFiltering</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetMessageFiltering</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/SetMessageFiltering</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_ResetToFactoryDefault</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_ResetToFactoryDefault</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/ResetToFactoryDefault</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_StoreConfiguration</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_StoreConfiguration</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/StoreConfiguration</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_SetLogChannelAssignment</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetLogChannelAssignment</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/SetLogChannelAssignment</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_SetLogChannelThreshold</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetLogChannelThreshold</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/SetLogChannelThreshold</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_GetLogChannelThreshold</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_GetLogChannelThreshold</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/GetLogChannelThreshold</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_GetLogChannelNames</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_GetLogChannelNames</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/GetLogChannelNames</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_SetLogLevel</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetLogLevel</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/SetLogLevel</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_SetTraceStatus</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SetTraceStatus</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/SetTraceStatus</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_GetTraceStatus</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_GetTraceStatus</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/GetTraceStatus</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_[!"name(.)"!]_GetLogInfo</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_GetLogInfo</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/ControlService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltControlService/GetLogInfo</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+    [!ENDIF!][!//
+    [!IF "(./DltProvideSwcMessageServicePort = 'true')"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                     <SHORT-NAME>EV_[!"name(.)"!]_RegisterContext</SHORT-NAME>
+                     <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_RegisterContext</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/SwcMessageService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltSwcMessageService/RegisterContext</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                   </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                     <SHORT-NAME>EV_[!"name(.)"!]_UnregisterContext</SHORT-NAME>
+                     <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_UnregisterContext</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/SwcMessageService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltSwcMessageService/UnregisterContext</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                   </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                     <SHORT-NAME>EV_[!"name(.)"!]_SendLogMessage</SHORT-NAME>
+                     <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SendLogMessage</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/SwcMessageService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltSwcMessageService/SendLogMessage</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                   </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                     <SHORT-NAME>EV_[!"name(.)"!]_SendTraceMessage</SHORT-NAME>
+                     <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh/RE_SendTraceMessage</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/SwcMessageService_[!"name(.)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/DltSwcMessageService/SendTraceMessage</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                   </OPERATION-INVOKED-EVENT>
+    [!ENDIF!][!//
+  [!ENDLOOP!][!//
+[!ENDIF!][!//
+                  </EVENTS>
+                  <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+                  <INCLUDED-DATA-TYPE-SETS>
+                    <INCLUDED-DATA-TYPE-SET>
+                      <DATA-TYPE-REFS>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dlt/ImplementationDataTypes/Dlt_SessionIDType</DATA-TYPE-REF>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dlt/ImplementationDataTypes/Dlt_ApplicationIDType</DATA-TYPE-REF>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dlt/ImplementationDataTypes/Dlt_ContextIDType</DATA-TYPE-REF>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dlt/ImplementationDataTypes/Dlt_Uint8Ptr</DATA-TYPE-REF>
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI = 'AUTOSAR_431')"!][!//
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dlt/ImplementationDataTypes/Dlt_MessageLogLevelType</DATA-TYPE-REF>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dlt/ImplementationDataTypes/Dlt_MessageLogInfoType</DATA-TYPE-REF>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dlt/ImplementationDataTypes/Dlt_MessageTraceInfoType</DATA-TYPE-REF>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dlt/ImplementationDataTypes/Dlt_LogChannelNameType</DATA-TYPE-REF>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dlt/ImplementationDataTypes/Dlt_AssignmentOperationType</DATA-TYPE-REF>
+[!ENDIF!][!//
+                      </DATA-TYPE-REFS>
+                    </INCLUDED-DATA-TYPE-SET>
+                  </INCLUDED-DATA-TYPE-SETS>
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI = 'AUTOSAR_431')"!][!//
+                  <PORT-API-OPTIONS>
+  [!LOOP "DltSwc/*"!][!//
+    [!IF "(./DltProvideSwcMessageServicePort = 'true')"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <!-- !LINKSTO SWS_Dlt_00022, 1, Dlt.ASR431.SWS_Dlt_00645, 1, Dlt.ASR431.SWS_Dlt_00023, 1 -->
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <!-- !LINKSTO Dlt.ASR431.Ref_SWS_Dlt_00332_UniqueSessionIds, 1 -->
+                              <VALUE>[!"num:i(./DltSwcSessionId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dlt/ImplementationDataTypes/Dlt_SessionIDType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/SwcMessageService_[!"node:name(.)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+    [!ENDIF!][!//
+  [!ENDLOOP!][!//
+                 </PORT-API-OPTIONS>
+[!ENDIF!][!//
+                  <RUNNABLES>
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI != 'AUTOSAR_431') or (DltSwc/*/DltProvideSwcMessageServicePort = 'true')"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_RegisterContext</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>session_id</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>app_id</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>context_id</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>app_description</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>len_app_description</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>context_description</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>len_context_description</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_RegisterContext</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI = 'AUTOSAR_431') and (DltSwc/*/DltProvideSwcMessageServicePort = 'true')"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_UnregisterContext</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>sessionId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>appId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>contextId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_UnregisterContext</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI != 'AUTOSAR_431') and (DltGeneral/DltImplementNVRamStorage = 'true')"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_StorePersistent</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_StorePersistent</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI != 'AUTOSAR_431') or (DltSwc/*/DltProvideSwcMessageServicePort = 'true')"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SendLogMessage</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>session_id</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>log_info</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>log_data</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>log_data_length</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_SendLogMessage</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SendTraceMessage</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>session_id</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>trace_info</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>trace_data</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>trace_data_length</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_SendTraceMessage</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI != 'AUTOSAR_431') or ( (num:i($DltNumSwcsToNotify) > 0) and (DltSwc/*/DltProvideLogTraceSessionControlPort = 'true') )"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetLogLevel_Notify</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <INTERNAL-TRIGGERING-POINTS>
+                        <INTERNAL-TRIGGERING-POINT>
+                          <SHORT-NAME>SetLogLevelTriggeringPoint</SHORT-NAME>
+                        </INTERNAL-TRIGGERING-POINT>
+                      </INTERNAL-TRIGGERING-POINTS>
+  [!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI = 'AUTOSAR_431')"!][!//
+                      <SERVER-CALL-POINTS>
+    [!LOOP "DltSwc/*"!][!//
+      [!IF "(./DltProvideLogTraceSessionControlPort = 'true')"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>CS_Dlt_SetLogLevel_[!"node:name(.)"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/SessionControlCallback_[!"node:name(.)"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/LogTraceSessionControl/LogLevelChangedNotification</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+      [!ENDIF!][!//
+    [!ENDLOOP!][!//
+                      </SERVER-CALL-POINTS>
+  [!ENDIF!][!//
+                      <SYMBOL>Dlt_SetLogLevelRunnableEntity</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI != 'AUTOSAR_431') or ( (num:i($DltNumSwcsToNotify) > 0) and (DltSwc/*/DltProvideLogTraceSessionControlPort = 'true') )"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetTraceStatus_Notify</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <INTERNAL-TRIGGERING-POINTS>
+                        <INTERNAL-TRIGGERING-POINT>
+                          <SHORT-NAME>SetTraceStatusTriggeringPoint</SHORT-NAME>
+                        </INTERNAL-TRIGGERING-POINT>
+                      </INTERNAL-TRIGGERING-POINTS>
+  [!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI = 'AUTOSAR_431')"!][!//
+                      <SERVER-CALL-POINTS>
+    [!LOOP "DltSwc/*"!][!//
+      [!IF "(./DltProvideLogTraceSessionControlPort = 'true')"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>CS_Dlt_SetTraceStatus_[!"node:name(.)"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dlt/SwComponentTypes/Dlt/SessionControlCallback_[!"node:name(.)"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dlt/PortInterfaces/LogTraceSessionControl/TraceStatusChangedNotification</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+      [!ENDIF!][!//
+    [!ENDLOOP!][!//
+                      </SERVER-CALL-POINTS>
+  [!ENDIF!][!//
+                      <SYMBOL>Dlt_SetTraceStatusRunnableEntity</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI != 'AUTOSAR_431') and (DltGeneral/DltImplementVerboseMode = 'true')"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetVerboseMode_Notify</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <INTERNAL-TRIGGERING-POINTS>
+                        <INTERNAL-TRIGGERING-POINT>
+                          <SHORT-NAME>SetVerboseModeTriggeringPoint</SHORT-NAME>
+                        </INTERNAL-TRIGGERING-POINT>
+                      </INTERNAL-TRIGGERING-POINTS>
+                      <SYMBOL>Dlt_SetVerboseModeRunnableEntity</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!IF "(DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI = 'AUTOSAR_431') and (DltSwc/*/DltProvideControlServicePort = 'true')"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetLogChannelAssignment</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>appId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>contextId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>logChannelName</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>addRemoveOp</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_SetLogChannelAssignment</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetLogChannelNames</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>numberOfLogChannels</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>logChannelNames</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_GetLogChannelNames</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetLogChannelThreshold</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>logChannelName</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>newThreshold</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>newTraceStatus</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_SetLogChannelThreshold</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetLogChannelThreshold</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>logChannelName</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>logChannelThreshold</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>traceStatus</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_GetLogChannelThreshold</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetLogLevel</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>appId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>contextId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>newLogLevel</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_SetLogLevel</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetTraceStatus</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>appId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>contextId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>newTraceStatus</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_SetTraceStatus</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetTraceStatus</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>appId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>contextId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>traceStatus</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_GetTraceStatus</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetLogInfo</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>options</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>appId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>contextId</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>status</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>logInfo</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_GetLogInfo</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetDefaultLogLevel</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>defaultLogLevel</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_GetDefaultLogLevel</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetDefaultLogLevel</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>newLogLevel</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_SetDefaultLogLevel</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetDefaultTraceStatus</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>traceStatus</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_GetDefaultTraceStatus</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetDefaultTraceStatus</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>newTraceStatus</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_SetDefaultTraceStatus</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetMessageFiltering</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>status</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_SetMessageFiltering</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ResetToFactoryDefault</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_ResetToFactoryDefault</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_StoreConfiguration</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Dlt_Rte_StoreConfiguration</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+                  </RUNNABLES>
+                  <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </SERVICE-SW-COMPONENT-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_Dlt</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>SwcImplementations</SHORT-NAME>
+          <ELEMENTS>
+            <SWC-IMPLEMENTATION>
+              <SHORT-NAME>DltImpl</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Code</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>Resources</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>1.8.6</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_Dlt/SwComponentTypes/Dlt/DltIntBeh</BEHAVIOR-REF>
+            </SWC-IMPLEMENTATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

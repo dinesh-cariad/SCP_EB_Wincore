@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>DoIP.EB_INTREQ_DoIP_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The reinitialization process shall not interrupt other module functions.
+        If reinitialization of the module is required, the call of
+        <function>DoIP_Init()</function> shall not interrupt other module functions.
+      </description>
+      <rationale>
+        The reinitialization process resets all internal variables. Continuing an interrupted
+        module function after reinitialization can lead to undefined module behavior.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>DoIP.EB_INTREQ_DoIP_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        <function>DoIP_Init()</function> shall not be preempted by any other module API calls.
+        It needs to be ensured that the function call <function>DoIP_Init()</function> is not
+        preempted by any other module API calls.
+      </description>
+      <rationale>
+        During the call of <function>DoIP_Init()</function> global variables and pointers get
+        initialized. It is easy for the integrator to avoid this preemption, thus no data protection
+        mechanism has been implemented for function <function>DoIP_Init()</function>.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>DoIP.EB_INTREQ_DoIP_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The following parameters have to be manually configured:
+        <ul>
+          <li>DoIPRoutingActivation</li>
+          <li>DoIPEid, DoIPGid, DoIPLogicalAddress</li>
+          <li>DoIPTester</li>
+        </ul>
+      </description>
+      <rationale>
+        A Com transformer for <application>DoIP</application> is available which creates
+        a local ECU configuration based on the system description.
+        Only those parameters have to be manually configured.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>DoIP.EB_INTREQ_DoIP_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In case configuration parameter DoIPGeneral/DoIPRteUsage is disabled, user provided
+        power mode callback function include file shall contain definition of
+        DoIP_PowerStateType according to [SWS_DoIP_00266], i.e. it needs to contain
+        the following code:
+
+        #define DOIP_NOT_READY      0x00U
+        #define DOIP_READY          0x01U
+        #define DOIP_NOT_SUPPORTED  0x02U
+        typedef uint8 DoIP_PowerStateType;
+
+        In case Rte usage is enabled, RTE will generate above mentioned definitions.
+      </description>
+    </specobject>
+
+    <specobject>
+      <id>DoIP.EB_INTREQ_DoIP_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>3</version>
+      <description>
+        <para>
+          The integrator shall ensure that <code>DoIP</code> lower layer functions and
+          <code>DoIP</code> main functions do not preempt each other.
+        </para>
+        <para>
+          List of <code>DoIP</code> lower layer:
+          <code>DoIP_SoAdIfRxIndication()</code>, <code>DoIP_SoAdIfTxConfirmation()</code>,
+          <code>DoIP_SoAdTpStartOfReception()</code>, <code>DoIP_SoAdTpCopyRxData()</code>,
+          <code>DoIP_SoAdTpRxIndication()</code>, <code>DoIP_SoAdTpCopyTxData()</code>,
+          <code>DoIP_SoAdTpTxConfirmation()</code>, <code>DoIP_SoConModeChg()</code>,
+          <code>DoIP_LocalIpAddrAssignmentChg()</code>
+        </para>
+        <para>
+          List of <code>DoIP</code> main functions:
+          <code>DoIP_MainFunction()</code>
+          <code>DoIP_MainFunctionTx()</code>
+        </para>
+        <para>
+          In the classic AUTOSAR environment this can be achieved by setting
+          EthIf and Eth driver in polling mode
+          (e.g. disabling of <code>EthIfEnableRxInterrupt</code>,
+          <code>EthCtrlEnableRxInterrupt</code>, <code>EthIfEnableTxInterrupt</code> and
+          <code>EthCtrlEnableTxInterrupt</code>) to enforce that lower layer API are called only in
+          context of main functions. In addition all Eth stack main functions (e.g.
+          <code>EthIf_MainFunctionRx()</code>, <code>EthIf_MainFunctionTx()</code>,
+          <code>EthIf_MainFunctionState()</code>, <code>TcpIp_MainFunction()</code>,
+          <code>TcpIp_MainFunctionTx()</code>, <code>EthSM_MainFunction()</code>,
+          <code>SoAd_MainFunctionTx()</code>, <code>SoAd_MainFunction()</code>)
+          need to be in the same Os task or have the same task priority as
+          the module main functions to eliminate preemption.
+        </para>
+        <para>
+          This integration requirement also applies for possible other not listed <code>DoIP</code>
+          lower layer functions.
+        </para>
+      </description>
+      <rationale>
+        This limitation reduces code size and execution time by eliminating the need for extensive
+        use of exclusive areas.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>DoIP.EB_INTREQ_DoIP_0006</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In case configuration parameter
+        DoIPTcpConnection/DoIPTcpConnectionSecurityRequired is set to TRUE, corresponding TCP
+        connection shall be secure (e.g. TLS).
+      </description>
+    </specobject>
+
+    <specobject>
+      <id>DoIP.EB_INTREQ_DoIP_0007</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If Diagnostic message is received before the route is activated, on a channel with 
+        DoIPRoutingActivationType DOIP_ROUTING_ACTIVATION_AUTOMATIC, then this SourceAddress is 
+        already registered on another Tcp connection and Tester can send a Routing Activation on 
+        this Tcp connection in order to free this SourceAddress.
+      </description>
+    </specobject>
+
+  </specobjects>
+</specdocument>

@@ -1,0 +1,2694 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module TcpIp?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+
+[!MACRO "IpV4CIDRToUINT32", "CIDR"!]
+[!VAR "netmask" = "'0'"!]
+[!IF "ecu:get('Cpu.Byteorder') = 'LE'"!]
+  [!VAR "bytebits" = "num:i(num:i($CIDR) mod 8)"!]
+  [!VAR "fullbytes" = "num:i(num:i($CIDR) div 8)"!]
+  [!FOR "x" = "0" TO "(num:i($fullbytes)*8-1)"!]
+  [!VAR "netmask" = "bit:bitset(num:i($netmask),num:i(num:i($x)))"!]
+  [!ENDFOR!]
+  [!IF "num:i($bytebits) > 0"!]
+    [!FOR "x" = "0" TO "(num:i($bytebits)-1)"!]
+    [!VAR "netmask" = "bit:bitset(num:i($netmask),(num:i($fullbytes)+1)*8-num:i($x)-1)"!]
+    [!ENDFOR!]
+  [!ENDIF!]
+[!ELSE!]
+  [!FOR "x" = "0" TO "(num:i($CIDR)-1)"!]
+  [!VAR "netmask" = "bit:bitset(num:i($netmask),num:i(31 - num:i($x)))"!]
+  [!ENDFOR!]
+[!ENDIF!]
+[!"num:i($netmask)"!]
+[!ENDMACRO!][!//
+
+[!MACRO "IpV6CIDRToUINT32", "CIDR"!]
+[!VAR "leftbits" = "num:i($CIDR)"!]
+[!FOR "y" = "0" TO "3"!]
+  [!VAR "partbits" = "num:i(32)"!]
+  [!IF "num:i($leftbits) < num:i(32)"!]
+    [!VAR "partbits" = "num:i($leftbits)"!]
+  [!ENDIF!]
+  [!VAR "netmask"!][!CALL "IpV4CIDRToUINT32", "CIDR" = "$partbits"!][!ENDVAR!]<!-- netMaskStatic if there will be change in prefix length -->
+  [!VAR "leftbits" = "$leftbits - $partbits"!]
+  <field>
+    <int>[!"num:i($netmask)"!]</int>
+  </field>
+[!ENDFOR!]
+[!ENDMACRO!][!//
+
+[!MACRO "WriteAssignmentConfig", "type", "domain", "AddrId2IdxTable", "i"!]
+  [!VAR "localAddrDomain"!][!CALL "LocalAddrList_getDomain", "LocalAddrId"="$i"!][!ENDVAR!]
+  [!VAR "localAddrMethod"!][!CALL "LocalAddrList_getMethodOfMethod", "LocalAddrId"="$i", "method"="$type"!][!ENDVAR!]
+              <field>
+[!IF "(node:exists(TcpIpConfig/TcpIpNvmBlock/TcpIpNvmBlockDescriptorRef) = 'true')"!][!//
+                [!VAR "iPMethodLifetime"!][!CALL "LocalAddrList_getLifetimeOfMethod", "LocalAddrId"="$i", "method"="$localAddrMethod"!][!ENDVAR!]
+                <field>
+                  [!IF "($iPMethodLifetime = 'TCPIP_STORE') and ($domain = 'TCPIP_AF_INET')"!]
+                  <int>[!"num:i($NvMMemoryIndex)"!]</int>
+                  [!VAR "NvMMemoryIndex" = "num:i($NvMMemoryIndex + 1)"!]
+                  [!ELSE!]
+                  <int>[!"num:i(TcpIpConfig/TcpIpNvmBlock/TcpIpNvmBlockSize)"!]</int>[!ENDIF!] <!-- intNvMMemoryIndex -->
+                </field>
+[!ENDIF!]
+[!IF "((TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true') or (TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpArpProbingEnabled = 'true'))"!][!//
+                [!VAR "addrType"!][!CALL "LocalAddrList_getAddrType", "LocalAddrId"="$i"!][!ENDVAR!]
+                <field>
+                  [!IF "($localAddrDomain = $domain) and ($localAddrDomain = 'TCPIP_AF_INET') and ($addrType = 'TCPIP_UNICAST') and ($localAddrMethod = $type) and (($type = 'TCPIP_LINKLOCAL') or ($type = 'TCPIP_LINKLOCAL_DOIP') or (($type = 'TCPIP_DHCP') and (TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpArpProbingEnabled = 'true')))"!][!//
+                  [!IF "($type = 'TCPIP_LINKLOCAL')"!][!//
+                  <int>[!"num:i(text:split($IpV4AutoIpLocalAddrId2ArpDadIdx,' ')[num:i($i + 1)])"!]</int>
+                  [!ELSEIF "($type = 'TCPIP_LINKLOCAL_DOIP')"!]
+                  <int>[!"num:i(text:split($IpV4AutoIpDoIpLocalAddrId2ArpDadIdx,' ')[num:i($i + 1)])"!]</int>
+                  [!ELSE!][!//
+                  <int>[!"num:i(text:split($IpV4DhcpLocalAddrId2ArpDadIdx,' ')[num:i($i + 1)])"!]</int>
+                  [!ENDIF!][!// <!-- TCPIP_LINKLOCAL or TCPIP_LINKLOCAL_DOIP or TCPIP_DHCP -->
+                  [!VAR "dadIpV4Index" = "num:i($dadIpV4Index + 1)"!]
+                  [!ELSE!][!//
+                  <int>[!"num:i($IpV4ArpDadCount)"!]</int>
+                  [!ENDIF!][!// <!-- dadIpV4Idx -->
+                </field>
+[!ENDIF!]
+[!IF "($localAddrDomain = $domain) and ($localAddrMethod = $type)"!]
+                <field>
+                  <int>[!"num:i(text:split($AddrId2IdxTable,' ')[num:i($i + 1)])"!]</int> <!-- assignIdx -->
+                </field>
+                <field>
+                  <int> <!-- priority_autoAssign -->
+                    [!VAR "prio"!][!CALL "LocalAddrList_getPrioOfMethod", "LocalAddrId"="$i", "method"="$type"!][!ENDVAR!]
+                    [!VAR "trigger"!][!CALL "LocalAddrList_getTriggerOfMethod", "LocalAddrId"="$i", "method"="$type"!][!ENDVAR!]
+                    [!"num:i(num:i($prio*2) + num:i($trigger = 'TCPIP_AUTOMATIC'))"!]
+                  </int>
+                </field>
+[!ELSE!]
+                <field>
+                  <int>0</int> <!-- assignIdx (Dummy) -->
+                </field>
+                <field>
+                  <int>255</int> <!-- priority_autoAssign (Dummy) -->
+                </field>
+[!ENDIF!]
+              </field>
+[!ENDMACRO!]
+
+[!//
+[!CODE!]
+[!AUTOSPACING!]
+
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "TCPIP_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "TCPIP_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat('TcpIp_Config','_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="string("TcpIp_Config")"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+*/!][!VAR "TCPIP_PBCFG_C_VARIANT"="concat('TcpIp',$TCPIP_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "TCPIP_PBCFG_H_VARIANT"="concat('TcpIp',$TCPIP_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "TCPIP_CONFIG_LAYOUT_VARIANT"="concat('TcpIp',$TCPIP_VARIANT_SUFIX,'ConfigLayout')"!]
+[!/* Current Config Type variant based
+*/!][!VAR "TCPIP_CONFIGLAYOUTTYPE_VARIANT"="concat('TcpIp',$TCPIP_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "TCPIP_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('TcpIp',$TCPIP_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+
+[!INCLUDE "../../generate_macros/TcpIp_Vars.m"!]
+  <!-- This is the configuration of module TcpIp -->
+  <module name="TcpIp" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+
+[!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+      <?artifact directory="include" file="TcpIp_CfgTypes.h" type="types-h" generate="yes" ?>
+[!ELSE!]
+      <?artifact directory="include" file="TcpIp_CfgTypes.h" type="types-h" generate="no" ?>
+[!ENDIF!]
+
+      [!VAR "relocatable" = "'false'"!]
+      [!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('TcpIp')) = 'true'"!]
+      [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ELSE!]
+      [!IF "as:modconf('TcpIp')[1]/TcpIpGeneral/TcpIpRelocatablePbcfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ENDIF!]
+
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <!-- Address identification type for unique identification of a local IP
+           address and EthIf Controller configured in the TcpIp module. -->
+      <type name="TcpIp_LocalAddrIdType">
+        <reference type="uint8" />
+      </type>
+
+      <type name="TcpIp_DomainType">
+        <reference type="uint16" />
+      </type>
+
+      <type name="TcpIp_SockAddrInetType">
+        <struct>
+          <member name="domain" type="TcpIp_DomainType" comment="This is the code for the address format of this address."/>
+          <member name="port" type="uint16" comment="port number."/>
+          <member name="addr" type="uint32" count="1" comment="IPv4 address in network byte order."/>
+        </struct>
+      </type>
+
+      <type name="TcpIp_AddrInetType">
+        <struct>
+          <member name="addr" type="uint32" count="1" comment="IPv4 address in network byte order."/>
+        </struct>
+      </type>
+
+      <type name="TcpIp_SockAddrInet6Type">
+        <struct>
+          <member name="domain" type="TcpIp_DomainType" comment="This is the code for the address format of this address."/>
+          <member name="port" type="uint16" comment="port number."/>
+          <member name="addr" type="uint32" count="4" comment="IPv6 address in network byte order ."/>
+        </struct>
+      </type>
+
+      <type name="TcpIp_AddrInet6Type">
+        <struct>
+          <member name="addr" type="uint32" count="4" comment="IPv6 address in network byte order ."/>
+        </struct>
+      </type>
+
+      <type name="TcpIp_MACAddrType">
+        <struct>
+          <member name="physAddr" type="uint8" count="6" comment="MAC address."/>
+        </struct>
+      </type>
+
+[!SELECT "TcpIpConfig/TcpIpIpConfig/TcpIpIpFragmentationConfig"!]
+[!IF "(TcpIpIpFragmentationRxEnabled = 'true') or (TcpIpIpFragmentationTxEnabled = 'INORDER')"!]
+      <!-- structure containing IP fragmentation related attributes -->
+      <type name="TcpIp_IpFragConfigType">
+        <struct>
+[!IF "(TcpIpIpFragmentationRxEnabled = 'true')"!]
+          <member name="reassTimeout" type="uint32" comment="Reassembly timeout for IP datagram reassembly."/>
+          <member name="reassBufferSize" type="uint32" comment="Size of each reassembly buffer."/>
+          <member name="reassBufferCount" type="uint16" comment="Number of concurrent reassembly reception buffers."/>
+[!ENDIF!]
+[!IF "(TcpIpIpFragmentationTxEnabled = 'INORDER')"!]
+          <member name="txFragmentBufferSize" type="uint16" comment="maximum size of a datagram to be transmitted fragmented."/>
+          <member name="txFragmentBufferCount" type="uint16" comment="Number of concurrent transmit fragmentation buffers for in-order Datagram (UDP/ICMP) splitting.."/>
+          <member name="txFragmentSegmentCount" type="uint16" comment="Maximum number of Ethernet buffers (=fragments per datagram) for in-order Datagram (UDP/ICMP) splitting."/>
+[!ENDIF!]
+        </struct>
+      </type>
+[!ENDIF!]
+[!ENDSELECT!]
+      <!-- structure containing Ip related TX attributes -->
+      <type name="TcpIp_UdpConfigType">
+        <struct>
+          <member name="ttl" type="uint8" comment="Time to live used for Udp transmission."/>
+          <member name="mayFragment" type="uint8" comment="Outgoing Datagrams may be (re-)fragmented along the path."/>
+        </struct>
+      </type>
+
+      <type name="TcpIp_memoryConfigType">
+        <struct>
+          <member name="memoryPoolOffset" type="uint32" comment="Position of the first memory block in the memory array."/>
+          <member name="memoryBlockSize" type="uint16" comment="Size of one block in the memory pool."/>
+          <member name="numOfBlocks" type="uint16"  comment="Number of memory blocks in this memory pool."/>
+          <member name="memoryBlockDescriptorOffset" type="uint16"  comment="Position of the first memory block in the descriptor array."/>
+        </struct>
+      </type>
+
+      <!-- structure containing TCP information -->
+      <type name="TcpIp_TcpConfigType">
+        <struct>
+          <member name="msl" type="uint32" comment="Maximum segment lifetime"/>
+          <member name="finWait2Timeout" type="uint32" comment="Timeout to receive a FIN from the remote node"/>
+          <member name="reTxTimeout" type="uint32" comment="Timeout before an unacknowledged TCP segment is sent again."/>
+[!IF "TcpIpConfig/TcpIpTcpConfig/TcpIpTcpKeepAliveEnabled = 'true'"!]
+          <member name="keepAliveInterval" type="uint32" comment="Interval in between subsequent keepalive probes."/>
+          <member name="keepAliveTime" type="uint32" comment="Time in between the last data packet sent and the first keepalive probe."/>
+[!ENDIF!]
+          <member name="issPeriod" type="uint32" comment="ISN is incremented by this value every mainfunction."/>
+          <member name="dupAckTxTimeoutSeqNum" type="uint32" comment="Timeout rate-limiting the duplicate Acknowledgement for out-of-window sequence number."/>
+          <member name="dupAckTxTimeoutAckNum" type="uint32" comment="Timeout rate-limiting the duplicate Acknowledgement for out-of-window acknowledgement number."/>
+          <member name="synReceivedTimeout" type="uint32" comment="Maximum time waiting in SYN_RECEIVED for a confirming connection request acknowledgment after having both received and sent a connection request"/>
+[!IF "node:exists(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpUnpredictableSeqNumbers/TcpIpTcpUnpredictableSeqNumbersKeyGenerateJobId) = 'true'"!]
+          <member name="unprSeqNumKeyId" type="uint32" comment="Reference to the key used for generating unpredictable initial sequence numbers."/>
+          <member name="unprSeqNumJobId" type="uint32" comment="Reference to the job used for generating unpredictable initial sequence numbers."/>
+          <member name="unprSeqNumKeyResetTime" type="uint32" comment="Time period for reseting the key value."/>
+[!ENDIF!]
+[!IF "node:exists(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynCookies/TcpIpTcpSynCookiesKey1GenerateJobId) = 'true'"!]
+          <member name="synCookieskeyId1" type="uint32" comment="Reference to the first key for generating SYN cookie."/>
+          <member name="synCookiesjobId1" type="uint32" comment="Reference to the first csm job for generating SYN cookie."/>
+          <member name="synCookieskeyId2" type="uint32" comment="Reference to the second key for generating SYN cookie."/>
+          <member name="synCookiesjobId2" type="uint32" comment="Reference to the second csm job for generating SYN cookie."/>
+          <member name="synCookiesTimeResetKeys" type="uint32" comment="Time period for reseting the key values."/>
+          <member name="synCookiesAcceptAckOverflowTime" type="uint32" comment="Time after overflow after which ACK can be accepted."/>
+[!ENDIF!]
+          <member name="delayedAckTimeout" type="uint16" comment="Maximal time an acknowledgment is delayed for transmission"/>
+          <member name="maxRxWindow" type="uint16" comment="Default value of maximum receive window in bytes."/>
+          <member name="maxReTx" type="uint8" comment="Maximum number of times that a TCP segment is retransmitted."/>
+          <member name="maxSynReTx" type="uint8" comment="Maximum number of times that a SYN is retransmitted."/>
+          <member name="ttl" type="uint8" comment="Time to live used for Tcp transmission."/>
+          <member name="nagleDefault" type="uint8" comment="Enables or disables support of Nagle's algorithm."/>
+[!IF "TcpIpConfig/TcpIpTcpConfig/TcpIpTcpKeepAliveEnabled = 'true'"!]
+          <member name="keepAliveDefault" type="uint8" comment="Enables or disables support of keep alive probes."/>
+          <member name="maxAliveProbes" type="uint8" comment="Maximum number of times that an unacknowledged keep alive probe is sent."/>
+[!ENDIF!]
+[!IF "(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpOptionFilterEnabled = 'true')"!]
+          <member name="NumOfptionFilters" type="uint8" comment="Number of option filters."/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+[!IF "$NumOfTcpFilterEntries > 0"!]
+      <!-- structure containing TCP Option filtering information -->
+      <type name="TcpIp_TcpOptionFilterConfigType">
+        <struct>
+          <member name="optionFilterNum" type="uint8" comment="Number of configured TCP option filters."/>
+          <member name="filterOffset" type="uint8" comment="TCP option filter offset."/>
+        </struct>
+      </type>
+[!ENDIF!]
+
+      <!-- structure containing DHCP client information -->
+      <type name="TcpIp_DhcpV4ConfigType">
+        <struct>
+          <member name="initDelay" type="uint8" comment="Delay of the DHCPDISCOVER message transmission"/>
+          <member name="addrDefendMechanism" type="uint8" comment=">Indicates the DhcpV4 Address Defend Mechanism."/>
+          <member name="optionNum" type="uint8" comment="Number of configured Dhcp options."/>
+[!IF "(TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpConfigurableOptionsEnabled = 'true')"!]
+          <member name="ParamReqListOptionIdx" type="uint8" comment="Index of the Parameter Request List configured Dhcp options."/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+      <!-- structure containing IPv4 link local information -->
+      <type name="TcpIp_IpV4LinkLocalConfigType">
+        <struct>
+          <member name="autoIpInitTimeout" type="uint16" comment="AutoIp inital timeout."/>
+          <member name="addrDefendMechanism" type="uint8" comment=">Indicates the AutoIp Address Defend Mechanism."/>
+        </struct>
+      </type>
+
+      <!-- structure containing assignment configuration -->
+      <type name="TcpIp_assignmConfigType">
+        <struct>
+[!IF "(node:exists(TcpIpConfig/TcpIpNvmBlock/TcpIpNvmBlockDescriptorRef) = 'true')"!][!//
+          <member name="intNvMMemoryIndex" type="uint16" comment="The index in the internal NvM cache."/>
+[!ENDIF!]
+[!IF "((TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true') or (TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpArpProbingEnabled = 'true'))"!][!//
+           <member name="dadIpV4Idx" type="uint16" comment="The index in the ARP DAD cache."/>
+[!ENDIF!]
+          <member name="assignIdx" type="uint8" comment="Assignment type variable array index." />
+          <member name="priority_autoAssign" type="uint8" comment="Priority of assignment (bits 1-3) and autoAssignment (bit 0) information."/>
+        </struct>
+      </type>
+
+      <!-- structure containing domain independent local address information -->
+      <type name="TcpIp_localAddrConfigType">
+        <struct>
+          <member name="intLocalAddrId" type="TcpIp_LocalAddrIdType" comment="Reference to array of local address configurations." />
+          <member name="assignmByMethod" type="TcpIp_assignmConfigType" count="[!"$NumberOfAssignmentTypes"!]" comment="Assignment configuration for this localAddr."/>
+          <member name="assignmByPriority" type="uint8" count="[!"$NumberOfConfiguredAssignmentTypes"!]" comment="Assignment types sorted by assignment priority."/>
+          <member name="numAssignm" type="uint8" comment="Number of assignments configured for this localAddr."/>
+          <member name="ctrlIdx" type="uint8" comment="Reference to controller config structure this local address belongs to."/>
+          <member name="addrType" type="uint8" comment="type of address (unicast, multicast)."/>
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6ExtensionHeaderFilterEnabled = 'true')"!]
+          <member name="ipV6ExtensionHeaderIdListOffset" type="uint16" comment="offset in list ipV6ExtensionHeaderId."/>
+          <member name="ipV6ExtensionHeaderIdListNum" type="uint16" comment="number of ipv6 extension header ids."/>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and ($IpV6NdpDadEnable = 'true')"!][!//
+           <member name="ipV6NdpDadIndex" type="uint8" comment="The Dad index."/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+      <!-- structure containing IpV6 dependent local address information -->
+      <type name="TcpIp_localAddrIpV6StaticConfigType">
+        <struct>
+          <member name="srcIpStatic" type="uint32" count="4" comment="Static source IP address for this local address configuration."/>
+          <member name="routerIpStatic" type="uint32" count="4" comment="Static router IP address for this local address configuration."/>
+          <member name="netMaskStatic" type="uint32" count="4" comment="Static network mask including subnet."/>
+        </struct>
+      </type>
+
+      <type name="TcpIp_localAddrIpV6ConfigType">
+        <struct>
+          <member name="staticAddrId" type="uint8" comment="Index pointing to static configured ip address and netmask"/>
+          <member name="solMultilocalAddrId" type="TcpIp_LocalAddrIdType" comment="Solcit Multicast Local address identifier (TcpIpAddrId)."/>
+        </struct>
+      </type>
+
+      <!-- structure containing DhcpV6 Multicast and LinkLocal address index -->
+      <type name="TcpIp_DhcpAddrIpV6ConfigType">
+        <struct>
+          <member name="solMultilocalAddrId" type="TcpIp_LocalAddrIdType" comment="Solcit Multicast Local address identifier (TcpIpAddrId)."/>
+        </struct>
+      </type>
+
+      <!-- structure containing Ndp Rpd Multicast and LinkLocal address index -->
+      <type name="TcpIp_NdpRpdAddrIpV6ConfigType">
+        <struct>
+          <member name="solMultilocalAddrId" type="TcpIp_LocalAddrIdType" comment="Solcit Multicast Local address identifier (TcpIpAddrId)."/>
+        </struct>
+      </type>
+
+      <!-- structure containing IpV4 dependent controller information -->
+      <type name="TcpIp_ctrlIpV4ConfigType">
+        <struct>
+          <member name="defaultGWIpStatic" type="uint32" comment="Static default Gateway IP address."/>
+          <member name="netMaskStatic" type="uint32" comment="Static network mask including subnet."/>
+          <member name="intLocalAddrIdFirst" type="TcpIp_LocalAddrIdType" comment="Index of first local address (internal table) which shall be searched for this controller." />
+          <member name="intLocalAddrNum" type="TcpIp_LocalAddrIdType" comment="Number of local addresses (internal table) which shall be searched for this controller." />
+          <member name="localAddrIdTx" type="TcpIp_LocalAddrIdType" comment="Unicast localAddrId of this controller to use for transmission."/>
+          <member name="localAddrLimdBroad" type="TcpIp_LocalAddrIdType" comment="Limited Broadcast localAddrId of this controller used for binding."/>
+        </struct>
+      </type>
+
+      <!-- structure containing IpV6 dependent controller information -->
+      <type name="TcpIp_ctrlIpV6ConfigType">
+        <struct>
+          <member name="intLocalAddrIdFirst" type="TcpIp_LocalAddrIdType" comment="Index of first local address (internal table) which shall be searched for this controller." />
+          <member name="intLocalAddrNum" type="TcpIp_LocalAddrIdType" comment="Number of local addresses (internal table) which shall be searched for this controller." />
+          <member name="localAddrLinkLocal" type="TcpIp_LocalAddrIdType" comment="Link Local localAddrId of this controller"/>
+        </struct>
+      </type>
+
+      <!-- structure containing domain independent controller information -->
+      <type name="TcpIp_ctrlConfigType">
+        <struct>
+[!IF "TcpIpGeneral/TcpIpIpV4General/TcpIpIpV4Enabled = 'true'"!]
+          <member name="ctrlIpV4" type="TcpIp_ctrlIpV4ConfigType" comment="IpV4 controller information"/>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true'"!]
+          <member name="ctrlIpV6" type="TcpIp_ctrlIpV6ConfigType" comment="IpV6 controller information"/>
+[!ENDIF!]
+          <member name="mtu" type="uint16" comment="Maximum transmission unit of this ethernet controller"/>
+          <member name="defaultVlanPrio" type="uint8" comment="default vlan priority to use for this controller"/>
+          <member name="localAddrIdAny" type="TcpIp_LocalAddrIdType" comment="Any-IP localAddrId of this controller used for binding."/>
+          <member name="intLocalAddrIdFirst" type="TcpIp_LocalAddrIdType" comment="Index of first local address (internal table) which shall be searched for this controller." />
+          <member name="intLocalAddrNum" type="TcpIp_LocalAddrIdType" comment="Number of local addresses (internal table) which shall be searched for this controller." />
+          <member name="ethIfCtrlIdx" type="uint8" comment="internal to external controller index mapping"/>
+          <member name="enableOffloadChecksum" type="uint8" comment="Hardware calculation of the protocol checksums." />
+        </struct>
+      </type>
+
+      <!-- structure containing IpV4 related attributes -->
+      <type name="TcpIp_IpV4ConfigType">
+        <struct>
+          <member name="arpRequestTimeout" type="uint32" comment="Arp Request timeout in units of mainfunction ticks."/>
+          <member name="arpTimeout" type="uint32" comment="Arp entry timeout in units of seconds."/>
+          <member name="numGratuitousARP" type="uint8" comment="Number of gratuitous ARP messages sent after IP address assignment."/>
+[!IF "TcpIpGeneral/TcpIpIpV4General/TcpIpIcmpEnabled = 'true'"!]
+          <member name="icmpTtl" type="uint8" comment="Ttl used for ICMP transmission."/>
+          <member name="icmpEchoReplyEnable" type="uint8" comment="Enable/Disable echo reply transmission."/>
+[!ENDIF!]
+          <member name="addrDefendMechanism" type="uint8" comment=">Indicates the IpV4 Static Address Defend Mechanism."/>
+        </struct>
+      </type>
+
+      <!-- structure containing IpV6 related attributes -->
+      <type name="TcpIp_IpV6ConfigType">
+        <struct>
+          <member name="icmpV6HopLimit" type="uint8" comment="Default Hop-Limit value of outgoing ICMPv6 packets."/>
+          <member name="icmpV6EchoReplyEnable" type="uint8" comment="Enable/Disable echo reply transmission."/>
+          <member name="icmpV6EchoReplyToMulticastEnabled" type="uint8" comment="Enable/Disable echo reply to multicast messages."/>
+          <member name="icmpV6MsgDestinationUnreachableEnabled" type="uint8" comment="Dis/Enables transmission of Destination Unreachable Messages."/>
+          <member name="icmpV6MsgParameterProblemEnabled" type="uint8" comment="Parameter problem message will be sent if a received packet has been dropped."/>
+        </struct>
+      </type>
+
+      <!-- structure containing DHCPv6 client information -->
+      <type name="TcpIp_DhcpV6ConfigType">
+        <struct>
+          <member name="optionNum" type="uint8" comment="Number of configured DhcpV6 options."/>
+        </struct>
+      </type>
+
+      <!-- structure containing Ndp related attributes -->
+      <type name="TcpIp_NdpConfigType">
+        <struct>
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and ($IpV6NdpDadEnable = 'true')"!]
+          <member name="IpV6NdpDadIndex2LocalAddrIdRef" type="uint8" comment="Reference to internal list of IPv6 Unicast local address configurations.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!ENDIF!]
+          <member name="ndpDefaultReachableTime" type="uint16" comment="Configuration of the ReachableTime (s)."/>
+          <member name="ndpDefaultRetransTimer" type="uint16" comment="Configures the default value (s) for the RetransTimer"/>
+          <member name="ndpDelayFirstProbeTime" type="uint16" comment="Delay before sending the first NUD probe in (s)."/>
+          <member name="ndpNumMulticastSolicitations" type="uint8" comment="Maximum number of multicast solicitations that will be sent when performing address resolution."/>
+          <member name="ndpNumUnicastSolicitations" type="uint8" comment="Maximum number of unicast solicitations that will be sent when performing Neighbor Unreachability Detection."/>
+[!IF "TcpIpGeneral/TcpIpIpV6General/TcpIpNdpPrefixAndRouterDiscoveryEnabled = 'true'"!]
+          <member name="ndpMaxRtrSolicitations" type="uint8" comment="Maximum number of router solicitations that will be sent when performing prefix discovery."/>
+          <member name="ndpRtrSolicitationInterval" type="uint8" comment="Interval between retransmission of the router solicitations that will be sent when performing prefix discovery."/>
+          <member name="ndpMaxRtrSolicitationDelay" type="uint8" comment="Maximum delay between router solicitations that will be sent when performing prefix discovery."/>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and ($IpV6NdpDadEnable = 'true')"!]
+          <member name="ndpDadNum" type="uint8" comment="Number of IpV6 Unicast addresses"/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+      <!-- structure containing Dhcp options related attributes -->
+      <type name="TcpIp_DhcpOptionConfigType">
+        <struct>
+          <member name="optionCode" type="uint16" comment="option code according to RFC 3315"/>
+          <member name="optionMaxLength" type="uint16" comment="maximum length in bytes for this option."/>
+          <member name="optionDataOffset" type="uint32" comment="DHCP option offset"/>
+          <member name="optionTransmit" type="boolean" comment="Defines if options is transmitted or just saved"/>
+        </struct>
+      </type>
+
+[!IF "TcpIpGeneral/TcpIpSecurityMode != 'NO_SECURITY'"!]
+      <type name="TcpIp_IpSecLocalAddrConfigType"> <!-- one entry for every local address -->
+        <comment>This types contains IpSec configuration related to a specific local address.</comment>
+        <struct>
+          <member name="connectionOffset" type="uint8" comment="Indicates the offset in the connection list"/>
+          <member name="numOfConnections" type="uint8" comment="Indicates how many connections are configured for this local address"/>
+        </struct>
+      </type>
+
+      <type name="TcpIp_IpSecConnectionConfigType"> <!-- one entry for every connection--> <!-- sorted by local address id -->
+        <comment>This type contains IpSec configuration related to a specific connection.</comment>
+        <struct>
+          <member name="remoteIpAddressIdx" type="uint8" comment="Index of the remote IP Address in a list of addresses of the respective domain"/> <!-- index to a list of ipv4 or ipv6 addresses -->
+          [!IF "(TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecGeneral/TcpIpIpSecRemotePhysAddrCheckEnable = 'true')"!]
+          <member name="remotePhysAddressIdx" type="uint8" comment="Index of the remote MAC Address in a list of addresses of the respective domain"/>
+          [!ENDIF!]
+          <member name="addrType" type="uint8" comment="Type of address (IPv4, IPv6)"/>
+          <member name="remoteAddrIsSingle" type="boolean" comment="Defines if the remote address is a single address (TRUE) or a range of addresses. (FALSE)"/>
+          <member name="localAddrId" type="TcpIp_LocalAddrIdType" comment="Reference to the local IP address"/>
+          <member name="inboundPolicies" type="TcpIp_IpSecPolicyDirConfigType" comment="Reference to list of inbound security policies"/>
+          <member name="outboundPolicies" type="TcpIp_IpSecPolicyDirConfigType" comment="Reference to list of outbound security policies"/>
+        </struct>
+      </type>
+
+      <!-- Structure containing Bypass and Secured traffic info for either Inbound or Outbound direction  -->
+      <type name="TcpIp_IpSecPolicyDirConfigType">
+        <struct>
+          <member name="BypassedPoliciesOffset" type="uint8" comment="Bypassed policies offset"/>
+          <member name="numOfBypassedPolicies" type="uint8" comment="Number of bypassed policies"/>
+          <member name="SecuredPoliciesOffset" type="uint8" comment="Secured policies offset"/>
+          <member name="numOfSecuredPolicies" type="uint8" comment="Nmber of Secured policies"/>
+        </struct>
+      </type>
+
+[!IF "as:modconf('TcpIp')[1]/TcpIpGeneral/TcpIpSecurityMode = 'STATIC_IPSEC'"!]
+
+
+      <type name="TcpIp_IpSecSecurityAssociationCommonConfigType">
+        <struct>
+          <member name="proposalPtr" type="TcpIp_IpSec_ProposalType" comment="Reference to the IPsec proposal">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="inboundSpi" type="uint32" comment="SPI of the inbound security association"/>
+          <member name="outboundSpi" type="uint32" comment="SPI of the outbound security association"/>
+        [!IF "as:modconf('TcpIp')[1]/TcpIpGeneral/TcpIpIkeEnable = 'true'"!]
+          <member name="KeyExchangeMethod" type="uint8" comment="Defines the key exchange method  MANUAL/DYNAMIC"/>
+        [!ENDIF!]
+          <member name="ipSecSaOffset" type="uint8" comment="Indicates the offset in the IPsec SA list"/>
+          <member name="ipSecSaNum" type="uint8" comment="Indicates how many IPsec SAs are configured for this IPsec config"/>
+        </struct>
+      </type>
+
+      <type name="TcpIp_IpSecSecurityAssociationConfigType">
+        <struct>
+          <member name="inboundIntegrityKey" type="uint32" comment="Reference to the integrity key for verification"/>
+          <member name="inboundIntegrityjobId" type="uint32" comment="Reference to csm job which verifies integrity"/>
+          <member name="outboundIntegrityKey" type="uint32" comment="Reference to the integrity key for generation"/>
+          <member name="outboundIntegrityjobId" type="uint32" comment="Reference to csm job which generates integrity"/>
+          <member name="saCommonConfigIdx" type="uint8" comment="indicates the index of the common security association config"/>
+        </struct>
+      </type>
+
+      <type name="TcpIp_IpSec_ProposalType">
+        <comment>This type contains the specification of an IpSec proposal.</comment>
+        <struct>
+          <member name="truncatedLength" type="uint8" comment="Indicates the truncated length of the integrity algorithm"/>
+      [!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpIpV4Enabled = 'true')"!]
+          <member name="ipv4SecurityHeadersize" type="uint8" comment="Indicates the size of the authentication header for ipv4"/>
+      [!ENDIF!]
+      [!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true')"!]
+          <member name="ipv6SecurityHeadersize" type="uint8" comment="Indicates the size of the authentication header for ipv6"/>
+      [!ENDIF!]
+          <member name="useGMAC" type="boolean" comment="Indicates if GMAC is used for authentication"/>
+        </struct>
+      </type>
+[!ENDIF!]
+
+      <type name="TcpIp_IpSecPolicyConfigType"> <!-- sorted by connection, direction, mechanism -->
+        <comment>This type contains configuration related to a specific IpSec policy.</comment>
+        <struct>
+          <member name="LocalPoliciesOffset" type="uint8" comment="Indicates the offset in the policy rule list"/>
+          <member name="numOfLocalPolicies" type="uint8" comment="Indicates how many local rules are configured for this policy"/>
+          <member name="remotePoliciesOffset" type="uint8" comment="Indicates the offset in the policy rule list"/>
+          <member name="numOfRemotePolicies" type="uint8" comment="Indicates how many remote rules are configured for this policy"/>
+          <member name="securityAssociationIdx" type="uint8" comment="Index to the security association"/>
+        </struct>
+      </type>
+
+      <type name="TcpIp_IpSecRuleConfigType"> <!-- sorted by connection, direction, mechanism, policy direction -->
+        <comment>This type contains configuration related to a specific rule of an IpSec policy.</comment>
+        <struct>
+          <member name="startPort" type="uint16" comment="start of the port range for which the policy is valid"/>
+          <member name="endPort" type="uint16" comment="end of the port range for which the policy is valid"/>
+          <member name="upperLayerProtocol" type="uint8" comment="Indicates the upper layer protocol ICMP/UDP/TCP/ANY"/>
+        </struct>
+      </type>
+[!ENDIF!]
+
+
+      <!-- !LINKSTO TcpIp.DesignPBCfg,1 -->
+      <!-- This is the type definition of the root structure -->
+      <type name="TcpIp_ConfigType">
+        <struct>
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform."/>
+          <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration."/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration."/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate Public information."/>
+          <member name="localAddrRef" type="TcpIp_localAddrConfigType" comment="Reference to list of local address configurations.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="intIpLocalAddrRef" type="uint8" comment="Reference to internal list of local address configurations.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="intIpV4LocalAddrRef" type="uint32" comment="Reference to static IpV4 addresses.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!IF "TcpIpGeneral/TcpIpIpV4General/TcpIpDhcpSimpleClientEnabled = 'true'"!]
+          <member name="intDhcpV4AssignRef" type="boolean" comment="Reference to dhcp assignment configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!ENDIF!]
+          <member name="intIpV6LocalAddrRef" type="TcpIp_localAddrIpV6ConfigType" comment="Reference to internal IpV6 list of local address configurations.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="intIPv6StaticAddrRef" type="TcpIp_localAddrIpV6StaticConfigType" comment="Reference to internal IpV6 list of local address configurations.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="intIpV6DhcpAddrRef" type="TcpIp_DhcpAddrIpV6ConfigType" comment="Reference to internal list of multicast and LinkLocal address index">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="intIpV6NdpRpdAddrRef" type="TcpIp_NdpRpdAddrIpV6ConfigType" comment="Reference to internal list of multicast address index">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ctrlRef" type="TcpIp_ctrlConfigType" comment="Reference to list of controller configurations.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ctrlMappingRef" type="uint8" comment="Used to map internal index to external index.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!IF "((TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true') or (TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpArpProbingEnabled = 'true'))"!]
+          <member name="arpDadCtrlMappingRef" type="uint8" comment="Used to map Arp Dad index to internal ctrl index.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6ExtensionHeaderFilterEnabled = 'true')"!]
+          <member name="ipV6ExtensionHeaderIdRef" type="uint8" comment="Reference to list of extension headers.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!ENDIF!]
+[!IF "$NumOfTcpFilterEntries > 0"!]
+          <member name="tcpOptionIdListRef" type="uint8" comment="Reference to list of TCP option filters.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="tcpOptionFilterListRef" type="TcpIp_TcpOptionFilterConfigType" comment="Reference to list of TCP option filter configuration.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!ENDIF!]
+          <member name="dhcpOptionRef" type="TcpIp_DhcpOptionConfigType" comment="Reference to internal list of Dhcp options">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="dhcpV6OptionRef" type="TcpIp_DhcpOptionConfigType" comment="Reference to internal list of DhcpV6 options">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="assignmToLocalAddrIdMapRef" type="TcpIp_LocalAddrIdType" count="[!"$NumberOfAssignmentTypes"!]" comment="Reference to list for assignment/type to local addrId mapping.">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!IF "TcpIpGeneral/TcpIpTcpEnabled = 'true'"!]
+          <member name="memoryRef" type="TcpIp_memoryConfigType" comment="Reference to list of buffers">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpSecurityMode != 'NO_SECURITY'"!]
+          <member name="ipSecLocalAddrListRef" type="TcpIp_IpSecLocalAddrConfigType" comment="Reference to the local address list which knows connections per local address">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ipSecConnectionsListRef" type="TcpIp_IpSecConnectionConfigType" comment="Reference to a list of all IpSec connections">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ipSecConnIndexExt2IntRef" type="uint8" comment="Maps external connection index to internal index">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!IF "TcpIpGeneral/TcpIpSecurityMode = 'STATIC_IPSEC'"!]
+          <member name="ipSecSecurityAssociationCommonListRef" type="TcpIp_IpSecSecurityAssociationCommonConfigType" comment="Reference to a list of security association cofigurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ipSecProposalListRef" type="TcpIp_IpSec_ProposalType" comment="Reference to a list IPsec proposals">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ipSecSecurityAssociationListRef" type="TcpIp_IpSecSecurityAssociationConfigType" comment="Reference to a list of all security associations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!ENDIF!]
+          <member name="ipSecPolicyListRef" type="TcpIp_IpSecPolicyConfigType" comment="Reference to a list of all security policies">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ipSecRuleListRef" type="TcpIp_IpSecRuleConfigType" comment="Reference to a list of all security rules">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ipSecConnectionIpV4RemoteAddrListRef" type="TcpIp_AddrInetType" comment="Reference to a list of all IPv4 remote addresses">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ipSecConnectionIpV6RemoteAddrListRef" type="TcpIp_AddrInet6Type" comment="Reference to a list of all IPv6 remote addresses">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="ipSecConnectionMACRemoteAddrListRef" type="TcpIp_MACAddrType" comment="Reference to a list of all MAC remote addresses">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!ENDIF!]
+
+[!IF "TcpIpGeneral/TcpIpIpV4General/TcpIpIpV4Enabled = 'true'"!]
+          <member name="ipV4Config" type="TcpIp_IpV4ConfigType" comment="IpV4 configuration parameters."/>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true'"!]
+          <member name="ipV6Config" type="TcpIp_IpV6ConfigType" comment="IpV6 configuration parameters."/>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true'"!]
+          <member name="ndpConfig" type="TcpIp_NdpConfigType" comment="Ndp configuration parameters."/>
+[!ENDIF!]
+[!IF "(TcpIpConfig/TcpIpIpConfig/TcpIpIpFragmentationConfig/TcpIpIpFragmentationRxEnabled = 'true')or(TcpIpConfig/TcpIpIpConfig/TcpIpIpFragmentationConfig/TcpIpIpFragmentationTxEnabled = 'INORDER')"!]
+          <member name="ipFragConfig" type="TcpIp_IpFragConfigType" comment="Ip fragmentation configuration parameters."/>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpUdpEnabled = 'true'"!]
+          <member name="udpConfig" type="TcpIp_UdpConfigType" comment="Udp configuration parameters."/>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpTcpEnabled = 'true'"!]
+          <member name="tcpConfig" type="TcpIp_TcpConfigType" comment="Tcp configuration parameters."/>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpIpV4Enabled = 'true') and (TcpIpGeneral/TcpIpIpV4General/TcpIpDhcpClientEnabled = 'true')"!]
+          <member name="dhcpv4Config" type="TcpIp_DhcpV4ConfigType" comment="Dhcp configuration parameters."/>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and (TcpIpGeneral/TcpIpIpV6General/TcpIpDhcpV6ClientEnabled = 'true')"!]
+          <member name="dhcpv6Config" type="TcpIp_DhcpV6ConfigType" comment="DhcpV6 configuration parameters."/>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true')"!]
+          <member name="ipV4linkLocalConfig" type="TcpIp_IpV4LinkLocalConfigType" comment="IpV4 link local configuration parameters."/>
+[!ENDIF!]
+[!IF "(node:exists(TcpIpConfig/TcpIpNvmBlock/TcpIpNvmBlockDescriptorRef) = 'true')"!][!//
+          <member name="ipV4NvMAddrNum" type="uint16" comment="Number of IpV4 addresses to be stored in NvM"/>
+[!ENDIF!]
+[!IF "((TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true') or (TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpArpProbingEnabled = 'true'))"!]
+          <member name="IpV4ArpDadNum" type="uint16" comment="Number of ARP DAD entries."/>
+[!ENDIF!]
+          <member name="totalLocalAddrNum" type="TcpIp_LocalAddrIdType" comment="Number of LocalAddrIds configured and generated."/>
+          <member name="configLocalAddrNum" type="TcpIp_LocalAddrIdType" comment="Number of LocalAddrIds configured."/>
+          <member name="ctrlNum" type="uint8" comment="Number of TcpIp controllers configured."/>
+          <member name="maxCtrlIdx" type="uint8" comment="highest EthIf controller index referenced by the TcpIp."/>
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpIpV4Enabled = 'true') and (TcpIpGeneral/TcpIpIpV4General/TcpIpDhcpClientEnabled = 'true')"!]
+          <member name="dhcpv4Num" type="uint8" comment="Number of Dhcp clients configured."/>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and (TcpIpGeneral/TcpIpIpV6General/TcpIpDhcpV6ClientEnabled = 'true')"!]
+          <member name="dhcpv6Num" type="uint8" comment="Number of Dhcpv6 clients configured."/>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and (TcpIpGeneral/TcpIpIpV6General/TcpIpNdpPrefixAndRouterDiscoveryEnabled = 'true')"!]
+          <member name="ndpRpdNum" type="uint8" comment="Number of configured Router assignments."/>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true')"!]
+          <member name="IpV4LinkLocalNum" type="uint8" comment="Number of link local Ip address assignments configured."/>
+[!ENDIF!]
+          <member name="transRetryNum" type="uint8" comment="Number of transmission retries."/>
+[!IF "TcpIpGeneral/TcpIpTcpEnabled = 'true'"!]
+          <member name="numOfMemoryPools" type="uint8" comment="Number of configured memory pools."/>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpSecurityMode = 'STATIC_IPSEC'"!]
+          <member name="numOfIpSecSecurityAssociationCfg" type="uint8" comment="Number of security associationsconfigurations."/>
+[!ENDIF!]
+[!IF "TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecGeneral/TcpIpIpSecRemotePhysAddrCheckEnable = 'true'"!]
+          <member name="numOfIpSecMACFilteringEntries" type="uint8" comment="Number of MAC filtering entries."/>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpSecurityMode = 'STATIC_IPSEC'"!]
+          <member name="numOfIpSecCon" type="uint8" comment="Number of configured IpSec Connections."/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <?artifact directory="include" file="[!"$TCPIP_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$TCPIP_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of TcpIp_Pbcfg.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+      <type name="[!"$TCPIP_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="TcpIp_ConfigType"/>
+          <member name="intIpLocalAddrCfg" type="uint8" count="[!CALL "LocalAddrList_getNumLocalAddr"!]" />
+[!IF "$IpV4StaticCount > 0"!]
+          <member name="intIpV4LocalAddrCfg" type="uint32" count="[!"$IpV4StaticCount"!]" />
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpDhcpSimpleClientEnabled = 'true') and ($IpV4DhcpCount > 0)"!]
+          <member name="intDhcpV4AssignCfg" type="boolean" count="[!"$IpV4DhcpCount"!]" />
+[!ENDIF!]
+[!IF "$IpV6StaticCount > 0"!]
+          <member name="intIpV6LocalAddrCfg" type="TcpIp_localAddrIpV6ConfigType" count="[!"$IpV6StaticCount"!]" />
+[!ENDIF!]
+[!IF "$StaticAddrCount > 0"!]
+          <member name="intIPv6StaticAddrCfg" type="TcpIp_localAddrIpV6StaticConfigType" count="[!"$StaticAddrCount"!]" />
+[!ENDIF!]
+[!IF "$IpV6DhcpCount > 0"!]
+          <member name="intIpV6DhcpAddrCfg" type="TcpIp_DhcpAddrIpV6ConfigType" count="[!"$IpV6DhcpCount"!]" />
+[!ENDIF!]
+[!IF "$IpV6NdpRpdCount > 0"!]
+          <member name="intIpV6NdpRpdAddrCfg" type="TcpIp_NdpRpdAddrIpV6ConfigType" count="[!"$IpV6NdpRpdCount"!]" />
+[!ENDIF!]
+          <member name="localAddrCfg" type="TcpIp_localAddrConfigType" count="[!CALL "LocalAddrList_getNumLocalAddr"!]" />
+          <member name="ctrlCfg" type="TcpIp_ctrlConfigType" count="[!"num:i($NumOfTcpIpCtrlIdx)"!]" />
+          <member name="ctrlMappingCfg" type="uint8" count="[!"num:i(count(text:split($EthIfCtrlIdx2TcpIpCtrlIdx,' ')))"!]" />
+[!IF "((TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true') or (TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpArpProbingEnabled = 'true'))"!]
+          <member name="arpDadCtrlMappingCfg" type="uint8" count="[!"num:i(count(text:split($IntArpDadIdx2CtrlId,' ')))"!]" />
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6ExtensionHeaderFilterEnabled = 'true')"!]
+          <member name="ipV6ExtensionHeaderIdCfg" type="uint8" count="[!"$ExtensHdrIdCount"!]" />
+[!ENDIF!]
+[!IF "$NumOfTcpFilterEntries > 0"!]
+          <member name="tcpOptionIdListCfg" type="uint8" count="[!"$NumOfTcpFilterEntries"!]" />
+          <member name="tcpOptionFilterListCfg" type="TcpIp_TcpOptionFilterConfigType" count="[!"$NumOfTcpOptionFilters"!]" />
+[!ENDIF!]
+[!IF "$NumOfDhcpOptions > 0"!]
+          <member name="dhcpOptionCfg" type="TcpIp_DhcpOptionConfigType" count="[!"num:i($NumOfDhcpOptions)"!]" />
+[!ENDIF!]
+[!IF "$NumOfDhcpV6Options > 0"!]
+          <member name="dhcpV6OptionCfg" type="TcpIp_DhcpOptionConfigType" count="[!"num:i($NumOfDhcpV6Options)"!]" />
+[!ENDIF!]
+[!IF "$IpV4StaticCount > 0"!]
+          <member name="IpV4StaticIndex2LocalAddrId" type="TcpIp_LocalAddrIdType" count="[!"$IpV4StaticCount"!]" />
+[!ENDIF!]
+[!IF "$IpV4LinkLocalCount > 0"!]
+          <member name="IpV4LinkLocalIndex2LocalAddrId" type="TcpIp_LocalAddrIdType" count="[!"num:i($IpV4LinkLocalCount)"!]" />
+[!ENDIF!]
+[!IF "$IpV4DhcpCount > 0"!]
+          <member name="IpV4DhcpIndex2LocalAddrId" type="TcpIp_LocalAddrIdType" count="[!"$IpV4DhcpCount"!]" />
+[!ENDIF!]
+[!IF "$IpV6DhcpCount > 0"!]
+          <member name="IpV6DhcpIndex2LocalAddrId" type="TcpIp_LocalAddrIdType" count="[!"$IpV6DhcpCount"!]" />
+[!ENDIF!]
+[!IF "$IpV6NdpRpdCount > 0"!]
+          <member name="IpV6NdpRpdIndex2LocalAddrId" type="TcpIp_LocalAddrIdType" count="[!"$IpV6NdpRpdCount"!]" />
+[!ENDIF!]
+[!IF "$IpV6NdpDadCount > 0"!][!//
+          <member name="IpV6NdpDadIndex2LocalAddrId" type="TcpIp_LocalAddrIdType" count="[!"$IpV6NdpDadCount"!]" />
+[!ENDIF!]
+[!IF "$IpV6StaticCount > 0"!]
+          <member name="IpV6StaticIndex2LocalAddrId" type="TcpIp_LocalAddrIdType" count="[!"$IpV6StaticCount"!]" />
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpTcpEnabled = 'true'"!]
+          <member name="memoryCfg" type="TcpIp_memoryConfigType" count="[!"$numOfMemoryPools"!]" />
+[!ENDIF!]
+
+[!IF "TcpIpGeneral/TcpIpSecurityMode != 'NO_SECURITY'"!]
+  [!IF "$numOfLocalAddr > 0 "!]
+          <member name="ipSecLocalAddrListCfg" type="TcpIp_IpSecLocalAddrConfigType" count="[!"num:i($numOfLocalAddr)"!]" />
+  [!ENDIF!]
+  [!IF "$numOfIpSecConnections > 0 "!]
+          <member name="ipSecConnectionsListCfg" type="TcpIp_IpSecConnectionConfigType" count="[!"num:i($numOfIpSecConnections)"!]" />
+          <member name="ipSecConnIndexExt2IntCfg" type="uint8" count="[!"num:i($numOfIpSecConnections)"!]" />
+  [!ENDIF!]
+  [!IF "$numOfIpv4IpSecConnections > 0 "!]
+          <member name="ipSecConnectionIpV4RemoteAddrListCfg" type="TcpIp_AddrInetType" count="[!"num:i($numOfIpv4IpSecConnections + $numOfV4BypassOnly)"!]" />
+  [!ENDIF!]
+  [!IF "$numOfIpv6IpSecConnections > 0 "!]
+          <member name="ipSecConnectionIpV6RemoteAddrListCfg" type="TcpIp_AddrInet6Type" count="[!"num:i($numOfIpv6IpSecConnections + $numOfV6BypassOnly)"!]" />
+  [!ENDIF!]
+  [!IF "(TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecGeneral/TcpIpIpSecRemotePhysAddrCheckEnable = 'true')"!]
+          <member name="ipSecConnectionMACRemoteAddrListCfg" type="TcpIp_MACAddrType" count="[!"num:i($numOfAddrRangeIpSecConnections * 2)"!]" />
+  [!ENDIF!]
+  [!IF "$numOfSecurityPolicies > 0 "!]
+          <member name="ipSecPolicyListCfg" type="TcpIp_IpSecPolicyConfigType" count="[!"num:i($numOfSecurityPolicies)"!]" />
+  [!ENDIF!]
+  [!IF "$numOfSecurityRules > 0 "!]
+          <member name="ipSecRuleListCfg" type="TcpIp_IpSecRuleConfigType" count="[!"num:i($numOfSecurityRules)"!]" />
+  [!ENDIF!]
+  [!IF "$numOfSecurityAssociationConfigs > 0 "!]
+          <member name="ipSecSecurityAssociationCommonListCfg" type="TcpIp_IpSecSecurityAssociationCommonConfigType" count="[!"num:i($numOfSecurityAssociationConfigs)"!]" />
+          <member name="ipSecProposalListCfg" type="TcpIp_IpSec_ProposalType" count="[!"num:i($numOfIPsecProposals)"!]" />
+  [!ENDIF!]
+  [!IF "$numOfSecurityAssociations > 0 "!]
+          <member name="ipSecSecurityAssociationListCfg" type="TcpIp_IpSecSecurityAssociationConfigType" count="[!"num:i($numOfSecurityAssociations)"!]" />
+  [!ENDIF!]
+[!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="[!"$TCPIP_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$TCPIP_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="TCPIP_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialisation:
+          Specifies the content of TcpIp_Pbcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="[!"$TCPIP_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+             name="[!"$TCPIP_CONFIG_LAYOUT_VARIANT"!]">
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+        [!IF "not(var:defined('postBuildVariant')) and not(as:name(TcpIpConfig) = $initPredefinedCfgName)"!]
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"as:name(TcpIpConfig)"!]</symbolic-value>
+        </parameter>
+        [!ENDIF!]
+
+        <!-- RootCfg -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int> <!-- PlatformSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('TcpIp')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int> <!-- LcfgSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('TcpIp')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int> <!-- CfgSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('TcpIp')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('TcpIp')[1]/CommonPublishedInformation/Release))"!]</int> <!-- PublicInfoSignature -->
+          </field>
+          <field> <!-- localAddrRef -->
+            <ref>
+              <struct-field name="localAddrCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field> <!-- intIpLocalAddrRef -->
+            <ref>
+              <struct-field name="intIpLocalAddrCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field> <!-- intIpV4LocalAddrRef -->
+[!IF "$IpV4StaticCount > 0"!]
+            <ref>
+              <struct-field name="intIpV4LocalAddrCfg" />
+              <array-field index="0" />
+            </ref>
+[!ELSE!]
+            <ref/>
+[!ENDIF!]
+          </field>
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpDhcpSimpleClientEnabled = 'true')"!]
+          <field> <!-- intDhcpV4AssignCfg -->
+[!IF "($IpV4DhcpCount > 0)"!]
+            <ref>
+              <struct-field name="intDhcpV4AssignCfg" />
+              <array-field index="0" />
+            </ref>
+[!ELSE!]
+            <ref/>
+[!ENDIF!]
+          </field>  <!-- intDhcpV4AssignCfg -->
+[!ENDIF!]
+          <field> <!-- intIpV6LocalAddrRef -->
+[!IF "$IpV6StaticCount > 0"!][!//
+            <ref>
+              <struct-field name="intIpV6LocalAddrCfg" />
+              <array-field index="0" />
+            </ref>
+[!ELSE!]
+            <ref/>
+[!ENDIF!]
+          </field>
+          <field> <!-- intIpV6LocalAddrRef -->
+[!IF "$StaticAddrCount > 0"!][!//
+            <ref>
+              <struct-field name="intIPv6StaticAddrCfg" />
+              <array-field index="0" />
+            </ref>
+[!ELSE!]
+            <ref/>
+[!ENDIF!]
+          </field>
+          <field> <!-- intIpV6LocalAddrRef -->
+[!IF "$IpV6DhcpCount > 0"!][!//
+            <ref>
+              <struct-field name="intIpV6DhcpAddrCfg" />
+              <array-field index="0" />
+            </ref>
+[!ELSE!]
+            <ref/>
+[!ENDIF!]
+          </field>
+          <field> <!-- intNdpRpdLocalAddrRef -->
+[!IF "$IpV6NdpRpdCount > 0"!][!//
+            <ref>
+              <struct-field name="intIpV6NdpRpdAddrCfg" />
+              <array-field index="0" />
+            </ref>
+[!ELSE!]
+            <ref/>
+[!ENDIF!]
+          </field>
+          <field> <!-- ctrlRef -->
+            <ref>
+              <struct-field name="ctrlCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field> <!-- ctrlMappingRef -->
+            <ref>
+              <struct-field name="ctrlMappingCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+[!IF "((TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true') or (TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpArpProbingEnabled = 'true'))"!]
+          <field> <!-- arpDadCtrlMappingRef -->
+            <ref>
+              <struct-field name="arpDadCtrlMappingCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6ExtensionHeaderFilterEnabled = 'true')"!]
+          <field> <!-- ipV6ExtensionHeaderIdRef -->
+            <ref>
+              <struct-field name="ipV6ExtensionHeaderIdCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+[!ENDIF!]
+[!IF "$NumOfTcpFilterEntries > 0"!][!//
+          <field> <!-- tcpOptionIdListRef -->
+            <ref>
+              <struct-field name="tcpOptionIdListCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field> <!-- tcpOptionFilterListRef -->
+            <ref>
+              <struct-field name="tcpOptionFilterListCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+[!ENDIF!]
+          <field> <!-- dhcpOptionRef -->
+[!IF "$NumOfDhcpOptions > 0"!][!//
+            <ref>
+              <struct-field name="dhcpOptionCfg" />
+              <array-field index="0" />
+            </ref>
+[!ELSE!]
+            <ref/>
+[!ENDIF!]
+          </field>
+          <field> <!-- dhcpV6OptionRef -->
+[!IF "$NumOfDhcpV6Options  > 0"!][!//
+            <ref>
+              <struct-field name="dhcpV6OptionCfg" />
+              <array-field index="0" />
+            </ref>
+[!ELSE!]
+            <ref/>
+[!ENDIF!]
+          </field>
+          <field>
+            <field> <!-- assignmToLocalAddrIdMapRef -->
+[!IF "$IpV4StaticCount > 0"!][!//
+              <ref>
+                <struct-field name="IpV4StaticIndex2LocalAddrId" />
+                <array-field index="0" />
+              </ref>
+[!ELSE!]
+              <ref/>
+[!ENDIF!]
+            </field>
+            <field> <!-- assignmToLocalAddrIdMapRef -->
+[!IF "$IpV4LinkLocalCount > 0"!][!//
+              <ref>
+                <struct-field name="IpV4LinkLocalIndex2LocalAddrId" />
+                <array-field index="0" />
+              </ref>
+[!ELSE!]
+              <ref/>
+[!ENDIF!]
+            </field>
+            <field> <!-- assignmToLocalAddrIdMapRef -->
+[!IF "$IpV4LinkLocalCount > 0"!][!//
+              <ref>
+                <struct-field name="IpV4LinkLocalIndex2LocalAddrId" />
+                <array-field index="0" />
+              </ref>
+[!ELSE!]
+              <ref/>
+[!ENDIF!]
+            </field>
+            <field> <!-- assignmToLocalAddrIdMapRef -->
+[!IF "$IpV4DhcpCount > 0"!][!//
+              <ref>
+                <struct-field name="IpV4DhcpIndex2LocalAddrId" />
+                <array-field index="0" />
+              </ref>
+[!ELSE!]
+              <ref/>
+[!ENDIF!]
+            </field>
+            <field> <!-- assignmToLocalAddrIdMapRef -->
+[!IF "$IpV6StaticCount > 0"!][!//
+              <ref>
+                <struct-field name="IpV6StaticIndex2LocalAddrId" />
+                <array-field index="0" />
+              </ref>
+[!ELSE!]
+              <ref/>
+[!ENDIF!]
+            </field>
+
+            <field> <!-- assignmToLocalAddrIdMapRef -->
+[!IF "$IpV6StaticCount > 0"!][!//
+              <ref>
+                <struct-field name="IpV6StaticIndex2LocalAddrId" />
+                <array-field index="0" />
+              </ref>
+[!ELSE!]
+              <ref/>
+[!ENDIF!]
+            </field>
+
+            <field> <!-- assignmToLocalAddrIdMapRef -->
+[!IF "$IpV6DhcpCount > 0"!][!//
+              <ref>
+                <struct-field name="IpV6DhcpIndex2LocalAddrId" />
+                <array-field index="0" />
+              </ref>
+[!ELSE!]
+              <ref/>
+[!ENDIF!]
+            </field>
+            <field> <!-- assignmToLocalAddrIdMapRef -->
+[!IF "$IpV6NdpRpdCount > 0"!][!//
+              <ref>
+                <struct-field name="IpV6NdpRpdIndex2LocalAddrId" />
+                <array-field index="0" />
+              </ref>
+[!ELSE!]
+              <ref/>
+[!ENDIF!]
+            </field>
+          </field>
+[!IF "TcpIpGeneral/TcpIpTcpEnabled = 'true'"!]
+          <field> <!-- bufferListRef -->
+            <ref>
+              <struct-field name="memoryCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+[!ENDIF!]
+
+[!IF "TcpIpGeneral/TcpIpSecurityMode != 'NO_SECURITY'"!]
+          <field> <!-- ipSecLocalAddrListRef -->
+  [!IF "$numOfLocalAddr > 0"!][!//
+            <ref>
+              <struct-field name="ipSecLocalAddrListCfg" />
+              <array-field index="0" />
+            </ref>
+  [!ELSE!]
+            <ref/>
+  [!ENDIF!]
+          </field>
+          <field> <!-- ipSecConnectionsListRef -->
+  [!IF "$numOfIpSecConnections > 0"!][!//
+            <ref>
+              <struct-field name="ipSecConnectionsListCfg" />
+              <array-field index="0" />
+            </ref>
+  [!ELSE!]
+            <ref/>
+  [!ENDIF!]
+          </field>
+          <field> <!-- ipSecConnIndexExt2IntRef -->
+  [!IF "$numOfIpSecConnections > 0"!][!//
+            <ref>
+              <struct-field name="ipSecConnIndexExt2IntCfg" />
+              <array-field index="0" />
+            </ref>
+  [!ELSE!]
+            <ref/>
+  [!ENDIF!]
+          </field>
+[!IF "TcpIpGeneral/TcpIpSecurityMode = 'STATIC_IPSEC'"!][!//
+          <field> <!-- ipSecSecurityAssociationCommonListRef -->
+            <ref>
+              <struct-field name="ipSecSecurityAssociationCommonListCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field> <!-- ipSecProposalListRef -->
+            <ref>
+              <struct-field name="ipSecProposalListCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field> <!-- ipSecSecurityAssociationListRef -->
+            <ref>
+              <struct-field name="ipSecSecurityAssociationListCfg" />
+              <array-field index="0" />
+            </ref>
+          </field>
+[!ENDIF!]
+          <field> <!-- ipSecPolicyListRef -->
+  [!IF "$numOfSecurityPolicies > 0"!][!//
+            <ref>
+              <struct-field name="ipSecPolicyListCfg" />
+              <array-field index="0" />
+            </ref>
+  [!ELSE!]
+            <ref/>
+  [!ENDIF!]
+          </field>
+          <field> <!-- ipSecRuleListRef -->
+  [!IF "$numOfSecurityRules > 0"!][!//
+            <ref>
+              <struct-field name="ipSecRuleListCfg" />
+              <array-field index="0" />
+            </ref>
+  [!ELSE!]
+            <ref/>
+  [!ENDIF!]
+          </field>
+          <field> <!-- ipSecConnectionIpV4RemoteAddrListRef -->
+  [!IF "$numOfIpv4IpSecConnections > 0"!][!//
+            <ref>
+              <struct-field name="ipSecConnectionIpV4RemoteAddrListCfg" />
+              <array-field index="0" />
+            </ref>
+  [!ELSE!]
+            <ref/>
+  [!ENDIF!]
+          </field>
+          <field> <!-- ipSecConnectionIpV6RemoteAddrListRef -->
+  [!IF "$numOfIpv6IpSecConnections > 0"!][!//
+            <ref>
+              <struct-field name="ipSecConnectionIpV6RemoteAddrListCfg" />
+              <array-field index="0" />
+            </ref>
+  [!ELSE!]
+            <ref/>
+  [!ENDIF!]
+          </field>
+          <field> <!-- ipSecConnectionMACRemoteAddrListRef -->
+  [!IF "(TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecGeneral/TcpIpIpSecRemotePhysAddrCheckEnable = 'true')"!][!//
+            <ref>
+              <struct-field name="ipSecConnectionMACRemoteAddrListCfg" />
+              <array-field index="0" />
+            </ref>
+  [!ELSE!]
+            <ref/>
+  [!ENDIF!]
+          </field>
+[!ENDIF!]
+
+
+[!IF "TcpIpGeneral/TcpIpIpV4General/TcpIpIpV4Enabled = 'true'"!]
+          <field> <!-- ipV4Config -->
+            <field>
+[!IF "as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpArpConfig/*[1]/TcpIpArpRequestTimeout = num:i('0')"!]
+              <int>0</int>
+[!ELSE!]
+              <int>[!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpArpConfig/*[1]/TcpIpArpRequestTimeout", "PeriodSec"="$MainFunctionPeriod_sec"!]</int> <!-- arpRequestTimeout -->
+[!ENDIF!]
+            </field>
+            <field>
+[!IF "as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpArpConfig/*[1]/TcpIpArpTableEntryTimeout = 'Infinity'"!]
+              <int>0</int> <!-- arpTimeout -->
+[!ELSE!]
+              <int>[!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpArpConfig/*[1]/TcpIpArpTableEntryTimeout", "PeriodSec"="$MainFunctionPeriod_sec"!]</int> <!-- arpTimeout -->
+[!ENDIF!]
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpArpConfig/*[1]/TcpIpArpNumGratuitousARPonStartup)"!]</int> <!-- numGratuitousARP -->
+            </field>
+[!IF "TcpIpGeneral/TcpIpIpV4General/TcpIpIcmpEnabled = 'true'"!]
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpIcmpConfig/TcpIpIcmpTtl)"!]</int>
+            </field>
+            <field>
+              <int>[!IF "TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpIcmpConfig/TcpIpIcmpEchoReplyEnabled = 'true'"!]1[!ELSE!]0[!ENDIF!]</int> <!-- icmpEchoReplyEnable -->
+            </field>
+[!ENDIF!]
+            <field>
+              <int>[!CALL "DefendMechanismToValue", "defendMechanism"="TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpIpV4StaticAddrDefenseMechanism"!]</int> <!-- addrDefendMechanism -->
+            </field>
+          </field> <!-- ipV4Config -->
+[!ENDIF!]
+
+[!IF "TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true'"!]
+          <field> <!-- ipV6Config -->
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpIcmpV6Config/TcpIpIcmpV6HopLimit)"!]</int>
+            </field>
+            <field>
+              <int>[!IF "TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpIcmpV6Config/TcpIpIcmpV6EchoReplyEnabled = 'true'"!]1[!ELSE!]0[!ENDIF!]</int> <!-- icmpV6EchoReplyEnable -->
+            </field>
+            <field>
+              <int>[!IF "TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpIcmpV6Config/TcpIpIcmpV6EchoReplyToMulticastEnabled = 'true'"!]1[!ELSE!]0[!ENDIF!]</int> <!-- icmpV6EchoReplyToMulticastEnabled -->
+            </field>
+            <field>
+              <int>[!IF "TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpIcmpV6Config/TcpIpIcmpV6MsgDestinationUnreachableEnabled = 'true'"!]1[!ELSE!]0[!ENDIF!]</int> <!-- icmpV6MsgDestinationUnreachableEnabled -->
+            </field>
+            <field>
+              <int>[!IF "TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpIcmpV6Config/TcpIpIcmpV6MsgParameterProblemEnabled = 'true'"!]1[!ELSE!]0[!ENDIF!]</int> <!-- icmpV6MsgParameterProblemEnabled -->
+            </field>
+          </field> <!-- ipV6Config -->
+          <field> <!-- ndpConfig -->
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and ($IpV6NdpDadEnable = 'true')"!][!//
+            <field> <!-- dadIndexToLocalAddrIdMapRef -->
+              <ref>
+                <struct-field name="IpV6NdpDadIndex2LocalAddrId" />
+                <array-field index="0" />
+              </ref>
+            </field>
+[!ENDIF!]
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpNdpConfig/*[1]/TcpIpNdpArNudConfig/TcpIpNdpDefaultReachableTime)"!]</int> <!-- ndpDefaultReachableTime -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpNdpConfig/*[1]/TcpIpNdpArNudConfig/TcpIpNdpDefaultRetransTimer)"!]</int> <!-- ndpDefaultRetransTimer -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpNdpConfig/*[1]/TcpIpNdpArNudConfig/TcpIpNdpDelayFirstProbeTime)"!]</int> <!-- ndpDelayFirstProbeTime -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpNdpConfig/*[1]/TcpIpNdpArNudConfig/TcpIpNdpNumMulticastSolicitations)"!]</int> <!-- ndpNumMulticastSolicitations -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpNdpConfig/*[1]/TcpIpNdpArNudConfig/TcpIpNdpNumUnicastSolicitations)"!]</int> <!-- ndpNumUnicastSolicitations -->
+            </field>
+[!IF "TcpIpGeneral/TcpIpIpV6General/TcpIpNdpPrefixAndRouterDiscoveryEnabled = 'true'"!]
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpNdpConfig/*[1]/TcpIpNdpPrefixRouterDiscoveryConfig/TcpIpNdpMaxRtrSolicitations)"!]</int> <!-- ndpMaxRtrSolicitations -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpNdpConfig/*[1]/TcpIpNdpPrefixRouterDiscoveryConfig/TcpIpNdpRtrSolicitationInterval)"!]</int> <!-- ndpRtrSolicitationInterval -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV6Config/TcpIpNdpConfig/*[1]/TcpIpNdpPrefixRouterDiscoveryConfig/TcpIpNdpMaxRtrSolicitationDelay)"!]</int> <!-- ndpMaxRtrSolicitationDelay -->
+            </field>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and ($IpV6NdpDadEnable = 'true')"!]
+            <field>
+              <int>[!"$IpV6NdpDadCount"!]</int> <!-- ndpDadNum -->
+            </field>
+[!ENDIF!]
+          </field> <!-- ndpConfig -->
+[!ENDIF!]
+
+
+
+[!SELECT "TcpIpConfig/TcpIpIpConfig/TcpIpIpFragmentationConfig"!]
+[!IF "(TcpIpIpFragmentationRxEnabled = 'true') or (TcpIpIpFragmentationTxEnabled = 'INORDER')"!]
+          <field> <!-- ipFragConfig -->
+  [!IF "(TcpIpIpFragmentationRxEnabled = 'true')"!]
+            <field>
+              [!VAR "reassTimeout_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpIpReassemblyTimeout", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+              <int>[!"num:i($reassTimeout_ticks)"!]</int> <!-- reassTimeout -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpIpReassemblyBufferSize)"!]</int> <!-- reassBufferSize -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpIpReassemblyBufferCount)"!]</int> <!-- reassBufferCount -->
+            </field>
+  [!ENDIF!]
+  [!IF "(TcpIpIpFragmentationTxEnabled = 'INORDER')"!]
+            <field>
+              <int>[!"num:i(TcpIpIpTxFragmentBufferSize)"!]</int> <!-- txFragmentBufferSize -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpIpTxFragmentBufferCount)"!]</int> <!-- txFragmentBufferCount -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpIpTxFragmentSegmentCount)"!]</int> <!-- txFragmentSegmentCount-->
+            </field>
+  [!ENDIF!]
+          </field> <!-- ipFragConfig -->
+[!ENDIF!]
+[!ENDSELECT!]
+
+[!IF "TcpIpGeneral/TcpIpUdpEnabled = 'true'"!]
+          <field> <!-- udpConfig -->
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpUdpConfig/TcpIpUdpTtl)"!]</int> <!-- ttl -->
+            </field>
+            <field>
+              <int>[!IF "TcpIpConfig/TcpIpUdpConfig/TcpIpUdpMayReFragment = 'true'"!]1[!ELSE!]0[!ENDIF!]</int> <!-- mayFragment -->
+            </field>
+          </field>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpTcpEnabled = 'true'"!]
+          <field> <!-- tcpConfig -->
+            <field>
+              [!VAR "msl_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpTcpMsl", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+              <int>[!"num:i($msl_ticks)"!]</int> <!-- msl -->
+            </field>
+            <field>
+              [!VAR "finWait2Timeout_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpTcpFinWait2Timeout", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+              <int>[!"num:i($finWait2Timeout_ticks)"!]</int> <!-- finWait2Timeout -->
+            </field>
+            <field>
+              [!VAR "reTxTimeout_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpTcpRetransmissionTimeout", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+              <int>[!"num:i($reTxTimeout_ticks)"!]</int> <!-- reTxTimeout -->
+            </field>
+[!IF "TcpIpConfig/TcpIpTcpConfig/TcpIpTcpKeepAliveEnabled = 'true'"!]
+            <field>
+              [!VAR "keepAliveInterval_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpTcpKeepAliveInterval", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+              <int>[!"num:i($keepAliveInterval_ticks)"!]</int> <!-- keepAliveInterval -->
+            </field>
+            <field>
+              [!VAR "keepAliveTime_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpTcpKeepAliveTime", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+              <int>[!"num:i($keepAliveTime_ticks)"!]</int> <!-- keepAliveTime -->
+            </field>
+[!ENDIF!]
+            <field>
+              <int>[!"num:i(250000 * $MainFunctionPeriod_sec)"!]</int> <!-- issPeriod -->
+            </field>
+            <field>
+[!IF "TcpIpConfig/TcpIpTcpConfig/TcpIpTcpDupAckTransmitTimeoutSeqNum != 0"!]
+              [!VAR "dupAckTxTimeoutSeqNum_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpTcpDupAckTransmitTimeoutSeqNum", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+[!ELSE!]
+              [!VAR "dupAckTxTimeoutSeqNum_ticks" = "0"!]
+[!ENDIF!]
+              <int>[!"num:i($dupAckTxTimeoutSeqNum_ticks)"!]</int> <!-- dupAckTxTimeoutSeqNum -->
+            </field>
+            <field>
+[!IF "TcpIpConfig/TcpIpTcpConfig/TcpIpTcpDupAckTransmitTimeoutAckNum != 0"!]
+              [!VAR "dupAckTxTimeoutAckNum_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpTcpDupAckTransmitTimeoutAckNum", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+[!ELSE!]
+              [!VAR "dupAckTxTimeoutAckNum_ticks" = "0"!]
+[!ENDIF!]
+              <int>[!"num:i($dupAckTxTimeoutAckNum_ticks)"!]</int> <!-- dupAckTxTimeoutAckNum -->
+            </field>
+            <field>
+[!IF "TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynReceivedTimeout != num:f(0)"!]
+              [!VAR "synReceivedTimeout_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynReceivedTimeout", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+              <int>[!"num:i($synReceivedTimeout_ticks)"!]</int> <!-- synReceivedTimeout -->
+[!ELSE!]
+              <int>[!"num:i(0)"!]</int> <!-- synReceivedTimeout -->
+[!ENDIF!]
+            </field>
+[!IF "node:exists(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpUnpredictableSeqNumbers/TcpIpTcpUnpredictableSeqNumbersKeyGenerateJobId) = 'true'"!]
+            <field>
+             <int>[!"num:i(node:ref(node:ref(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpUnpredictableSeqNumbers/TcpIpTcpUnpredictableSeqNumbersKeyGenerateJobId)/CsmJobKeyRef)/CsmKeyId)"!]</int>  <!-- unprSeqNumKeyId -->
+            </field>
+            <field>
+             <int>[!"num:i(node:ref(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpUnpredictableSeqNumbers/TcpIpTcpUnpredictableSeqNumbersKeyGenerateJobId)/CsmJobId)"!]</int>  <!-- unprSeqNumJobId -->
+            </field>
+            <field>
+              [!VAR "unprSeqNumKeyResetTime_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpTcpUnpredictableSeqNumbers/TcpIpTcpUnpredictableSeqNumbersKeyResetTime", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+              <int>[!"num:i($unprSeqNumKeyResetTime_ticks)"!]</int> <!-- unprSeqNumKeyResetTime -->
+            </field>
+[!ENDIF!]
+[!IF "node:exists(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynCookies/TcpIpTcpSynCookiesKey1GenerateJobId) = 'true'"!]
+            <field>
+             <int>[!"num:i(node:ref(node:ref(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynCookies/TcpIpTcpSynCookiesKey1GenerateJobId)/CsmJobKeyRef)/CsmKeyId)"!]</int>  <!-- synCookieskeyId1  -->
+            </field>
+            <field>
+             <int>[!"num:i(node:ref(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynCookies/TcpIpTcpSynCookiesKey1GenerateJobId)/CsmJobId)"!]</int>  <!-- synCookiesjobId1  -->
+            </field>
+            <field>
+             <int>[!"num:i(node:ref(node:ref(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynCookies/TcpIpTcpSynCookiesKey2GenerateJobId)/CsmJobKeyRef)/CsmKeyId)"!]</int>  <!-- synCookieskeyId2  -->
+            </field>
+            <field>
+             <int>[!"num:i(node:ref(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynCookies/TcpIpTcpSynCookiesKey2GenerateJobId)/CsmJobId)"!]</int>  <!-- synCookiesjobId2  -->
+            </field>
+            <field>
+              [!VAR "synCookiesTimeResetKeys_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynCookies/TcpIpTcpSynCookiesTimeResetKeys", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+              <int>[!"num:i($synCookiesTimeResetKeys_ticks)"!]</int> <!-- synCookiesTimeResetKeys -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynCookies/TcpIpTcpSynCookiesAcceptAckOverflowTime)"!]</int> <!-- synCookiesAcceptAckOverflowTime -->
+            </field>
+[!ENDIF!]
+            <field>
+              [!VAR "delayedAckTimeout_ticks"!][!CALL "TimerSecToTicks_Max", "TimerSec"="TcpIpConfig/TcpIpTcpConfig/TcpIpDelayedAckTimeout", "PeriodSec"="$MainFunctionPeriod_sec"!][!ENDVAR!]
+              <int>[!"num:i($delayedAckTimeout_ticks)"!]</int> <!-- delayedAckTimeout -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpReceiveWindowMax)"!]</int> <!-- maxRxWindow -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpMaxRtx)"!]</int> <!-- maxReTx -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpSynMaxRtx)"!]</int> <!-- maxSynReTx -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpTtl)"!]</int> <!-- ttl -->
+            </field>
+            <field>
+              <int>[!IF "TcpIpConfig/TcpIpTcpConfig/TcpIpTcpNagleEnabled = 'true'"!]1[!ELSE!]0[!ENDIF!]</int> <!-- nagleDefault -->
+            </field>
+[!IF "TcpIpConfig/TcpIpTcpConfig/TcpIpTcpKeepAliveEnabled = 'true'"!]
+            <field>
+              <int>[!IF "TcpIpConfig/TcpIpTcpConfig/TcpIpTcpKeepAliveDefault = 'true'"!]1[!ELSE!]0[!ENDIF!]</int> <!-- keepAliveDefault -->
+            </field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpKeepAliveProbesMax)"!]</int> <!-- maxAliveProbes -->
+            </field>
+[!ENDIF!]
+[!IF "(TcpIpConfig/TcpIpTcpConfig/TcpIpTcpOptionFilterEnabled = 'true')"!]
+            <field>
+              <int>[!"num:i($NumOfTcpOptionFilters)"!]</int> <!-- NumOfptionFilters -->
+            </field>
+[!ENDIF!]
+          </field>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpIpV4Enabled = 'true') and (TcpIpGeneral/TcpIpIpV4General/TcpIpDhcpClientEnabled = 'true')"!]
+          <field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpInitDelay)"!]</int> <!-- initDelay -->
+            </field>
+            <field>
+              <int>[!CALL "DefendMechanismToValue", "defendMechanism"="TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpIpV4DhcpAddrDefenseMechanism"!]</int> <!-- addrDefendMechanism -->
+            </field>
+            <field>
+              <int>[!"num:i($NumOfDhcpOptions)"!]</int> <!-- optionNum -->
+            </field>
+[!IF "(TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpConfigurableOptionsEnabled = 'true')"!]
+            <field>
+              <int>[!"num:i($DhcpParamReqOptionIdx)"!]</int> <!-- ParamReqListOptionIdx -->
+            </field>
+[!ENDIF!]
+          </field>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and (TcpIpGeneral/TcpIpIpV6General/TcpIpDhcpV6ClientEnabled = 'true')"!]
+          <field>
+            <field>
+              <int>[!"num:i($NumOfDhcpV6Options)"!]</int> <!-- optionNum -->
+            </field>
+          </field>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true')"!]
+          <field>
+            <field>
+              <int>[!"num:i(TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpAutoIpConfig/*[1]/TcpIpAutoIpInitTimeout)"!]</int> <!-- autoIpInitTimeout -->
+            </field>
+            <field>
+              <int>[!CALL "DefendMechanismToValue", "defendMechanism"="TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpAutoIpConfig/*[1]/TcpIpIpV4AutoIpAddrDefenseMechanism"!]</int> <!-- addrDefendMechanism -->
+            </field>
+          </field>
+[!ENDIF!]
+[!IF "(node:exists(TcpIpConfig/TcpIpNvmBlock/TcpIpNvmBlockDescriptorRef) = 'true')"!][!//
+          <field>
+            <int>[!"num:i($IpNvMCount)"!]</int> <!-- ipV4NvMAddrNum -->
+          </field>
+[!ENDIF!]
+[!IF "((TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true') or (TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpArpProbingEnabled = 'true'))"!]
+          <field>
+            <int>[!"num:i($IpV4ArpDadCount)"!]</int> <!-- IpV4ArpDadNum -->
+          </field>
+[!ENDIF!]
+          <field>
+            <int>[!CALL "LocalAddrList_getNumLocalAddr"!]</int> <!-- totalLocalAddrNum -->
+          </field>
+          <field>
+            <int>[!"num:i(count(TcpIpConfig/TcpIpLocalAddr/*))"!]</int> <!-- configLocalAddrNum -->
+          </field>
+          <field>
+            <int>[!"num:i($NumOfTcpIpCtrlIdx)"!]</int> <!-- ctrlNum -->
+          </field>
+          <field>
+            <int>[!"num:i($MaxEthIfCtrlIdx)"!]</int> <!-- maxCtrlIdx -->
+          </field>
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpIpV4Enabled = 'true') and (TcpIpGeneral/TcpIpIpV4General/TcpIpDhcpClientEnabled = 'true')"!]
+          <field>
+            <int>[!"$IpV4DhcpCount"!]</int> <!-- dhcpv4Num -->
+          </field>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and (TcpIpGeneral/TcpIpIpV6General/TcpIpDhcpV6ClientEnabled = 'true')"!]
+          <field>
+            <int>[!"$IpV6DhcpCount"!]</int> <!-- dhcpv6Num -->
+          </field>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and (TcpIpGeneral/TcpIpIpV6General/TcpIpNdpPrefixAndRouterDiscoveryEnabled = 'true')"!]
+          <field>
+            <int>[!"$IpV6NdpRpdCount"!]</int> <!-- ndpRpdNum -->
+          </field>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true')"!]
+          <field>
+            <int>[!"num:i($IpV4LinkLocalCount)"!]</int> <!-- IpV4LinkLocalNum -->
+          </field>
+[!ENDIF!]
+          <field>
+            <int>[!"num:i(TcpIpGeneral/TcpIpTransmitRetriesMax)"!]</int> <!-- transRetryNum -->
+          </field>
+[!IF "TcpIpGeneral/TcpIpTcpEnabled = 'true' "!]
+          <field>
+            <int>[!"num:i($numOfMemoryPools)"!]</int> <!-- numOfMemoryPools -->
+          </field>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpSecurityMode = 'STATIC_IPSEC'"!]
+          <field>
+            <int>[!"num:i($numOfSecurityAssociationConfigs)"!]</int> <!-- numOfIpSecSecurityAssociationCfg -->
+          </field>
+[!ENDIF!]
+[!IF "TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecGeneral/TcpIpIpSecRemotePhysAddrCheckEnable = 'true'"!]
+          <field>
+            <int>[!"num:i($numOfAddrRangeIpSecConnections * num:i(2))"!]</int> <!-- numOfIpSecMACFilteringEntries -->
+          </field>
+[!ENDIF!]
+[!IF "TcpIpGeneral/TcpIpSecurityMode = 'STATIC_IPSEC'"!]
+          <field>
+            <int>[!"num:i($numOfIpSecConnections)"!]</int> <!-- numOfIpSecCon -->
+          </field>
+[!ENDIF!]
+        </field> <!-- RootCfg -->
+[!/*
+The following lists are created by the loops below:
+IpV4IntLocalAddrList:
+  list of config indices (1-based) into TcpIpLocalAddr, one per TcpIpLocalAddr, seperated by ' '
+  sorted by EthIfCtrlIdx, LocalAddrType(Multicast, Unciast, ANY)
+
+IpV4Ctrl2IntLocalAddrList:
+  list of tupples {index into IpV4IntLocalAddrList (0-based: number of TcpIpLocalAddr (Type:Unciast, Multicast}
+  one per TcpIpCtrl, seperated by ' ' sorted by EthIfCtrlIdx
+
+Structure example:
+                        IpV4IntLocalAddrList     IpV4Ctrl2IntLocalAddrList
+
+
+Ethernet Controller 0:
+                        UnicastLocalAddr         <--- Ctrl0 start
+                        MulticastLocalAddr-1
+                        ..
+                        MulticastLocalAddr-n     <--- Ctrl0 start + num elements
+                        AnyLocalAddr
+Ethernet Controller 1:
+                        UnicastLocalAddr         <--- Ctrl1 start
+                        MulticastLocalAddr-1
+                        ..
+                        MulticastLocalAddr-n     <--- Ctrl1 start + num elements
+                        AnyLocalAddr
+Ethernet Controller 2:
+                        UnicastLocalAddr         <--- Ctrl2 start
+                        MulticastLocalAddr-1
+                        ..
+                        MulticastLocalAddr-n     <--- Ctrl2 start + num elements
+                        AnyLocalAddr
+Ethernet Controller x:
+                        UnicastLocalAddr         <--- Ctrlx start
+                        MulticastLocalAddr-1
+                        ..
+                        MulticastLocalAddr-n     <--- Ctrlx start + num elements
+                        AnyLocalAddr
+
+IpV4Ctrl2LocalAddrIdAnyList:
+  list of config indices (1-based) into TcpIpLocalAddr Type(ANY), one per TcpIpCtrl, seperated by ' '
+  sorted by EthIfCtrlIdx
+
+IpV4Ctrl2LocalAddrIdUnicastList:
+  list of config indices (1-based) into TcpIpLocalAddr Type(Unicast), one per TcpIpCtrl, seperated by ' '
+  sorted by EthIfCtrlIdx
+*/!]
+[!VAR "IntLocalAddrList" = "''"!]
+[!VAR "IpV4Ctrl2IntLocalAddrList" = "''"!]
+[!VAR "IpV6Ctrl2IntLocalAddrList" = "''"!]
+[!VAR "Ctrl2LocalAddrIdAnyList" = "''"!]
+[!VAR "IpV4Ctrl2LocalAddrIdUnicastList" = "''"!]
+[!VAR "IpV4Ctrl2LocalAddrIdBroadcastList" = "''"!]
+[!VAR "IpV6Ctrl2LocalAddrIdLinkLocalList" = "''"!]
+[!VAR "startIpV4Index" = "0"!]
+[!// loop all controllers sorted by EthIfCtrlIdx
+[!LOOP "node:order(TcpIpConfig/TcpIpCtrl/*, 'as:ref(TcpIpEthIfCtrlRef)/EthIfCtrlIdx')"!]
+  [!VAR "countIpV4" = "0"!]
+  [!VAR "countIpV6" = "0"!]
+  [!VAR "countLocalAddr" = "0"!]
+  [!VAR "countIpV4Any" = "0"!]
+  [!VAR "currentCtrl" = "as:ref(./TcpIpEthIfCtrlRef)/EthIfCtrlIdx"!]
+  [!VAR "currentCtrlUnicastIPv4" = "''"!]
+  [!VAR "currentCtrlMulticastIPv4" = "''"!]
+  [!VAR "currentCtrlUnicastIPv6" = "''"!]
+  [!VAR "currentCtrlMulticastIPv6" = "''"!]
+  [!VAR "currentCtrlAnyIp" = "''"!]
+  [!VAR "currentCtrlBroadcastIp" = "''"!]
+  [!VAR "currentCtrlIpV6LinkLocal" = "''"!]
+  [!VAR "currentIpV4Index" = "0"!]
+  [!VAR "NumLocalAddr"!][!CALL "LocalAddrList_getNumLocalAddr"!][!ENDVAR!]
+  [!// loop all TcpIpLocalAddr of the current controller
+  [!FOR "localAddrId" = "0" TO "$NumLocalAddr - 1"!]
+    [!VAR "LocalAddrCtrlIdx"!][!CALL "LocalAddrList_getCtrlIdx", "LocalAddrId"="$localAddrId"!][!ENDVAR!]
+    [!IF "$LocalAddrCtrlIdx = $currentCtrl"!]
+      [!VAR "countLocalAddr"="$countLocalAddr + num:i(1)"!]
+      [!// check for an ANY local address entry
+      [!VAR "IpAddr"!][!CALL "LocalAddrList_getIpAddr", "LocalAddrId"="$localAddrId"!][!ENDVAR!]
+      [!VAR "domain"!][!CALL "LocalAddrList_getDomain", "LocalAddrId"="$localAddrId"!][!ENDVAR!]
+      [!VAR "addrType"!][!CALL "LocalAddrList_getAddrType", "LocalAddrId"="$localAddrId"!][!ENDVAR!]
+      [!IF "$IpAddr = 'ANY'"!]
+        [!VAR "currentCtrlAnyIp"!][!"num:i($localAddrId)"!];[!ENDVAR!]
+        [!VAR "countIpV4Any"!][!"num:i($countIpV4Any) + num:i(1)"!][!ENDVAR!]
+      [!ELSE!]
+        [!IF "$domain = 'TCPIP_AF_INET'"!]
+          [!// check for unicast entry - count them and add list to currentCtrlUnicastIPv4
+          [!IF "$addrType = 'TCPIP_UNICAST'"!]
+            [!VAR "currentCtrlUnicastIPv4"!][!"$currentCtrlUnicastIPv4"!][!"num:i($localAddrId)"!];[!ENDVAR!]
+            [!VAR "countIpV4"!][!"num:i($countIpV4) + num:i(1)"!][!ENDVAR!]
+          [!ELSE!]
+          [!// check for multicast entryies - count them and add list to currentCtrlMulticastIPv4
+            [!VAR "currentCtrlMulticastIPv4"!][!"$currentCtrlMulticastIPv4"!][!"num:i($localAddrId)"!];[!ENDVAR!]
+            [!VAR "countIpV4"!][!"num:i($countIpV4) + num:i(1)"!][!ENDVAR!]
+          [!ENDIF!]
+        [!ENDIF!]
+        [!IF "$domain = 'TCPIP_AF_INET6'"!]
+          [!// check for unicast entry - count them and add list to currentCtrlUnicastIPv6
+          [!IF "$addrType = 'TCPIP_UNICAST'"!]
+            [!VAR "currentCtrlUnicastIPv6"!][!"$currentCtrlUnicastIPv6"!][!"num:i($localAddrId)"!];[!ENDVAR!]
+            [!VAR "countIpV6"!][!"num:i($countIpV6) + num:i(1)"!][!ENDVAR!]
+          [!ELSE!]
+          [!// check for multicast entryies - count them and add list to currentCtrlMulticastIPv6
+            [!VAR "currentCtrlMulticastIPv6"!][!"$currentCtrlMulticastIPv6"!][!"num:i($localAddrId)"!];[!ENDVAR!]
+            [!VAR "countIpV6"!][!"num:i($countIpV6) + num:i(1)"!][!ENDVAR!]
+          [!ENDIF!]
+        [!ENDIF!]
+      [!ENDIF!]
+      [!// check for broadcast local address entry
+      [!IF "$IpAddr = '255.255.255.255'"!]
+        [!VAR "currentCtrlBroadcastIp"!][!"num:i($localAddrId)"!];[!ENDVAR!]
+      [!ENDIF!]
+      [!VAR "method"!][!CALL "LocalAddrList_getMethodOfMethod", "LocalAddrId"="$localAddrId", "method"="'TCPIP_LINKLOCAL'"!][!ENDVAR!]
+      [!IF "($domain = 'TCPIP_AF_INET6') and ($method = 'TCPIP_LINKLOCAL')"!]
+        [!VAR "currentCtrlIpV6LinkLocal"!][!"num:i($localAddrId)"!];[!ENDVAR!]
+      [!ENDIF!]
+    [!ENDIF!]
+  [!ENDFOR!]
+[!IF "$currentCtrlAnyIp = ''"!]
+[!VAR "Ctrl2LocalAddrIdAnyList"!][!"$Ctrl2LocalAddrIdAnyList"!][!"num:i(255)"!];[!ENDVAR!]
+[!VAR "tmpIpV4IntLocalAddrList"!][!"$currentCtrlMulticastIPv4"!][!"$currentCtrlUnicastIPv4"!][!"$currentCtrlMulticastIPv6"!][!"$currentCtrlUnicastIPv6"!][!ENDVAR!]
+[!ELSE!]
+[!VAR "Ctrl2LocalAddrIdAnyList"!][!"$Ctrl2LocalAddrIdAnyList"!][!"$currentCtrlAnyIp"!][!ENDVAR!]
+[!VAR "tmpIpV4IntLocalAddrList"!][!"$currentCtrlMulticastIPv4"!][!"$currentCtrlUnicastIPv4"!][!"$currentCtrlMulticastIPv6"!][!"$currentCtrlUnicastIPv6"!][!"$currentCtrlAnyIp"!][!ENDVAR!]
+[!ENDIF!]
+
+[!/*List of IPv4 unicast address configured for ctrl, if none is configured id is 255, note only one IPv4 unicast per ctrl!! */!]
+[!IF "$currentCtrlUnicastIPv4 = ''"!]
+[!VAR "IpV4Ctrl2LocalAddrIdUnicastList"!][!"$IpV4Ctrl2LocalAddrIdUnicastList"!][!"num:i(255)"!];[!ENDVAR!]
+[!ELSE!]
+[!VAR "IpV4Ctrl2LocalAddrIdUnicastList"!][!"$IpV4Ctrl2LocalAddrIdUnicastList"!][!"$currentCtrlUnicastIPv4"!][!ENDVAR!]
+[!ENDIF!]
+
+[!/*List of IPv4 broadcast address configured for ctrl, if none is configured id is 255, note only one IPv4 broadcast per ctrl!! */!]
+[!IF "$currentCtrlBroadcastIp = ''"!]
+[!VAR "IpV4Ctrl2LocalAddrIdBroadcastList"!][!"$IpV4Ctrl2LocalAddrIdBroadcastList"!][!"num:i(255)"!];[!ENDVAR!]
+[!ELSE!]
+[!VAR "IpV4Ctrl2LocalAddrIdBroadcastList"!][!"$IpV4Ctrl2LocalAddrIdBroadcastList"!][!"$currentCtrlBroadcastIp"!][!ENDVAR!]
+[!ENDIF!]
+
+[!/*List of IPv6 link local address configured for ctrl, if none is configured id is 255, note only one IPv6 link local per ctrl!! */!]
+[!IF "$currentCtrlIpV6LinkLocal = ''"!]
+[!VAR "IpV6Ctrl2LocalAddrIdLinkLocalList"!][!"$IpV6Ctrl2LocalAddrIdLinkLocalList"!][!"num:i(255)"!];[!ENDVAR!]
+[!ELSE!]
+[!VAR "IpV6Ctrl2LocalAddrIdLinkLocalList"!][!"$IpV6Ctrl2LocalAddrIdLinkLocalList"!][!"$currentCtrlIpV6LinkLocal"!][!ENDVAR!]
+[!ENDIF!]
+
+[!/*List of configured local addresses ordered by ctrl, IPv4 Mutlicast, IPv4 Unicast, IPv6 multicast, IPv6 Unicast, ANY */!]
+[!VAR "IntLocalAddrList"!][!"$IntLocalAddrList"!][!"$tmpIpV4IntLocalAddrList"!][!ENDVAR!]
+
+[!/*List of start index and number of configured local addresses for ctrl */!]
+[!VAR "IpV4Ctrl2IntLocalAddrList"!][!"$IpV4Ctrl2IntLocalAddrList"!][!"num:i($startIpV4Index)"!]:[!"num:i($countIpV4)"!];[!ENDVAR!]
+[!VAR "IpV6Ctrl2IntLocalAddrList"!][!"$IpV6Ctrl2IntLocalAddrList"!][!"num:i($startIpV4Index + $countIpV4)"!]:[!"num:i($countIpV6)"!];[!ENDVAR!]
+[!VAR "startIpV4Index" = "num:i($startIpV4Index) + num:i($countLocalAddr)"!]
+[!ENDLOOP!]
+
+        <field>  <!-- intIpLocalAddrCfg -->
+[!FOR "x" = "1" TO "count(text:split($IntLocalAddrList,';'))"!]
+[!VAR "localAddrIndex" = "text:split($IntLocalAddrList,';')[num:i($x)]"!]
+          <field>
+            <int>[!"num:i($localAddrIndex)"!]</int>
+          </field>
+[!ENDFOR!]
+        </field> <!-- intIpLocalAddrCfg -->
+[!IF "$IpV4StaticCount > 0"!]
+        <field>  <!-- intIpV4LocalAddrCfg -->
+[!FOR "x" = "1" TO "count(text:split($IpV4StaticIdx2LocalAddrId,' '))"!][!//
+[!VAR "localAddrIndex" = "num:i(text:split($IpV4StaticIdx2LocalAddrId,' ')[num:i($x)])"!]
+[!VAR "IpAddr"!][!CALL "LocalAddrList_getIpAddr", "LocalAddrId"="$localAddrIndex"!][!ENDVAR!]
+          <field>
+[!IF "($IpAddr != 'NONE') and ($IpAddr != 'ANY')"!]
+            <comment>IP:[!"$IpAddr"!]</comment>
+            <int>[!CALL "IpV4AddressToUINT32", "IpAddress" = "$IpAddr", "endianCheck"="'true'"!]</int><!-- srcIpStatic -->
+[!ELSE!][!//
+            <int>0</int> <!-- srcIpStatic -->
+[!ENDIF!]
+          </field>
+[!ENDFOR!]
+        </field> <!-- intIpV4LocalAddrCfg -->
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV4General/TcpIpDhcpSimpleClientEnabled = 'true') and ($IpV4DhcpCount > 0)"!]
+        <field>  <!-- intDhcpV4AssignCfg -->
+[!FOR "x" = "1" TO "count(text:split($IpV4DhcpIdx2LocalAddrId,' '))"!][!//
+[!VAR "localAddrIndex" = "num:i(text:split($IpV4DhcpIdx2LocalAddrId,' ')[num:i($x)])"!]
+[!VAR "useSimpleDhcp"!][!CALL "LocalAddrList_getUseSimpleDhcpClientOfMethod", "LocalAddrId"="$localAddrIndex", "method"="'TCPIP_DHCP'"!][!ENDVAR!]
+          <field>
+            <int>[!IF "$useSimpleDhcp = 'true'"!]1[!ELSE!]0[!ENDIF!]</int> <!-- useSimpleDhcp -->
+          </field>
+[!ENDFOR!]
+        </field> <!-- intDhcpV4AssignCfg -->
+[!ENDIF!]
+[!IF "$IpV6StaticCount > 0"!]
+        <field>  <!-- intIpV6LocalAddrCfg -->
+[!FOR "x" = "1" TO "count(text:split($IpV6StaticIdx2LocalAddrId,' '))"!][!//
+[!VAR "localAddrIndex" = "num:i(text:split($IpV6StaticIdx2LocalAddrId,' ')[num:i($x)])"!]
+[!VAR "multicastRef"!][!CALL "LocalAddrList_getMulticastRef", "LocalAddrId"="$localAddrIndex"!][!ENDVAR!]
+          <field>
+            <field>
+              <int>[!"num:i(text:split($StaticAddrList,';')[num:i($x)])"!]</int>
+            </field>
+            <field>
+          [!IF "($multicastRef != 'NONE')"!]
+                <int>[!"num:i($multicastRef)"!]</int> <!-- solMultilocalAddrId -->
+          [!ELSE!]
+                <int>[!"num:i(255)"!]</int> <!-- solMultilocalAddrId -->
+          [!ENDIF!]
+            </field>
+          </field>
+[!ENDFOR!]
+        </field> <!-- intIpV6LocalAddrCfg -->
+[!ENDIF!]
+[!IF "$StaticAddrCount > 0"!]
+        <field>  <!-- intIPv6StaticAddrCfg -->
+[!FOR "x" = "1" TO "count(text:split($LocalAddrId2IpV6StaticIdx,' '))"!][!//
+[!VAR "localAddrIndex" = "num:i(text:split($LocalAddrId2IpV6StaticIdx,' ')[num:i($x)])"!]
+[!IF "($localAddrIndex != num:i(255))"!]
+[!VAR "IpAddr"!][!CALL "LocalAddrList_getIpAddr", "LocalAddrId"="$localAddrIndex"!][!ENDVAR!]
+[!VAR "routerIpAddr"!][!CALL "LocalAddrList_getDefaultRouter", "LocalAddrId"="$localAddrIndex"!][!ENDVAR!]
+[!VAR "type"!][!CALL "LocalAddrList_getAddrType", "LocalAddrId"="$localAddrIndex"!][!ENDVAR!]
+[!VAR "mask"!][!CALL "LocalAddrList_getNetmask", "LocalAddrId"="$localAddrIndex"!][!ENDVAR!]
+[!ELSE!][!//
+[!VAR "IpAddr" = "'NONE'"!]
+[!VAR "routerIpAddr" = "'NONE'"!]
+[!VAR "type" = "'NONE'"!]
+[!VAR "mask" = "'NONE'"!]
+[!ENDIF!]
+          <field>
+            <field>
+              <comment>IP:[!"$IpAddr"!]</comment>
+            [!CALL "IpV6AddressToUINT32", "IpAddress" = "$IpAddr"!]<!-- srcIpStatic -->
+            </field>
+            <field>
+              <comment>IP:[!"$routerIpAddr"!]</comment>
+            [!IF "$routerIpAddr != 'NONE'"!]
+            [!CALL "IpV6AddressToUINT32", "IpAddress" = "$routerIpAddr"!]<!-- routerIpStatic -->
+            [!ELSE!]
+              <field>
+                <int>0</int>
+              </field>
+              <field>
+                <int>0</int>
+              </field>
+              <field>
+                <int>0</int>
+              </field>
+              <field>
+                <int>0</int>
+              </field>
+            [!ENDIF!]
+            </field>
+            <field>
+        [!IF "($mask != 'NONE') and ($type = 'TCPIP_UNICAST') and ($IpAddr != 'ANY')"!]
+              [!CALL "IpV6CIDRToUINT32", "CIDR" = "$mask"!] <!-- netMask -->
+        [!ELSE!]
+              <field>
+                <int>0</int>
+              </field>
+              <field>
+                <int>0</int>
+              </field>
+              <field>
+                <int>0</int>
+              </field>
+              <field>
+                <int>0</int>
+              </field> <!-- netMask -->
+        [!ENDIF!]
+            </field>
+          </field>
+[!ENDFOR!]
+        </field> <!-- intIPv6StaticAddrCfg -->
+[!ENDIF!]
+[!IF "$IpV6DhcpCount > 0"!]
+        <field>  <!-- intIpV6DhcpAddrCfg -->
+[!FOR "x" = "1" TO "count(text:split($IpV6DhcpIdx2LocalAddrId,' '))"!][!//
+[!VAR "localAddrIndex" = "num:i(text:split($IpV6DhcpIdx2LocalAddrId,' ')[num:i($x)])"!]
+[!VAR "multicastRef"!][!CALL "LocalAddrList_getMulticastRef", "LocalAddrId"="$localAddrIndex"!][!ENDVAR!]
+[!VAR "CtrlIdx"!][!CALL "LocalAddrList_getCtrlIdx", "LocalAddrId"="$localAddrIndex"!][!ENDVAR!]
+          <field>
+            <field>
+              <int>[!"num:i($multicastRef)"!]</int> <!-- solMultilocalAddrId -->
+            </field>
+          </field>
+[!ENDFOR!]
+        </field> <!-- intIpV6DhcpAddrCfg -->
+[!ENDIF!]
+[!IF "$IpV6NdpRpdCount > 0"!]
+        <field>  <!-- intIpV6NdpRpdAddrCfg -->
+[!FOR "x" = "1" TO "count(text:split($IpV6NdpRpdIdx2LocalAddrId,' '))"!][!//
+[!VAR "localAddrIndex" = "num:i(text:split($IpV6NdpRpdIdx2LocalAddrId,' ')[num:i($x)])"!]
+[!VAR "multicastRef"!][!CALL "LocalAddrList_getMulticastRef", "LocalAddrId"="$localAddrIndex"!][!ENDVAR!]
+          <field>
+            <field>
+              <int>[!"num:i($multicastRef)"!]</int> <!-- solMultilocalAddrId -->
+            </field>
+          </field>
+[!ENDFOR!]
+        </field> <!-- intIpV6NdpRpdAddrCfg -->
+[!ENDIF!]
+        <field>  <!-- localAddrCfg -->
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and ($IpV6NdpDadEnable = 'true')"!]
+  [!VAR "dadIndex" = "num:i(0)"!]
+[!ENDIF!]
+[!IF "(node:exists(TcpIpConfig/TcpIpNvmBlock/TcpIpNvmBlockDescriptorRef) = 'true')"!]
+  [!VAR "NvMMemoryIndex" = "num:i(0)"!]
+[!ENDIF!]
+[!IF "((TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true') or (TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpArpProbingEnabled = 'true'))"!]
+  [!VAR "dadIpV4Index" = "num:i(0)"!]
+[!ENDIF!]
+[!FOR "localAddrId" = "0" TO "$NumLocalAddr - 1"!][!//
+  [!FOR "x" = "1" TO "count(text:split($IntLocalAddrList,';'))"!][!//
+    [!IF "num:i($localAddrId) = num:i(text:split($IntLocalAddrList,';')[num:i($x)])"!][!//
+          <field> <!-- localAddrCfg[] -->
+            <field>
+              <int>[!"num:i(num:i($x) - 1)"!]</int> <!-- intLocalAddrId -->
+            </field>
+            <field>
+            [!CALL "WriteAssignmentConfig", "type" = "'TCPIP_STATIC'", "domain"="'TCPIP_AF_INET'", "AddrId2IdxTable"="$IpV4StaticLocalAddrId2Idx", "i"="$localAddrId"!]
+            [!CALL "WriteAssignmentConfig", "type" = "'TCPIP_LINKLOCAL'", "domain"="'TCPIP_AF_INET'", "AddrId2IdxTable"="$IpV4AutoIpLocalAddrId2Idx", "i"="$localAddrId"!]
+            [!CALL "WriteAssignmentConfig", "type" = "'TCPIP_LINKLOCAL_DOIP'", "domain"="'TCPIP_AF_INET'", "AddrId2IdxTable"="$IpV4AutoIpDoIpLocalAddrId2Idx", "i"="$localAddrId"!]
+            [!CALL "WriteAssignmentConfig", "type" = "'TCPIP_DHCP'", "domain"="'TCPIP_AF_INET'", "AddrId2IdxTable"="$IpV4DhcpLocalAddrId2Idx", "i"="$localAddrId"!]
+            [!CALL "WriteAssignmentConfig", "type" = "'TCPIP_STATIC'", "domain"="'TCPIP_AF_INET6'", "AddrId2IdxTable"="$IpV6StaticLocalAddrId2Idx", "i"="$localAddrId"!]
+            [!CALL "WriteAssignmentConfig", "type" = "'TCPIP_LINKLOCAL'", "domain"="'TCPIP_AF_INET6'", "AddrId2IdxTable"="$IpV6LinkLocalAddrId2Idx", "i"="$localAddrId"!]
+            [!CALL "WriteAssignmentConfig", "type" = "'TCPIP_DHCP'", "domain"="'TCPIP_AF_INET6'", "AddrId2IdxTable"="$IpV6DhcpLocalAddrId2Idx", "i"="$localAddrId"!]
+            [!CALL "WriteAssignmentConfig", "type" = "'TCPIP_IPV6_ROUTER'", "domain"="'TCPIP_AF_INET6'", "AddrId2IdxTable"="$IpV6NdpRpdLocalAddrId2Idx", "i"="$localAddrId"!]
+            </field>
+            <field> <!-- assignmByPriority[] -->
+      [!VAR "NumAssignMethods"!][!CALL "LocalAddrList_getNumAssignMethods", "LocalAddrId"="$localAddrId"!][!ENDVAR!]
+      [!VAR "domain"!][!CALL "LocalAddrList_getDomain", "LocalAddrId"="$localAddrId"!][!ENDVAR!]
+      [!FOR "prio" = "1" TO "4"!]
+        [!VAR "offset"="num:i($LocalAddrListFirstAssignOffset)"!]
+        [!FOR "x" = "1" TO "$NumAssignMethods"!]
+          [!VAR "method"="text:split($LocalAddr,';')[num:i($offset + $LocalAddrListIndexMethod)]"!]
+          [!VAR "assignPrio"="text:split($LocalAddr,';')[num:i($offset + $LocalAddrListIndexPrio)]"!]
+          [!IF "num:i($assignPrio) = num:i($prio)"!]
+              <field>
+                <int>[!CALL "AssignmentTypeToValue", "method"="$method", "type"="$domain"!]</int> <!-- assignmByPriority -->
+              </field>
+          [!ENDIF!]
+          [!VAR "offset"="num:i($offset + $NumOfMethodFields)"!]
+        [!ENDFOR!]
+      [!ENDFOR!]
+      [!IF "($NumberOfConfiguredAssignmentTypes - $NumAssignMethods) > 0"!][!//
+        [!FOR "x" = "1" TO "num:i($NumberOfConfiguredAssignmentTypes - $NumAssignMethods)"!][!//
+              <field>
+                <int>0</int> <!-- assignmByPriority -->
+              </field>
+        [!ENDFOR!][!//
+      [!ENDIF!][!//
+            </field>
+            <field>
+              <int>[!"num:i($NumAssignMethods)"!]</int> <!-- numAssignm -->
+            </field>
+            <field>
+              [!VAR "idx"!][!CALL "LocalAddrList_getCtrlIdx", "LocalAddrId"="$localAddrId"!][!ENDVAR!]
+              <int>[!"num:i(text:split($EthIfCtrlIdx2TcpIpCtrlIdx,' ')[num:i($idx + 1)])"!]</int> <!-- ctrlIdx -->
+            </field>
+      [!VAR "addrType"!][!CALL "LocalAddrList_getAddrType", "LocalAddrId"="$localAddrId"!][!ENDVAR!]
+            <field>
+              <int>[!"num:i(num:i($addrType = 'TCPIP_MULTICAST') + (num:i($domain = 'TCPIP_AF_INET6') * 128))"!]</int> <!-- addrType -->
+            </field>
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6ExtensionHeaderFilterEnabled = 'true')"!]
+      [!VAR "extHdrOffset"!][!CALL "LocalAddrList_getExtHdrListOffset", "LocalAddrId"="$localAddrId"!][!ENDVAR!]
+            <field>
+              <int>[!"num:i($extHdrOffset)"!]</int> <!-- ipV6ExtensionHeaderIdListOffset -->
+            </field>
+      [!VAR "extHdrNum"!][!CALL "LocalAddrList_getExtHdrListNum", "LocalAddrId"="$localAddrId"!][!ENDVAR!]
+            <field>
+              <int>[!"num:i($extHdrNum)"!]</int> <!-- ipV6ExtensionHeaderIdListNum -->
+            </field>
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and ($IpV6NdpDadEnable = 'true')"!][!//
+            <field>
+              [!IF "($addrType = 'TCPIP_UNICAST') and ($domain = 'TCPIP_AF_INET6')"!][!//
+              <int>[!"num:i($dadIndex)"!]</int>
+              [!VAR "dadIndex" = "num:i($dadIndex + 1)"!]
+              [!ELSE!][!//
+              <int>255</int>[!ENDIF!][!// <!-- ipV6NdpDadIndex -->
+            </field>
+[!ENDIF!]
+          </field> <!-- localAddrCfg[] -->
+    [!ENDIF!][!//
+  [!ENDFOR!][!//
+[!ENDFOR!][!//
+        </field> <!-- localAddrCfg -->
+
+
+        <field>  <!-- ctrlCfg -->
+[!VAR "i" = "1"!]
+[!LOOP "node:order(TcpIpConfig/TcpIpCtrl/*, 'as:ref(TcpIpEthIfCtrlRef)/EthIfCtrlIdx')"!]
+[!VAR "localAddrRangeIPv4" = "text:split($IpV4Ctrl2IntLocalAddrList,';')[num:i($i)]"!]
+[!VAR "localAddrRangeIPv6" = "text:split($IpV6Ctrl2IntLocalAddrList,';')[num:i($i)]"!]
+[!VAR "localAddrAny" = "text:split($Ctrl2LocalAddrIdAnyList,';')[num:i($i)]"!]
+[!VAR "localAddrBroadcast" = "text:split($IpV4Ctrl2LocalAddrIdBroadcastList,';')[num:i($i)]"!]
+[!VAR "localAddrIpV6LinkLocal" = "text:split($IpV6Ctrl2LocalAddrIdLinkLocalList,';')[num:i($i)]"!]
+[!VAR "localAddrUnicast" = "text:split($IpV4Ctrl2LocalAddrIdUnicastList,';')[num:i($i)]"!]
+          <field>
+[!IF "as:modconf('TcpIp')[1]/TcpIpGeneral/TcpIpIpV4General/TcpIpIpV4Enabled = 'true'"!]
+            <field> <!-- ctrlCfg v4 -->
+  [!IF "num:i($localAddrUnicast) != 255"!]
+    [!VAR "router"!][!CALL "LocalAddrList_getDefaultRouter", "LocalAddrId"="$localAddrUnicast"!][!ENDVAR!]
+    [!VAR "netmask"!][!CALL "LocalAddrList_getNetmask", "LocalAddrId"="$localAddrUnicast"!][!ENDVAR!]
+              <field>
+    [!IF "$router != 'NONE'"!]
+                <comment>IP:[!"$router"!]</comment>
+                <int>[!CALL "IpV4AddressToUINT32", "IpAddress" = "$router", "endianCheck"="'true'"!]</int><!-- defaultGWIpStatic -->
+    [!ELSE!]
+                <int>0</int><!-- defaultGWIpStatic (not configured) -->
+    [!ENDIF!]
+              </field>
+              <field>
+    [!IF "$netmask != 'NONE'"!]
+                <int>[!CALL "IpV4CIDRToUINT32", "CIDR" = "$netmask"!]</int><!-- netMaskStatic -->
+    [!ELSE!]
+                <int>0</int><!-- netMaskStatic (not configured) -->
+    [!ENDIF!]
+              </field>
+  [!ELSE!]
+              <field>
+                <int>0</int><!-- defaultGWIpStatic (not configured) -->
+              </field>
+              <field>
+                <int>0</int><!-- netMaskStatic (not configured) -->
+              </field>
+  [!ENDIF!]
+              <field>
+                <int>[!"num:i(text:split($localAddrRangeIPv4,':')[1])"!]</int> <!-- intLocalAddrIdFirst -->
+              </field>
+              <field>
+                <int>[!"num:i(text:split($localAddrRangeIPv4,':')[2])"!]</int> <!-- intLocalAddrNum -->
+              </field>
+              <field>
+  [!IF "num:i($localAddrUnicast) = 255"!][!//
+                <int>255</int> <!-- localAddrIdTx (not configured) -->
+  [!ELSE!]
+                <int>[!"$localAddrUnicast"!]</int> <!-- localAddrIdTx -->
+  [!ENDIF!]
+              </field>
+              <field>
+  [!IF "num:i($localAddrBroadcast) = 255"!][!//
+                <int>255</int> <!-- localAddrLimdBroad -->
+  [!ELSE!][!//
+                <int>[!"num:i($localAddrBroadcast)"!]</int> <!-- localAddrLimdBroad -->
+  [!ENDIF!][!//
+              </field>
+            </field> <!-- ctrlCfg v4 -->
+[!ENDIF!][!//
+[!IF "as:modconf('TcpIp')[1]/TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true'"!]
+            <field> <!-- ctrlCfg v6 -->
+              <field>
+                <int>[!"num:i(text:split($localAddrRangeIPv6,':')[1])"!]</int> <!-- intLocalAddrIdFirst -->
+              </field>
+              <field>
+                <int>[!"num:i(text:split($localAddrRangeIPv6,':')[2])"!]</int> <!-- intLocalAddrNum -->
+              </field>
+              <field>
+  [!IF "num:i($localAddrIpV6LinkLocal) = 255"!][!//
+                <int>255</int> <!-- localAddrLinkLocal -->
+  [!ELSE!][!//
+                <int>[!"num:i($localAddrIpV6LinkLocal)"!]</int> <!-- localAddrLinkLocal -->
+  [!ENDIF!][!//
+              </field>
+            </field> <!-- ctrlCfg v6 -->
+[!ENDIF!][!//
+            <field>
+              <int>[!"as:ref(TcpIpEthIfCtrlRef)/EthIfCtrlMtu"!]</int> <!-- mtu -->
+            </field>
+            <field>
+[!IF "(node:exists(./TcpIpIpFramePrioDefault) = 'true')"!][!//
+              <int>[!"TcpIpIpFramePrioDefault"!]</int> <!-- defaultVlanPrio -->
+[!ELSE!][!//
+              <int>0</int> <!-- defaultVlanPrio -->
+[!ENDIF!][!//
+            </field>
+            <field>
+[!IF "num:i($localAddrAny) = 255"!][!//
+                <int>255</int> <!-- localAddrIdAny -->
+[!ELSE!][!//
+                <int>[!"num:i($localAddrAny)"!]</int> <!-- localAddrIdAny -->
+[!ENDIF!][!//
+            </field>
+            <field>
+              <int>[!"num:i(text:split($localAddrRangeIPv4,':')[1])"!]</int> <!-- intLocalAddrIdFirst -->
+            </field>
+            <field>
+              <int>[!"num:i(num:i(text:split($localAddrRangeIPv4,':')[2]) + num:i(text:split($localAddrRangeIPv6,':')[2]))"!]</int> <!-- intLocalAddrNum -->
+            </field>
+            <field>
+              <int>[!"num:i(text:split($TcpIpCtrlIdx2EthIfCtrlIdx,' ')[num:i($i)])"!]</int> <!-- ethIfCtrlIdx -->
+            </field>
+            <field>
+              <int>[!"num:i(bit:or(bit:or(bit:or(bit:shl(num:i((./TcpIpOffloadChecksum/TcpIpEnableOffloadChecksumIPv4)='true'),0),
+                                           bit:shl(num:i((./TcpIpOffloadChecksum/TcpIpEnableOffloadChecksumICMP)='true'),1)),
+                                           bit:shl(num:i((./TcpIpOffloadChecksum/TcpIpEnableOffloadChecksumTCP)='true'),2)),
+                                           bit:shl(num:i((./TcpIpOffloadChecksum/TcpIpEnableOffloadChecksumUDP)='true'),3)))"!]</int> <!-- enableOffloadChecksum -->
+            </field>
+          </field>
+[!VAR "i" = "num:i($i) + 1"!][!//
+[!ENDLOOP!][!//
+        </field> <!-- ctrlCfg -->
+        <field> <!-- ctrlMappingCfg -->
+  [!FOR "x" = "1" TO "count(text:split($EthIfCtrlIdx2TcpIpCtrlIdx,' '))"!][!//
+          <field>
+            <int>[!"num:i(text:split($EthIfCtrlIdx2TcpIpCtrlIdx,' ')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- ctrlMappingCfg -->
+[!IF "((TcpIpGeneral/TcpIpIpV4General/TcpIpAutoIpEnabled = 'true') or (TcpIpConfig/TcpIpIpConfig/TcpIpIpV4Config/TcpIpDhcpConfig/*[1]/TcpIpDhcpArpProbingEnabled = 'true'))"!]
+        <field> <!-- arpDadCtrlMappingCfg -->
+  [!FOR "x" = "1" TO "count(text:split($IntArpDadIdx2CtrlId,' '))"!][!//
+          <field>
+            <int>[!"num:i(text:split($IntArpDadIdx2CtrlId,' ')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- arpDadCtrlMappingCfg -->
+[!ENDIF!]
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6ExtensionHeaderFilterEnabled = 'true')"!]
+        <field> <!-- ipV6ExtensionHeaderId -->
+  [!FOR "x" = "1" TO "num:i($ExtensHdrIdCount)"!][!//
+          <field>
+            <int>[!"num:i(text:split($ExtensionHdrIdList,';')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- ipV6ExtensionHeaderId -->
+[!ENDIF!]
+[!IF "$NumOfTcpFilterEntries > 0"!]
+        <field> <!-- tcpOptionIdList -->
+  [!FOR "x" = "1" TO "num:i($NumOfTcpFilterEntries)"!][!//
+          <field>
+            <int>[!"num:i(text:split($TcpOptionFilterEntries,';')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- tcpOptionIdList -->
+        <field> <!-- tcpOptionFilterList -->
+  [!FOR "x" = "1" TO "num:i($NumOfTcpOptionFilters)"!][!//
+          <field>
+            <field>
+              <int>[!"num:i(text:split($TcpOptionFilterNumPerId,';')[num:i($x)])"!]</int> <!-- optionFilterNum -->
+            </field>
+            <field>
+              <int>[!"num:i(text:split($TcpOptionFiltersOffset,';')[num:i($x)])"!]</int> <!-- filterOffset -->
+            </field>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- tcpOptionFilterList -->
+[!ENDIF!][!//
+
+[!IF "$NumOfDhcpOptions > 0"!]
+        <field>  <!-- dhcpOptionCfg -->
+  [!FOR "x" = "1" TO "num:i($NumOfDhcpOptions)"!][!//
+          <field>
+            <field>
+              <int>[!"num:i(text:split($DhcpOptionCode,';')[num:i($x)])"!]</int>  <!-- optionCode -->
+            </field>
+            <field>
+              <int>[!"num:i(text:split($DhcpOptionMaxLen,';')[num:i($x)])"!]</int> <!-- optionMaxLength -->
+            </field>
+            <field>
+              <int>[!"num:i(text:split($DhcpOptionOffset,';')[num:i($x)])"!]</int> <!-- optionDataOffset -->
+            </field>
+            <field>
+              <int>[!"num:i(text:split($DhcpOptionTransmit,';')[num:i($x)])"!]</int> <!-- DhcpOptionTransmit -->
+            </field>
+         </field>
+  [!ENDFOR!][!//
+        </field> <!-- dhcpOptionCfg -->
+[!ENDIF!][!//
+
+[!IF "$NumOfDhcpV6Options > 0"!]
+        <field>  <!-- dhcpV6OptionCfg -->
+  [!FOR "x" = "1" TO "num:i($NumOfDhcpV6Options)"!][!//
+          <field>
+            <field>
+              <int>[!"num:i(text:split($DhcpV6OptionCode,';')[num:i($x)])"!]</int>  <!-- optionCode -->
+            </field>
+            <field>
+              <int>[!"num:i(text:split($DhcpV6OptionMaxLen,';')[num:i($x)])"!]</int> <!-- optionMaxLength -->
+            </field>
+            <field>
+              <int>[!"num:i(text:split($DhcpV6OptionOffset,';')[num:i($x)])"!]</int> <!-- optionDataOffset -->
+            </field>
+            <field>
+              <int>[!"num:i(text:split($DhcpV6OptionTransmit,';')[num:i($x)])"!]</int> <!-- DhcpV6OptionTransmit -->
+            </field>
+         </field>
+  [!ENDFOR!][!//
+        </field> <!-- dhcpV6OptionCfg -->
+[!ENDIF!][!//
+
+[!IF "$IpV4StaticCount > 0"!][!//
+        <field> <!-- IpV4StaticIndex2LocalAddrId -->
+  [!FOR "x" = "1" TO "count(text:split($IpV4StaticIdx2LocalAddrId,' '))"!][!//
+          <field>
+            <int>[!"num:i(text:split($IpV4StaticIdx2LocalAddrId,' ')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- IpV4StaticIndex2LocalAddrId -->
+[!ENDIF!][!//
+
+[!IF "$IpV4LinkLocalCount > 0"!][!//
+        <field> <!-- IpV4LinkLocalIndex2LocalAddrId -->
+  [!FOR "x" = "1" TO "count(text:split($IpV4LinkLocalIdx2LocalAddrId,' '))"!][!//
+          <field>
+            <int>[!"num:i(text:split($IpV4LinkLocalIdx2LocalAddrId,' ')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- IpV4LinkLocalIndex2LocalAddrId -->
+[!ENDIF!][!//
+
+[!IF "$IpV4DhcpCount > 0"!][!//
+        <field> <!-- IpV4DhcpIndex2LocalAddrId -->
+  [!FOR "x" = "1" TO "count(text:split($IpV4DhcpIdx2LocalAddrId,' '))"!][!//
+          <field>
+            <int>[!"num:i(text:split($IpV4DhcpIdx2LocalAddrId,' ')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- IpV4DhcpIndex2LocalAddrId -->
+[!ENDIF!][!//
+
+[!IF "$IpV6DhcpCount > 0"!][!//
+        <field> <!-- IpV6DhcpIndex2LocalAddrId -->
+  [!FOR "x" = "1" TO "count(text:split($IpV6DhcpIdx2LocalAddrId,' '))"!][!//
+          <field>
+            <int>[!"num:i(text:split($IpV6DhcpIdx2LocalAddrId,' ')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- IpV6DhcpIndex2LocalAddrId -->
+[!ENDIF!][!//
+
+[!IF "$IpV6NdpRpdCount > 0"!][!//
+        <field> <!-- IpV6NdpRpdIndex2LocalAddrId -->
+  [!FOR "x" = "1" TO "count(text:split($IpV6NdpRpdIdx2LocalAddrId,' '))"!][!//
+          <field>
+            <int>[!"num:i(text:split($IpV6NdpRpdIdx2LocalAddrId,' ')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- IpV6NdpRpdIndex2LocalAddrId -->
+[!ENDIF!][!//
+[!IF "(TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true') and ($IpV6NdpDadEnable = 'true')"!]
+        <field> <!-- IpV6NdpDadIndex2LocalAddrId -->
+  [!FOR "x" = "1" TO "count(text:split($IpV6NdpDadIdx2LocalAddrId,' '))"!][!//
+          <field>
+            <int>[!"num:i(text:split($IpV6NdpDadIdx2LocalAddrId,' ')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- IpV6NdpDadIndex2LocalAddrId -->
+[!ENDIF!][!//
+
+[!IF "$IpV6StaticCount > 0"!][!//
+        <field> <!-- IpV6StaticIndex2LocalAddrId -->
+  [!FOR "x" = "1" TO "count(text:split($IpV6StaticIdx2LocalAddrId,' '))"!][!//
+          <field>
+            <int>[!"num:i(text:split($IpV6StaticIdx2LocalAddrId,' ')[num:i($x)])"!]</int>
+          </field>
+  [!ENDFOR!][!//
+        </field> <!-- IpV6StaticIndex2LocalAddrId -->
+[!ENDIF!][!//
+[!IF "TcpIpGeneral/TcpIpTcpEnabled = 'true'"!]
+        <field> <!-- BufferList -->
+  [!VAR "memoryPoolOffset"="num:i(0)"!]
+  [!VAR "memoryBlockDescriptorOffset"="num:i(0)"!]
+  [!LOOP "node:order(as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpMemoryConfig/TcpIpMemoryPool/*, 'TcpIpMemoryBlockSize')"!] [!//
+          <field>
+            <field>
+             <int>[!"num:i($memoryPoolOffset)"!]</int>
+            </field>
+            <field>
+             <int>[!"num:i(TcpIpMemoryBlockSize)"!]</int>
+            </field>
+            <field>
+             <int>[!"num:i(TcpIpMemoryBlockCount)"!]</int>
+            </field>
+            <field>
+             <int>[!"num:i($memoryBlockDescriptorOffset)"!]</int>
+            </field>
+          </field>
+    [!VAR "memoryPoolOffset"="$memoryPoolOffset + (TcpIpMemoryBlockSize * TcpIpMemoryBlockCount)"!]
+    [!VAR "memoryBlockDescriptorOffset"="$memoryBlockDescriptorOffset + TcpIpMemoryBlockCount"!]
+  [!ENDLOOP!][!//
+        </field> <!-- BufferList -->
+[!ENDIF!][!//
+[!IF "TcpIpGeneral/TcpIpSecurityMode != 'NO_SECURITY'"!]
+[!IF "$numOfLocalAddr > 0 "!]
+  <field><!-- ipSecLocalAddrList -->
+    [!VAR "ConnectionOffset"="0"!]
+    [!FOR "x" = "0" TO "num:max(as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpLocalAddr/*/TcpIpAddrId)"!]
+      [!VAR "numOfConnections"="count(as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecConnections/*[as:ref(TcpIpIpSecLocalAddrRef)/TcpIpAddrId = $x])"!]
+      <field>
+        <field>
+          <int>[!"num:i($ConnectionOffset)"!]</int><!-- connectionOffset -->
+        </field>
+        <field>
+          <int>[!"num:i($numOfConnections)"!]</int><!-- numOfConnections-->
+        </field>
+      </field>
+      [!VAR "ConnectionOffset"="$ConnectionOffset + $numOfConnections"!]
+    [!ENDFOR!]
+  </field> <!-- TcpIp_IpSecLocalAddrList -->
+[!ENDIF!]
+[!ENDIF!]
+
+[!IF "$numOfIpSecConnections > 0"!]
+  <field><!-- ipSecConnectionsListCfg -->
+    [!VAR "ipv4AddrIdx"="0"!]
+    [!VAR "ipv6AddrIdx"="0"!]
+    [!IF "(TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecGeneral/TcpIpIpSecRemotePhysAddrCheckEnable = 'true')"!]
+    [!VAR "macAddrIdx"="0"!]
+    [!ENDIF!]
+    [!VAR "policyBypassOffset"="0"!]
+    [!LOOP "node:order(as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecConnections/*,'as:ref(TcpIpIpSecLocalAddrRef)/TcpIpAddrId', 'IpSecRemoteAddrConfig = "AddressRange"')"!]
+    <field>
+      [!IF "./TcpIpIpSecDomainType = 'TCPIP_AF_INET'"!]
+        <field>
+         <int>[!"num:i($ipv4AddrIdx)"!]</int> <!-- remoteIpAddressIdx -->
+        </field>
+        [!IF "(./../../TcpIpIpSecGeneral/TcpIpIpSecRemotePhysAddrCheckEnable = 'true')"!]
+        [!IF "node:exists(TcpIpIpSecRemotePhysAddr/TcpIpIpSecStartRemotePhysAddr)"!]
+        <field>
+         <int>[!"num:i($macAddrIdx)"!]</int> <!-- remotePhysAddressIdx -->
+        </field>
+        [!VAR "macAddrIdx" = "$macAddrIdx + num:i(2)"!]
+        [!ELSE!]
+        <field>
+         <int>[!"num:i($numOfAddrRangeIpSecConnections * num:i(2))"!]</int> <!-- remotePhysAddressIdx -->
+        </field>
+        [!ENDIF!]
+        [!ENDIF!]
+        <field>
+         <int>2</int> <!-- addrType -->
+        </field>
+        [!IF "IpSecRemoteAddrConfig = 'SingleAddress'"!]
+        [!VAR "ipv4AddrIdx" = "$ipv4AddrIdx + 1"!]
+        [!ELSE!]
+          [!VAR "ipv4AddrIdx" = "$ipv4AddrIdx + 2"!]
+        [!ENDIF!]
+      [!ELSE!]
+        <field>
+         <int>[!"num:i($ipv6AddrIdx)"!]</int> <!-- remoteIpAddressIdx -->
+        </field>
+        [!IF "(./../../TcpIpIpSecGeneral/TcpIpIpSecRemotePhysAddrCheckEnable = 'true')"!]
+        [!IF "node:exists(TcpIpIpSecRemotePhysAddr/TcpIpIpSecStartRemotePhysAddr)"!]
+        <field>
+         <int>[!"num:i($macAddrIdx)"!]</int> <!-- remotePhysAddressIdx -->
+        </field>
+        [!VAR "macAddrIdx" = "$macAddrIdx + num:i(2)"!]
+        [!ELSE!]
+        <field>
+         <int>[!"num:i($numOfAddrRangeIpSecConnections * num:i(2))"!]</int> <!-- remotePhysAddressIdx -->
+        </field>
+        [!ENDIF!]
+        [!ENDIF!]
+        <field>
+         <int>28</int> <!-- addrType -->
+        </field>
+        [!IF "IpSecRemoteAddrConfig = 'SingleAddress'"!]
+        [!VAR "ipv6AddrIdx" = "$ipv6AddrIdx + 1"!]
+        [!ELSE!]
+          [!VAR "ipv6AddrIdx" = "$ipv6AddrIdx + 2"!]
+        [!ENDIF!]
+      [!ENDIF!]
+        <field>
+         <int>[!IF "IpSecRemoteAddrConfig = 'SingleAddress'"!]1[!ELSE!]0[!ENDIF!]</int> <!-- remoteAddrIsSingle -->
+        </field>
+        <field>
+         <int>[!"as:ref(./TcpIpIpSecLocalAddrRef)/TcpIpAddrId"!]</int> <!-- localAddrId -->
+        </field>
+      [!VAR "direction"="'INBOUND'"!]
+      [!FOR "x" = "1" TO "num:i(2)"!]
+        [!VAR "numOfBypassPolicies"="count(./TcpIpIpIpSecSecurityPolicies/*[(TcpIpIpSecSecurityPolicyDirection = $direction) and (TcpIpIpSecSecurityPolicyMechanism = 'BYPASSED') ])"!]
+        [!VAR "numOfSecuredPolicies"="count(./TcpIpIpIpSecSecurityPolicies/*[(TcpIpIpSecSecurityPolicyDirection = $direction) and (TcpIpIpSecSecurityPolicyMechanism = 'SECURED') ])"!]
+        <field> <!-- [!"$direction"!] policies -->
+          <field>
+           <int>[!"num:i($policyBypassOffset)"!]</int> <!-- [!"$direction"!]BypassedPoliciesOffset -->
+          </field>
+          <field>
+           <int>[!"num:i($numOfBypassPolicies)"!]</int> <!-- numOf[!"$direction"!]BypassedPolicies -->
+          </field>
+          <field>
+           <int>[!"num:i($policyBypassOffset + $numOfBypassPolicies)"!]</int> <!-- [!"$direction"!]SecuredPoliciesOffset -->
+          </field>
+          <field>
+           <int>[!"num:i($numOfSecuredPolicies)"!]</int> <!-- numOf[!"$direction"!]SecuredPolicies -->
+          </field> <!-- [!"$direction"!] policies -->
+        </field>
+        [!VAR "policyBypassOffset"="$policyBypassOffset + $numOfBypassPolicies + $numOfSecuredPolicies"!]
+      [!VAR "direction"="'OUTBOUND'"!]
+      [!ENDFOR!]
+    </field>
+    [!ENDLOOP!][!//
+  </field> <!-- ipSecConnectionsListCfg -->
+
+  <field><!-- ipSecConnIndexExt2IntCfg -->
+    [!LOOP "node:order(as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecConnections/*,'TcpIpIpSecConId')"!]
+      [!VAR "connectionIdx"="0"!]
+      [!VAR "currentCnnectionIdx"="./TcpIpIpSecConId"!]
+      [!LOOP "node:order(as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecConnections/*,'as:ref(TcpIpIpSecLocalAddrRef)/TcpIpAddrId', 'IpSecRemoteAddrConfig = "AddressRange"')"!]
+        [!IF "$currentCnnectionIdx = ./TcpIpIpSecConId"!][!BREAK!][!ENDIF!]
+        [!VAR "connectionIdx"="$connectionIdx + 1"!]
+      [!ENDLOOP!]
+      <field>
+       <int>[!"num:i($connectionIdx)"!]</int> <!-- internalConnIdx -->
+      </field>
+    [!ENDLOOP!][!//
+  </field> <!-- ipSecConnIndexExt2IntCfg -->
+[!ENDIF!] <!-- $numOfIpSecConnections > 0 -->
+
+[!IF "$numOfIpv4IpSecConnections > 0 "!]
+  <field><!-- ipSecConnectionIpV4RemoteAddrListCfg -->
+    [!CALL "setIpSecRemoteAddresses", "domain" = "'TCPIP_AF_INET'"!]
+  </field> <!-- ipSecConnectionIpV4RemoteAddrListCfg  -->
+[!ENDIF!]
+
+[!IF "$numOfIpv6IpSecConnections > 0 "!]
+  <field><!-- ipSecConnectionIpV6RemoteAddrListCfg -->
+    [!CALL "setIpSecRemoteAddresses", "domain" = "'TCPIP_AF_INET6'"!]
+  </field> <!-- ipSecConnectionIpV6RemoteAddrListCfg  -->
+[!ENDIF!]
+
+[!IF "(TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecGeneral/TcpIpIpSecRemotePhysAddrCheckEnable = 'true')"!]
+  <field><!-- TcpIp_IpSecConnectionMACRemoteAddrList -->
+    [!LOOP "node:order(as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecConnections/*[node:exists(TcpIpIpSecRemotePhysAddr/TcpIpIpSecStartRemotePhysAddr)], 'as:ref(TcpIpIpSecLocalAddrRef)/TcpIpAddrId', 'IpSecRemoteAddrConfig = "AddressRange"')"!]
+      <field> <!-- startPhysAddr -->
+        <field>
+        [!LOOP "text:split(./TcpIpIpSecRemotePhysAddr/TcpIpIpSecStartRemotePhysAddr,':')"!]
+          <field>
+            <int>[!"num:hextoint(.)"!]</int> <!-- physAddr -->
+          </field>
+        [!ENDLOOP!]
+        </field>
+      </field>
+      <field> <!-- endPhysAddr -->
+        <field>
+        [!LOOP "text:split(./TcpIpIpSecRemotePhysAddr/TcpIpIpSecEndRemotePhysAddr,':')"!]
+          <field>
+            <int>[!"num:hextoint(.)"!]</int> <!-- physAddr -->
+          </field>
+        [!ENDLOOP!]
+        </field>
+      </field>
+    [!ENDLOOP!][!//
+  </field> <!-- TcpIp_IpSecConnectionMACRemoteAddrList  -->
+[!ENDIF!]
+
+[!IF "$numOfSecurityPolicies > 0 "!]
+  [!VAR "order"="'LOCAL;REMOTE'"!]
+  [!VAR "policyOffset"="0"!]
+  [!VAR "numOfpolicies"="0"!]
+  <field><!-- ipSecPolicyListCfg -->
+    [!LOOP "node:order(as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecConnections/*, 'as:ref(TcpIpIpSecLocalAddrRef)/TcpIpAddrId', 'IpSecRemoteAddrConfig = "AddressRange"')"!]
+    [!LOOP "node:order(./TcpIpIpIpSecSecurityPolicies/*, 'TcpIpIpSecSecurityPolicyDirection', 'TcpIpIpSecSecurityPolicyMechanism')"!]
+      <field>
+      [!FOR "x" = "1" TO "count(text:split($order,';'))"!]
+        [!VAR "direction"="text:split($order,';')[num:i($x)]"!]
+        [!VAR "numOfpolicies"="count(./TcpIpIpIpSecSecurityRule/*[(TcpIpIpSecSecurityPolicyDirection = $direction)])"!]
+        <field>
+         <int>[!"num:i($policyOffset)"!]</int> <!-- [!"$direction"!]PoliciesOffset -->
+        </field>
+        <field>
+         <int>[!"num:i($numOfpolicies)"!]</int> <!-- numOf[!"$direction"!]Policies -->
+        </field>
+        [!VAR "policyOffset"="$policyOffset + $numOfpolicies"!]
+      [!ENDFOR!]
+      [!IF "node:refvalid(./TcpIpIpSecSecurityPolicySecurityAssociationRef)"!]
+        <field>
+         <int>[!"num:i(node:ref(./TcpIpIpSecSecurityPolicySecurityAssociationRef)/@index)"!]</int> <!-- securityAssociationIdx -->
+        </field>
+      [!ELSE!]
+        <field>
+         <int>255</int> <!-- securityAssociationIdx -->
+        </field>
+      [!ENDIF!]
+      </field>
+    [!ENDLOOP!]
+    [!ENDLOOP!]
+  </field> <!-- ipSecPolicyListCfg  -->
+[!ENDIF!]
+
+[!IF "$numOfSecurityRules > 0 "!]
+  <field><!-- ipSecRuleListCfg -->
+    [!LOOP "node:order(as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecConnections/*, 'as:ref(TcpIpIpSecLocalAddrRef)/TcpIpAddrId', 'IpSecRemoteAddrConfig = "AddressRange"')"!]
+    [!VAR "domain"="./TcpIpIpSecDomainType"!]
+    [!LOOP "node:order(./TcpIpIpIpSecSecurityPolicies/*, 'TcpIpIpSecSecurityPolicyDirection', 'TcpIpIpSecSecurityPolicyMechanism')"!]
+    [!LOOP "node:order(./TcpIpIpIpSecSecurityRule/*, 'TcpIpIpSecSecurityPolicyDirection')"!]
+      <field>
+        <field>
+        [!IF "node:exists(TcpIpIpSecSecurityPolicyStartPort)"!]
+         <int>[!"num:i(TcpIpIpSecSecurityPolicyStartPort)"!]</int>
+        [!ELSE!]
+         <int>[!"num:i(0)"!]</int>
+        [!ENDIF!]
+        </field>
+        <field>
+        [!IF "node:exists(TcpIpIpSecSecurityPolicyEndPort)"!]
+         <int>[!"num:i(TcpIpIpSecSecurityPolicyEndPort)"!]</int>
+        [!ELSE!]
+         <int>[!"num:i(0)"!]</int>
+        [!ENDIF!]
+        </field>
+        <field>
+         <int>[!CALL "upperLayerToValue", "upperLayer"="TcpIpIpSecSecurityPolicyUpperLayer", "domain" ="$domain"!]</int>
+        </field>
+      </field>
+    [!ENDLOOP!]
+    [!ENDLOOP!]
+    [!ENDLOOP!]
+  </field> <!-- ipSecRuleListCfg  -->
+[!ENDIF!]
+
+[!IF "$numOfSecurityAssociationConfigs > 0 "!]
+[!VAR "proposalIdx"="0"!]
+[!VAR "ipSecSaOffset"="0"!]
+  <field><!-- ipSecSecurityAssociationCommonListCfg -->
+    [!LOOP "as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecSecurityAssociationCfg/*"!]
+      <field>
+        <field> <!-- proposalPtr -->
+          <ref>
+            <struct-field name="ipSecProposalListCfg" />
+            <array-field index="[!"num:i($proposalIdx)"!]" />
+          </ref>
+        </field> <!-- proposalPtr -->
+        <field>
+          [!IF "node:exists(./TcpIpIpSecSecurityAssociationInboundSpi )"!]
+           <int>[!"num:i(TcpIpIpSecSecurityAssociationInboundSpi )"!]</int>  <!-- inboundSpi -->
+          [!ELSE!]
+           <int>0</int>  <!-- spi -->
+          [!ENDIF!]
+        </field>
+        <field>
+          [!IF "node:exists(./TcpIpIpSecSecurityAssociationOutboundSpi )"!]
+           <int>[!"num:i(TcpIpIpSecSecurityAssociationOutboundSpi )"!]</int>  <!-- outboundSpi -->
+          [!ELSE!]
+           <int>0</int>  <!-- spi -->
+          [!ENDIF!]
+        </field>
+     [!IF "as:modconf('TcpIp')[1]/TcpIpGeneral/TcpIpIkeEnable = 'true'"!]
+        [!IF "TcpIpIpSecSecurityAssociationKeyExchangeMethod = 'MANUAL'"!]
+        <field>
+         <int>1</int>  <!-- KeyExchangeMethod  -->
+        </field>
+        [!ELSE!]
+        <field>
+         <int>0</int>  <!-- KeyExchangeMethod  -->
+        </field>
+        [!ENDIF!]
+     [!ENDIF!]
+        [!VAR "ipSecSaNum"="count(./TcpIpIpSecSecurityProposal/*/TcpIpIpSecSecurityAssociation/*)"!]
+        <field>
+         <int>[!"num:i($ipSecSaOffset)"!]</int>  <!-- ipSecSaOffset  -->
+        </field>
+        <field>
+         <int>[!"num:i($ipSecSaNum)"!]</int>  <!-- ipSecSaNum  -->
+        </field>
+        [!VAR "ipSecSaOffset"="$ipSecSaOffset + $ipSecSaNum"!]
+      </field>
+      [!VAR "proposalIdx"="$proposalIdx + num:i(count(./TcpIpIpSecSecurityProposal/*))"!]
+    [!ENDLOOP!]
+  </field> <!-- ipSecSecurityAssociationCommonListCfg  -->
+
+  <field><!-- ipSecProposalList -->
+  [!LOOP "as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecSecurityAssociationCfg/*"!]
+  [!LOOP "node:order(./TcpIpIpSecSecurityProposal/*, 'TcpIpIpSecProposalPriority')"!]
+    <field>
+      <field>
+       <int>[!CALL "getKeyTruncatedLengthForAlgorithm", "algorithm"="TcpIpIpSecSecurityAssociationIntegrityAlgorithm"!]</int> <!-- truncatedLength -->
+      </field>
+  [!IF "(as:modconf('TcpIp')[1]/TcpIpGeneral/TcpIpIpV4General/TcpIpIpV4Enabled = 'true')"!]
+      <field>
+       <int>[!CALL "getAHSizeForAlgorithm", "algorithm"="TcpIpIpSecSecurityAssociationIntegrityAlgorithm", "domain" ="'TCPIP_AF_INET'"!]</int> <!-- ipv4SecurityHeadersize -->
+      </field>
+  [!ENDIF!]
+  [!IF "(as:modconf('TcpIp')[1]/TcpIpGeneral/TcpIpIpV6General/TcpIpIpV6Enabled = 'true')"!]
+      <field>
+       <int>[!CALL "getAHSizeForAlgorithm", "algorithm"="TcpIpIpSecSecurityAssociationIntegrityAlgorithm", "domain" ="'TCPIP_AF_INET6'"!]</int> <!-- ipv6SecurityHeadersize -->
+      </field>
+  [!ENDIF!]
+      <field>
+       [!IF "TcpIpIpSecSecurityAssociationIntegrityAlgorithm = 'AES_GMAC_128' or TcpIpIpSecSecurityAssociationIntegrityAlgorithm = 'AES_GMAC_256'"!]
+       <int>1</int>
+       [!ELSE!]
+       <int>0</int>
+       [!ENDIF!]
+      </field>  <!-- useGMAC  -->
+    </field>
+    [!ENDLOOP!]
+  [!ENDLOOP!]
+  </field><!-- ipSecProposalList -->
+
+[!ENDIF!]
+
+[!IF "$numOfSecurityAssociations > 0 "!]
+[!VAR "commonSaConfigIdx"="0"!]
+  <field><!-- ipSecSecurityAssociationListCfg -->
+    [!LOOP "as:modconf('TcpIp')[1]/TcpIpConfig/TcpIpIpSecConfig/TcpIpIpSecSecurityAssociationCfg/*"!]
+    [!LOOP "node:order(./TcpIpIpSecSecurityProposal/*, 'TcpIpIpSecProposalPriority')"!]
+      [!LOOP "./TcpIpIpSecSecurityAssociation/*"!]
+      <field>
+        <field>
+         <int>[!"num:i(node:ref(node:ref(./TcpIpIpSecSecurityAssociationInboundIntegrityJobRef)/CsmJobKeyRef)/CsmKeyId)"!]</int> <!-- inboundIntegrityKey -->
+        </field>
+        <field>
+         <int>[!"num:i(node:ref(./TcpIpIpSecSecurityAssociationInboundIntegrityJobRef)/CsmJobId)"!]</int> <!-- inboundIntegrityjobId -->
+        </field>
+        <field>
+         <int>[!"num:i(node:ref(node:ref(./TcpIpIpSecSecurityAssociationOutboundIntegrityJobRef)/CsmJobKeyRef)/CsmKeyId)"!]</int> <!-- outboundIntegrityKey -->
+        </field>
+        <field>
+         <int>[!"num:i(node:ref(./TcpIpIpSecSecurityAssociationOutboundIntegrityJobRef)/CsmJobId)"!]</int> <!-- outboundIntegrityjobId -->
+        </field>
+        <field>
+         <int>[!"num:i($commonSaConfigIdx)"!]</int> <!-- saCommonConfigIdx -->
+        </field>
+      </field>
+      [!ENDLOOP!]
+    [!ENDLOOP!]
+    [!VAR "commonSaConfigIdx"="$commonSaConfigIdx + 1"!]
+    [!ENDLOOP!]
+  </field> <!-- ipSecSecurityAssociationListCfg  -->
+[!ENDIF!]
+
+  </instance> <!-- TcpIp_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <!-- The xpointer attribute should rather be something like "xpointer(//module[name='...'])",
+       but unfortunately our XML parser does not support the XPointer xpointer() Scheme.
+       This is also the reason why all these xincludes must be at the end of the file rather
+       than at the beginning, because that way the other xgen files that include this one can
+       be sure that "element(/1/1)" is the TcpIp module element.
+  -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>
+
+[!ENDCODE!]

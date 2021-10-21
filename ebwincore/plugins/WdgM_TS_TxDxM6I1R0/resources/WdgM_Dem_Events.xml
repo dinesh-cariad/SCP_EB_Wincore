@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dem:events xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd"
+    xmlns:dem="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd">
+
+    <event name="WDGM_E_MONITORING" base="as:modconf('WdgM')[1]/WdgMConfigSet/*">
+        <enable type="XPATH"
+            value="as:modconf('WdgM')[1]/ReportToDem/WdgMSupervisionReportToDem = 'DEM'" />
+        <updateReference
+            value="./WdgMDemEventParameterRefs/WDGM_E_MONITORING" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+    <event name="WDGM_E_SET_MODE" base="as:modconf('WdgM')[1]/WdgMConfigSet/*">
+        <enable type="XPATH"
+            value="as:modconf('WdgM')[1]/ReportToDem/WdgMSetModeReportToDem = 'DEM'" />
+        <updateReference
+            value="./WdgMDemEventParameterRefs/WDGM_E_SET_MODE" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+    <event name="WDGM_E_IMPROPER_CALLER" base="as:modconf('WdgM')[1]/WdgMConfigSet/*">
+        <enable type="XPATH"
+            value="as:modconf('WdgM')[1]/ReportToDem/WdgMImproperCallerReportToDem = 'DEM'" />
+        <updateReference
+            value="./WdgMDemEventParameterRefs/WDGM_E_IMPROPER_CALLER" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+    <event name="WDGM_E_MF_TIMINGVIOLATION" base="as:modconf('WdgM')[1]/WdgMConfigSet/*">
+      <enable type="XPATH"
+        value="as:modconf('WdgM')[1]/ReportToDem/WdgMMFTimingViolationReportToDem = 'DEM'" />
+      <updateReference
+        value="./WdgMDemEventParameterRefs/WDGM_E_MF_TIMINGVIOLATION" />
+      <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+    <event name="WDGM_E_DATA_CORRUPTION" base="as:modconf('WdgM')[1]/WdgMConfigSet/*">
+      <enable type="XPATH"
+        value="as:modconf('WdgM')[1]/ReportToDem/WdgMDataCorruptionReportToDem = 'DEM'" />
+      <updateReference
+        value="./WdgMDemEventParameterRefs/WDGM_E_DATA_CORRUPTION" />
+      <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+</dem:events>

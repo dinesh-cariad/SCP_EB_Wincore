@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     + Copyright (C) Elektrobit
+     + All rights reserved
+     +
+     + NAME: plugin.xml
+     +
+     + $Id$
+     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+  <!--
+    NG.Generator: jetgen
+  -->
+  <extension id="WdgM_TS_TxDxM6I1R0_GeneratorExt" point="dreisoft.tresos.generator.api.plugin.generator">
+    <generator class="dreisoft.tresos.generator.ng.api.NGGenerator" id="WdgM_TS_TxDxM6I1R0_Generator" moduleId="WdgM_TS_TxDxM6I1R0">
+      <!-- execute the ng.jetgen task -->
+      <parameter mode="generate" name="buildfile" value="resources/WdgM_gen_build.xml"/>
+      <parameter mode="verify" name="buildfile" value="resources/WdgM_gen_build.xml"/>
+      <parameter name="createEmptyFiles" value="false"/>
+    </generator>
+  </extension>
+  <extension
+        point="dreisoft.tresos.datamodel2.api.plugin.xpathregistration">
+     <xpathfunction>
+        <classregistration
+              class="dreisoft.tresos.wdgm.generator.WdgMXPathFunctions"
+              namespace="asc_wdgm">
+        </classregistration>
+     </xpathfunction>
+  </extension>
+</plugin>

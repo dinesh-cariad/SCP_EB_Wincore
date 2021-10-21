@@ -1,0 +1,92 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_SymbolicNames_VARIANT_PBcfg_h"
+        imports="dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException
+            dreisoft.tresos.com.generator.Com_ConfigLayoutType
+            dreisoft.tresos.com.generator.ComRxIPduType
+            dreisoft.tresos.com.generator.ComTxIPduType
+            dreisoft.tresos.com.generated.operationstatus.GeneratorOperationStatus
+            dreisoft.tresos.com.generator.input.entity.Cache
+            dreisoft.tresos.com.tools.FileGeneratorHelper" %>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    // get post-build data model
+    Cache cache = (Cache) context.gen.getVariable("Com.cache", Cache.class, null);
+    Com_ConfigLayoutType comPBCfgDataModel = (Com_ConfigLayoutType) context.gen.getVariable("comPBCfgDataModel", Com_ConfigLayoutType.class, null);
+
+    boolean comGenerationSuccessful = !context.gen.isVerifying();
+    final String includeGuardName = "COM_SYMBOLIC_NAMES_" + cache.PbVariant.toUpperCase() + "_PB_CFG_H";
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+
+/*==================[macros]================================================*/
+
+/* External Rx IPdus defines */
+
+<%
+    if (comPBCfgDataModel.ComRxIPdu != null) {
+        for ( ComRxIPduType obj : comPBCfgDataModel.ComRxIPdu.get() ) {
+            if(!obj.isDummy() && obj.isVariant) {
+%>
+<%= FileGeneratorHelper.defineVariantIPduHandleIdMacro( obj.getIPDUName(),
+        obj.getHandleId(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+
+/* External Tx IPdus defines */
+
+<%
+    if (comPBCfgDataModel.ComTxIPdu != null) {
+        for ( ComTxIPduType obj : comPBCfgDataModel.ComTxIPdu.get() ) {
+            if(!obj.isDummy() && obj.isVariant) {
+%>
+<%= FileGeneratorHelper.defineVariantIPduHandleIdMacro( obj.getIPDUName(),
+        obj.getHandleId(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>
+<%
+if (comGenerationSuccessful == true)
+{
+    context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE( "Com_SymbolicNames_" + cache.PbVariant + "_PBcfg.h" ) );
+}
+else {
+    return "";
+}
+%>

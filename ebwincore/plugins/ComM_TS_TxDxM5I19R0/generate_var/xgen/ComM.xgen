@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module ComM?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!AUTOSPACING!]
+[!NOCODE!]
+
+[!INCLUDE "../../generate_macros/ComM_Checks.m"!][!//
+[!VAR "PncSupport"="ComMGeneral/ComMPncSupport"!]
+[!SELECT "ComMConfigSet/*[1]"!]
+[!VAR "COMM_NUM_CHANNELS"="num:i(count(ComMChannel/*))"!]
+[!VAR "COMM_NUM_USERS"="num:i(count(ComMUser/*))"!]
+[!VAR "COMM_NUM_PNC"="num:i(count(ComMPnc/*))"!]
+
+[!// Number of users per PNC
+[!VAR "NumUsersPerPnc"="num:i( count( ComMPnc/*/ComMUserPerPnc/* ) )"!]
+
+[!// Number of users per PNC
+[!VAR "NumPncsPerUser"="0"!]
+[!LOOP "ComMUser/*"!]
+  [!VAR "NumPncsPerUser"="$NumPncsPerUser + count( ../../ComMPnc/*[node:refs(ComMUserPerPnc/*)[ComMUserIdentifier = node:current()/ComMUserIdentifier]] )"!]
+[!ENDLOOP!]
+[!VAR "NumPncsPerUser"="num:i( $NumPncsPerUser )"!]
+
+[!// Number of PNCs per channel
+[!VAR "NumPncsPerChannel"="0"!]
+[!LOOP "ComMChannel/*"!]
+  [!VAR "NumPncsPerChannel"="$NumPncsPerChannel + count( as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[as:ref(.)/ComMChannelId = node:current()/ComMChannelId] )"!]
+[!ENDLOOP!]
+[!VAR "NumPncsPerChannel"="num:i($NumPncsPerChannel)"!]
+
+[!// Number of channels per PNC
+[!VAR "NumChannelsPerPnc"="num:i( count( ComMPnc/*/ComMChannelPerPnc/* ) )"!]
+
+[!// Number of Channels per User
+[!VAR "NumChannelsPerUser"="0"!]
+[!LOOP "ComMUser/*"!]
+
+  [!// Add number of referencing channels
+  [!VAR "NumChannelsPerUser"="$NumChannelsPerUser + count( ../../ComMChannel/*/ComMUserPerChannel/*[ as:ref(ComMUserChannel)/ComMUserIdentifier = node:current()/ComMUserIdentifier] )"!]
+
+  [!IF "$PncSupport"!]
+    [!// Add number of referencing Pncs
+
+    [!VAR "NumChannelsPerUser"="$NumChannelsPerUser + count( node:refs( as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMUserPerPnc/*[as:ref(.)/ComMUserIdentifier=node:current()/ComMUserIdentifier]/../../ComMChannelPerPnc/* )/ComMChannelId )"!]
+  [!ENDIF!]
+[!ENDLOOP!]
+[!VAR "NumChannelsPerUser"="num:i( $NumChannelsPerUser )"!]
+
+[!// Size of Users per channel
+[!VAR "NumUsersPerChannel"="0"!]
+[!LOOP "ComMChannel/*"!]
+  [!IF "ComMNetworkManagement/ComMNmVariant != 'PASSIVE'"!]
+    [!// If not passive add the users referenced by channel
+    [!VAR "NumUsersPerChannel"="$NumUsersPerChannel + count( ComMUserPerChannel/*/ComMUserChannel )"!]
+
+    [!IF "$PncSupport"!]
+      [!// if we have PNCs add the users for Pnc
+
+      [!VAR "NumUsersPerChannel"="$NumUsersPerChannel + count( node:refs( as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[node:ref(.)/ComMChannelId=node:current()/ComMChannelId]/../../ComMUserPerPnc/*) ) "!]
+    [!ENDIF!] [!// $PncSupport
+  [!ENDIF!] [!// ComMNetworkManagement/ComMNmVariant != 'PASSIVE'
+[!ENDLOOP!]
+[!VAR "NumUsersPerChannel"="num:i( $NumUsersPerChannel )"!]
+[!ENDSELECT!]
+
+[!// Determine if the PB configuration shall be relocatable
+[!VAR "relocatable" = "'false'"!]
+[!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('ComM')) = 'true'"!]
+  [!IF "node:exists(as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable) and (as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true')"!]
+    [!VAR "relocatable" = "'true'"!]
+  [!ENDIF!]
+[!ELSE!]
+    [!IF "ComMGeneral/ComMRelocatablePbcfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+    [!ENDIF!]
+[!ENDIF!]
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "COMM_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "COMM_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat( string( name( as:modconf('ComM')[1]/ComMConfigSet/*[1])),'_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="string( name( as:modconf('ComM')[1]/ComMConfigSet/*[1]))"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+<!-- !LINKSTO ComM.EB.PBSelectable.FileName,1 -->
+*/!][!VAR "COMM_PBCFG_C_VARIANT"="concat('ComM',$COMM_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "COMM_PBCFG_H_VARIANT"="concat('ComM',$COMM_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "COMM_CONFIG_LAYOUT_VARIANT"="concat('ComM',$COMM_VARIANT_SUFIX,'Configuration')"!]
+<!-- !LINKSTO ComM.EB.PBSelectable.TypeName,1 -->
+[!/* Current Config Type variant based
+*/!][!VAR "COMM_CONFIGLAYOUTTYPE_VARIANT"="concat('ComM',$COMM_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "COMM_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('ComM',$COMM_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+
+[!ENDNOCODE!]
+
+
+
+  <!-- This is the configuration of module ComM -->
+  <module name="ComM">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+
+[!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+      <?artifact directory="include" file="ComM_Types_Int.h" type="types-h" generate="yes" ?>
+[!ELSE!]
+      <?artifact directory="include" file="ComM_Types_Int.h" type="types-h" generate="no" ?>
+[!ENDIF!]
+      <!-- !LINKSTO ComM.PB.Impl.Relocatable,1 -->
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <!-- This is the type definition of the root structure -->
+      <type name="ComM_ConfigType">
+        <struct>
+          <!-- !LINKSTO ComM.PB.Impl.Hash,1 -->
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform"/>
+          <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration"/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration"/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate Public information"/>
+          <member name="pUsersOfAllChannel" type="uint8" comment="Reference to COMM_ConfigLayoutType.aUsersOfAllChannel">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="NumUsersOfAllChannel" type="uint16" count="[!"num:i($COMM_NUM_CHANNELS + 1)"!]" comment="Index of first user of a channel in COMM_ConfigLayoutType.aUsersOfAllChannel"/>
+          <member name="pChannelsOfAllUser" type="uint8" comment="Reference to COMM_ConfigLayoutType.aChannelsOfAllUser">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!IF "$COMM_NUM_USERS != num:i(0)"!]
+          <member name="NumChannelsOfAllUser" type="uint16" count="[!"num:i($COMM_NUM_USERS + 1)"!]" comment="Index of first channel of a user in COMM_ConfigLayoutType.aChannelsOfAllUser"/>
+          <member name="DirectNumChannelsOfAllUser" type="uint16" count="[!"num:i($COMM_NUM_USERS + 1)"!]" comment="Index of first channel of a user in COMM_ConfigLayoutType.aChannelsOfAllUser"/>
+[!ELSE!]
+          <member name="NumChannelsOfAllUser" type="uint16" count="[!"num:i(2)"!]" comment="Index of first channel of a user in COMM_ConfigLayoutType.aChannelsOfAllUser"/>
+          <member name="DirectNumChannelsOfAllUser" type="uint16" count="[!"num:i(2)"!]" comment="Index of first channel of a user in COMM_ConfigLayoutType.aChannelsOfAllUser"/>
+[!ENDIF!]
+
+[!IF "$PncSupport"!]
+          <member name="ComMPncEnabled" type="boolean" comment="Enabling/Disabling of partial networking"/>
+          <member name="pChannelsOfAllPnc" type="uint8" comment="Concatenated array of channels ids for each PNC: Pnc1Chan1,Pnc1Chan2,Pnc2Chan1..." >
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+           <!-- PncSupport means that at least one PNC is configured -->
+          <member name="NumChannelsOfAllPnc" type="uint16" count="[!"num:i($COMM_NUM_PNC + 1)"!]" comment="Index of first channel of each Pnc in COMM_ConfigLayoutType.aChannelsOfAllPnc"/>
+          <member name="pPNCsOfAllChannel" type="uint8" comment="Concatenated array of PNC ids for each channel: Chan1Pnc1,Chan1Pnc2,Chan2Pnc1...">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="NumPncOfAllCh" type="uint16" count="[!"num:i($COMM_NUM_CHANNELS + 1)"!]" comment="Index of first PNC of each channel in COMM_ConfigLayoutType.aPNCsOfAllChannel"/>
+          <member name="pPncOfAllUser" type="uint8" comment="Concatenated array of PNC indices (NOT ID) for users: Usr1Pnc1,Usr1Pnc2,Usr2Pnc1..">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+[!IF "$COMM_NUM_USERS != num:i(0)"!]
+          <member name="NumPncOfAllUser" type="uint16" count="[!"num:i($COMM_NUM_USERS + 1)"!]" comment="Index of first PNC of each user in COMM_ConfigLayoutType.aPncOfAllUser"/>
+[!ELSE!]
+          <member name="NumPncOfAllUser" type="uint16" count="[!"num:i(2)"!]" comment="Index of first PNC of each user in COMM_ConfigLayoutType.aPncOfAllUser"/>
+[!ENDIF!]
+          <member name="pUsersOfAllPnc" type="uint8" comment="Concatenated array of user ids for each PNC: Pnc1Usr1,Pnc1Usr2,Pnc2Usr1...">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <!-- PncSupport means that at least one PNC is configured -->
+          <member name="NumUsersOfAllPnc" type="uint16" count="[!"num:i($COMM_NUM_PNC + 1)"!]" comment="Index of first User of each PNC in COMM_ConfigLayoutType.aUsersOfAllPnc"/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <!-- !LINKSTO ComM.PB.Format.C,1 -->
+      <?artifact directory="include" file="[!"$COMM_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$COMM_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of ComM_PBcfg.h and ComM_Types.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+     <type name="[!"$COMM_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="ComM_ConfigType"/>
+          <!-- !LINKSTO ComM795,1, ComM796,1, ComM797,1, ComM798,1 -->
+          
+[!IF "$COMM_NUM_USERS != num:i(0)"!]
+          <member name="aUsersOfAllChannel" type="uint8" count="[!"$NumUsersPerChannel"!]" comment="User Ids referenced by channel or PNCs of channel"/>
+          <member name="aChannelsOfAllUser" type="uint8" count="[!"$NumChannelsPerUser"!]" comment="Channel Ids or PNC ids referenced by user of channel" />           
+[!ELSE!]
+          <member name="aUsersOfAllChannel" type="uint8" count="1" comment="User Ids referenced by channel or PNCs of channel"/>
+          <member name="aChannelsOfAllUser" type="uint8" count="1" comment="Channel Ids or PNC ids referenced by user of channel" />
+[!ENDIF!]            
+[!IF "$PncSupport"!]
+          <member name="aChannelsOfAllPnc"  type="uint8" count="[!"$NumChannelsPerPnc"!]"  comment="Channel Id of all channels for all PNC" />
+          <member name="aPNCsOfAllChannel" type="uint8" count="[!"$NumPncsPerChannel"!]" comment="PNC Ids of all channels"/>
+[!IF "$NumPncsPerUser != num:i(0)"!]
+          <member name="aPncOfAllUser" type="uint8" count="[!"$NumPncsPerUser"!]" comment="PNC Ids of all users" />
+[!ELSE!]
+          <!-- Workaround: Dummy member used in case of no PNC users configured, because all PNCs are on passive channels! -->
+          <member name="aPncOfAllUser" type="uint8" count="1" comment="PNC Ids of all users" />
+[!ENDIF!]
+[!IF "$NumUsersPerPnc !=num:i(0)"!]
+          <member name="aUsersOfAllPnc" type="uint8" count="[!"$NumUsersPerPnc"!]" comment="User Ids of all cwPNCsusers" />
+[!ELSE!]
+          <!-- Workaround: Dummy member used in case of no PNC users configured, because all PNCs are on passive channels! -->
+          <member name="aUsersOfAllPnc" type="uint8" count="1" comment="User Ids of all cwPNCsusers" />
+[!ENDIF!]
+[!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="[!"$COMM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$COMM_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="COMM_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialisation:
+          Specifies the content of ComM_Pbcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="[!"$COMM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+             name="[!"$COMM_CONFIG_LAYOUT_VARIANT"!]">
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+
+        <!-- ComM_ConfigType -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('ComM')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('ComM')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('ComM')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('ComM')[1]/CommonPublishedInformation/Release))"!]</int>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="aUsersOfAllChannel"/>
+              <array-field index="0" />
+            </ref>
+          </field> <!-- pUsersOfAllChannel -->
+          <field>
+[!VAR "numUserOfCh"="0"!]
+[!SELECT "ComMConfigSet/*[1]"!]
+[!LOOP "node:order(ComMChannel/*, 'ComMChannelId')"!]
+            <field>
+              <int>[!"num:i($numUserOfCh)"!]</int>
+            </field>
+  [!IF "(ComMNetworkManagement/ComMNmVariant != 'PASSIVE')"!]
+    [!VAR "numUserOfCh"="$numUserOfCh + count(ComMUserPerChannel/*/ComMUserChannel)"!]
+    [!IF "$PncSupport"!]
+      [!VAR "numUserOfCh"="$numUserOfCh + count( node:difference( node:refs( as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[(node:ref(.)/ComMChannelId=node:current()/ComMChannelId)]/../../ComMUserPerPnc/* ), node:refs( as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[./ComMChannelId=node:current()/ComMChannelId]/ComMUserPerChannel/*/ComMUserChannel ) ) )"!]
+    [!ENDIF!]
+  [!ENDIF!]
+[!ENDLOOP!]
+[!ENDSELECT!]
+            <field>
+              <int>[!"num:i($numUserOfCh)"!]</int>
+            </field>
+          </field> <!-- NumUsersOfAllChannel -->
+          <field>
+            <ref>
+              <struct-field name="aChannelsOfAllUser"/>
+              <array-field index="0" />
+            </ref>
+          </field> <!-- pChannelsOfAllUser -->
+          <field>
+[!IF "$COMM_NUM_USERS != num:i(0)"!]
+[!VAR "NumAllChannels"="0"!]
+[!SELECT "ComMConfigSet/*[1]"!]
+[!LOOP "node:order(ComMUser/*, 'ComMUserIdentifier')"!]
+            <field>
+              <int>[!"num:i($NumAllChannels)"!]</int> <!-- idx of user [!"name(.)"!] -->
+            </field>
+  [!VAR "NumAllChannels"="$NumAllChannels + count( ../../ComMChannel/*/ComMUserPerChannel/*[as:ref(ComMUserChannel)/ComMUserIdentifier = node:current()/ComMUserIdentifier] )"!]
+  [!IF "$PncSupport"!]
+    [!VAR "NumAllChannels"="$NumAllChannels + count( node:difference( node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMUserPerPnc/*[as:ref(.)/ComMUserIdentifier=node:current()/ComMUserIdentifier]/../../ComMChannelPerPnc/*)/ComMChannelId, as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*/ComMUserPerChannel/*[as:ref(ComMUserChannel)/ComMUserIdentifier=node:current()/ComMUserIdentifier]/../../ComMChannelId ) )"!]
+  [!ENDIF!]
+[!ENDLOOP!]
+[!ENDSELECT!]
+            <field>
+              <int>[!"num:i($NumAllChannels)"!]</int> <!-- idx of entry after last user -->
+            </field>
+[!ELSE!]
+            <field>
+              <int>[!"num:i(0)"!]</int> <!-- idx of entry after last user -->
+            </field>
+            <field>
+              <int>[!"num:i(0)"!]</int> <!-- idx of entry after last user -->
+            </field>
+[!ENDIF!]
+          </field> <!-- NumChannelsOfAllUser -->
+
+          <field>
+[!IF "$COMM_NUM_USERS != num:i(0)"!]
+[!VAR "DirectNumAllChannels"="0"!]
+[!SELECT "ComMConfigSet/*[1]"!]
+[!LOOP "node:order(ComMUser/*, 'ComMUserIdentifier')"!]
+            <field>
+              <int>[!"num:i($DirectNumAllChannels)"!]</int> <!-- idx of user [!"name(.)"!] -->
+            </field>
+  [!VAR "DirectNumAllChannels"="$DirectNumAllChannels + count( ../../ComMChannel/*/ComMUserPerChannel/*[as:ref(ComMUserChannel)/ComMUserIdentifier = node:current()/ComMUserIdentifier] )"!]
+[!ENDLOOP!]
+[!ENDSELECT!]
+            <field>
+              <int>[!"num:i($DirectNumAllChannels)"!]</int> <!-- idx of entry after last user -->
+            </field>
+[!ELSE!]
+            <field>
+              <int>[!"num:i(0)"!]</int> <!-- idx of entry after last user -->
+            </field>
+            <field>
+              <int>[!"num:i(0)"!]</int> <!-- idx of entry after last user -->
+            </field>
+[!ENDIF!]
+          </field> <!-- DirectNumChannelsOfAllUser -->
+
+[!IF "$PncSupport"!]
+          <field>
+            <int>[!//
+  [!IF "not(node:exists(ComMConfigSet/*[1]/ComMPncEnabled))"!][!/*
+              */!]1 <!-- ComMPncEnabled is disabled so ComMPncSupport determines the state --> [!//
+  [!ELSEIF "ComMConfigSet/*[1]/ComMPncEnabled = 'true'"!][!/*
+              */!]1 <!-- ComMPncEnabled is enabled and set to true --> [!//
+  [!ELSE!][!/*
+              */!]0 <!-- ComMPncEnabled is enabled and set to false --> [!//
+  [!ENDIF!]</int>
+          </field> <!-- ComMPncEnabled -->
+          <field>
+            <ref>
+              <struct-field name="aChannelsOfAllPnc"/>
+              <array-field index="0" />
+            </ref>
+          </field> <!-- pChannelsOfAllPnc -->
+          <field>
+  [!VAR "NumAllChannels"="0"!]
+  [!SELECT "ComMConfigSet/*[1]"!]
+  [!LOOP "node:order(ComMPnc/*, 'ComMPncId')"!]
+            <field>
+              <int>[!"num:i($NumAllChannels)"!]</int> <!-- idx of PNC [!"name(.)"!] -->
+            </field>
+    [!VAR "NumAllChannels"="$NumAllChannels+count( ComMChannelPerPnc/* )"!]
+  [!ENDLOOP!]
+  [!ENDSELECT!]
+            <field>
+              <int>[!"num:i($NumAllChannels)"!]</int> <!-- idx of entry after last PNC -->
+            </field>
+          </field> <!-- NumChannelsOfAllPnc -->
+          <field>
+            <ref>
+              <struct-field name="aPNCsOfAllChannel"/>
+              <array-field index="0" />
+            </ref>
+          </field> <!-- pPNCsOfAllChannel  -->
+          <field>
+  [!VAR "NumAllPncs"="0"!]
+  [!SELECT "ComMConfigSet/*[1]"!]
+  [!LOOP "node:order(ComMChannel/*, 'ComMChannelId')"!]
+            <field>
+              <int>[!"num:i( $NumAllPncs )"!]</int> <!-- idx of channel [!"name(.)"!] -->
+            </field>
+    [!VAR "NumAllPncs"="$NumAllPncs + count( as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[as:ref(.)/ComMChannelId = node:current()/ComMChannelId] )"!]
+  [!ENDLOOP!]
+  [!ENDSELECT!]
+            <field>
+              <int>[!"num:i( $NumAllPncs )"!]</int> <!--  idx of entry after last channel -->
+            </field>
+          </field> <!-- NumPncOfAllCh -->
+          <field>
+            <ref>
+              <struct-field name="aPncOfAllUser"/>
+              <array-field index="0" />
+            </ref>
+          </field> <!-- pPncOfAllUser -->
+          <field>
+[!IF "$COMM_NUM_USERS != num:i(0)"!]
+  [!VAR "NumAllPncs"="0"!]
+  [!SELECT "ComMConfigSet/*[1]"!]
+  [!LOOP "node:order(ComMUser/*, 'ComMUserIdentifier')"!]
+            <field>
+              <int>[!"num:i($NumAllPncs)"!]</int> <!-- idx of user [!"name(.)"!] -->
+            </field>
+    [!VAR "NumAllPncs"="$NumAllPncs + count( ../../ComMPnc/*[node:refs(ComMUserPerPnc/*)[ComMUserIdentifier = node:current()/ComMUserIdentifier]] )"!]
+  [!ENDLOOP!]
+  [!ENDSELECT!]
+            <field>
+              <int>[!"num:i($NumAllPncs)"!]</int> <!-- idx of entry after last user -->
+            </field>
+[!ELSE!]
+            <field>
+              <int>0</int>
+            </field>
+            <field>
+              <int>0</int>
+            </field>
+[!ENDIF!]
+          </field> <!-- NumPncOfAllUser -->
+          <field>
+            <ref>
+              <struct-field name="aUsersOfAllPnc"/>
+              <array-field index="0" />
+            </ref>
+          </field> <!-- pUsersOfAllPnc -->
+          <field>
+  [!VAR "NumAllUsers"="0"!]
+  [!SELECT "ComMConfigSet/*[1]"!]
+  [!LOOP "node:order(ComMPnc/*, 'ComMPncId')"!]
+            <field>
+              <int>[!"num:i($NumAllUsers)"!]</int> <!-- idx of PNC [!"name(.)"!] -->
+            </field>
+    [!VAR "NumAllUsers"="$NumAllUsers + count(ComMUserPerPnc/*)"!]
+  [!ENDLOOP!]
+  [!ENDSELECT!]
+            <field>
+              <int>[!"num:i($NumAllUsers)"!]</int> <!-- idx of entry after last PNC -->
+            </field>
+          </field> <!-- NumUsersOfAllPnc -->
+[!ENDIF!] [!// PncSupport
+        </field> <!-- ComM_ConfigType -->
+        <field>
+[!IF "$COMM_NUM_USERS != num:i(0)"!]
+[!SELECT "ComMConfigSet/*[1]"!]
+[!LOOP "node:order(ComMChannel/*, 'ComMChannelId')"!]
+  [!IF "ComMNetworkManagement/ComMNmVariant != 'PASSIVE'"!]
+    [!LOOP "node:order( node:refs(ComMUserPerChannel/*/ComMUserChannel), 'ComMUserIdentifier' )"!]
+          <field>
+            <int>[!"ComMUserIdentifier"!]</int> <!-- user [!"name(.)"!] -->
+          </field>
+    [!ENDLOOP!]
+    [!IF "$PncSupport"!]
+      [!LOOP "node:difference( node:refs( as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[node:ref(.)/ComMChannelId=node:current()/ComMChannelId]/../../ComMUserPerPnc/* ), node:refs( as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMChannelId=node:current()/ComMChannelId]/ComMUserPerChannel/*/ComMUserChannel))"!]
+          <field>
+            <int>[!"ComMUserIdentifier"!]</int> <!-- ID of user [!"name(.)"!] via PNC  -->
+          </field>
+      [!ENDLOOP!]
+    [!ENDIF!]
+  [!ENDIF!]
+[!ENDLOOP!]
+[!ENDSELECT!]
+[!ELSE!] <!--ZERO_USERS = 'true' -->
+          <field>
+            <int>255</int>
+          </field>
+[!ENDIF!]
+        </field> <!-- aUsersOfAllChannel -->
+        <field>
+[!IF "$COMM_NUM_USERS != num:i(0)"!]
+[!SELECT "ComMConfigSet/*[1]"!]
+[!LOOP "node:order(ComMUser/*, 'ComMUserIdentifier')"!]
+          <!-- user [!"name(.)"!] (ID=[!"ComMUserIdentifier"!]) -->
+  [!LOOP "node:order( ../../ComMChannel/*[node:refs(ComMUserPerChannel/*/ComMUserChannel)[ComMUserIdentifier = node:current()/ComMUserIdentifier]], 'ComMChannelId' )"!]
+          <field>
+            <int>[!"ComMChannelId"!]</int> <!-- channel [!"name(.)"!] -->
+          </field>
+  [!ENDLOOP!]
+  [!IF "$PncSupport"!]
+    [!LOOP "node:difference( node:refs( as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMUserPerPnc/*[as:ref(.)/ComMUserIdentifier=node:current()/ComMUserIdentifier]/../../ComMChannelPerPnc/* )/ComMChannelId, as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*/ComMUserPerChannel/*[as:ref(ComMUserChannel)/ComMUserIdentifier=node:current()/ComMUserIdentifier]/../../ComMChannelId)"!]
+          <field>
+            <int>[!"."!]</int> <!-- ID of channel [!"name(..)"!] via PNC -->
+          </field>
+    [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDLOOP!]
+[!ENDSELECT!]
+[!ELSE!] <!--ZERO_USERS = 'true' -->
+          <field>
+            <int>255</int>
+          </field>
+[!ENDIF!]
+        </field> <!-- aChannelsOfAllUser -->
+[!IF "$PncSupport"!]
+        <field>
+  [!SELECT "ComMConfigSet/*[1]"!]
+  [!LOOP "node:order(ComMPnc/*, 'ComMPncId')"!]
+          <!-- PNC [!"name(.)"!] (ID=[!"ComMPncId"!]) -->
+    [!LOOP "node:order(node:refs(ComMChannelPerPnc/*),'ComMChannelId')"!]
+          <field>
+            <int>[!"ComMChannelId"!]</int> <!-- ID of channel [!"name(.)"!] -->
+          </field>
+    [!ENDLOOP!]
+  [!ENDLOOP!]
+  [!ENDSELECT!]
+        </field> <!-- aChannelsOfAllPnc  -->
+        <field>
+  [!SELECT "ComMConfigSet/*[1]"!]
+  [!LOOP "node:order(ComMChannel/*, 'ComMChannelId')"!]
+          <!-- Channel [!"name(.)"!] (ID=[!"ComMChannelId"!]) -->
+    [!LOOP "node:order(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*[node:contains(node:refs(ComMChannelPerPnc/*), node:current())], 'ComMPncId')"!]
+          <field>
+            <int>[!"ComMPncId"!]</int> <!-- ID of PNC [!"name(.)"!] -->
+          </field>
+    [!ENDLOOP!]
+  [!ENDLOOP!]
+  [!ENDSELECT!]
+        </field> <!-- aPNCsOfAllChannel -->
+        <field>
+[!IF "$NumPncsPerUser != num:i(0)"!]
+  [!SELECT "ComMConfigSet/*[1]"!]
+  [!LOOP "node:order(ComMUser/*, 'ComMUserIdentifier')"!]
+          <!-- User [!"name(.)"!] (ID=[!"ComMUserIdentifier"!]) -->
+    [!VAR "current_ComMUserIdentifier"="ComMUserIdentifier"!]
+    [!VAR "PncIdx"="0"!]
+    [!LOOP "node:order(../../ComMPnc/*, 'ComMPncId')"!]
+      [!IF "count( node:refs(ComMUserPerPnc/*)[ComMUserIdentifier = $current_ComMUserIdentifier] ) > 0"!]
+          <field>
+            <int>[!"num:i($PncIdx)"!]</int> <!-- Index of PNC [!"name(.)"!] (ID=[!"ComMPncId"!]) -->
+          </field>
+      [!ENDIF!]
+      [!VAR "PncIdx"="$PncIdx + 1"!]
+    [!ENDLOOP!]
+  [!ENDLOOP!]
+  [!ENDSELECT!]
+[!ELSE!]
+          <field>
+            <int>255</int> <!-- Workaround: Dummy value to satisfy dummy member demand! -->
+          </field>
+[!ENDIF!]
+        </field> <!-- aPncOfAllUser -->
+        <field>
+[!IF "$NumUsersPerPnc != num:i(0)"!]
+  [!VAR "PncIdx"="0"!]
+  [!SELECT "ComMConfigSet/*[1]"!]
+  [!LOOP "node:order(ComMPnc/*, 'ComMPncId')"!]
+          <!-- PNC [!"name(.)"!] (ID=[!"ComMPncId"!], IDX=[!"num:i($PncIdx)"!]) -->
+    [!LOOP "node:order(node:refs(ComMUserPerPnc/*))"!]
+          <field>
+            <int>[!"ComMUserIdentifier"!]</int> <!-- ID of user [!"name(.)"!] -->
+          </field>
+    [!ENDLOOP!]
+  [!VAR "PncIdx"="$PncIdx + 1"!]
+  [!ENDLOOP!]
+  [!ENDSELECT!]
+[!ELSE!]
+          <field>
+            <int>255</int> <!-- Workaround: Dummy value to satisfy dummy member demand! -->
+          </field>
+[!ENDIF!]
+        </field> <!-- aUsersOfAllPnc -->
+[!ENDIF!]
+      </instance> <!-- ComM_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <!-- The xpointer atribute shouldrather be something like "xpointer(//module[name='...'])",
+       but unfortunately our XML parser does not support the XPointer xpointer() Scheme.
+       This is also the reason why all these xincludes must be at the end of the file rather
+       than at the beginning, because that way the other xgen files that include this one can
+       be sure that "element(/1/1)" is the ComM module element.
+  -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>

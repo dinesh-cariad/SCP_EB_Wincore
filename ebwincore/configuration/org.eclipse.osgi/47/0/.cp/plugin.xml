@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    APPLICATIONS
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+  <!--+++++ GUI APPLICATION +++++-->
+  <extension
+          id="ApplicationTresosGUI"
+          name="Tresos GUI Application"
+          point="org.eclipse.core.runtime.applications">
+    <application>
+      <run class="dreisoft.tresos.application.launcher2.application.ApplicationTresosGUI">
+      </run>
+    </application>
+  </extension>
+
+  <!--
+  <extension point="org.eclipse.ui.startup">
+    <startup class="dreisoft.tresos.launcher2.gui.framework.internal.WorkbenchManagerInitializer"/>
+  </extension>
+  -->
+
+
+  <!--+++++ COMMANDLINE APPLICATION +++++-->
+  <extension
+          id="ApplicationTresosCmd"
+          name="Tresos Headless Application"
+          point="org.eclipse.core.runtime.applications">
+    <application>
+      <run class="dreisoft.tresos.application.launcher2.application.ApplicationTresosCmd">
+      </run>
+    </application>
+  </extension>
+
+  <!--
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    COMMANDLINE HANDLER
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+  <extension
+          point="dreisoft.tresos.application.core.plugin.argumenthandler">
+
+    <argument-handler
+            class="dreisoft.tresos.application.launcher2.handlers.ECUCCommandLineArgHandler"
+            mode="cmd">
+
+      <argument name="generate"/>
+      <argument name="verify"/>
+      <argument name="make"/>
+      <argument name="listmodes"/>
+    </argument-handler>
+    <argument-handler
+          class="dreisoft.tresos.application.launcher2.handlers.CryptoCommandLineArgHandler"
+          mode="cmd">
+
+      <argument name="crypto"/>
+    </argument-handler>
+    <argument-handler mode="cmd">
+        <class class="dreisoft.tresos.launcher2.commandline.LegacyCommandLineArgHandler">
+        </class>
+      <argument name="legacy"/>
+    </argument-handler>
+    <argument-handler
+            class="dreisoft.tresos.application.launcher2.handlers.GUICommandlineHandler"
+            mode="gui">
+
+      <argument name="show"/>
+    </argument-handler>
+    <argument-handler
+            class="dreisoft.tresos.application.launcher2.handlers.ImporterCommandLineArgHandler"
+            mode="cmd">
+
+      <argument name="import"/>
+      <argument name="export"/>
+      <argument name="listimporter"/>
+    </argument-handler>
+    <argument-handler
+            class="dreisoft.tresos.application.launcher2.handlers.ImportProjectCommandLineArgHandler"
+            mode="cmd">
+
+      <argument name="importProject"/>
+      <argument name="deleteProject"/>
+      <argument name="renameProject"/>
+    </argument-handler>
+    <argument-handler
+            class="dreisoft.tresos.application.launcher2.handlers.UpgradeModuleConfigsCommandLineArgHandler"
+            mode="cmd">
+      <argument name="upgradeModuleConfigs"/>
+    </argument-handler>
+  </extension>
+
+  <!--
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    INTRO
+    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+  <extension
+          point="org.eclipse.ui.intro">
+    <intro
+            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
+            icon="icons/eb.gif"
+            id="dreisoft.tresos.application.launcher2.introID">
+    </intro>
+    <introProductBinding
+            introId="dreisoft.tresos.application.launcher2.introID"
+            productId="dreisoft.tresos.application.launcher2.plugin.tresosECU">
+    </introProductBinding>
+  </extension>
+
+  <extension
+          id="intro"
+          point="org.eclipse.ui.intro.config">
+    <config
+            introId="dreisoft.tresos.application.launcher2.introID"
+            id="dreisoft.tresos.application.launcher2.introConfigID"
+            content="intro/introContent.xml"
+            configurer="dreisoft.tresos.application.launcher2.platform.TresosIntroConfigurer">
+      <presentation home-page-id="root" standby-page-id="standby">
+        <implementation
+                ws="win32"
+                style="css/shared.css"
+                kind="html"
+                os="win32">
+        </implementation>
+        <implementation
+                kind="swt">
+        </implementation>
+      </presentation>
+    </config>
+  </extension>
+
+  <extension
+        id="plugin.application.core.tresosSplashHandler"
+        name="tresos Studio Splash Handler"
+        point="org.eclipse.ui.splashHandlers">
+     <splashHandler
+           class="dreisoft.tresos.application.launcher2.application.TresosSplashHandler"
+           id="plugin.application.core.tresosSplashHandler">
+     </splashHandler>
+     <splashHandlerProductBinding
+           productId="dreisoft.tresos.application.launcher2.plugin.tresosECU"
+           splashId="plugin.application.core.tresosSplashHandler">
+     </splashHandlerProductBinding>
+  </extension>
+
+  <extension
+        point="dreisoft.tresos.application.core.plugin.customization">
+     <customization
+           applications="dreisoft.tresos.application.launcher2.plugin.ApplicationTresosGUI"
+           id="plugin.application.launcher2.customization1"
+           toolVersion="%toolVersion">
+				<feature name="Studio" version="%featureVersion" qualifier="%featureQualification"/>
+        <!-- <feature name="Autosar" version="2.0, 2.1, 3.0, 3.1"/>-->
+     </customization>
+  </extension>
+
+  <extension
+        point="org.eclipse.ui.perspectiveExtensions">
+     <perspectiveExtension
+           targetID="dreisoft.tresos.perspective.studio">
+
+        <actionSet
+              id="dreisoft.tresos.launcher2.api.actionSet.Search">
+        </actionSet>
+        <actionSet
+              id="dreisoft.tresos.launcher2.api.actionSet.Build">
+        </actionSet>
+        <actionSet
+              id="dreisoft.tresos.launcher2.api.actionSet.Commandline">
+        </actionSet>
+        <actionSet
+              id="dreisoft.tresos.launcher2.api.actionSet.Licenses">
+        </actionSet>
+        <actionSet
+              id="dreisoft.tresos.guidedconfig.api.actionSet.Wizards">
+        </actionSet>
+
+        <newWizardShortcut
+              id="newConfigurationProject">
+        </newWizardShortcut>
+        <newWizardShortcut
+              id="newImportConfigurationProject">
+        </newWizardShortcut>
+
+        <view
+              id="org.eclipse.ui.navigator.ProjectExplorer"
+              minimized="false"
+              ratio="0.2"
+              relationship="left"
+              relative="org.eclipse.ui.editorss">
+        </view>
+        <view
+              id="org.eclipse.ui.views.ContentOutline"
+              minimized="false"
+              ratio="0.8"
+              relationship="bottom"
+              relative="org.eclipse.ui.navigator.ProjectExplorer">
+        </view>
+        <view
+              id="dreisoft.tresos.launcher2.api.views.ErrorLog"
+              minimized="false"
+              ratio="0.7"
+              relationship="bottom"
+              relative="org.eclipse.ui.editorss">
+        </view>
+        <view
+              id="dreisoft.tresos.launcher2.api.views.Problems"
+              minimized="false"
+              relationship="stack"
+              relative="dreisoft.tresos.launcher2.api.views.ErrorLog">
+        </view>
+        <view
+              id="org.eclipse.search.ui.views.SearchView"
+              minimized="false"
+              relationship="stack"
+              relative="dreisoft.tresos.launcher2.api.views.ErrorLog"
+              visible="false">
+        </view>
+        <view
+              id="org.eclipse.ui.views.PropertySheet"
+              minimized="false"
+              ratio="0.55"
+              relationship="right"
+              relative="dreisoft.tresos.launcher2.api.views.ErrorLog">
+        </view>
+        <view
+              id="dreisoft.tresos.launcher2.gui.views.description.DescriptionPage"
+              relationship="stack"
+              relative="org.eclipse.ui.views.PropertySheet"
+              visible="false">
+        </view>
+        <view
+              id="dreisoft.tresos.launcher2.gui.views.info.MetaOutlinePage"
+              relationship="stack"
+              relative="org.eclipse.ui.views.PropertySheet"
+              visible="false">
+        </view>
+        <view
+              id="dreisoft.tresos.launcher2.gui.views.errors.ErrorPage"
+              relationship="stack"
+              relative="org.eclipse.ui.views.PropertySheet"
+              visible="false">
+        </view>
+        <view
+              id="dreisoft.tresos.guidedconfig.api.views.Results"
+              relationship="stack"
+              relative="dreisoft.tresos.launcher2.api.views.ErrorLog"
+              visible="false">
+        </view>
+        <view
+              id="dreisoft.tresos.workflow.api.views.Workflow"
+              minimized="false"
+              ratio="0.7"
+              relationship="right"
+              relative="org.eclipse.ui.editorss"
+              visible="true">
+        </view>
+        <view
+              id="dreisoft.tresos.guidedconfig.api.views.Sidebar"
+              relationship="stack"
+              relative="dreisoft.tresos.workflow.api.views.Workflow">
+        </view>
+
+        <viewShortcut
+              id="dreisoft.tresos.launcher2.api.views.ErrorLog">
+        </viewShortcut>
+        <viewShortcut
+              id="dreisoft.tresos.launcher2.api.views.Problems">
+        </viewShortcut>
+        <viewShortcut
+              id="dreisoft.tresos.guidedconfig.api.views.Results">
+        </viewShortcut>
+        <viewShortcut
+              id="dreisoft.tresos.workflow.api.views.Workflow">
+        </viewShortcut>
+        <viewShortcut
+              id="dreisoft.tresos.guidedconfig.api.views.Sidebar">
+        </viewShortcut>
+    </perspectiveExtension>
+  </extension>
+
+  <extension
+        point="org.eclipse.ui.activities">
+     <activity
+           id="plugin.lib2.disabledElements"
+           name="tresos Studio disabled ids">
+     </activity>
+     <!-- remove debug perspective and view from org.eclipse.debug.ui -->
+     <activityPatternBinding
+           activityId="plugin.lib2.disabledElements"
+           pattern="org.eclipse.debug.ui/org.eclipse.debug.ui.DebugPerspective">
+     </activityPatternBinding>
+     <activityPatternBinding
+           activityId="plugin.lib2.disabledElements"
+           pattern="org.eclipse.debug.ui/org.eclipse.debug.ui.DebugView">
+     </activityPatternBinding>
+     <activityPatternBinding
+           activityId="plugin.lib2.disabledElements"
+           pattern="org.eclipse.debug.ui/org.eclipse.debug.ui.BreakpointView">
+     </activityPatternBinding>
+     <activityPatternBinding
+           activityId="plugin.lib2.disabledElements"
+           pattern="org.eclipse.debug.ui/org.eclipse.debug.ui.VariableView">
+     </activityPatternBinding>
+     <activityPatternBinding
+           activityId="plugin.lib2.disabledElements"
+           pattern="org.eclipse.debug.ui/org.eclipse.debug.ui.ExpressionView">
+     </activityPatternBinding>
+     <activityPatternBinding
+           activityId="plugin.lib2.disabledElements"
+           pattern="org.eclipse.debug.ui/org.eclipse.debug.ui.RegisterView">
+     </activityPatternBinding>
+     <activityPatternBinding
+           activityId="plugin.lib2.disabledElements"
+           pattern="org.eclipse.debug.ui/org.eclipse.debug.ui.ModuleView">
+     </activityPatternBinding>
+     <activityPatternBinding
+           activityId="plugin.lib2.disabledElements"
+           pattern="org.eclipse.debug.ui/org.eclipse.debug.ui.MemoryView">
+     </activityPatternBinding>
+  </extension>
+  <!-- remove unwanted actions from toolbar and menu, remove unwantet exporters and importers-->
+  <extension point="org.eclipse.ui.activities">
+    <activity id="dreisoft.tresos.unwantedActionSet" name="Unwanted ExternalTools,gotoLastEditPosition,delimiters  Actions and importers,exporter wizards"/>
+    <activityPatternBinding activityId="dreisoft.tresos.unwantedActionSet" pattern=".*/org.eclipse.debug.ui.LaunchingPreferencePage"/>
+    <activityPatternBinding activityId="dreisoft.tresos.unwantedActionSet" pattern=".*/org.eclipse.debug.ui.ViewManagementPreferencePage"/>
+    <activityPatternBinding activityId="dreisoft.tresos.unwantedActionSet" pattern=".*/org.eclipse.debug.ui.ConsolePreferencePage"/>
+    <activityPatternBinding activityId="dreisoft.tresos.unwantedActionSet" pattern=".*/org.eclipse.debug.ui.PerspectivePreferencePage"/>
+  </extension>
+
+</plugin>

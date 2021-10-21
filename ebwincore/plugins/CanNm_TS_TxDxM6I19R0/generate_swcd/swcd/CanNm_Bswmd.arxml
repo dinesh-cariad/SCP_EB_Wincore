@@ -1,0 +1,939 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+[!IF "not(node:exists(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]))"!][!//
+[!ERROR "No CanNm configuration exist"!][!//
+[!ENDIF!][!//
+[!VAR "VAR_CANNM_NUMBER_OF_CHANNELS"="num:i(count(CanNmGlobalConfig/*[1]/CanNmChannelConfig/*))"!][!//
+[!AUTOSPACING!][!//
+<!-- !LINKSTO CanNm.EB.BSWMDGeneration_3,1 -->
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-2-1_STRICT_COMPACT.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_CanNm</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleDescriptions</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-DESCRIPTION>
+              <SHORT-NAME>CanNm</SHORT-NAME>
+              <MODULE-ID>31</MODULE-ID>
+              <PROVIDED-ENTRYS>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+
+[!IF "CanNmGeneral/CanNmMultiCoreSupport = 'true'"!]
+
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_Dummy_RxIndication</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_NetworkRequest</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_NetworkGwEraRequest</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_NetworkRelease</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmBusSynchronizationEnabled='true'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_RequestBusSynchronization</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_PassiveStartUp</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!][!//
+              </PROVIDED-ENTRYS>
+[!IF "CanNmGeneral/CanNmMultiCoreSupport = 'true'"!]
+
+              <PROVIDED-CLIENT-SERVER-ENTRYS>
+[!LOOP "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_CanNm_PassiveStartUp_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_PassiveStartUp</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_CanNm_NetworkRequest_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_NetworkRequest</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_CanNm_NetworkGwEraRequest_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_NetworkGwEraRequest</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_CanNm_NetworkRelease_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_NetworkRelease</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>true</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmBusSynchronizationEnabled='true'"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_CanNm_RequestBusSynchronization_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_RequestBusSynchronization</ENCAPSULATED-ENTRY-REF>
+                  <IS-REENTRANT>false</IS-REENTRANT>
+                  <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!ENDLOOP!]
+
+              </PROVIDED-CLIENT-SERVER-ENTRYS>
+[!ENDIF!][!//
+
+[!IF "CanNmGeneral/CanNmMultiCoreSupport = 'true'"!]
+
+              <REQUIRED-CLIENT-SERVER-ENTRYS>
+[!LOOP "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_NetworkStartIndication_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_NetworkMode_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_BusSleepMode_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_PrepareBusSleepMode_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmRemoteSleepIndEnabled='true'"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_RemoteSleepIndication_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmRemoteSleepIndEnabled='true'"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_RemoteSleepCancellation_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPduRxIndicationEnabled='true'"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_PduRxIndication_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmStateChangeIndEnabled='true'"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_StateChangeNotification_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+
+[!IF "CanNmRepeatMsgIndEnabled='true'"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_RepeatMessageIndication_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_Dummy_RxIndication</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+
+[!IF "(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false') and
+      (as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmImmediateTxconfEnabled='false')"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_TxTimeoutException_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+
+[!IF "CanNmCarWakeUpRxEnabled='true'"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Nm_CarWakeUpIndication_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_Dummy_RxIndication</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+[!ENDLOOP!]
+              </REQUIRED-CLIENT-SERVER-ENTRYS>
+
+[!ENDIF!][!//
+
+              <INTERNAL-BEHAVIORS>
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_0</SHORT-NAME>
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA>
+                      <!-- !LINKSTO CanNm.EB.BSWMDGeneration_1,1 -->
+                      <SHORT-NAME>SCHM_CANNM_EXCLUSIVE_AREA_0</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+                  <STATIC-MEMORYS>
+[!FOR "ChannelIndex"="0" TO "num:i($VAR_CANNM_NUMBER_OF_CHANNELS)-1"!][!//
+                    <VARIABLE-DATA-PROTOTYPE>
+                      <SHORT-NAME>CanNm_HsmInstCanNm_StateId_[!"$ChannelIndex"!]</SHORT-NAME>
+                        <ADMIN-DATA>
+                          <SDGS>
+                            <SDG GID="EB:DnT">
+                              <SD GID="StateGroup">CanNm_HsmInstCanNm_StateId</SD>
+                              <SD GID="StateId">[!"$ChannelIndex"!]</SD>
+                              <SD GID="EnableTracing">true</SD>
+                            </SDG>
+                          </SDGS>
+                        </ADMIN-DATA>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                            <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_CanNm/ImplementationDataTypes/CanNm_HsmStateIdxType</TYPE-TREF>
+                    </VARIABLE-DATA-PROTOTYPE>
+[!ENDFOR!][!//
+                  </STATIC-MEMORYS>
+[!IF "CanNmGeneral/CanNmMultiCoreSupport = 'true'"!]
+                  <INTERNAL-TRIGGERING-POINTS>
+[!LOOP "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*"!]
+[!IF "(CanNmRepeatMsgIndEnabled='true') or (CanNmCarWakeUpRxEnabled='true')"!]
+                    <BSW-INTERNAL-TRIGGERING-POINT>
+                      <SHORT-NAME>TriggeringPoint_RxIndication_[!"node:name(.)"!]</SHORT-NAME>
+                    </BSW-INTERNAL-TRIGGERING-POINT>
+[!ENDIF!]
+[!ENDLOOP!]
+                  </INTERNAL-TRIGGERING-POINTS>
+[!ENDIF!][!//
+                  <ENTITYS>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>CanNm_MainFunction</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/InternalBehavior_0/SCHM_CANNM_EXCLUSIVE_AREA_0</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <CALL-POINTS>
+[!IF "CanNmGeneral/CanNmMultiCoreSupport = 'true'"!]
+[!LOOP "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_NetworkStartIndication_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_NetworkStartIndication_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_NetworkMode_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_NetworkMode_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_BusSleepMode_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_BusSleepMode_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_PrepareBusSleepMode_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_PrepareBusSleepMode_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmRemoteSleepIndEnabled='true'"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_RemoteSleepIndication_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_RemoteSleepIndication_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmRemoteSleepIndEnabled='true'"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_RemoteSleepCancellation_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_RemoteSleepCancellation_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPduRxIndicationEnabled='true'"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_PduRxIndication_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_PduRxIndication_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!IF "(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false') and
+      (as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmImmediateTxconfEnabled='false')"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_TxTimeoutException_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_TxTimeoutException_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmStateChangeIndEnabled='true'"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_StateChangeNotification_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_StateChangeNotification_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!][!//
+                      </CALL-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_MainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+
+[!IF "CanNmGeneral/CanNmMultiCoreSupport = 'true'"!]
+[!LOOP "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*"!]
+[!IF "(CanNmRepeatMsgIndEnabled='true') or (CanNmCarWakeUpRxEnabled='true')"!]
+                    <!-- dummy context for Rx Indication used-->
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Entity_Nm_RxInidcation_[!"node:name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <CALL-POINTS>
+[!IF "CanNmRepeatMsgIndEnabled='true'"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_RepeatMessageIndication_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_RepeatMessageIndication_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!IF "CanNmCarWakeUpRxEnabled='true'"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Nm_CarWakeUpIndication_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/RequiredCSEntry_Nm_CarWakeUpIndication_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+                      </CALL-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_Dummy_RxIndication</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!][!//
+[!IF "CanNmGeneral/CanNmMultiCoreSupport = 'true'"!]
+[!LOOP "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CanNm_PassiveStartUp_CalledEntity_[!"node:name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_PassiveStartUp</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CanNm_NetworkRequest_CalledEntity_[!"node:name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_NetworkRequest</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CanNm_NetworkGwEraRequest_CalledEntity_[!"node:name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_NetworkGwEraRequest</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CanNm_NetworkRelease_CalledEntity_[!"node:name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_NetworkRelease</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmBusSynchronizationEnabled='true'"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CanNm_RequestBusSynchronization_CalledEntity_[!"node:name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_CanNm/BswModuleEntrys/CanNm_RequestBusSynchronization</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!][!//
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_MainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/InternalBehavior_0/CanNm_MainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"CanNmGlobalConfig/*[1]/CanNmMainFunctionPeriod"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+
+[!IF "CanNmGeneral/CanNmMultiCoreSupport = 'true'"!]
+[!LOOP "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*"!]
+[!IF "(CanNmRepeatMsgIndEnabled='true') or (CanNmCarWakeUpRxEnabled='true')"!]
+                    <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+                      <SHORT-NAME>IntTrigggering_RxIndication_Event_[!"node:name(.)"!]</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/InternalBehavior_0/Entity_Nm_RxInidcation_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+                      <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/InternalBehavior_0/TriggeringPoint_RxIndication_[!"node:name(.)"!]</EVENT-SOURCE-REF>
+                    </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+[!ENDIF!]
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>OpInokedEv_CanNm_PassiveStartUp_[!"node:name(.)"!]</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/InternalBehavior_0/CanNm_PassiveStartUp_CalledEntity_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/ProvidedCSEntry_CanNm_PassiveStartUp_[!"node:name(.)"!]</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>OpInokedEv_CanNm_NetworkRequest_[!"node:name(.)"!]</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/InternalBehavior_0/CanNm_NetworkRequest_CalledEntity_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/ProvidedCSEntry_CanNm_NetworkRequest_[!"node:name(.)"!]</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>OpInokedEv_CanNm_NetworkGwEraRequest_[!"node:name(.)"!]</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/InternalBehavior_0/CanNm_NetworkGwEraRequest_CalledEntity_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/ProvidedCSEntry_CanNm_NetworkGwEraRequest_[!"node:name(.)"!]</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>OpInokedEv_CanNm_NetworkRelease_[!"node:name(.)"!]</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/InternalBehavior_0/CanNm_NetworkRelease_CalledEntity_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/ProvidedCSEntry_CanNm_NetworkRelease_[!"node:name(.)"!]</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmBusSynchronizationEnabled='true'"!]
+                    <BSW-OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>OpInokedEv_CanNm_RequestBusSynchronization_[!"node:name(.)"!]</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/InternalBehavior_0/CanNm_RequestBusSynchronization_CalledEntity_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+                      <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/ProvidedCSEntry_CanNm_RequestBusSynchronization_[!"node:name(.)"!]</ENTRY-REF>
+                    </BSW-OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+
+[!ENDLOOP!]
+[!ENDIF!][!//
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </BSW-MODULE-DESCRIPTION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleEntrys</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-ENTRY>
+              <!-- !LINKSTO CanNm.EB.BSWMDGeneration_2,1 -->
+              <SHORT-NAME>CanNm_MainFunction</SHORT-NAME>
+              <SERVICE-ID>0x13</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+
+[!IF "CanNmGeneral/CanNmMultiCoreSupport = 'true'"!]
+
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>CanNm_Dummy_RxIndication</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>CanNm_PassiveStartUp</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>1</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>RetVal</SHORT-NAME>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>nmNetworkHandle</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>CanNm_NetworkRequest</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>2</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>RetVal</SHORT-NAME>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>nmNetworkHandle</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>CanNm_NetworkGwEraRequest</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>254</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>RetVal</SHORT-NAME>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>nmNetworkHandle</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled='false'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>CanNm_NetworkRelease</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>3</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>RetVal</SHORT-NAME>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>nmNetworkHandle</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmBusSynchronizationEnabled='true'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>CanNm_RequestBusSynchronization</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>192</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>RetVal</SHORT-NAME>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>nmNetworkHandle</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+
+[!ENDIF!][!//
+
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+          <ELEMENTS>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>CanNm_HsmStatechartPtrType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="TypeGroup">CanNm_Types</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <IMPLEMENTATION-DATA-TYPE-REF
+                      DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/VoidPtr</IMPLEMENTATION-DATA-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              <TYPE-EMITTER>BSW</TYPE-EMITTER>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>CanNm_HsmEventType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="TypeGroup">CanNm_Types</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <IMPLEMENTATION-DATA-TYPE-REF
+                      DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              <TYPE-EMITTER>BSW</TYPE-EMITTER>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>CanNm_TimeType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="TypeGroup">CanNm_Types</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <IMPLEMENTATION-DATA-TYPE-REF
+                      DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              <TYPE-EMITTER>BSW</TYPE-EMITTER>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>CanNm_HsmStateIdxType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="TypeGroup">CanNm_Types</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <IMPLEMENTATION-DATA-TYPE-REF
+                      DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              <TYPE-EMITTER>BSW</TYPE-EMITTER>
+            </IMPLEMENTATION-DATA-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_CanNm</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Implementations</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_0</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_Api.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_Hsm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_HsmCanNm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_HsmCanNmInt.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_HsmCfg.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_Lcfg_Static.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_Trace.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_Trace_Internal.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::CanNm_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::CanNm.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::CanNm_Hsm.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::CanNm_HsmCanNmData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::CanNm_HsmCanNmFnct.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::CanNm_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::CanNm_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_BOOLEAN</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>6.19.7</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_CanNm/BswModuleDescriptions/CanNm/InternalBehavior_0</BEHAVIOR-REF>
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM6I19R0/CanNm</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

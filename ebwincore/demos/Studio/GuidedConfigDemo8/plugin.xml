@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+   Plug-in with demos for the EB tresos Studio Public API.
+ -->
+
+  <!--
+    Standard module definition extension point
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+         id="GCDemo8_TS_T00D0M0I0R0"
+         name="Guided Config Demo8 Module Extension">
+
+    <module id="GCDemo8_TS_T00D0M0I0R0"
+            label="GCDemo8_TS_T00D0M0I0R0"
+            mandatory="false"
+            allowMultiple="false"
+            description="Description here"
+            copyright="(c) Elektrobit Automotive"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            relVersionMajor="2"
+            relVersionMinor="1"
+            relVersionPatch="0"
+            categoryType="GCDemo8"
+            categoryLayer="Examples"
+            categoryCategory="Demo"
+            categoryComponent="ECUC">
+       <ecuType target="Demo" derivate="GuidedConfig"/>
+    </module>
+   </extension>
+
+   <!--
+    extension point defining the schema and data structure of the module
+   -->
+   <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+              id="GCDemo8_TS_T00D0M0I0R0ConfExt"
+              name="GCDemo8_TS_T00D0M0I0R0 Config Extension">
+       <configuration moduleId="GCDemo8_TS_T00D0M0I0R0">
+
+         <!-- schema definition -->
+           <schema>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+               <resource value="config/GCDemo8_TS_T00D0M0I0R0.xdm"
+                         type="xdm"/>
+           </schema>
+
+           <!-- data definition -->
+           <data>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+               <schemaNode path="ASPath:/TS_T00D0M0I0R0/GCDemo8"/>
+           </data>
+
+           <!-- generic editor definition -->
+           <editor id="GCDemo8_TS_T00D0M0I0R0Editor"
+                   label="GCDemo8_TS_T00D0M0I0R0"
+                   tooltip="Editor for the GCDemo8_TS_T00D0M0I0R0Editor module">
+               <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+                 <parameter name="schema" value="ASPath:/TS_T00D0M0I0R0/GCDemo8"/>
+                 <parameter name="title" value="GCDemo8_TS_T00D0M0I0R0Editor editor"/>
+               </class>
+           </editor>
+       </configuration>
+   </extension>
+
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+     <guidedconfigwizard id="guidedDemo8">
+        <backend class="dreisoft.tresos.guidedconfig.demo8.backend.Demo8Backend"/>
+        <!-- use an XML description of the pages (XForms) -->
+        <gui class="dreisoft.tresos.guidedconfig.api.gui.xform.XFormPage">
+          <parameter name="pageDescription" value="pages/Pages.xml"/>
+        </gui>
+        <resultGui
+              class="dreisoft.tresos.guidedconfig.api.gui.page.ChangedDCtxtsResultWidget"
+              plugin="dreisoft.tresos.guidedconfig.api.plugin">
+        </resultGui>
+     </guidedconfigwizard>
+  </extension>
+  
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.trigger">
+     <trigger>
+       <sidebar
+              categoryId="Demos"
+              id="guidedDemo8"
+              wizardId="guidedDemo8"
+              wizardType="editor">
+              <!-- restrict visibility:
+                  wizard is only visible if a loaded project with target="Demo" is selected AND
+                  an enabled module of type="GCDemo8" is added to the project.
+               -->
+           <visibility>
+              <and>
+                 <with variable="ECUConfigContext.target">
+                    <equals value="Demo"/>
+                 </with>
+                 <with variable="ECUConfigContext.moduleType.GCDemo8">
+                    <equals value="true"/>
+                 </with>
+              </and>
+           </visibility>
+           <display
+                 label="Demo8 Standalone Editor"
+                 tooltip="Demo8 Standalone Editor">
+           </display>
+        </sidebar>
+     </trigger>
+  </extension>
+
+
+
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+     <pushoperation
+           desc="example Pull Operation"
+           id="Demo8PullOperation"
+           name="Example Pull Operation">
+        <operationclass
+              class="dreisoft.tresos.guidedconfig.demo8.pushservice.Demo8PullOperation">
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.demo8.pushservice.DataTransferEvent"/>
+                </with>
+                <with variable="direction">
+                    <equals value="pull"/>
+                </with>
+            </and>
+        </event>
+     </pushoperation>
+  </extension>
+
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+     <pushoperation
+           desc="example Push Operation"
+           id="Demo8PushOperation"
+           name="Example Push Operation">
+        <operationclass
+              class="dreisoft.tresos.guidedconfig.demo8.pushservice.Demo8PushOperation">
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.demo8.pushservice.DataTransferEvent"/>
+                </with>
+                <with variable="direction">
+                    <equals value="push"/>
+                </with>
+            </and>
+        </event>
+     </pushoperation>
+  </extension>
+
+
+
+</plugin>

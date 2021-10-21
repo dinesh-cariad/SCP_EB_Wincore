@@ -1,0 +1,661 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tresos Studio Workflow >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+<workflow xmlns="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd workflow_1_0.xsd"
+  id="ACGWorkflowRteMemProt" version="2.2"
+  label="AutoCore Workflow Rte Memory Protection"
+  description="This workflow is a step-by-step instruction to guide you through the introduction of memory protection to an existing demo project
+				using Standard Os.">
+
+
+  <group id="RTEMEMPROTMEMPROT" label="Setup a memory protection project in Standard Os">
+    <description>
+      <![CDATA[
+        <h2><u>Goal</u></h2>
+        <p>To demonstrate an application with memory protection functionality based on the <i>simple_demo_can_rte</i> project in a Standard Os setting.</p>
+         <p>This workflow shows you how the <i>simple_demo_can_rte</i> project may be extended by memory protection functionality in a Standard Os setting.
+		 In this workflow you will let the application write to a protected memory area without having the required permissions. This will result in a memory 
+		 protection fault. </p>
+		 <p>The prohibited writing is triggered by sending a predefined CAN message. This message is processed by a SWC that tries to 
+		 write to the memory associated with the LED. As the SWC resides on another memory partition as the LED's memory area this write instruction
+		 is not allowed. The demo will show that the system is able to identify and to deny the prohibited access.</p>
+		 
+		<h2><u>Preconditions</u></h2>
+		<ul>
+			<li>basic knowledge about the <i>simple_demo_can_rte</i> project,</li>
+			<li>completed setup and configuration of the underlying <i>simple_demo_can_rte</i> project.</li>
+		</ul>
+
+        <h2><u>Procedure</u></h2>
+        <p><ol>
+			<li>extend the system description by <i>BswM</i> mode request ports,</li>
+			<li>activate memory protection using <i>SharedMemory (Smc)</i> partitioning,</li>
+            <li>create two memory partitions (Os Applications) holding the following modules:
+			  <ul>
+				<li>OsApp_QmTrusted: BSW, SWC <i>SWC_ModifyEcho</i> and <i>SWC_IoHwAbs,</i></li>
+				<li>OsApp_Test: SWC <i>SWC_CyclicCounter</i>.</li>
+			  </ul>			
+			</li>
+			<li>configure tresos to manage the two memory partitions:
+			  <ul>
+                <li>add tasks, events</li>
+				<li>set permissions,</li>
+				<li>activate a protection hook,</li>
+				<li>configure <i>Rte Partitioning</i>,</li>
+				<li>adapt the <i>BswM</i>.</li>
+			  </ul>
+			</li>
+            <li>adapt the linkage configuration,</li>
+			<li>modify the application sources including the Rte startup.</li>
+        </ol></p>	
+		
+		<blockquote><b>Note:</b> The setup and configuration of the underlying <i>simple_demo_can_rte</i> project is not described here!</blockquote>
+		
+		<blockquote><b>Warning:</b> The software architecture and design have been chosen for demonstrating the
+		configuration and handling of memory protection and are not suitable for a real safety application!</blockquote>
+		<blockquote><b>Note:</b> Some platforms require a trusted Os application for the BSW! For example, the FlexCAN module of the Leopard 
+			(Freescale xPC564xL) requires access to the Main Configuration Register (MCR) and thus privileged mode is needed for the CAN stack.</blockquote>
+		
+        <blockquote><b>Note:</b> <p>Names of dialogs, editors, importers, tables, tabs, etc. are
+          displayed in <i>italic</i> font. </p>
+          <p>Buttons, text boxes, check boxes, drop-down list boxes and menu entries are displayed in <b>bold</b> font. </p>
+          <p>File, directory and pathnames, parameters and command line commands are displayed in
+          <tt>Courier</tt> font.</p>
+          </blockquote>
+        <blockquote><b>Tip:</b> A workflow step that is displayed with a green arrow icon is an
+          action step. You may start the corresponding action by
+          double-clicking the step or by clicking the <b>Run</b> button in the tool bar.
+          A workflow step that is displayed with a red cross icon is an unavailable step. With your
+          current selection in the <i>Project Explorer</i> view, it is not possible to execute the
+          corresponding action.</blockquote>
+        ]]>
+    </description>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Create Project >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="RTEMEMPROT_PROJ" label="Create your project" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><u>Goal</u></h2>
+        <p>To create your project.</p>
+              <p>The first step is to create a new project that contains modules,
+                the application source code and specific parts of the build environment. Thus, in this group step of the workflow
+                you are guided through the steps to start such a project with project demo <i>simple_demo_can_rte</i> that is delivered with EB tresos AutoCore.</p>
+              ]]>
+      </description>
+
+      <action label="Create new project (from demo)" id="RTEMEMPROT_PROJ_TMP" repeatable="true">
+        <command description="Import existing project"
+          serialization="org.eclipse.ui.file.import(importWizardId=org.eclipse.ui.wizards.import.ExternalProject)"/>
+        <description>
+          <![CDATA[
+                <p>Start your project by importing the project demo. To import the project demo:</p>
+                <ol>
+                  <li>Double-click this action step in the <i>Workflows</i> view. The <i>Import</i> dialog opens up.</li>
+                  <li>In the text box <b>Select root directory</b>, browse to the demo folder
+                    <tt>simple_demo_can_rte</tt>. This folder is located in the EB tresos AutoCore derivative-specific subdirectory of the <tt>demos\AutoCore</tt>
+                    directory in your EB tresos Studio installation, e.g. the directory <tt>demos\AutoCore\&lt;ACG_RELEASE_NAME&gt;\simple_demo_can_rte</tt>.</li>
+                  <li>Select the check box <b>Copy projects into workspace</b>.</li>
+                  <li>Click <b>Finish</b>.</li>
+                </ol>
+                ]]>
+        </description>
+      </action>
+
+      <action label="Rename project" id="RTEMEMPROT_PROJ_REN" needsproject="true">
+        <description>
+          <![CDATA[
+		<p>
+    After importing the project into the workspace, rename the project as follows:
+    <ol>
+      <li>Right-click on the project name in the <i>Project Explorer</i> view. A context menu opens up.</li>
+      <li>In the context menu, select <b>Rename</b>.</li>
+      <li>Type a new project name.</li>
+    </ol>
+    </p>
+		]]>
+        </description>
+      </action>
+
+      <action label="Load project" id="RTEMEMPROT_PROJ_LOAD">
+        <description>
+          <![CDATA[
+		<p>
+		  After importing a project or restarting EB tresos Studio, your module
+                  configuration is not loaded automatically.
+		</p>
+		<p>
+		  To load a project and thus access the configuration of an EB tresos AutoCore stack:
+		</p>
+		<p>
+		<ol>
+		  <li>Expand the contents of a project in the <i>Project Explorer</i> view.</li>
+		  <li>Double-click the folder marked with a gray ECU icon, which is the first subfolder of the
+		  project. The project is loaded and its modules are displayed in the <i>Project Explorer</i> view. </li>
+		</ol>
+		</p>
+		]]>
+        </description>
+      </action>
+
+    </group>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< communications ports in BSWM >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+    <group id="RTEMEMPROT_BSWM" label="Configure communications ports in BSWM" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+             <p>Provide communication ports in the BswM for use with memory partitions.</p>
+			 <p>By introducing memory partitions the BswM communication partly becomes an inter-partition communication.
+			The application component <i>SWC_CyclicCounter</i> makes mode requests to the <i>BswM</i> over partition
+			boundaries and therefore, appropriate communication ports have to be configured.</p>
+              ]]>
+      </description>
+
+      <action label="Add service port to the BswM module" id="RTEMEMPROT_BSWM_CFG">
+        <command description="Open BswM configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=BswM)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+          <h2><b>Goal</b></h2>
+          <p>To configure the <i>BswM</i> module for mode requests originating from a different memory partition.</p>
+		  <h2><b>Steps</b></h2>
+		    <p>Double-click this action step in the <i>Workflows</i> view. The <i>BswM Generic Editor</i> dialog opens up.</p>
+			<ol>
+			  <li>Go to the <i>Configuration</i> tab to open the configuration named <i>BswMConfig</i>.</li>
+			  <li>In the <i>BswMModeRequestPort</i> tab you find the configured mode request interfaces. <i>BswMModeRequestPort</i> named <i>SwcCyclicBswM_ReqPort</i>
+	  is of type <i>BswMGenericRequest</i> and would be realized by a direct function call. As the corresponding SWC will not reside on the same
+	  memory partition as the <i>BswM</i> the type of the interface has to be changed. Please choose <i>BswMSwcModeRequest</i> as <i>BswMModeRequestSource</i>. 
+	  Further set the entry <i>BswMSwcModeRequestModeDeclarationGroupPrototypeRef</i> to <i>/BswMMode/PortInterfaces/BswMMode/CurrentMode</i>.</li>
+			</ol>	  
+            ]]>
+        </description>
+      </action>
+      <action label="Update BSW and SWC descriptions in the system model" id="RTEMEMPROT_BSW_SWCD1" >
+        <command description="Run the Imp_Swcd im "
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=MultiTask_UpdateBswDescriptions)" />
+        <description>
+          <![CDATA[
+        <p>The wizard generates and import the BSW and SWC descriptions for all the enabled BSW modules</p>
+        <p>This step is a prerequisite for the main-function-to-task mapping and of the configuration of the BSW exclusive area in the
+                <i>Rte</i>.</p>
+        <p> After this step, the service components are available and can be connected to the application
+            software components. </p>
+        <ul>
+            <li>To run the <i>MultiTask_UpdateBswDescriptions</i>, double-click this
+                action step in the <i>Workflows</i> view.</li>
+            <li> Alternatively you can run the <i>MultiTask_UpdateBswDescriptions</i> in the menu <i>Project -> Unattended Wizards -> Execute multiple tasks(MultiTask_UpdateBswDescriptions)</i></li>
+            
+        </ul>
+          ]]>
+        </description>
+      </action>
+      <action label="Add BswM ports to system description" id="RTEMEMPROT_BSWM_SYSDESCR" >
+        <description>
+          <![CDATA[
+			 <blockquote><b>Note:</b> The following step is not done in EB tresos Studio. Alternatively you may just load 
+			 the supplied example arxml files as described in the next step.</blockquote>
+             <p>The system description has to be extended by the newly created BswM ports. The adaptations made in the 
+			 <i>BswM</i> module have been exported to <i>BswM</i> description files and can be imported into a tool to define the system 
+			 architecture and the software components. 
+			 The <i>BswM</i> module now contains a Sender Receiver Interface called e.g. <i>ModeRequestPort_SwcCyclicBswM_ReqPort</i>.
+			 The next step is to add a corresponding interface to the SWC <i>SWC_CyclicCounter</i>. Make sure to configure the following:
+			 </p>
+			 <ul>
+				<li>Define a <i>Compu method</i> named <i>SWC_ModeTypeValues</i> with the following <i>Internal To Physical</i> values:
+					<ul>
+						<li><i>BSW_SWC_CYCLIC_UNINIT</i> of value 0</li>
+						<li><i>BSW_SWC_CYCLIC_RUN</i> of value 1</li>
+						<li><i>BSW_SWC_CYCLIC_SHUTDOWN</i> of value 2</li>
+					</ul>
+					Choose <i>BSW_SWC_CYCLIC_UNINIT</i> as <i>Compu default value</i>.
+				</li>
+				<li>Define an <i>Implementation Data Type</i> named <i>SWC_ModeType</i>, choose the <i>Compu method</i> named <i>SWC_ModeTypeValues</i>.</li>
+				<li>In the new S/R-Interface <i>ModeRequestPort_SwcCyclicBswM_ReqPort</i> define a data element of type <i>SWC_ModeType</i>.</li>
+				<li>Connect <i>BswMGenInterface_SwcCyclicBswM_ReqPort</i> with <i>PS_BswMSwcModeRequest</i> of SWC <i>SWC_CyclicCounter</i></li>
+             </ul>
+			 <p>Then, export the new system description to arxml for the import into tresos Studio.</p>
+            ]]>
+        </description>
+      </action>
+
+	   
+      <action id="RTEMEMPROT_IMP_SYSTEM" label="Import from system description">
+        <command description="Import network description"
+          serialization="dreisoft.tresos.launcher2.api.plugin.ImporterExporterCommand"/>
+        <description>
+          <![CDATA[
+             <p>To import the new system description into your project:</p>
+             <ol>
+                <li>Double-click this action step in the <i>Workflows</i> view. The <i>Im- and
+                    Exporter</i> dialog opens up.</li>
+                <li>In the <i>Create, manage and run im- and exporters</i> dialog, select the system
+                description importer you have added in the <i>AutoCore Workflow Rte</i>.</li>
+                <li>Select the tab <i>All Models</i> and add the new system description.</li>
+                <li>To apply your changes, click <b>Apply</b>.</li>
+                <li>To import the system model click the button <b>Run Importer</b>.</li>
+              </ol>
+          <b>Application demos concrete examples</b>:
+          <p>An example file named <i>BswM_SWC_ModeRequest.arxml</i> you may find in the <tt>supplement\SimpleDemo_SysDesc\swcd</tt> directory
+				of the <i>simple_demo_can_rte_memprot</i> demo, add this to the Imp_System importer.</li></p>
+          ]]>
+        </description>
+      </action>
+		
+    </group>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Configure Basic Software >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+    <group id="RTEMEMPROT_BSW" label="Configure AUTOSAR modules" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+             <p>To configure the modules of your project.</p>
+                <h2><b>Procedure</b></h2>
+              <p>You need to configure the following modules manually:</p>
+              <ol>
+                <li><a href="workflow:///RTEMEMPROT_BSW_OS">Os (Operating System)</a>:
+                  Add Os Applications, tasks etc. to the <i>Os</i> module.</li>
+				<li><a href="workflow:///RTEMEMPROT_BSW_BSWM">BswM (Basic Software Mode Manager)</a>: Configure and update the <i>BswM</i> module.</li>
+                <li><a href="workflow:///RTEMEMPROT_BSW_RTE">Rte (Run-Time Environment)</a>:
+                  Map runnable entities to tasks, and generate service components.</li>
+              </ol>
+               <p>You can change each basic software module configuration by double-clicking the
+                respective action step in the <i>Workflows</i> view or by selecting the module in the
+                <i>Project Explorer</i> view.</p>
+              <blockquote><b>Tip</b>: To search for configuration parameter names
+                project-wide, use the keyboard shortcut <b>Ctrl+T</b>.</blockquote>
+			  <blockquote><b>Note:</b> The setup and configuration of the underlying <i>simple_demo_can_rte</i> project is not described here!</blockquote>
+              ]]>
+      </description>
+
+      <action label="Configure Os module" id="RTEMEMPROT_BSW_OS">
+        <command description="Open Os configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Os)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+			<h2><u>Overview</u></h2>
+			<p><ul>
+				<li>Os Applications:
+					<ul>
+						<li><i>OsAppl_Test</i>: is not trusted by the <i>Os</i> and holds the SWC <i>SWC_CyclicCounter</i> which causes a protection fault
+							upon request to demonstrate the memory protection feature,</li>					
+						<li><i>OsAppl_QmTrusted</i>: is trusted by the <i>Os</i> and, therefore, gains privileged CPU mode.</li>
+					</ul>
+				</li>	
+				<li>Tasks:
+					<ul>
+						<li><i>SetDiscreteValueSrv_Task</i>: has permission to set the LED,</li>					
+						<li><i>Test_Cyclic_Task</i>: handles time-triggered runnable entities of the SWC <i>SWC_CyclicCounter</i>,</li>				
+						<li><i>Test_Event_Task</i>: handles event-triggered runnable entities of the SWC <i>SWC_CyclicCounter</i>,</li>
+						<li><i>BswCommunication_Task</i>: handles inter-partition Rte communication,</li>
+						<li><i>StartStop_OsApp_Test_Task</i>: handles Rte startup and shutdown of <i>OsAppl_Test</i>,</li>
+						<li><i>StartStop_OsApp_QmTrusted_Task</i>: handles Rte startup and shutdown of <i>OsAppl_QmTrusted</i>.</li>
+					</ul>
+				</li>
+				<li>Events:
+					<ul>
+						<li><i>Event_Rte_Start</i>: handles individual Rte startup of each Os Application.</li>
+						<li><i>Event_Rte_Stop</i>: handles individual Rte shutdown of each Os Application.</li>
+					</ul>
+				</li>
+			   </ul>
+			</p>
+			
+			<blockquote><b>Note:</b> You normally won't set the Os Application holding the BSW to trusted in a real safety application!
+				This is only done for demonstration purpose!</blockquote>			
+			
+			<h2><u>Steps</u></h2>
+            <p>Double-click this action step in the <i>Workflows</i> view. The <i>Os</i> editor opens up.
+              <ol>
+				<li>Configure memory protection:
+					<ul>
+						<li><i>OsOs</i> -> <i>OsTrappingKernel</i>: True</li>	
+						<li><i>OsOs</i> -> <i>OsProtectionHook</i>: True</li>				
+					</ul>
+				</li>	
+				<li>Add event: <i>Event_Rte_Start, Event_Rte_Stop</i></li>
+				<li>Cleanup: Remove task <i>Rte_Time_Task</i> as it no longer needed. Also remove the corresponding entry 
+					(<i>OsScheduleTableTaskActivation</i>) in the Rte default schedule table <i>Rte_DefaultScheduleTable</i>.</li>				
+				<li>Add and configure new tasks:</li>
+					<ul>
+						<li><i>StartStop_OsApp_QmTrusted_Task</i>: OsTaskPriority=51; OsStackSize=32;</li>
+						<li><i>StartStop_OsApp_Test_Task</i>: OsTaskPriority=52; OsStackSize=32;</li>
+						<li><i>SetDiscreteValueSrv_Task</i>: OsTaskPriority=54; OsStackSize=128;</li>					
+						<li><i>Test_Cyclic_Task</i>: OsTaskPriority=55; OsStackSize=512;</li>				
+						<li><i>Test_Event_Task</i>: OsTaskPriority=56; OsStackSize=512;</li>
+						<li><i>BswCommunication_Task</i>: OsTaskPriority=60; OsStackSize=512;</li>
+					</ul>
+				</li>				
+				<li>Add and configure two Os Application:</li>
+					<ol>
+						<li><i>OsAppl_Test</i>
+							<ul>
+								<li><i>OsTrusted</i>: False</li>
+								<li>Add tasks: <i>Test_Cyclic_Task</i>, <i>Test_Event_Task</i>, <i>StartStop_OsApp_Test_Task</i></li> 
+								<li>Add Rte schedule table (e.g. <i>Rte_DefaultScheduleTable</i>)</li>
+							</ul>
+						</li>					
+						<li><i>OsAppl_QmTrusted</i>
+							<ul>
+								<li>OsTrusted: True</li>
+								<li>Add all counters, alarms, ISRs, resources, Schm schedule table (e.g. <i>SchM_DefaultScheduleTable</i>), and all remaining tasks.</li>
+							</ul>	
+						</li>
+					</ol>
+				</li>	
+				<li>Enable automatic start of tasks (<i>OsTaskAutostart</i>) for the Rte start/stop tasks: <i>StartStop_OsApp_QmTrusted_Task</i>, 
+				    <i>StartStop_OsApp_Test_Task</i>. You then have to define the <i>OsTaskAppModeRef</i>, choose <i>/Os/Os/OSDEFAULTMODE</i>.</li>
+				<li>Assure that tasks that use blocking synchronization (e.g. wait for an event) are extended tasks (<i>OsTaskType</i>): <i>Rte_Event_Task</i>,
+					<i>Test_Cyclic_Task</i>, <i>Test_Event_Task</i>, <i>BswCommunication_Task</i></li>
+				<li>Set permissions:</li>
+					<ul>
+						<li><i>StartStop_OsApp_Test_Task</i> (<i>OsAppl_Test</i>): allow <i>OsAppl_QmTrusted</i> to throw events to this task (<i>OsTaskAccessingApplication</i>),</li>		
+						<li><i>Rte_Event_Task</i> (<i>OsAppl_QmTrusted</i>): allow <i>OsAppl_Test</i> to throw events to this task (<i>OsTaskAccessingApplication</i>),</li>
+						<li><i>Event_Rte_Start</i>, <i>Event_Rte_Stop </i>: allow the tasks <i>StartStop_OsApp_QmTrusted_Task</i> and 
+							<i>StartStop_OsApp_Test_Task</i> to react on these events (<i>OsTaskEventRef</i>),</li>	
+						<li><i>Rte_Counter</i> (<i>OsAppl_QmTrusted</i>): allow <i>OsAppl_Test</i> 
+							to use this counter for its schedule table (<i>OsCounterAccessingApplication</i>).</li>
+						<li>Grant permission to <i>OsAppl_QmTrusted</i> to access the Rte schedule table (<i>OsSchTblAccessingApplication</i>).</li>
+					</ul>
+				</li>
+				<li>Assure a correct scheduling. It may also be modfied by using a wizard later. This is a proper example configuration:
+					<ul>
+						<li><i>SchM_DefaultScheduleTable</i>: holds expiry points for the cyclic task activations of the tasks <i>SchMComTask_1ms</i>, 
+							<i>SchMComTask_5ms</i>, and <i>SchMComTask_20ms</i>; duration 20ms, repeated.</li>
+						<li><i>Rte_DefaultScheduleTable</i>: holds an expiry point for the cyclic timing event of <i>Test_Cyclic_Task</i>; duration 100ms, repeated.</li>
+					</ul>
+				</li>
+              </ol>
+            </p>
+			
+			<blockquote><b>Note</b>: In protected system with partitions each task has a shutdown event! Please consider this e.g. regarding the <i>OsTaskType</i>!</blockquote>
+			
+			<blockquote><b>Tip</b>: The schedule tables that do not manage tasks from the untrusted Os Application should be held by the trusted Os Application.
+			Otherwise they will be restarted, stopped etc. depending on the action defined in case of a protection fault (see <i>ProtectionHook</i>.</blockquote>
+			
+            ]]>
+        </description>
+      </action>
+
+      <action label="Configure the BswM module" id="RTEMEMPROT_BSW_BSWM">
+        <command description="Open BswM configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=BswM)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+          <h2><b>Goal</b></h2>
+            <p><i>BswM</i> ports have been modified. Therefore you have to configure these objects now.</p>
+		  <h2><b>Steps</b></h2>
+			<p>Double-click this action step in the <i>Workflows</i> view. The <i>BswM Generic Editor</i> dialog opens up.</p>
+			<ol>
+			  <li>Go to the <i>Configuration</i> tab to open the configuration named <i>BswMConfig</i>.</li>
+			  <li>In the <i>BswMModeCondition</i> tab you find the configured mode conditions. Modify the following <i>BswMModeConditions</i> and set their 
+				<i>BswMCompuScaleModeValue</i>. Switch their <i>BswMConditionValue</i> from <i>BswMBswMode</i> to <i>BswMCompuScaleModevalue</i>.
+				<ul>
+					<li><i>BswM_Cond_SwcCyclicRun</i>: 
+						<ul>
+							<li><i>BswMCompuMethodRef</i> -> <i>/DemoApplication/CompuMethods/SWC_ModeTypeValues</i></li>
+							<li><i>BswMCompuConstText</i> -> <i>BSWM_SWC_CYCLIC_RUN</i>; </li>
+							
+						</ul>
+					</li>
+					<li><i>BswM_Cond_SwcCyclicShutdown</i>: 
+						<ul>
+							<li><i>BswMCompuMethodRef</i> -> <i>/DemoApplication/CompuMethods/SWC_ModeTypeValues</i></li>
+							<li><i>BswMCompuConstText</i> -> <i>BSWM_SWC_CYCLIC_SHUTDOWN</i>; </li>
+						</ul>
+					</li>					
+				</ul>
+			  </li>
+			  <li>In the <i>BswMModeRequest</i> tab you find the configured BswM mode request ports. Modify port <i>SwcCyclicBswM_ReqPort</i> 
+				and switch its <i>BswMModeInitValue</i> to <i>BswMCompuScaleModeValue</i>. Set <i>BswMCompuMethodRef</i> as before and choose 
+				<i>BSWM_SWC_CYCLIC_UNINIT</i> for <i>BswMCompuConstText</i>.</li>
+			</ol>			  
+		
+           ]]>
+        </description>
+      </action>
+  
+      <action label="Configure Rte module" id="RTEMEMPROT_BSW_RTE">
+        <command description="Open Rte configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Rte)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+			  <p>Double-click this action step in the <i>Workflows</i> view. The <i>Select Editor</i> dialog
+                    opens up.</p>
+              <ol>
+                <li>Select <i>Rte Editor</i>. The <i>Rte Editor</i> opens up.</li>
+                <li>Open the <i>Partitioning</i> tab.
+                    <ul>
+                        <li>Activate memory partitioning and choose the <i>Partitioning support</i>: <i>SharedMemory</i>.</li>
+                        <li>Enable the <i>Generate empty Rte_Start/Rte_Stop stubs</i> as required by the Rte startup (see below).</li>
+						<li><i>BSW configuration</i>: 
+							<ul>
+								<li><i>BSW Os application</i>: <i>Os/Os/OsAppl_QmTrusted</i></li>
+								<li><i>BSW Os task required</i>: True</li>
+								<li><i>BSW send signal queue length</i>: 20</li>
+								<li><i>BSW send signal group queue length</i>: 20</li>
+							</ul>
+						</li>
+						<li><i>SWC partitioning</i>: Set <i>/EcuExtract/TopLevelCompostion/SWC_CyclicCounter</i> to reside on Os application 
+							<i>/Os/Os/OsAppl_Test</i>. Set all other software component instances to reside on  <i>/Os/Os/OsAppl_QmTrusted</i>.</li>
+                    </ul>
+                </li>
+                <li>Open the <i>Data Mapping</i> tab.
+                    <ul>
+						<li>Map <i>/ComConfig/SGCounterIn_256R</i> to <i>SWC_CyclicCounter->R_SpecialHandling->EventMessage</i></li>			
+                    </ul>
+                </li>				
+                <li>Open the <i>Service Port Mapping</i> tab and map service port to application component <i>SWC_CyclicCounter</i>.
+                    <ul>
+                        <li>Map <i>DevelopmentErrorTracer->DS_SWC_0</i> to <i>R_CyclicCounterDet</i>.</li>
+						<li>Map <i>ComM->UR_ComMUser_0</i> to <i>UR_ComMUser_0</i>.</li>
+						<li>Map <i>BswM->BswM_ModeSwitchPort_BswMSwitchPort_Rte</i> to <i>ModeSwitchPort_BSWM_COMBINEDACTION_BswMMode_PortInterfaces_BswMMode</i>.</li>
+						<li>Map <i>BswM->ModeRequestPort_SwcCyclicBswM_ReqPort</i> to <i>PS_BswMSwcModeRequest</i>.</li>
+                    </ul>
+                </li>
+                <li>Open the <i>Event Mapping</i> tab.
+                    <ul>
+						<li><i>SetDiscreteValueSrv_Task</i>: event <i>SetDiscreteValueOperationInvoked</i>, executable <i>SetDiscreteValue</i>, instance <i>SWC_IoHwAbs</i>.</li>					
+						<li><i>Test_Cyclic_Task</i>: event <i>CyclicEvent</i>, executable <i>Cyclic</i>, instance <i>SWC_CyclicCounter</i>.</li>			
+						<li><i>Test_Event_Task</i>: 
+							<ul>
+								<li>event <i>ModeSwitchedPrpShutdown</i>, executable <i>Shutdown</i>, instance <i>SWC_CyclicCounter</i>.</li>
+								<li>event <i>ModeSwitchedRunTwo</i>, executable <i>Init</i>, instance <i>SWC_CyclicCounter</i>.</li>
+								<li>event <i>SetCounterOperationInvoked</i>, executable <i>SetCounter</i>, instance <i>SWC_CyclicCounter</i>.</li>
+							</ul>
+						</li>
+						<li><i>Rte_Event_Task</i>: 
+							<ul>
+								<li>event <i>DRE_SwcCyclicBswM_ReqPort</i>, executable <i>RE_SwcCyclicBswM_ReqPort</i>, instance <i>BswM</i>.</li>
+								<li>event <i>EV_ReportError_SWC_0</i>, executable <i>RE_ReportError</i>, instance <i>Development Error Tracer</i>.</li>
+								<li>event <i>EV_RequestComMode_ComMUser_0</i>, executable <i>RE_RequestComMode</i>, instance <i>ComM</i>.</li>
+							</ul>
+						</li>			
+                    </ul>
+					<blockquote><b>Note:</b> <p>Runnables of category 2 should be mapped to a task exclusively. Please see the help for details. In order to improve 
+					clarity regarding the set of tasks this has not been considered in this demo project.</p></blockquote>
+                </li>				
+            </ol>
+            ]]>
+        </description>
+      </action>
+	  
+      <action label="Calculate Dem, NvM and Os service needs" id="RTEMEMPROT_BSW_SERVICE_NEEDS1">
+        <command description="Open the Service Needs Calculator configuration" type="configure"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerId=SvcAs_Trigger)"/>
+        <command description="Run the Service Needs Calculator"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=SvcAs_Trigger)"/>
+        <description>
+          <![CDATA[
+                 <p>The <i>Service Needs Calculator</i> automatically resolves most dependencies between the
+            different modules. For example, it adds required Dem events to the <i>Dem</i>
+            configuration, required init functions to the <i>EcuM</i> module and required NvM blocks to the
+            <i>NvM</i> module. I also adds the Os and Com objects required by the <i>Rte</i> module to the <i>Os</i> configuration.</p>
+        <p>
+            It is recommended that you run the <i>Service Needs Calculator</i> before the step
+            <a href="workflow:///RTEMEMPROT_BSW_SWDUPDATE2">Update service component and BSWM
+                descriptions</a> as this mentioned step requires a consistent ECU configuration.
+        </p>
+            <ul>
+                <li>To open the configuration dialog of the <i>Service Needs Calculator</i>, click the book icon
+                    in the tool bar of the <i>Workflows</i> view. Alternatively you can find the configuration dialog
+                    in the menu <i>Project -> Unattendent Wizards -> Unattendent wizard configuration</i></li>
+                <li>To run the <i>Service Needs Calculator</i>, double-click this action step in the <i>Workflows</i> view.
+                    Alternatively you can run the <i>Service Needs Calculator</i>
+                    in the menu <i>Project -> Unattendent Wizards -> Calculate Service Needs</i></li>
+            </ul>
+            ]]>
+        </description>
+      </action>	  
+      <action label="Update system model" id="RTEMEMPROT_BSW_SWCD2" >
+        <command description="Run the Imp_Swcd im "
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=MultiTask_UpdateBswDescriptions)" />
+        <description>
+          <![CDATA[
+        <p>The wizard generates and import the BSW and SWC descriptions for all the enabled BSW modules</p>
+        <p>The last steps have changed the ECU configuration, on which the BSWMD depends. Thus, it
+            is recommended to update the basic software module description again. </p>
+        <ul>
+            <li>To run the <i>MultiTask_UpdateBswDescriptions</i>, double-click this
+                action step in the <i>Workflows</i> view.</li>
+            <li> Alternatively you can run the <i>MultiTask_UpdateBswDescriptions</i> in the menu <i>Project -> Unattended Wizards -> Execute multiple tasks(MultiTask_UpdateBswDescriptions)</i></li>
+            
+        </ul>
+          ]]>
+        </description>
+      </action>
+    </group>
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Application >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+    <group id="RTEMEMPROT_APP" label="Build your application" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+          <p>To generate code, build the code build and run your application.</p>
+          <h2><b>Procedure</b></h2>
+          <ol>
+          <li><a href="workflow:///RTEMEMPROT_APP_GENERATE">Generate code</a></li>
+		  <li><a href="workflow:///RTEMEMPROT_BSW_RTE_STRTP">Adapt Rte startup</a></li>
+		  <li><a href="workflow:///RTEMEMPROT_APP_CODE">Change code in your application</a></li>
+          <li><a href="workflow:///RTEMEMPROT_APP_MAKE">Change make- and batch files</a></li>	
+	      <li><a href="workflow:///RTEMEMPROT_APP_COMP">Make compiler dependent modifications</a></li>		  
+          <li><a href="workflow:///RTEMEMPROT_APP_BUILDRUN">Build and run your application</a></li>
+          <li><a href="workflow:///RTEMEMPROT_FIN">Finish</a></li>
+          </ol>
+        ]]>
+      </description>
+
+      <action label="Generate code" id="RTEMEMPROT_APP_GENERATE" repeatable="true">
+        <command description="Generate code"
+          serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand()"/>
+        <description>
+          <![CDATA[
+                <p>To generate your project configuration code, double-click
+                this action step in the <i>Workflows</i> view or click
+                    the hammer icon in the tool bar of EB tresos Studio. Your code is being generated.
+                </p>
+                <p>You find the generated code in the your workspace in the directory <tt>output\generated</tt>.</p>
+                ]]>
+        </description>
+      </action>
+
+      <action label="Adapt Rte startup" id="RTEMEMPROT_BSW_RTE_STRTP">
+        <description>
+          <![CDATA[
+            <p>Using the default setup, the single Rte functions of both Os Applications are started in the <i>Rte_Start()</i> function. Thus, both Rte
+			startups are executed in the same context. This requires permissions to activate tasks of both Os Applications (e.g. <i>OsTaskAccessingApplication</i>).
+			Further, our application requires that some task of <i>OsApp_Test</i> is started before another task of <i>OsApp_Qm_Trusted</i> 
+			because it catches an event thrown by this <i>OsApp_Qm_Trusted</i> task.</p>
+			
+			<p>The solution chosen in this project is to throw the event <i>Event_Rte_Start</i> for each Rte startup function during the <i>BswM</i> mode 
+			<i>BSWM_STARTUP_TWO_A</i> (in <i>BswM_OnStartupTwoA()</i>). The events are thrown in the reqired order, first for <i>StartStop_OsApp_Test_Task</i>, 
+			then for <i>StartStop_OsApp_QmTrusted_Task</i>.</p>
+			
+			<p>Modified source files are provided as examples in the <tt>supplement\SimpleDemo_SWCs\source\application</tt> directory of the <i>simple_demo_can_rte_memprot</i> 
+			demo and may be copied to <tt>source\application</tt>: 
+				<ul>
+					<li><i>SWC_CyclicCounter.c</i>: <i>StartStop_OsApp_Test_Task</i></li>
+					<li><i>main.c</i>: <i>StartStop_OsApp_QmTrusted_Task</i></li>
+					<li><i>BswM_UserCallouts.c</i>: <i>BswM_OnStartupTwoA</i></li>
+				</ul>
+			</p>
+            ]]>
+        </description>
+      </action>
+	  
+      <action label="Change code in your application" id="RTEMEMPROT_APP_CODE">
+        <description>
+          <![CDATA[
+      <p>Open the <tt>source/application</tt> directory in your project directory, which is located in your EB tresos Studio workspace.</p>
+      <p><p>In the following modifications to the source code required in the context of memory protection are explained. 
+	     Example files are provided in the <tt>supplement/SimpleDemo_SWCs/source/application</tt> directory of the <i>simple_demo_can_rte_memprot</i> demo
+		 and may be copied to the corresponding project's directory:</p>
+      <ul>
+		<li><tt>SWC_CyclicCounter.c</tt>: Function <tt>SWC_CyclicCounter_Init</tt> makes a mode request to the <i>BswM</i>. 
+			As the <i>BswM</i> interface changed to a Sender-Receiver-Interface, the mode request now is done by write command over the <i>Rte</i>.</li>
+		<li><tt>SWC_CyclicCounter.c</tt>: Function <tt>SWC_CyclicCounter_Cyclic</tt> reacts on the receipt of a <i>specialReceiveCommand</i>. 
+			This has been extended by the handling of a <i>0xf0</i> message. It will write to the <i>Dio</i> channel and this will lead to the
+			protection violation.</li>
+        <li><tt>main.c</tt>: Locate the function <tt>ProtectionHook</tt>. You may modify the way a protection violation is handeled.</li>
+      </ul>
+
+        ]]>
+        </description>
+      </action>
+
+      <action label="Change make- and batch files" id="RTEMEMPROT_APP_MAKE">
+        <description>
+          <![CDATA[
+      <p>Open the <tt>util</tt> directory in your project directory, which is located in your EB tresos Studio workspace.</p>
+      <p>Following modifications in the context of memory protection are neccessary. Example files are provided in the 
+		<tt>supplement</tt> directory of the <i>simple_demo_can_rte_memprot</i> demo and may be copied to the corresponding project's directories:</p>
+      <ul>
+        <li><tt>SimpleDemo_MakeLink/Merged_Makefile.mak</tt>: Added linker symbols for each configured Os Application. Please see the <i>AutoCore Os</i> documentation
+			for details. The linker symbols also consider the allocation of <i>Rte Smc</i> files. The file's destination directory is <tt>util</tt>.</li>
+      </ul>
+
+        ]]>
+        </description>
+      </action>   
+	  
+      <action label="Make compiler dependent modifications" id="RTEMEMPROT_APP_COMP">
+        <description>
+          <![CDATA[
+      <p>Your compiler may demand further actions in order to run your memory protection application. 
+		Please consult the <tt>README.txt</tt> file in your compiler's directory below the <tt>supplement/SimpleDemo_MakeLink/config</tt> of the <i>simple_demo_can_rte_memprot</i> demo
+		for information on your compiler.</p>
+         ]]>
+        </description>
+      </action>	
+	  
+      <action label="Build and run your application" id="RTEMEMPROT_APP_BUILDRUN">
+        <description>
+          <![CDATA[
+                <p>Build and run your application as described e.g. in the <i>simple_demo_can_rte</i> project template.</p>
+				<p>You trigger the memory protection fault by sending a CAN message (<i>Pdu_CounterIn</i>) with payload value <i>0xF0</i>. 
+				   For EB tresos Inspector 4.4.2 you may use the exemplary configuration <i>simple_demo_can_rte_memprot.ipf</i> 
+				   in the <tt>supplement/SimpleDemo_Inspector/inspector</tt> directory of the <i>simple_demo_can_rte_memprot</i> demo. 
+				   Depending on the reaction you have configured in 
+				   the protection hook (<i>ProtectionHook()</i>) your application may restart etc. When you set a debugger breakpoint
+				   in the protection hook function you can identify a memory protection fault easily.</p>
+                ]]>
+        </description>
+      </action>	 	  
+	  
+    </group>
+	
+    <action id="RTEMEMPROT_FIN" label="Finish">
+      <description>
+        <![CDATA[
+              <p>You have built your memory protection application in a Standard Os setting successfully.</p>
+              ]]>
+      </description>
+    </action>
+
+  </group>
+</workflow>

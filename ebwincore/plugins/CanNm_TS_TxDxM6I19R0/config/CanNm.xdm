@@ -1,0 +1,2702 @@
+<?xml version='1.0'?>
+<datamodel version="7.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/16/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/16/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:cd="http://www.tresos.de/_projects/DataModel2/08/customdata.xsd" 
+         xmlns:f="http://www.tresos.de/_projects/DataModel2/14/formulaexpr.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd"  
+         xmlns:variant="http://www.tresos.de/_projects/DataModel2/11/variant.xsd">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_TxDxM6I19R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="CanNm" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="ADMIN-DATA" type="ADMIN-DATA">
+                <ad:ADMIN-DATA>
+                  <ad:LANGUAGE>EN</ad:LANGUAGE>
+                  <ad:DOC-REVISIONS>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>4.2.0</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>AUTOSAR</ad:ISSUED-BY>
+                      <ad:DATE>2011-11-09T11:36:22Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>6.19.7</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>Elektrobit Automotive GmbH</ad:ISSUED-BY>
+                      <ad:DATE>2021-07-14T23:59:59Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                  </ad:DOC-REVISIONS>
+                </ad:ADMIN-DATA>
+              </a:a>
+              <a:a name="DESC">
+                <a:v>&lt;html&gt;
+                    Configuration Parameters for the Can Nm module.
+                  &lt;/html&gt;</a:v>
+              </a:a>
+              <a:a name="LOWER-MULTIPLICITY" value="1"/>
+              <a:a name="POSTBUILDVARIANTSUPPORT" value="true"/>
+              <a:a name="RELEASE" value="asc:4.0"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <a:a name="UUID" value="8bf87d48-a7ef-4cfa-bfeb-a3b1e61fded4"/>
+              <v:var name="IMPLEMENTATION_CONFIG_VARIANT" type="ENUMERATION">
+                <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                     type="IMPLEMENTATIONCONFIGCLASS">
+                  <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                </a:a>
+                <a:a name="LABEL" value="Config Variant"/>
+                <a:a name="UUID" value="892eca51-658a-4e41-8ed4-2bfa93c865b8"/>
+                <a:da name="DEFAULT" value="VariantPostBuild"/>
+                <a:da name="EDITABLE" value="false"/>
+                <a:da name="RANGE" value="VariantPostBuild"/>
+              </v:var>
+              <v:ctr name="CanNmGeneral" type="IDENTIFIABLE">
+                <a:a name="UUID" value="b34705d0-3fba-11e3-aa6e-0800200c9a66"/>
+                <v:var name="CanNmMultiCoreSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                            &lt;p&gt;Enables MultiCoreSupport.&lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="CanNm multicore support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="b16cd62f-1bc1-4fd5-8c34-2f6ba972b660"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanNmPnSupported" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Enables or disables support of partial networking.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;False&lt;/code&gt;: Partial Networking is disabled &lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;True&lt;/code&gt;: Partial Networking is enabled&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Support for Partial Network Cluster (PNC)"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="646e45d0-3bd8-11e3-aa6e-0800200c9a66"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="INVALID" type="XPath">
+                    <a:tst 
+                           expr="(. = &apos;true&apos;) and (not(node:exists(as:modconf(&apos;CanNm&apos;)[1]/CanNmGlobalConfig/*[1]/CanNmPnInfo)))" 
+                           true="If Pnc is enabled CanNmPnInfo shall also be enabled"/>
+                    <a:tst 
+                           expr="(. = &apos;true&apos;) and (not(node:exists(as:modconf(&apos;CanNm&apos;)[1]/CanNmGlobalConfig/*[1]/CanNmPnResetTime)))" 
+                           true="If Pnc is enabled CanNmPnResetTime shall also be enabled"/>
+                  </a:da>
+                </v:var>
+                <v:var name="CanNmRelocatablePbcfgEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                         Enables/disables support for relocatable postbuild configuration.
+                         &lt;ul&gt;
+                           &lt;li&gt;True: Postbuild configuration relocatable in memory.&lt;/li&gt;
+                           &lt;li&gt;False: Postbuild configuration not relocatable in memory.&lt;/li&gt;
+                         &lt;/ul&gt;
+                       &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="CanNmRelocatablePbcfgEnable"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="dc81d450-37d3-11e3-aa6e-0800200c9a66"/>
+                  <a:da name="DEFAULT" value="true"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(node:contains(node:refs(as:modconf(&apos;PbcfgM&apos;)/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf(&apos;CanNm&apos;)) = &apos;true&apos;)" 
+                        true="false" false="true"/>
+                </v:var>
+                <v:var name="CanNmMaxPn" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;The maximum number of Partial Networking Clusters that can be configured.&lt;/p&gt;
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="CanNmMaxPn"/>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="c8206ec0-3d7a-11e3-aa6e-0800200c9a66"/>
+                  <a:da name="DEFAULT" value="0"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=56"/>
+                      <mt:tst expr="&gt;=0"/>
+                    </mt:range>
+                    <mt:xpath 
+                              true="CanNmMaxPn cannot be larger than CanNmPnInfoLength * 8!" 
+                              expr="(. &gt; (../../CanNmGlobalConfig/*[1]/CanNmPnInfo/CanNmPnInfoLength * 8)) and                                 ((as:modconf(&apos;CanNm&apos;)[1]/CanNmGeneral/CanNmPnSupported) = &apos;true&apos;)"/>
+                  </a:da>
+                </v:var>
+              </v:ctr>
+              <v:lst name="CanNmGlobalConfig" 
+                     type="MULTIPLE-CONFIGURATION-CONTAINER">
+                <a:da name="MAX" value="1"/>
+                <a:da name="MIN" value="1"/>
+                <v:ctr name="CanNmGlobalConfig" 
+                       type="MULTIPLE-CONFIGURATION-CONTAINER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;This container contains the global configuration parameter of the CanNm.
+                          The parameters and the parameters of the sub containers shall be mapped
+                          to the C data type CanNm_ConfigType (for parameters where it is possible)
+                          which is passed to the CanNm_Init function.&lt;/p&gt;
+                          &lt;p&gt;The CanNm only supports compile time configuration. Only the
+                          parameters from the first module configuration container from this
+                          list are used for module configuration.&lt;/p&gt;.
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="NAME_PATTERN" value="CanNm_Config_?"/>
+                  <a:a name="UUID" value="1e1049a2-21d2-44a2-bdae-0e41e31d2bc6"/>
+                  <v:var name="CanNmActiveWakeupBitEnabled" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          Enables/Disables the handling of the Active Wakeup Bit in the
+                          CanNm module.
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Active Wakeup Bit Enable"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(. = &apos;true&apos;) and (../CanNmPassiveModeEnabled = &apos;true&apos;)" 
+                          true="ActiveWakeupBit is enabled for a channel in passive mode!"/>
+                  </v:var>
+                  <v:var name="CanNmBusLoadReductionEnabled" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Pre-processor switch for enabling busload reduction support.&lt;/p&gt;
+
+                          &lt;p&gt;The bus load reduction mechanisms
+                          ensures that the bus load is limited to
+                          maximum two NM messages within a Message
+                          Cycle Time (&lt;code&gt;CanNmMsgCycleTime&lt;/code&gt;).&lt;/p&gt;
+
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;Passive Mode must be disabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Bus Load Reduction"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="245b3a72-37d0-4782-922c-cdaba219cab4"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst 
+                             expr="(. = &apos;true&apos;) and (../CanNmPassiveModeEnabled = &apos;true&apos;)" 
+                             true="Bus Load Reduction cannot be enabled if Passive Mode is enabled."/>
+                      <a:tst 
+                             expr="(. = &apos;true&apos;) and (node:value(../../../CanNmGeneral/CanNmPnSupported) = &apos;true&apos;)" 
+                             true="If Partial Networking is enabled, Bus Load Reduction must be switched off."/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanNmBusSynchronizationEnabled" type="BOOLEAN">
+                    <a:a name="CALCULATION-FORMULA" 
+                         value="if (cannmpassivemodeenabled == false) then equal(nmbussynchronizationenabled) else equal(false)"/>
+                    <a:a name="CALCULATION-LANGUAGE" value="INFORMAL"/>
+                    <a:a name="DERIVED" value="TRUE"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Pre-processor switch for enabling bus synchronization support.
+                          This feature is required for gateway nodes only.&lt;/p&gt;.
+                          &lt;p&gt;The bus synchronization functionality triggers the
+                          transmission of a single NM message independently of the
+                          normal periodic transmission.&lt;/p&gt;
+
+                          &lt;p&gt;Therefore, the following API function is provided:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;CanNm_RequestBusSynchronization()&lt;/code&gt;&lt;/li&gt;
+                          &lt;/ul&gt;
+
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;The value of this parameter has to be synchronized
+                            with the value of respective parameter in the Nm
+                            module.&lt;/li&gt;
+                            &lt;li&gt;Passive Mode must be disabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Bus Synchronization"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="1415b8b0-6ea4-43fb-b1f8-af55d2864304"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst 
+                             expr="(. = &apos;true&apos;) and (../CanNmPassiveModeEnabled = &apos;true&apos;)" 
+                             true="Bus Synchronization cannot be enabled if Passive Mode is enabled."/>
+                      <a:tst 
+                             expr="(not(node:exists(as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmBusSynchronizationEnabled))) or                                     (. != as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmBusSynchronizationEnabled)" 
+                             true="CanNm Bus Synchronization has to have same setting as Nm Bus Synchronization Support."/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanNmComControlEnabled" type="BOOLEAN">
+                    <a:a name="CALCULATION-FORMULA" 
+                         value="equal(nmcomcontrolenabled)"/>
+                    <a:a name="CALCULATION-LANGUAGE" value="INFORMAL"/>
+                    <a:a name="DERIVED" value="TRUE"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable the Communication Control support.&lt;/p&gt;
+
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;The value of this parameter has to be synchronized
+                            with the value of respective parameter in the Nm
+                            module.&lt;/li&gt;
+                            &lt;li&gt;Passive Mode must be disabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Communication Control"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="4199e93b-47fc-4890-8081-af51e6434cfa"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(not(node:exists(as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmComControlEnabled))) or                                    (. != as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmComControlEnabled)" 
+                          true="CanNm Communication Control has to use same setting as Nm Communication Control."/>
+                    <a:da name="WARNING" type="XPath" 
+                          expr="(. = &apos;true&apos;) and (../CanNmPassiveModeEnabled = &apos;true&apos;)" 
+                          true="Passive Mode shall be disabled inorder to use the Communication control support."/>
+                  </v:var>
+                  <v:var name="CanNmNodeIdCallback" type="FUNCTION-NAME">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                               Name of the callback function to be called if
+                               CanNmNodeIdCallback is enabled.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="CanNm Node Id callback"/>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="227f5be0-0c26-11e4-9191-0800200c9a66"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(. != &apos;&apos;) and text:match(., &apos;^[a-zA-Z][a-zA-Z0-9_]*$&apos;)" 
+                          false="Missing or invalid C function name."/>
+                  </v:var>
+                  <v:var name="CanNmNodeIdCallbackHeader" type="STRING">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                               The name of a header file that will be included to
+                               obtain the external declaration of the callback function.
+                            &lt;/p&gt;
+                            &lt;p&gt;Dependencies:&lt;/p&gt;
+                            &lt;ul&gt;
+                              &lt;li&gt;This parameter is only available if
+                                  CanNmNodeIdCallback is enabled.&lt;/li&gt;
+                            &lt;/ul&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Node Id callback header"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="0b2f3187-44c6-414c-89dc-0462fcd6b6ab"/>
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="node:exists(../CanNmNodeIdCallback)"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:xpath>
+                        <mt:tst true="Missing C header file." 
+                                expr="node:exists(../CanNmNodeIdCallback) and                                       (. = &apos;&apos;)"/>
+                        <mt:tst 
+                                true="Invalid naming for C header file. Please use a standard .h file name." 
+                                expr="node:exists(../CanNmNodeIdCallback) and                                       not(text:match(., &apos;^[\w\-\. ]+\.h$&apos;)) and                                       (. != &apos;&apos;)"/>
+                      </mt:xpath>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanNmComUserDataSupport" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable/disable the user data support.&lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="0711ec74-d2e9-464c-ae12-ed8c87eb49ab"/>
+                    <a:da name="DEFAULT" value="false"/>
+                  </v:var>
+                  <v:var name="CanNmCoordinatorSyncSupport" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            &lt;em&gt;
+                              The functionality related to this parameter
+                              is not supported by the current implementation.
+                            &lt;/em&gt;
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            Enables/disables the coordinator synchronisation support.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:88ba730b-a0ac-42c9-b182-bbda7da16a35"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="EDITABLE" value="false"/>
+                    <a:da name="ENABLE" value="false"/>
+                  </v:var>
+                  <v:var name="CanNmDevErrorDetect" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          Enable development error detection.
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Enable Development Error Detection"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="62686656-9b6d-402a-82b2-39a8d01148e2"/>
+                    <a:da name="DEFAULT" value="true"/>
+                  </v:var>
+                  <v:var name="CanNmImmediateRestartEnabled" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Enabling the asynchronous transmission
+                          of a NM PDU upon bus communication request
+                          in Prepare-Bus-Sleep mode.&lt;/p&gt;
+
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;Passive Mode must be disabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Immediate Restart"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ca12df28-2e25-4ebc-8934-72f2752e977d"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(. = &apos;true&apos;) and (../CanNmPassiveModeEnabled = &apos;true&apos;)" 
+                          true="Immediate Restart is not available when Passive Mode is enabled."/>
+                  </v:var>
+                  <v:var name="CanNmImmediateTxconfEnabled" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable the immediate transmission(Tx) confirmation functionality.&lt;/p&gt;
+
+                          &lt;p&gt;If this parameter is enabled it is assumed that each Network Management
+                          PDU transmission request results in a successful Network Management PDU
+                          transmission.&lt;/p&gt;
+
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;Passive Mode must be disabled&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" 
+                         value="Immediate Transmission Confirmation"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="73154ac3-47e8-4f4e-b8a6-fc3feb206fa0"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(. = &apos;true&apos;) and (../CanNmPassiveModeEnabled = &apos;true&apos;)" 
+                          true="Passive mode shall be disabled"/>
+                  </v:var>
+                  <v:var name="CanNmMainFunctionPeriod" type="FLOAT">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          Call cycle in seconds of CanNm_MainFunction
+                          &lt;code&gt;CanNm_MainFunction_x&lt;/code&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Main Function Period [s]"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="0d814f4e-242e-4d8e-a1f5-3acc941794f4"/>
+                    <a:da name="DEFAULT" value="0.001"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=0.255"/>
+                      <a:tst expr="&gt;=0.001"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanNmNumberOfChannels" type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          Maximum number of Can NM channels allowed within one ECU.
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Number Of Channels"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="36aa06ba-ff1a-421a-a1a1-3b6781b32dcf"/>
+                    <a:da name="DEFAULT" value="1"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=255"/>
+                        <mt:tst expr="&gt;=1"/>
+                      </mt:range>
+                      <mt:xpath 
+                                true="The value must not be smaller than the number of configured channels." 
+                                expr=". &lt; count(../CanNmChannelConfig/*)"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanNmPostBuildRamSize" type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Number of bytes for TX and RX buffers&lt;/p&gt;
+                          &lt;p&gt;
+                            Value should be set as: the sum of the first RxPdu lengths
+                            on each channel multiplied with 2 (in case passive mode is disabled).
+                            Size should be big enugh to hold eventual changes of PDU lenghts at postbuild time
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="CanNmPostBuildRamSize"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="955b232a-57bd-49ea-901f-a9f49b47c8af"/>
+                    <a:da name="DEFAULT" value="96"/>
+                  </v:var>
+                  <v:var name="CanNmPassiveModeEnabled" type="BOOLEAN">
+                    <a:a name="CALCULATION-FORMULA" 
+                         value="equal(nmpassivemodeenabled)"/>
+                    <a:a name="CALCULATION-LANGUAGE" value="INFORMAL"/>
+                    <a:a name="DERIVED" value="TRUE"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable the passive mode.&lt;/p&gt;
+
+                          &lt;p&gt;In passive mode, the CanNm will not be able
+                           to wake up the bus and will not send NM messages.
+                          It will only listen to the NM messages and silently
+                          monitor the bus.&lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Passive Mode"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="4a0405e4-785e-4e2b-baf9-350460a59c12"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="((. = &apos;true&apos;) and                                     (count(as:modconf(&apos;Nm&apos;)[1]/NmChannelConfig/*[node:exists(NmBusType/NmStandardBusType) and                                                            (NmBusType/NmStandardBusType = &apos;NM_BUSNM_CANNM&apos;) and                                                            (node:exists(NmPassiveModeEnabled)) and                                                            (NmPassiveModeEnabled = &apos;false&apos;)]) &gt; 0))" 
+                          true="Not all Nm channels with BusType &apos;NM_BUSNM_CANNM&apos; has passive mode enabled."/>
+                  </v:var>
+                  <v:var name="CanNmPduRxIndicationEnabled" type="BOOLEAN">
+                    <a:a name="CALCULATION-FORMULA" 
+                         value="equal(nmpdurxindicationenabled)"/>
+                    <a:a name="CALCULATION-LANGUAGE" value="INFORMAL"/>
+                    <a:a name="DERIVED" value="TRUE"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable the notification of reception of a NM message.
+                          If a NM message is received the function
+                          &lt;code&gt;Nm_PduRxIndication()&lt;/code&gt; is called.&lt;/p&gt;
+
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;The value of this parameter has to be synchronized
+                            with the value of respective parameter in the Nm
+                            module.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="PDU Receive Indication"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="e2a860bb-4ed8-43da-800b-d1c56e4a3c4c"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(not(node:exists(as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmPduRxIndicationEnabled))) or                                     (. != as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmPduRxIndicationEnabled)" 
+                          true="CanNm PDU Receive Indication has to use same setting as Nm."/>
+                  </v:var>
+                  <v:var name="CanNmPnEiraCalcEnabled" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          Specifies if CanNm calculates the PN request information
+                          for internal and external requests.
+                         &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:0f09a983-43cd-4aaa-b090-01143ba63f8c"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst 
+                             expr="(. = &apos;true&apos;) and (node:value(../../../CanNmGeneral/CanNmPnSupported) = &apos;false&apos;)" 
+                             true="CanNmPnSupported must be set as TRUE if CanNmPnEiraCalcEnabled is set as TRUE"/>
+                      <a:tst 
+                             expr="(. = &apos;true&apos;) and not(node:exists(../CanNmPnInfo))" 
+                             true="EIRA calculation has been enabled but PN info configuration (CanNmPnInfo) is missing"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanNmPnResetTime" type="FLOAT">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          Specifies the runtime of the reset timer in seconds.
+                          This reset time is valid for the reset of PN requests in the EIRA and in the ERA.
+                          The value shall be the same for every channel.
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:cceff8c4-88b2-454b-b189-70cf5941a9c4"/>
+                    <a:da name="DEFAULT" value="0.01"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=65.535"/>
+                      <a:tst expr="&gt;=0.0010"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanNmRemoteSleepIndEnabled" type="BOOLEAN">
+                    <a:a name="CALCULATION-FORMULA" 
+                         value="if (cannmpassivemodeenabled == false) then equal(nmremotesleepindenabled) else equal(false)"/>
+                    <a:a name="CALCULATION-LANGUAGE" value="INFORMAL"/>
+                    <a:a name="DERIVED" value="TRUE"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable Support for Remote Sleep Indication.&lt;/p&gt;
+
+                          &lt;p&gt;The Remote Sleep Indication allows the CanNm module to detect
+                          a situation where all nodes in the cluster are ready to sleep
+                          apart from one node which still keeps the bus awake.&lt;/p&gt;
+
+                          &lt;p&gt;Therefore the following API is provided:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;Nm_CheckRemoteSleepIndication()&lt;/code&gt;&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;The value of this parameter has to be synchronized
+                              with the value of respective parameter in the Nm
+                              module.&lt;/li&gt;
+                            &lt;li&gt;Passive Mode must be disabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Remote Sleep Indication"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="f4b184c9-0118-47cd-ac69-1adb5204b8e7"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst 
+                             expr="(. = &apos;true&apos;) and (../CanNmPassiveModeEnabled = &apos;true&apos;)" 
+                             true="Remote Sleep Indication cannot be enabled if Passive Mode is enabled."/>
+                      <a:tst 
+                             expr="(not(node:exists(as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmRemoteSleepIndEnabled))) or                                     (. != as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmRemoteSleepIndEnabled)" 
+                             true="CanNm Remote Sleep Indication has to use same setting as Nm."/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="CanNmStateChangeIndEnabled" type="BOOLEAN">
+                    <a:a name="CALCULATION-FORMULA" 
+                         value="equal(NmStateChangeIndEnabled)"/>
+                    <a:a name="CALCULATION-LANGUAGE" value="INFORMAL"/>
+                    <a:a name="DERIVED" value="TRUE"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Pre-processor switch for enabling the CAN NM state change
+                            notification. This parameter shall be derived from NM_STATE_CHANGE_IND_ENABLED.&lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="State Change Indication"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="e7c65b84-5c94-4dae-b39a-2f1b5c0bcead"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(not(node:exists(as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmStateChangeIndEnabled))) or                                     (. != as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmStateChangeIndEnabled)" 
+                          true="CanNm State Change Indication has to use same setting as Nm."/>
+                  </v:var>
+                  <v:var name="CanNmUserDataEnabled" type="BOOLEAN">
+                    <a:a name="CALCULATION-FORMULA" 
+                         value="equal(nmuserdataenabled)"/>
+                    <a:a name="CALCULATION-LANGUAGE" value="INFORMAL"/>
+                    <a:a name="DERIVED" value="TRUE"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable support for transmission
+                          of user data in NM messages.&lt;/p&gt;
+
+                          &lt;p&gt;Therefore the following API functions are provided:&lt;/p&gt;
+
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;Nm_GetUserData()&lt;/code&gt;&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;Nm_SetUserData()&lt;/code&gt; &lt;em&gt;(Only if Passive Mode
+                            Support is disabled)&lt;/em&gt;&lt;/li&gt;
+                          &lt;/ul&gt;
+
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;The value of this parameter has to be synchronized
+                            with the value of respective parameter in the Nm
+                            module.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="User Data"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="65247e45-6536-4bce-9e85-d2df8b6d3975"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(not(node:exists(as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmUserDataEnabled))) or                                     (. != as:modconf(&apos;Nm&apos;)[1]/NmGlobalConfig/NmGlobalFeatures/NmUserDataEnabled)" 
+                          true="CanNm User Data setting has to be configured as for Nm."/>
+                  </v:var>
+                  <v:var name="CanNmVersionInfoApi" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          Provide API function for retrieving version information:
+
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;CanNm_GetVersionInfo()&lt;/code&gt;&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Enable Version Info API"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="78c02112-bdd6-4f58-bc39-7ca367797b24"/>
+                    <a:da name="DEFAULT" value="false"/>
+                  </v:var>
+                  <v:ref name="CanNmPnEiraRxNSduRef" type="REFERENCE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          Reference to a Pdu in the COM-Stack. EIRA is forwarded to PduR using this Pdu.
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="UUID" 
+                         value="ECUC:2e5c6c98-a29a-46d1-b7da-e702de0d63a5"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="node:exists(as:modconf(&apos;CanNm&apos;)[1]/CanNmGlobalConfig/*[1]/CanNmPnEiraCalcEnabled) and                                    (as:modconf(&apos;CanNm&apos;)[1]/CanNmGlobalConfig/*[1]/CanNmPnEiraCalcEnabled = &apos;true&apos;) and (not(node:refvalid(.)))" 
+                          true="Invalid reference."/>
+                    <a:da name="REF" 
+                          value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                  </v:ref>
+                  <v:lst name="CanNmChannelConfig" type="MAP">
+                    <a:a name="LABEL" value="Channel Configuration"/>
+                    <a:da name="MIN" value="1"/>
+                    <v:ctr name="CanNmChannelConfig" type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                            This container holds the channel specific
+                            configuration parameter of the CanNm.
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="LABEL" value="Channel Configuration"/>
+                      <a:a name="POSTBUILDCHANGEABLE" value="false"/>
+                      <a:a name="UUID" 
+                           value="c91aa63e-2ac9-43e5-8794-ed8f40bb44f7"/>
+                      <a:da name="INVALID" type="XPath" 
+                            expr="(../../CanNmPassiveModeEnabled = &apos;false&apos;) and not(node:exists(./CanNmTxPdu))" 
+                            true="The parameter CanNmPassiveMode is set to &apos;false&apos;, but the CanNmTxPdu container has been disabled!&apos;"/>
+                      <v:var name="CanNmNodeIdEnabled" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable support for sending of
+                          Node Ids in NM messages and provide
+                          functions for retrieving the node identifier from the
+                          most recently received NM PDU and the local node
+                          identifier.&lt;/p&gt;
+
+                          &lt;p&gt;Therefore the following API functions are provided:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;Nm_GetNodeIdentifier()&lt;/code&gt;&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;Nm_GetLocalNodeIdentifier()&lt;/code&gt;&lt;/li&gt;
+                          &lt;/ul&gt;
+
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;The value of this parameter has to be synchronized
+                              with the value of the respective parameter in the Nm
+                              module.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Node Identifier"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="fc4bfb10-7a14-11e4-82f8-0800200c9a66"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="not(node:exists(as:modconf(&apos;Nm&apos;)[1]/NmChannelConfig/*[NmComMChannelRef = node:current()/../CanNmComMNetworkHandleRef]/NmNodeIdEnabled))" 
+                                 true="Parameter NmNodeIdEnabled is not configured"/>
+                          <a:tst 
+                                 expr="as:modconf(&apos;Nm&apos;)[1]/NmChannelConfig/*[NmComMChannelRef = node:current()/../CanNmComMNetworkHandleRef]/NmNodeIdEnabled = node:current()" 
+                                 false="CanNm Node Identifier has to use same setting as Nm."/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmRepeatMsgIndEnabled" type="BOOLEAN">
+                        <a:a name="CALCULATION-FORMULA" 
+                             value="equal(nmrepeatmsgindenabled)"/>
+                        <a:a name="CALCULATION-LANGUAGE" value="INFORMAL"/>
+                        <a:a name="DERIVED" value="TRUE"/>
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable the notification that a Repeat
+                          Message Request Bit has been received.
+                          If a Repeat Message Request Bit has been received the
+                          function &lt;code&gt;Nm_RepeatMessageIndication()&lt;/code&gt; is
+                          called.&lt;/p&gt;
+
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;Node Detection must be enabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Repeat Message Indication"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="23fccf4d-1640-47df-9d2b-0ce114279056"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(../CanNmNodeDetectionEnabled = &apos;false&apos;) and (. = &apos;true&apos;)" 
+                                 true="Repeat Message Indication needs to have Node Detection enabled."/>
+                          <a:tst 
+                                 expr="not(node:exists(as:modconf(&apos;Nm&apos;)[1]/NmChannelConfig/*[NmComMChannelRef = node:current()/../CanNmComMNetworkHandleRef]/NmRepeatMsgIndEnabled))" 
+                                 true="Parameter NmRepeatMsgIndEnabled is not configured"/>
+                          <a:tst 
+                                 expr="as:modconf(&apos;Nm&apos;)[1]/NmChannelConfig/*[NmComMChannelRef = node:current()/../CanNmComMNetworkHandleRef]/NmRepeatMsgIndEnabled = node:current()" 
+                                 false="CanNm Repeat Message Indication has to use same setting as Nm."/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmNodeDetectionEnabled" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable the handling &lt;em&gt;Repeat Message Request Bit&lt;/em&gt; in the
+                          &lt;em&gt;Control Bit Vector&lt;/em&gt;.
+                          If the &lt;em&gt;Request Message Bit&lt;/em&gt; in the NM message set
+                          the nodes receiving the message start sending NM messages.&lt;/p&gt;
+
+                          &lt;p&gt;For setting the &lt;em&gt;Repeat Message Request Bit&lt;/em&gt;
+                          in NM messages following API function is provided:&lt;/p&gt;
+
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;CanNm_RepeatMessageRequest()&lt;/code&gt;&lt;/li&gt;
+                          &lt;/ul&gt;
+
+                          &lt;p&gt;Dependencies:&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;The value of this parameter has to be synchronized
+                              with the value of the respective parameter in the Nm
+                              module.&lt;/li&gt;
+                            &lt;li&gt;Support for Node Identifiers must be enabled.&lt;/li&gt;
+                            &lt;li&gt;Passive Mode must be disabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Node Detection"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="b1c65167-f1a7-4414-8883-52130b5b9440"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(. = &apos;true&apos;) and (../CanNmPassiveModeEnabled = &apos;true&apos;)" 
+                                 true="Node Detection cannot be enabled if Passive Mode is enabled."/>
+                          <a:tst 
+                                 expr="(. = &apos;true&apos;) and (../CanNmNodeIdEnabled = &apos;false&apos;)" 
+                                 true="CanNm Node Detection cannot be enabled when Node Id is disabled."/>
+                          <a:tst 
+                                 expr="not(node:exists(as:modconf(&apos;Nm&apos;)[1]/NmChannelConfig/*[NmComMChannelRef = node:current()/../CanNmComMNetworkHandleRef]/NmNodeDetectionEnabled))" 
+                                 true="Parameter NmNodeDetectionEnabled is not configured"/>
+                          <a:tst 
+                                 expr="as:modconf(&apos;Nm&apos;)[1]/NmChannelConfig/*[NmComMChannelRef = node:current()/../CanNmComMNetworkHandleRef]/NmNodeDetectionEnabled = node:current()" 
+                                 false="CanNm Node Detection has to use same setting as Nm Node Detection."/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmAllNmMessagesKeepAwake" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              Specifies if CanNm drops irrelevant NM messages.
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:c102fdeb-4831-4ada-9e0b-1c5125f3f909"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="ENABLE" value="false"/>
+                      </v:var>
+                      <v:var name="CanNmCarWakeUpBitPosition" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              Specifies the Bit position of the CWU within the CanNmCarWakeUpBytePosition.
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:2e5a9851-b764-44d9-8bc6-360bd5253f4f"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="../CanNmCarWakeUpRxEnabled = &apos;true&apos;"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=7"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmCarWakeUpBytePosition" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              Specifies the Byte position of the CWU within the NM-Message.
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:7459386d-f35e-4ff5-8ec7-5c3f2a33268f"/>
+                        <a:da name="DEFAULT" value="2"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="../CanNmCarWakeUpRxEnabled = &apos;true&apos;"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=7"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="CanNmCarWakeUpBytePosition cannot be on byte 0, this position is occupied by Control Bit Vector" 
+                                    expr="(node:value(../CanNmPduCbvPosition) = &apos;CANNM_PDU_BYTE_0&apos;) and (. = 0)"/>
+                            <mt:tst 
+                                    true="CanNmCarWakeUpBytePosition cannot be on byte 1, this position is occupied by Control Bit Vector" 
+                                    expr="(node:value(../CanNmPduCbvPosition) = &apos;CANNM_PDU_BYTE_1&apos;) and (. = 1)"/>
+                            <mt:tst 
+                                    true="CanNmCarWakeUpBytePosition cannot be on byte 0, this position is occupied by Node identifier" 
+                                    expr="(node:value(../CanNmPduNidPosition) = &apos;CANNM_PDU_BYTE_0&apos;) and (. = 0)"/>
+                            <mt:tst 
+                                    true="CanNmCarWakeUpBytePosition cannot be on byte 0, this position is occupied by Node identifier" 
+                                    expr="(node:value(../CanNmPduNidPosition) = &apos;CANNM_PDU_BYTE_1&apos;) and (. = 1)"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmCarWakeUpFilterEnabled" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                              If CWU filtering is supported, only the CWU bit within the
+                              NM message with source node identifier CanNmCarWakeUpFilterNodeId
+                              is considered as CWU request.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:0a3657af-f39c-4912-8576-532ed0640fdc"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="node:exists(../CanNmCarWakeUpRxEnabled) and (../CanNmCarWakeUpRxEnabled = &apos;true&apos;) and                                                                (../CanNmPduNidPosition != &apos;CANNM_PDU_OFF&apos;)"/>
+                      </v:var>
+                      <v:var name="CanNmCarWakeUpFilterNodeId" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              Source node identifier for CWU filtering.
+                              If CWU filtering is supported, only the CWU bit within the
+                              NM message with source node identifier CanNmCarWakeUpFilterNodeId
+                              is considered as CWU request.
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:7fcec870-37fd-4166-9835-2344602fc85b"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="node:exists(../CanNmCarWakeUpFilterEnabled) and (../CanNmCarWakeUpFilterEnabled = &apos;true&apos;)"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmCarWakeUpRxEnabled" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              Enables or disables support of CarWakeUp bit evaluation in received NM messages.
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:b50831a3-ae64-4020-8e65-835e3a6a7811"/>
+                        <a:da name="DEFAULT" value="false"/>
+                      </v:var>
+                      <v:var name="CanNmPnEnabled" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                            &lt;p&gt;Enables or disables support of partial networking.&lt;/p&gt;
+                            &lt;ul&gt;
+                              &lt;li&gt;false : Partial networking not supported.&lt;/li&gt;
+                              &lt;li&gt;true : Partial networking supported.&lt;/li&gt;
+                            &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTMULTIPLICITY" value="true"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:1b3bcc11-49fa-4981-8233-c557b26537fa"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(. = &apos;true&apos;) and (../CanNmUserDataLength = 0)" 
+                                 true="CanNmPnEnabled is set to &apos;true&apos; but CanNmUserDataLength is set to 0!"/>
+                          <a:tst 
+                                 expr="(. = &apos;true&apos;) and (../../../CanNmComUserDataSupport = &apos;false&apos;)" 
+                                 true="CanNmPnEnabled is set to &apos;true&apos; but CanNmComUserDataSupport is set to &apos;false&apos;!"/>
+                          <a:tst 
+                                 expr="(. = &apos;true&apos;) and                                       (../../../../../CanNmGeneral/CanNmPnSupported = &apos;false&apos;)" 
+                                 true="There must not be any Partial Network Cluster(s) configured if CanNmPnSupported is set as false"/>
+                          <a:tst 
+                                 expr="(node:value(../CanNmPduCbvPosition) = &apos;CANNM_PDU_OFF&apos;) and (. = &apos;true&apos;)" 
+                                 true="If &apos;CanNmPnEnabled&apos; is enabled, the position of the CBV (CanNmPduCbvPosition) must not be set to &apos;CANNM_PDU_OFF&apos;."/>
+                          <a:tst 
+                                 expr="node:exists(../CanNmPnHandleMultipleNetworkRequests) and ((. = &apos;false&apos; ) and (node:value(../CanNmPnHandleMultipleNetworkRequests) = &apos;true&apos;))" 
+                                 true="Support for partial networks (CanNmPnEnabled) must be enabled if CanNmPnHandleMultipleNetworkRequests is set to &apos;true&apos;!"/>
+                          <a:tst 
+                                 expr="(../../../CanNmPassiveModeEnabled = &apos;false&apos;) and (. = &apos;true&apos;) and ((../CanNmMsgCycleTime) &gt;= (../../../CanNmPnResetTime))" 
+                                 true="The Message Cycle Time must be less than CanNmPnResetTime if CanNmPnEnabled is set to true.!"/>
+                          <a:tst 
+                                 expr="(../../../CanNmPassiveModeEnabled = &apos;false&apos;) and (. = &apos;true&apos;) and ((../CanNmTimeoutTime) &lt;= (../../../CanNmPnResetTime))" 
+                                 true="The CanNmTimeoutTime must be greater than CanNmPnResetTime if CanNmPnEnabled is set to true."/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmPnEraCalcEnabled" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;Specifies if CanNm calculates the PN request information for external requests.(ERA)&lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:3c603053-712a-4bcf-b0fc-e1777544559a"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(. = &apos;true&apos;) and (node:value(../../../../../CanNmGeneral/CanNmPnSupported) = &apos;false&apos;)" 
+                                 true="There must be at least one channel with CanNmPnEnabled set as true when CanNmPnEraCalcEnabled is set as true"/>
+                          <a:tst 
+                                 expr="(. = &apos;true&apos;) and (not(node:exists(../CanNmPnEraRxNSduRef)))" 
+                                 true="If CanNmPnEraCalcEnabled is set as true CanNmPnEraRxNSduRef must be configured"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmPnHandleMultipleNetworkRequests" 
+                             type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                In case this parameter is set to &lt;strong&gt;true&lt;/strong&gt; a call of the API function &lt;code&gt;CanNm_NetworkRequest()&lt;/code&gt; in the state &lt;code&gt;NormalOperationState&lt;/code&gt;, &lt;code&gt;ReadySleepState&lt;/code&gt; or &lt;code&gt;RepeatMessageState&lt;/code&gt; causes the CanNm to (re-)enter the &lt;code&gt;RepeatMessageState&lt;/code&gt; and to send immediate Nm messages.
+                              &lt;/p&gt;
+                              &lt;p&gt;
+                                Dependencies:
+                                &lt;ul&gt;
+                                  &lt;li&gt;Support for Partial Networks must be enabled for this channel
+                                      (&lt;a href=&quot;path:../CanNmPnEnabled&quot;&gt;&lt;code&gt;CanNmPnEnabled&lt;/code&gt;&lt;/a&gt;).
+                                  &lt;/li&gt;
+                                  &lt;li&gt;The number of immediate transmissions must greater than 0 for this channel
+                                     (&lt;a href=&quot;path:../CanNmImmediateNmTransmissions&quot;&gt;&lt;code&gt;CanNmImmediateNmTransmissions&lt;/code&gt;&lt;/a&gt;).
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:1d373ff7-5d82-4720-ab7c-9d6d4c8c4b34"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="EDITABLE" value="true"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="(. = &apos;true&apos;) and (../CanNmImmediateNmTransmissions = 0)" 
+                              true="The number of immediate transmissions (CanNmImmediateNmTransmissions) must greater than 0."/>
+                      </v:var>
+                      <v:ref name="CanNmPnEraRxNSduRef" type="REFERENCE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              Reference to a Pdu in the COM-Stack.
+                              The SduRef is required for every CanNm Channel, because ERA is reported per channel.
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="UUID" 
+                             value="ECUC:37b6b74d-f4c6-463a-b271-276a852264ee"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="node:exists(../CanNmPnEraCalcEnabled) and (../CanNmPnEraCalcEnabled = &apos;true&apos;) and                                        (not(node:refvalid(.)))" 
+                              true="Invalid reference."/>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                      </v:ref>
+                      <v:var name="CanNmBusLoadReductionActive" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;This parameter defines if bus load reduction for
+                              the respective NM channel is active or not.&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;Support for Bus Load Reduction must be enabled.&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Bus Load Reduction Active"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="3f77d578-39a3-4d92-8105-70e2e963d5d5"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="(. = &apos;true&apos;) and (../../../CanNmBusLoadReductionEnabled = &apos;false&apos;)" 
+                              true="If Bus Load Reduction shall be activated for a channel, it is required, that the Bus Load Reduction feature is enabled."/>
+                      </v:var>
+                      <v:var name="CanNmImmediateNmCycleTime" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;Defines the immediate NM PDU cycle time in seconds which is used
+                              for CanNmImmediateNmTransmissions NM PDU transmissions.
+                              This parameter is only valid if CanNmImmediateNmTransmissions
+                              is greater one&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;This parameter is active only if
+                                &lt;code&gt;CanNmImmediateNmTransmissions&lt;/code&gt;
+                                greater than one&lt;/li&gt;
+                                &lt;li&gt;The transmission of the first NM PDU shall be delayed by the
+                                time indicated by &lt;code&gt;CANNM_MSG_CYCLE_OFFSET&lt;/code&gt; in order to
+                                avoid bursts of NM messages if
+                                &lt;code&gt;CanNmImmediateNmTransmissions&lt;/code&gt; is zero&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Immediate NM PDU cycle time"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="4b27fe59-d700-410e-9125-d3aa1beeaa65"/>
+                        <a:da name="DEFAULT" value="0.001"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="../CanNmImmediateNmTransmissions &gt; 1"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65.535"/>
+                            <mt:tst expr="&gt;=0.001"/>
+                          </mt:range>
+                          <mt:xpath 
+                                    true="The Immediate NmCycleTime must be multiple of the Main Function Period." 
+                                    expr="(./../../../CanNmPassiveModeEnabled = &apos;false&apos;) and (../CanNmImmediateNmTransmissions &gt; 1) and                                        (((. * 1000) mod (../../../CanNmMainFunctionPeriod * 1000)) != 0)"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmImmediateNmTransmissions" 
+                             type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;Defines the number of immediate NM PDUs which shall
+                              be transmitted. If the value is zero no immediate NM PDUs
+                              are transmitted. The cycle time of immeditate NM PDUs is
+                              defined by &lt;code&gt;CanNmImmediateNmCycleTime&lt;/code&gt;.&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;&lt;code&gt;CanNmImmediateNmCycleTime&lt;/code&gt; is active only if this
+                                parameter greater than zero&lt;/li&gt;
+                                &lt;li&gt;The transmission of the first NM PDU shall be delayed by the
+                                time indicated by &lt;code&gt;ANNM_MSG_CYCLE_OFFSET&lt;/code&gt; in order to
+                                avoid bursts of NM messages if CanNmImmediateNmTransmissions is zero&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Number of immediate NM PDUs"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="1a91493f-c189-4808-b7e3-4c5512f3e142"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="EDITABLE" type="XPath" 
+                              expr="../../../CanNmPassiveModeEnabled = &apos;false&apos;"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=255"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath 
+                                    true="CanNmImmediateNmTransmissions must be 0 when CanNmImmediateRestartEnabled is true ." 
+                                    expr="(. != 0) and (../../../CanNmImmediateRestartEnabled = &apos;true&apos;)"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmMsgCycleOffset" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                             &lt;p&gt;Time offset in seconds of the periodic transmission.&lt;/p&gt;
+
+                              &lt;p&gt;It determines the start delay of the transmission.&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;If Passive Mode is enabled
+                                this parameter is ignored.&lt;/li&gt;
+
+                                &lt;li&gt;The Message Cycle Offset must be
+                                smaller than the Message Cycle Time.&lt;/li&gt;
+
+                                &lt;li&gt;The value must be multiple
+                                of the Main Function Period.&lt;/li&gt;
+                              &lt;/ul&gt;
+
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Message Cycle Offset [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="1d9bfa43-c5e6-4671-af61-068bd876d2ba"/>
+                        <a:da name="DEFAULT" value="0.001"/>
+                        <a:da name="EDITABLE" type="XPath" 
+                              expr="../../../CanNmPassiveModeEnabled = &apos;false&apos;"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65.535"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="The Message Cycle Offset must be less than the Message Cycle Time." 
+                                    expr="(../../../CanNmPassiveModeEnabled = &apos;false&apos;) and (. &gt;= ../CanNmMsgCycleTime)"/>
+                            <mt:tst 
+                                    true="The Message Cycle Offset must be a multiple of the Main Function Period." 
+                                    expr="(../../../CanNmPassiveModeEnabled = &apos;false&apos;) and (((. * 1000) mod (../../../CanNmMainFunctionPeriod* 1000)) != 0)"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmMsgCycleTime" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;Period of a NM message in seconds.&lt;/p&gt;
+
+                              &lt;p&gt;It determines
+                              the periodic rate in the &apos;periodic
+                              transmission mode with bus load reduction&apos;;
+                              and is the basis for transmit scheduling in the
+                              &apos;periodic transmission mode without bus load
+                              reduction&apos;.&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;If Passive Mode is enabled this parameter is ignored.&lt;/li&gt;
+                                &lt;li&gt;The value must be multiple of the Main Function Period.&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Message Cycle Time [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="93f8d1b3-a75a-4719-97bf-967d72293d26"/>
+                        <a:da name="DEFAULT" value="0.002"/>
+                        <a:da name="EDITABLE" type="XPath" 
+                              expr="../../../CanNmPassiveModeEnabled = &apos;false&apos;"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65.535"/>
+                            <mt:tst expr="&gt;=0.001"/>
+                          </mt:range>
+                          <mt:xpath 
+                                    true="The Message Cycle Time must be multiple of the Main Function Period." 
+                                    expr="(./../../../CanNmPassiveModeEnabled = &apos;false&apos;) and (((. * 1000) mod (../../../CanNmMainFunctionPeriod * 1000)) != 0)"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmMsgReducedTime" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;Node specific bus cycle time in the periodic
+                              transmission mode with bus load reduction.&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;This parameter is only valid if
+                                &lt;code&gt;CanNmBusLoadReductionEnabled == True&lt;/code&gt; and
+                                &lt;code&gt;CanNmBusLoadReductionActive == True&lt;/code&gt; and
+                                &lt;code&gt;CanNmPassiveModeEnabled == False&lt;/code&gt;
+                                &lt;/li&gt;
+
+                                &lt;li&gt;Value must be smaller than the
+                                Message Cycle Time of this NM channel.&lt;/li&gt;
+
+                                &lt;li&gt;Value must be greater than or equal to half
+                                the Message Cycle Time of this NM channel.&lt;/li&gt;
+
+                                &lt;li&gt;Value must be a multiple of the Main Function Period.&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Message Reduced Time [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="0b1a5402-ad16-4241-a92b-c327506fa8b2"/>
+                        <a:da name="DEFAULT" value="0.001"/>
+                        <a:da name="EDITABLE" type="XPath" 
+                              expr="../CanNmBusLoadReductionActive = &apos;true&apos;"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65.535"/>
+                            <mt:tst expr="&gt;=0.001"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="The Message Reduced Time must be less than, but at least the half of the Message Cycle Time" 
+                                    expr="                             (../CanNmBusLoadReductionActive = &apos;true&apos;) and                             (. &lt; ((./../CanNmMsgCycleTime div 2)) or (. &gt;= ./../CanNmMsgCycleTime))"/>
+                            <mt:tst 
+                                    true="The Message Reduced Time must be a multiple of the Main Function Period." 
+                                    expr="(../CanNmBusLoadReductionActive = &apos;true&apos;) and (((. * 1000) mod (../../../CanNmMainFunctionPeriod * 1000)) != 0)"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmMsgTimeoutTime" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;Transmission Timeout of NM message.&lt;/p&gt;
+
+                              &lt;p&gt;If there is no transmission confirmation
+                              by the CAN Interface within this timeout,
+                              the CanNm module shall give an error notification.&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;If Passive Mode is enabled
+                                this parameter is ignored.&lt;/li&gt;
+
+                                &lt;li&gt;Value must be a multiple of
+                                the Main Function Period.&lt;/li&gt;
+
+                                &lt;li&gt;Value must be less than
+                                the Message Cycle Time.&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Message Timeout Time [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="2beed39f-8903-4ff1-8a23-666172d02dba"/>
+                        <a:da name="DEFAULT" value="0.002"/>
+                        <a:da name="EDITABLE" type="XPath" 
+                              expr="../../../CanNmPassiveModeEnabled = &apos;false&apos;"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65.535"/>
+                            <mt:tst expr="&gt;=0.001"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="The Message Timeout Time must be less than the Message Cycle Time." 
+                                    expr="(../../../CanNmPassiveModeEnabled = &apos;false&apos;) and (. &gt;= ../CanNmMsgCycleTime)"/>
+                            <mt:tst 
+                                    true="The Message Timeout Time must be a multiple of the Main Function Period." 
+                                    expr="(../../../CanNmPassiveModeEnabled = &apos;false&apos;) and (((. * 1000) mod (../../../CanNmMainFunctionPeriod * 1000)) != 0)"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmNodeId" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;Node identifier of local node.&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;This parameter is only valid if
+                                &lt;code&gt;CanNmPassiveModeEnabled = False&lt;/code&gt;&lt;/li&gt;
+                                &lt;li&gt;If the Node Identifier Position is set to
+                                &lt;em&gt;CANNM_PDU_OFF&lt;/em&gt; this parameter is ignored.&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Node Identifier"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="9baecafc-c529-4147-96f2-6cfe8c35eb4d"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="../CanNmNodeIdEnabled = &apos;true&apos;"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmPduCbvPosition" type="ENUMERATION">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;This parameter defines the position of the
+                              Control Bit Vector within a NM message:&lt;/p&gt;
+
+                              &lt;ul&gt;
+                                &lt;li&gt;&lt;code&gt;CANNM_PDU_BYTE_0&lt;/code&gt;: byte 0 &lt;/li&gt;
+                                &lt;li&gt;&lt;code&gt;CANNM_PDU_BYTE_1&lt;/code&gt;: byte 1, &lt;/li&gt;
+                                &lt;li&gt;&lt;code&gt;CANNM_PDU_OFF&lt;/code&gt;: Control bit vector
+                                is not part of the NM PDU&lt;/li&gt;
+                              &lt;/ul&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;If Node Detection support is
+                                disabled this parameter is ignored.&lt;/li&gt;
+
+                                &lt;li&gt;The Control Bit Vector must not
+                                occupy the same byte as the Node Id.&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" 
+                             value="PDU Control Bit Vector Position"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="a03db727-4b93-4693-ad8c-5f5c7850dd79"/>
+                        <a:da name="DEFAULT" value="CANNM_PDU_BYTE_1"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(. != &apos;CANNM_PDU_OFF&apos;) and (. = ../CanNmPduNidPosition)" 
+                                 true="The Node ID also occupies this byte position."/>
+                          <a:tst 
+                                 expr="(. = &apos;CANNM_PDU_OFF&apos;) and (../CanNmNodeDetectionEnabled = &apos;true&apos;)" 
+                                 true="If Node Detection support is enabled the position for the Control Bit Vector must be specified."/>
+                          <a:tst 
+                                 expr="(. = &apos;CANNM_PDU_OFF&apos;) and (../../../CanNmActiveWakeupBitEnabled = &apos;true&apos;)" 
+                                 true="If &apos;CanNmActiveWakeupBitEnabled&apos; is enabled, the position of the CBV must not be set to &apos;CANNM_PDU_OFF&apos;."/>
+                        </a:da>
+                        <a:da name="RANGE">
+                          <a:v>CANNM_PDU_BYTE_0</a:v>
+                          <a:v>CANNM_PDU_BYTE_1</a:v>
+                          <a:v>CANNM_PDU_OFF</a:v>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="(. = &apos;CANNM_PDU_BYTE_1&apos;) and (../CanNmPduNidPosition = &apos;CANNM_PDU_OFF&apos;)" 
+                              true="The first byte of the NM message remains unused in this configuration."/>
+                      </v:var>
+                      <v:var name="CanNmPduNidPosition" type="ENUMERATION">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;This parameter defines the position
+                              of the Node Id within a NM message:&lt;/p&gt;
+
+                              &lt;ul&gt;
+                                &lt;li&gt;&lt;code&gt;CANNM_PDU_BYTE_0&lt;/code&gt;:  byte 0 &lt;/li&gt;
+                                &lt;li&gt;&lt;code&gt;CANNM_PDU_BYTE_1&lt;/code&gt;: byte 1, &lt;/li&gt;
+                                &lt;li&gt;&lt;code&gt;CANNM_PDU_OFF&lt;/code&gt;: source node
+                                identifier is not part of the NM PDU&lt;/li&gt;
+                              &lt;/ul&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;If Node Id support is disabled
+                                this parameter is ignored.&lt;/li&gt;
+
+                                &lt;li&gt;The Node Id must not occupy the
+                                same byte as the Control Bit Vector&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="PDU Node Identifier Position"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="b1fa2a42-dc35-4359-8c4a-ad89dbe2d0bc"/>
+                        <a:da name="DEFAULT" value="CANNM_PDU_BYTE_0"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(. != &apos;CANNM_PDU_OFF&apos;) and (. = ../CanNmPduCbvPosition)" 
+                                 true="The Control Bit Vector also occupies this byte position."/>
+                          <a:tst 
+                                 expr="(. = &apos;CANNM_PDU_OFF&apos;) and (../CanNmNodeIdEnabled = &apos;true&apos;)" 
+                                 true="If Node Identifier support is enabled a position for the node identifier must be specified."/>
+                          <a:tst 
+                                 expr="(. != &apos;CANNM_PDU_OFF&apos;) and (../CanNmNodeIdEnabled = &apos;false&apos;)" 
+                                 true="If Node Identifier support is disabled the position for the node identifier must be CANNM_PDU_OFF."/>
+                        </a:da>
+                        <a:da name="RANGE">
+                          <a:v>CANNM_PDU_BYTE_0</a:v>
+                          <a:v>CANNM_PDU_BYTE_1</a:v>
+                          <a:v>CANNM_PDU_OFF</a:v>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="(. = &apos;CANNM_PDU_BYTE_1&apos;) and (../CanNmPduCbvPosition = &apos;CANNM_PDU_OFF&apos;)" 
+                              true="The first byte of the NM message remains unused in this configuration."/>
+                      </v:var>
+                      <v:var name="CanNmRemoteSleepIndTime" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;Timeout for Remote Sleep Indication.&lt;/p&gt;
+
+                              &lt;p&gt;It defines the time in seconds how long it shall take
+                                 to recognize that all other nodes are ready to sleep.&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                 &lt;li&gt;CanNmRemoteSleepIndTime &gt;= CanNmMsgCycleTime&lt;/li&gt;
+                              &lt;/ul&gt;
+
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" 
+                             value="Remote Sleep Indication Time [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="d2f0fb00-3bbf-44d2-a4fe-ed71c63aa2db"/>
+                        <a:da name="DEFAULT" value="0.000"/>
+                        <a:da name="EDITABLE" type="XPath" 
+                              expr="../../../CanNmRemoteSleepIndEnabled = &apos;true&apos;"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65.535"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="The Remote Sleep Indication Time must be a multiple of the Main Function Period." 
+                                    expr="(../../../CanNmRemoteSleepIndEnabled = &apos;true&apos;) and (((. * 1000) mod (../../../CanNmMainFunctionPeriod * 1000)) != 0)"/>
+                            <mt:tst 
+                                    true="CanNmRemoteSleepIndTime needs to be greater or equal than CanNmMsgCycleTime." 
+                                    expr="(../../../CanNmRemoteSleepIndEnabled = &apos;true&apos;) and node:value(.) &lt; node:value(../CanNmMsgCycleTime)"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmRepeatMessageTime" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;Timeout for Repeat Message State.&lt;/p&gt;
+
+                              &lt;p&gt;It defines the time in seconds how long
+                              the NM shall stay in the Repeat Message State.&lt;/p&gt;
+
+                              &lt;p&gt;Typically the value of this parameter should
+                              be a multiple of Message Cycle Time.&lt;/p&gt;
+
+                              &lt;p&gt;The value 0 denotes that &lt;em&gt;no Repeat Message State&lt;/em&gt;
+                              is configured. It means that Repeat Message State
+                              is transient what implicates that it is left
+                              immediately after entrance and in result no
+                              start-up stability is guaranteed and no node
+                              detection procedure is possible.&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;Value must be a multiple
+                                 of the Main Function Period.&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Repeat Message Time [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="28d669c8-58b7-40ed-b09a-8e12feaf8739"/>
+                        <a:da name="DEFAULT" value="0.001"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65.534"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="The CanNm Repeat Message Time must be a multiple of the Main Function Period." 
+                                    expr="(((. * 1000) mod (../../../CanNmMainFunctionPeriod * 1000)) != 0)"/>
+                            <mt:tst 
+                                    true="CanNmRepeatMessageTime must be greater than CanNmImmediateNmTransmissions * CanNmImmediateNmCycleTime" 
+                                    expr="(../../../CanNmPassiveModeEnabled = &apos;false&apos;) and                                          (../CanNmImmediateNmTransmissions &gt; 0) and                                          ((../CanNmImmediateNmTransmissions * (../CanNmImmediateNmCycleTime * 1000)) &gt; (. * 1000))"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmTimeoutTime" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;Network Timeout for NM messages.&lt;/p&gt;
+
+                                &lt;p&gt;It specifies the time in seconds how long
+                                the NM stays in the Network Mode before transition
+                                to Prepare Bus-Sleep Mode takes place after the
+                                network has been released.&lt;/p&gt;
+
+                                &lt;p&gt;Transition to Prepare Bus-Sleep Mode take place if&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li&gt;the network has been released and &lt;/li&gt;
+                                  &lt;li&gt;no NM messages are received within this
+                                    period&lt;/li&gt;
+                                &lt;/ul&gt;
+
+                                &lt;p&gt;It shall be equal for all nodes in the cluster. It shall be greater
+                                than CanNmMsgCycleTime.&lt;/p&gt;
+
+                                &lt;p&gt;Dependencies:&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li&gt;Value must be a multiple of
+                                  the Main Function Period.&lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Timeout Time [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="23d47a85-fb28-46fb-b0de-4e26b327b4e7"/>
+                        <a:da name="DEFAULT" value="0.004"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65.535"/>
+                            <mt:tst expr="&gt;=0.002"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="The Timeout Time must be a multiple of the Main Function Period." 
+                                    expr="((. * 1000) mod (../../../CanNmMainFunctionPeriod * 1000)) != 0"/>
+                            <mt:tst 
+                                    true="The Timeout Time must be greater than Message cycle time." 
+                                    expr="(. &lt;= ../CanNmMsgCycleTime)"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmUserDataLength" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;Defines the length of the user data contained in the NM PDU&lt;/p&gt;
+
+                                &lt;p&gt;Dependencies:&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li&gt;The size of the user data must be smaller
+                                    than the length of the PDU with length of
+                                    the Control Bit Vector and/or the Node Id
+                                    subtracted.&lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="User Data Length"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="d7a4ad61-8585-448b-8b3e-d526a1052430"/>
+                        <a:da name="DEFAULT" value="6"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&gt;=0"/>
+                            <mt:tst expr="&lt;=4294967295"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="Required length for the Nm Pdu (NID, CBV position and UserDataLength) it&apos;s higher than configured RX pdu length" 
+                                    expr="(../CanNmPduCbvPosition = &apos;CANNM_PDU_OFF&apos;) and                                           (../CanNmPduNidPosition = &apos;CANNM_PDU_OFF&apos;) and                                           (node:refvalid(../CanNmRxPdu/*[1]/CanNmRxPduRef)) and                                           (num:i(.) &gt; (node:ref(../CanNmRxPdu/*[1]/CanNmRxPduRef)/PduLength))"/>
+                            <mt:tst 
+                                    true="Required length for the Nm Pdu (NID, CBV position and UserDataLength) it&apos;s higher than configured RX pdu length" 
+                                    expr="(../CanNmPduCbvPosition != &apos;CANNM_PDU_OFF&apos;) and                                           (../CanNmPduNidPosition != &apos;CANNM_PDU_OFF&apos;) and                                           (node:refvalid(../CanNmRxPdu/*[1]/CanNmRxPduRef)) and                                           ((num:i(.) + 2) &gt; (node:ref(../CanNmRxPdu/*[1]/CanNmRxPduRef)/PduLength))"/>
+                            <mt:tst 
+                                    true="Required length for the Nm Pdu (NID, CBV position and UserDataLength) it&apos;s higher than configured RX pdu length" 
+                                    expr="(../CanNmPduCbvPosition = &apos;CANNM_PDU_OFF&apos;) and                                           (../CanNmPduNidPosition = &apos;CANNM_PDU_BYTE_0&apos;) and                                           (node:refvalid(../CanNmRxPdu/*[1]/CanNmRxPduRef)) and                                           ((num:i(.) + 1) &gt; (node:ref(../CanNmRxPdu/*[1]/CanNmRxPduRef)/PduLength))"/>
+                            <mt:tst 
+                                    true="Required length for the Nm Pdu (NID, CBV position and UserDataLength) it&apos;s higher than configured RX pdu length" 
+                                    expr="(../CanNmPduCbvPosition = &apos;CANNM_PDU_OFF&apos;) and                                           (../CanNmPduNidPosition = &apos;CANNM_PDU_BYTE_1&apos;) and                                           (node:refvalid(../CanNmRxPdu/*[1]/CanNmRxPduRef)) and                                           ((num:i(.) + 2) &gt; (node:ref(../CanNmRxPdu/*[1]/CanNmRxPduRef)/PduLength))"/>
+                            <mt:tst 
+                                    true="Required length for the Nm Pdu (NID, CBV position and UserDataLength) it&apos;s higher than configured RX pdu length" 
+                                    expr="(../CanNmPduNidPosition = &apos;CANNM_PDU_OFF&apos;) and                                           (../CanNmPduCbvPosition = &apos;CANNM_PDU_BYTE_0&apos;) and                                           (node:refvalid(../CanNmRxPdu/*[1]/CanNmRxPduRef)) and                                           ((num:i(.) + 1) &gt; (node:ref(../CanNmRxPdu/*[1]/CanNmRxPduRef)/PduLength))"/>
+                            <mt:tst 
+                                    true="Required length for the Nm Pdu (NID, CBV position and UserDataLength) it&apos;s higher than configured RX pdu length" 
+                                    expr="(../CanNmPduNidPosition = &apos;CANNM_PDU_OFF&apos;) and                                           (../CanNmPduCbvPosition = &apos;CANNM_PDU_BYTE_1&apos;) and                                           (node:refvalid(../CanNmRxPdu/*[1]/CanNmRxPduRef)) and                                           ((num:i(.) + 2) &gt; (node:ref(../CanNmRxPdu/*[1]/CanNmRxPduRef)/PduLength))"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanNmWaitBusSleepTime" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;Timeout for bus calm down phase.&lt;/p&gt;
+
+                              &lt;p&gt;This parameter specifies the time in seconds how
+                              long the NM shall stay in the Prepare Bus-Sleep Mode before
+                              transition into Bus-Sleep Mode takes place.&lt;/p&gt;
+
+                              &lt;p&gt;Transition to Prepare Bus-Sleep Mode take place if&lt;/p&gt;
+                              &lt;ul&gt;
+                                &lt;li&gt;the network has not been requested again and &lt;/li&gt;
+                                &lt;li&gt;no NM messages are received within this
+                                  period&lt;/li&gt;
+                              &lt;/ul&gt;
+
+                              &lt;p&gt;Typically the value of this parameter
+                              should be a multiple of Message Cycle Time.
+                              It shall be equal for all nodes in the cluster.
+                              It shall be long enough to make all Tx-buffer empty.&lt;/p&gt;
+
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                              &lt;ul&gt;
+                                 &lt;li&gt;Value must be a multiple
+                                 of the Main Function Period.&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Wait Bus Sleep Time [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="10ca7204-84a6-4284-b445-d9487004e93b"/>
+                        <a:da name="DEFAULT" value="0.004"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65.535"/>
+                            <mt:tst expr="&gt;=0.001"/>
+                          </mt:range>
+                          <mt:xpath 
+                                    true="The Wait Bus Sleep Time must be a multiple of the Main Function Period." 
+                                    expr="((. * 1000) mod (../../../CanNmMainFunctionPeriod * 1000)) != 0"/>
+                        </a:da>
+                      </v:var>
+                      <v:ref name="CanNmComMNetworkHandleRef" 
+                             type="SYMBOLIC-NAME-REFERENCE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;This reference points to the unique channel defined by
+                              the ComMChannel and provides access to the unique channel
+                              index value in ComMChannelId.&lt;/p&gt;
+                              &lt;p&gt;Dependencies:&lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="UUID" 
+                             value="0d0078ad-5cc9-4229-9cbb-b16702bfbffc"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst expr="node:refvalid(.)" 
+                                 false="Invalid ComM channel reference"/>
+                          <a:tst 
+                                 expr="count(as:modconf(&apos;Nm&apos;)[1]/NmChannelConfig/*[(node:exists(NmComMChannelRef)) and (NmComMChannelRef = node:current()) and                                             (node:exists(NmBusType/NmStandardBusType)) and (NmBusType/NmStandardBusType = &apos;NM_BUSNM_CANNM&apos;)]) != 1" 
+                                 true="For every CanNmComMNetworkHandleRef should be configured only one NmComMChannelRef, with NmStandardBusType = NM_BUSNM_CANNM"/>
+                          <a:tst 
+                                 expr="not(node:exists(node:ref(.)/ComMChannelId))" 
+                                 true="For every CanNmComMNetworkHandleRef should be configured one ComMChannelId"/>
+                        </a:da>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/ComM/ComMConfigSet/ComMChannel"/>
+                      </v:ref>
+                      <v:lst name="CanNmRxPdu" type="MAP">
+                        <a:a name="COLUMNS">
+                          <a:v>CanNmRxPduId</a:v>
+                          <a:v>CanNmRxPduRef</a:v>
+                        </a:a>
+                        <a:da name="MIN" value="1"/>
+                        <v:ctr name="CanNmRxPdu" type="IDENTIFIABLE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                This container holds the &lt;code&gt;CanNmRxPduId&lt;/code&gt;
+                                and the &lt;code&gt;CanNmRxPduRef.&lt;/code&gt;
+                              &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Receive PDU ID and Reference"/>
+                          <a:a name="UUID" 
+                               value="da0a5d29-913e-4918-89f3-e93d295364db"/>
+                          <v:var name="CanNmRxPduId" type="INTEGER">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                  This parameter defines the Rx PDU ID of the CanIf L-PDU range
+                                  that is associated with this CanNmChannel instance.
+                                &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="LABEL" value="Receive PDU ID"/>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                            <a:a name="UUID" 
+                                 value="043a45e5-b488-4bf6-affe-62b4023e6b42"/>
+                            <a:da name="DEFAULT" type="XPath" 
+                                  expr="node:fallback(node:pos(./../../..),0)"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&lt;=65535"/>
+                                <mt:tst expr="&gt;=0"/>
+                              </mt:range>
+                              <mt:xpath>
+                                <mt:tst 
+                                        false="CanNmRxPduIds are not zero based and consecutive from channel to channel." 
+                                        expr="node:isconsecutive(../../../../*/CanNmRxPdu/*[1]/CanNmRxPduId, 0)"/>
+                                <mt:tst 
+                                        true="All the CanNmRxPdu&apos;s of a channel need to have the same id!" 
+                                        expr="count(../../../CanNmRxPdu/*[CanNmRxPduId != node:current()]) != 0"/>
+                              </mt:xpath>
+                            </a:da>
+                          </v:var>
+                          <v:ref name="CanNmRxPduRef" type="REFERENCE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                  Reference to the global PDU that is used by this
+                                  CanNmChannel instance.
+                                &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="LABEL" value="Receive PDU Reference"/>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="UUID" 
+                                 value="5fee09e6-f293-42f5-ae3f-8df652e8de6d"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst expr="node:refvalid(.)" 
+                                     false="Invalid reference"/>
+                              <a:tst 
+                                     expr="count(../../../../../../../CanNmGlobalConfig/*/CanNmChannelConfig/*/CanNmRxPdu/*[CanNmRxPduRef = node:current()]) &gt; 1" 
+                                     true="Rx PDU Reference must be unique"/>
+                              <a:tst 
+                                     expr="count(node:refs(../../../CanNmRxPdu/*/CanNmRxPduRef)[PduLength != node:ref(node:current())/PduLength]) != 0" 
+                                     true="Lengths Must be the same for all the RX PDUs inside a channel"/>
+                              <a:tst 
+                                     expr="not(node:exists(node:ref(.)/PduLength))" 
+                                     true="Pdu Length must be set for every Rx PDU Reference"/>
+                            </a:da>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                          </v:ref>
+                        </v:ctr>
+                      </v:lst>
+                      <v:ctr name="CanNmTxPdu" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              This container contains the &lt;code&gt;CanNmTxConfirmationPduId&lt;/code&gt; and the
+                              &lt;code&gt;CanNmTxPduRef&lt;/code&gt;.
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Transmit PDU Reference"/>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="UUID" 
+                             value="ca686b89-b372-45d6-a9d3-4b9170c598ca"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="count(../../../../../CanNmGlobalConfig/*/CanNmChannelConfig/*/CanNmTxPdu[asc:getShortName(node:current()) != &apos;&apos; and asc:getShortName(.) = asc:getShortName(node:current())]) &gt; 1" 
+                              true="The generated symbolic names for this parameter will not be unique since other CanNmTxPdu are using the same SHORT-NAME."/>
+                        <v:var name="CanNmTxConfirmationPduId" type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                Handle Id to be used by the Lower Layer (CanIf) to confirm the
+                                transmission of the &lt;code&gt;CanNmTxPdu&lt;/code&gt;.
+                              &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                          <a:a name="UUID" 
+                               value="233ebb8a-42e4-4f9d-9780-bfbdbba34d5c"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Multi">
+                            <mt:range>
+                              <mt:tst expr="&lt;=65535"/>
+                              <mt:tst expr="&gt;=0"/>
+                            </mt:range>
+                            <mt:xpath 
+                                      false="CanNmTxConfirmationPduId shall be unique across the channels" 
+                                      expr="text:uniq(../../../../../*/CanNmChannelConfig/*/CanNmTxPdu/CanNmTxConfirmationPduId,.)"/>
+                          </a:da>
+                        </v:var>
+                        <v:ref name="CanNmTxPduRef" type="REFERENCE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                The reference to a common PDU structure  used for
+                                transmission of NM messages.
+                              &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Transmit PDU Reference"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                          <a:a name="UUID" 
+                               value="a642add0-8006-4bb7-aba6-8404d858c6e2"/>
+                          <a:da name="INVALID" type="XPath">
+                            <a:tst expr="node:refvalid(.)" 
+                                   false="Invalid reference"/>
+                            <a:tst 
+                                   expr="not(node:exists(node:ref(.)/PduLength))" 
+                                   true="Pdu Length must be set for every Tx PDU Reference"/>
+                            <a:tst expr="(../CanNmUserDataLength = 0)" 
+                                   true="The CanNmUserDataTxPdu should disabled if CanNmUserDataLength is zero."/>
+                            <a:tst 
+                                   expr="count(as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[(node:exists(CanIfTxPduRef)) and (CanIfTxPduRef = (node:current()))]) = 0" 
+                                   true="Pdu referenced by CanNmTxPduRef shall be also configured in CanIf"/>
+                            <a:tst 
+                                   expr="not(node:exists(as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()]/CanIfTxPduId))" 
+                                   true="Pdu id referenced by CanNmTxPduRef shall be configured in CanIf"/>
+                          </a:da>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                        </v:ref>
+                      </v:ctr>
+                      <v:ctr name="CanNmUserDataTxPdu" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;This optional container is used to configure the UserNm PDU.
+                              This container is only available if &lt;code&gt;CanNmComUserDataSupport&lt;/code&gt;
+                              is enabled.&lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="LABEL" value="User Data Transmission PDU"/>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="UUID" 
+                             value="b8e72be0-5772-41d8-b4f3-deefc237ab0b"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(../../../CanNmComUserDataSupport = &apos;false&apos;)" 
+                                 true="The CanNmComUserDataSupport should be enabled."/>
+                          <a:tst expr="(../CanNmUserDataLength = 0)" 
+                                 true="The CanNmUserDataTxPdu should disabled if CanNmUserDataLength is zero."/>
+                          <a:tst 
+                                 expr="count(../../../../../CanNmGlobalConfig/*/CanNmChannelConfig/*/CanNmUserDataTxPdu[asc:getShortName(node:current()) != &apos;&apos; and asc:getShortName(.) = asc:getShortName(node:current())]) &gt; 1" 
+                                 true="The generated symbolic names for this parameter will not be unique since other CanNmUserDataTxPdu are using the same SHORT-NAME."/>
+                        </a:da>
+                        <v:var name="CanNmTxUserDataPduId" type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                &lt;p&gt;This parameter defines the handle ID of the Tx NM User Data I-PDU.
+                                The handle ID is used by PduR to invoke &lt;code&gt;CanNm_Transmit()&lt;/code&gt;.&lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                          <a:a name="UUID" 
+                               value="d0d8cb9b-295f-461c-9ab0-4c6657057da7"/>
+                          <a:da name="DEFAULT" type="XPath" 
+                                expr="node:fallback(node:pos(./../..),0)"/>
+                          <a:da name="INVALID" type="Multi">
+                            <mt:range>
+                              <mt:tst expr="&lt;=65535"/>
+                              <mt:tst expr="&gt;=0"/>
+                            </mt:range>
+                            <mt:xpath 
+                                      false="CanNmTxUserDataPduIds are not zero based consecutive." 
+                                      expr="node:isconsecutive(../../../*/CanNmUserDataTxPdu/CanNmTxUserDataPduId, 0)"/>
+                          </a:da>
+                        </v:var>
+                        <v:ref name="CanNmTxUserDataPduRef" type="REFERENCE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                &lt;p&gt;Reference to the Tx NM User Data I-PDU in the global PDU collection&lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                          <a:a name="UUID" 
+                               value="62390e4e-35e9-4c95-8fc5-c6dfa991d4e2"/>
+                          <a:da name="INVALID" type="XPath">
+                            <a:tst expr="node:refvalid(.)" 
+                                   false="Invalid reference"/>
+                            <a:tst 
+                                   expr="not(node:exists(node:ref(.)/PduLength))" 
+                                   true="Pdu Length must be set for every Tx User Data PDU Reference"/>
+                          </a:da>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                        </v:ref>
+                      </v:ctr>
+                      <v:ctr name="CanNmUserDataRxPdu" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;This optional container is used to configure the UserNm PDU.
+                                 This container is only available if &lt;code&gt;CanNmComUserDataSupport&lt;/code&gt; is enabled.&lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="LABEL" value="User Data Reception PDUs"/>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="UUID" 
+                             value="c87cabc0-efa9-11e0-be50-0800200c9a66"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(../../../CanNmComUserDataSupport = &apos;false&apos;)" 
+                                 true="The CanNmComUserDataSupport should be enabled."/>
+                          <a:tst expr="(../CanNmUserDataLength = 0)" 
+                                 true="The CanNmUserDataRxPdu should disabled if CanNmUserDataLength is zero."/>
+                        </a:da>
+                        <v:ref name="CanNmRxUserDataPduRef" type="REFERENCE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                &lt;p&gt;Reference to the Rx NM User Data I-PDU in the global PDU collection&lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                          <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                          <a:a name="UUID" 
+                               value="ab134dd1-efab-11e0-be50-0800200c9a66"/>
+                          <a:da name="INVALID" type="XPath">
+                            <a:tst expr="node:refvalid(.)" 
+                                   false="Invalid reference"/>
+                            <a:tst 
+                                   expr="node:exists(../../../../CanNmPnEiraRxNSduRef) and (node:value(../../../../CanNmPnEiraRxNSduRef) = node:value(.))" 
+                                   true="CanNmPnEiraRxNSduRef and CanNmRxUserDataPduRef references shouldn&apos;t be identical to each other!"/>
+                            <a:tst 
+                                   expr="not(node:exists(node:ref(.)/PduLength))" 
+                                   true="Pdu Length must be set for every Rx User Data PDU Reference"/>
+                          </a:da>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcuC/EcucPduCollection/Pdu"/>
+                        </v:ref>
+                      </v:ctr>
+                    </v:ctr>
+                  </v:lst>
+                  <v:ctr name="CanNmPnInfo" type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;PN information configuration.&lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="UUID" 
+                         value="ECUC:0ccf5768-41f4-4e72-864d-50940ccdf6a6"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="((CanNmPnInfoOffset + CanNmPnInfoLength) - 1) &gt; 31" 
+                          true="The length of the (((CanNmPnInfoOffset + CanNmPnInfoLength) -1) should not be greater then 31"/>
+                    <a:da name="WARNING" type="XPath" 
+                          expr="node:exists(.) and count(../CanNmChannelConfig/*[(node:exists(CanNmPnEnabled)) and (CanNmPnEnabled=&apos;true&apos;)]) = 0" 
+                          true="PN information is available but no channel supports partial networking"/>
+                    <v:var name="CanNmPnInfoLength" type="INTEGER">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;Specifies the length of the PN request information in the NM message.&lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:a0c4f3a8-7670-4243-9bdd-706add08df8f"/>
+                      <a:da name="DEFAULT" value="1"/>
+                      <a:da name="INVALID" type="Range">
+                        <a:tst expr="&lt;=7"/>
+                        <a:tst expr="&gt;=1"/>
+                      </a:da>
+                    </v:var>
+                    <v:var name="CanNmPnInfoOffset" type="INTEGER">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;Specifies the offset of the PN request information in the NM message.&lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:3ff9d02a-9aed-47d7-980d-4745fbda215a"/>
+                      <a:da name="DEFAULT" value="1"/>
+                      <a:da name="INVALID" type="Range">
+                        <a:tst expr="&lt;=31"/>
+                        <a:tst expr="&gt;=1"/>
+                      </a:da>
+                    </v:var>
+                    <v:lst name="CanNmPnFilterMaskByte" type="MAP">
+                      <a:da name="INVALID" type="XPath" 
+                            expr="(count(../../CanNmChannelConfig/*[(node:exists(CanNmPnEnabled)) and (CanNmPnEnabled = &apos;true&apos;)]) &gt; 0) and (count(*) != ../CanNmPnInfoLength)" 
+                            true="The number of entries of CanNmPnFilterMaskByte is not equal to the value of CanNmPnInfoLength"/>
+                      <a:da name="MAX" value="7"/>
+                      <v:ctr name="CanNmPnFilterMaskByte" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                              &lt;p&gt;PN information configuration.&lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="POSTBUILDCHANGEABLE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:f6506a2e-abb4-443d-b84c-9726fef9fb8a"/>
+                        <v:var name="CanNmPnFilterMaskByteIndex" type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                &lt;p&gt;Specifies the offset of the PN request information in the NM message.&lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                          <a:a name="UUID" 
+                               value="ECUC:70575bee-1cd4-49d5-8876-ac3306dc7403"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Multi">
+                            <mt:range>
+                              <mt:tst expr="&lt;=6"/>
+                              <mt:tst expr="&gt;=0"/>
+                            </mt:range>
+                            <mt:xpath>
+                              <mt:tst 
+                                      true="Value out of range (0..(CanNmPnInfoLength-1))" 
+                                      expr="(node:value(../../../../../../CanNmGeneral/CanNmPnSupported) = &apos;true&apos;) and                                       (. &gt;= ../../../CanNmPnInfoLength)"/>
+                              <mt:tst 
+                                      true="PN filter mask index shall be unique" 
+                                      expr="(node:value(../../../../../../CanNmGeneral/CanNmPnSupported) = &apos;true&apos;) and                                            not(text:uniq(../../*/CanNmPnFilterMaskByteIndex,.))"/>
+                            </mt:xpath>
+                          </a:da>
+                        </v:var>
+                        <v:var name="CanNmPnFilterMaskByteValue" type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                 &lt;p&gt;Parameter to configure the filter mask byte.&lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                          <a:a name="UUID" 
+                               value="ECUC:42691f2f-b4b1-473e-8fe5-238527cdc3e6"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&lt;=255"/>
+                            <a:tst expr="&gt;=0"/>
+                          </a:da>
+                        </v:var>
+                      </v:ctr>
+                    </v:lst>
+                  </v:ctr>
+                </v:ctr>
+              </v:lst>
+              <d:ref type="REFINED_MODULE_DEF" 
+                     value="ASPath:/AUTOSAR/EcucDefs/CanNm"/>
+              <v:ctr name="CanNmDefensiveProgramming" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                &lt;p&gt;Parameters for defensive programming&lt;/p&gt;
+                &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Defensive Programming Options"/>
+                <v:var name="CanNmDefProgEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                    &lt;p&gt;Enables or disables the defensive
+                    programming feature for the module CanNm.&lt;/p&gt;
+                    &lt;p&gt;Note: This feature is dependent on the use of the development error detection module.
+                    To use the defensive programming feature, proceed as follows:
+                    &lt;ol&gt;
+                    &lt;li&gt;Enable development error detection&lt;/li&gt;
+                    &lt;li&gt;Enable defensive programming&lt;/li&gt;
+                    &lt;li&gt;Enable assertions as required&lt;/li&gt;
+                    &lt;/ol&gt;
+                    &lt;/p&gt;
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Defensive Programming"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../../CanNmGlobalConfig/*[1]/CanNmDevErrorDetect = &apos;true&apos;" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanNmPrecondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of precondition assertion checks reported from
+                  the module CanNm.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanNmDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanNmDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Precondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanNmGlobalConfig/*[1]/CanNmDevErrorDetect = &apos;true&apos;) and (../CanNmDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanNmPostcondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of postcondition assertion checks reported from
+                  the module CanNm.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanNmDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanNmDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Postcondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanNmGlobalConfig/*[1]/CanNmDevErrorDetect = &apos;true&apos;) and (../CanNmDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanNmStaticAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of static assertion checks reported from
+                  the module CanNm.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanNmDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanNmDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Static Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanNmGlobalConfig/*[1]/CanNmDevErrorDetect = &apos;true&apos;) and (../CanNmDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanNmUnreachAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of unreachable code assertion checks
+                  reported from the module CanNm.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanNmDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanNmDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Unreachable Code Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanNmGlobalConfig/*[1]/CanNmDevErrorDetect = &apos;true&apos;) and (../CanNmDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanNmInvariantAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of invariant assertion checks
+                  reported from functions of the module CanNm.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanNmDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanNmDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Invariant Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanNmGlobalConfig/*[1]/CanNmDevErrorDetect = &apos;true&apos;) and (../CanNmDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="CommonPublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Common Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6"/>
+                <v:var name="ArMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1"/>
+                  <a:da name="DEFAULT" value="3"/>
+                </v:var>
+                <v:var name="ArMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70"/>
+                  <a:da name="DEFAULT" value="3"/>
+                </v:var>
+                <v:var name="ArPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="SwMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34"/>
+                  <a:da name="DEFAULT" value="6"/>
+                </v:var>
+                <v:var name="SwMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f"/>
+                  <a:da name="DEFAULT" value="19"/>
+                </v:var>
+                <v:var name="SwPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a318d2d9-0e75-49da-ac43-e7e4e682e2f9"/>
+                  <a:da name="DEFAULT" value="7"/>
+                </v:var>
+                <v:var name="ModuleId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Numeric Module ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:78bc8362-080f-4253-b3da-804ab69a7154"/>
+                  <a:da name="DEFAULT" value="31"/>
+                </v:var>
+                <v:var name="VendorId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Vendor ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="Release" type="STRING_LABEL">
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Release Information"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89"/>
+                  <a:da name="DEFAULT" value=""/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="PublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="EB Published Information"/>
+                <a:a name="TAB" value="EB Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07"/>
+                <v:var name="PbcfgMSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Specifies whether or not the CanNm can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="PbcfgM support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+              </v:ctr>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

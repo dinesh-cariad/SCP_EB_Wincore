@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dem:events xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd"
+    xmlns:dem="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd">
+
+    <event name="ECUM_E_RAM_CHECK_FAILED">
+        <enable type="XPATH"
+            value="as:modconf('EcuM')[1]/ReportToDem/EcuMRamChkFailedReportToDem='DEM'" />
+        <updateReference
+            value="as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMDemEventParameterRefs/ECUM_E_RAM_CHECK_FAILED" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+    <event name="ECUM_E_CONFIGURATION_DATA_INCONSISTENT">
+        <enable type="XPATH"
+            value="as:modconf('EcuM')[1]/ReportToDem/EcuMCfgDataInconsistentReportToDem='DEM'" />
+        <updateReference
+            value="as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMDemEventParameterRefs/ECUM_E_CONFIGURATION_DATA_INCONSISTENT" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+    <event name="ECUM_E_ALL_RUN_REQUESTS_KILLED">
+        <enable type="XPATH"
+            value="node:exists(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMFixedConfiguration) = 'true'" />
+        <updateReference
+            value="as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMDemEventParameterRefs/ECUM_E_ALL_RUN_REQUESTS_KILLED" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+</dem:events>

@@ -1,0 +1,57 @@
+# AdjacentLayer.properties file for BSW modules connected to StbM
+#
+# The module name corresponds to the name of attribute 'categoryType' in the plugin.xml of the
+# adjacent module and must be identical to the StbMBswModules Container-short name.
+#
+#
+# For a full integration of the BSW module all properties (except HandleIDPolicyVersion)
+# are mandatory.
+
+
+
+# ------------------------------------------
+# ------------  General Data  --------------
+# ------------------------------------------
+
+# Name of module configuration (i.e name which can be used with as:modconf('<ModuleConfigName>'))
+<module>.AdjacentLayerConfig.ModuleConfigName:<module>
+
+# Supported AUTOSAR Handle ID Version (allowed values: AUTOSAR32, AUTOSAR40)
+<module>.AdjacentLayerConfig.HandleIDPolicyVersion:AUTOSAR40
+
+# Name of include file(s)
+# Multiple header files are separated by comma.
+# If no header file is provided no property value shall be configured.
+<module>.AdjacentLayerConfig.IncludeFileNames.V1.If.ForUpperLayer:<module>.h
+
+# --------------------------------------------
+# -------  Module Type Dependent Data  -------
+# --------------------------------------------
+
+# ------- Data of time donains -------
+
+# XPath-expression to return all references to a StbM time base from master time domains
+<module>.AdjacentLayerConfig.AbsXPathGeneric.V1.TimeBaseRefsMaster:as:modconf('<module>')[1]/<module>GlobalTimeDomain/*[node:exists(<module>GlobalTimeMaster)]/<module>SynchronizedTimeBaseRef
+
+# XPath-expression to return all references to a StbM time base from slave time domains
+<module>.AdjacentLayerConfig.AbsXPathGeneric.V1.TimeBaseRefsSlave:as:modconf('<module>')[1]/<module>GlobalTimeDomain/*[node:exists(<module>GlobalTimeSlave)]/<module>SynchronizedTimeBaseRef
+
+# XPath-expression to the global time stamp support parameter. Might contain <configIndex>
+# There are three possibilities to set the timestamps support status:
+# 1.) The module can activate/deactivate timestamp support only as global parameter. The Xpath expression must contain the path to
+#     this global paarameter (e.g. as:modconf('EthTSyn')[1]/EthTSynGeneral/EthTSynHardwareTimestampSupport)
+# 2.) The module can announce a timestamp support for every time domain seperately. The Xpath expression must contain the <configIndex>
+#     free variable. The syntax is: Define a XPath expression for the timestamp support parameter of all time domains referring to
+#     the StbM time base with the ID equal to <configIndex> (e.g.
+#     EthTSyn.AdjacentLayerConfig.AbsXPathGeneric.V1.TimeStampSupport:as:modconf('EthTSyn')[1]/EthTSynGlobalTimeDomain/*[node:value(as:ref(EthTSynSynchronizedTimeBaseRef)/StbMSynchronizedTimeBaseIdentifier) = <configIndex>]/EthTSynHardwareTimestampSupport )
+# 3.) The module does not support timestamping. Don't define the key or define an empty value for the key.
+<module>.AdjacentLayerConfig.AbsXPathGeneric.V1.TimeStampSupport:as:modconf('<module>')[1]/<module>General/<module>HardwareTimestampSupport
+
+# ------- Global data -------
+
+# Name of the Time getter function (access with asc:getApiFunctionName('StbM', '<module>', 'GetCurrentTime'))
+<module>.AdjacentLayerConfig.ApiName.V1.GetCurrentTime:<module>_GetCurrentTime
+# Name of the Time setter function (access with asc:getApiFunctionName('StbM', '<module>', 'SetGlobalTime'))
+<module>.AdjacentLayerConfig.ApiName.V1.SetGlobalTime:<module>_SetGlobalTime
+
+

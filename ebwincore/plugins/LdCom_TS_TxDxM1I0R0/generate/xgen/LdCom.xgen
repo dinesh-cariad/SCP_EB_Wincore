@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module LdCom?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!CODE!]
+[!AUTOSPACING!]
+[!INCLUDE "../include/LdCom_Vars.m"!][!//
+[!INCLUDE "../include/LdCom_Macros.m"!][!//
+
+  <!-- This is the configuration of module LdCom -->
+  <module name="LdCom" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+
+      <?artifact directory="include" file="LdCom_Types.h" type="types-h" ?>
+
+      [!VAR "relocatable" = "'false'"!]
+      [!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('LdCom')) = 'true'"!]
+      [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ELSE!]
+      [!IF "as:modconf('LdCom')[1]/VendorSpecific/LdComRelocatablePbcfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+      [!ENDIF!]
+      [!ENDIF!]
+
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <!--  Type for LdCom states -->
+      <type name="LdCom_StateType">
+        <reference type="uint8">
+          <compiler-abstraction>
+            <var memory-class="TYPEDEF"/>
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--  Type for Tx path configuration -->
+[!IF "($VarTpTxCount + $VarIfTxCount) > 0"!]
+      <type name="LdCom_TxPathConfigType">
+        <struct>
+          <member name="TxPathRef" type="PduIdType">
+            <comment><![CDATA[PduRSourcePduHandleId reference of Tx path.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="TxPathCount" type="PduIdType">
+            <comment><![CDATA[Number of configured PduRSourcePduHandleIds of Tx path.]]></comment>
+          </member>
+        </struct>
+      </type>
+[!ENDIF!]
+
+      <!-- This is the type definition of the root structure -->
+      <!-- !LINKSTO LdCom.ASR42.SWS_LDCOM_00052,1 -->
+      <type name="LdCom_ConfigType">
+        <struct>
+          <comment><![CDATA[Post-build configuration type]]></comment>
+          <member name="PlatformSignature" type="uint32">
+            <comment><![CDATA[Used to validate the platform]]></comment>
+          </member>
+          <member name="LcfgSignature" type="uint32">
+            <comment><![CDATA[Used to validate the post build configuration against the link time configuration.]]></comment>
+          </member>
+          <member name="CfgSignature" type="uint32">
+            <comment><![CDATA[Used to validate the post build configuration against the precompile time configuration.]]></comment>
+          </member>
+          <member name="PublicInfoSignature" type="uint32">
+            <comment><![CDATA[Used to validate the post build configuration against the precompile time published info configuration.]]></comment>
+          </member>
+          <!-- Pointers to post build data structures -->
+[!IF "$VarTpTxCount > 0"!]
+          <member name="TpTxPathConfig" type="LdCom_TxPathConfigType">
+            <comment><![CDATA[PduRSourcePduHandleId reference and number of configured PduRSourcePduHandleId of Tx path related to transport protocol.]]></comment>
+            <compiler-abstraction>
+              <const memory-class="TYPEDEF"/>
+            </compiler-abstraction>
+          </member>
+[!ENDIF!]
+[!IF "$VarIfTxCount > 0"!]
+          <member name="IfTxPathConfig" type="LdCom_TxPathConfigType">
+            <comment><![CDATA[PduRSourcePduHandleId reference and number of configured PduRSourcePduHandleId of Tx path.]]></comment>
+            <compiler-abstraction>
+              <const memory-class="TYPEDEF"/>
+            </compiler-abstraction>
+          </member>
+[!ENDIF!]
+[!IF "$VarTpRxCount > 0"!]
+          <member name="TpRxPathCount" type="PduIdType">
+            <comment><![CDATA[Number of configured Rx paths related to transport protocol.]]></comment>
+          </member>
+[!ENDIF!]
+[!IF "$VarIfRxCount > 0"!]
+          <member name="IfRxPathCount" type="PduIdType">
+            <comment><![CDATA[Number of configured Rx paths.]]></comment>
+          </member>
+[!ENDIF!]
+        </struct>
+      </type>
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <?artifact directory="include" file="LdCom_PBcfg.h" type="postbuild-h" ?>
+      <?artifact directory="src" file="LdCom_PBcfg.c" type="postbuild-c" ?>
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+      <type name="LdCom_ConfigLayoutType">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="LdCom_ConfigType"/>
+[!IF "($VarTpTxCount + $VarIfTxCount) > 0"!]
+          <member name="LdCom_TxPath" type="uint16" count="[!"num:i($VarTpTxCount + $VarIfTxCount)"!]"/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="LdCom_ConstConfigLayoutType">
+        <reference type="LdCom_ConfigLayoutType">
+          <compiler-abstraction>
+            <const memory-class="LDCOM_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <memory-section name="SEC_CONFIG_DATA_UNSPECIFIED">
+      <instance type="LdCom_ConstConfigLayoutType"
+             name="LdCom_ConfigLayout">
+
+        <comment><![CDATA[LdCom post build config. - Static code accesses this config
+ solely via the pointer of type LdCom_ConfigLayoutType passed to
+ \a LdCom_Init() as parameter.]]></comment>
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"as:name(LdComConfig)"!]</symbolic-value>
+        </parameter>
+
+        <!-- LdCom_ConfigLayout.RootCfg -->
+        <field>
+          <field>
+            <int>[!"num:i(asc:getPlatformSignature())"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('LdCom')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('LdCom')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') and not (name(.) = 'LdComUpperLayerHeaderFile')], as:modconf('LdCom')[1]/VendorSpecific/LdComUpperLayerHeaderFile/*))"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('LdCom')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('LdCom')[1]/CommonPublishedInformation/Release))"!]</int>
+          </field>
+[!IF "$VarTpTxCount > 0"!]
+          <field>
+            <field>
+              <ref>
+                <struct-field name="LdCom_TxPath"/>
+                <array-field index="0"/>
+              </ref>
+            </field>
+            <field>
+              <int>[!"$VarTpTxCount"!]</int>
+            </field>
+          </field>
+[!ENDIF!]
+[!IF "$VarIfTxCount > 0"!]
+          <field>
+            <field>
+              <ref>
+                <struct-field name="LdCom_TxPath"/>
+                <array-field index="[!"$VarTpTxCount"!]"/>
+              </ref>
+            </field>
+            <field>
+              <int>[!"$VarIfTxCount"!]</int>
+            </field>
+          </field>
+[!ENDIF!]
+[!IF "$VarTpRxCount > 0"!]
+          <field>
+            <int>[!"$VarTpRxCount"!]</int>
+          </field>
+[!ENDIF!]
+[!IF "$VarIfRxCount > 0"!]
+          <field>
+            <int>[!"$VarIfRxCount"!]</int>
+          </field>
+[!ENDIF!]
+        </field>   <!-- LdCom_ConfigLayout.RootCfg -->
+
+        <!-- LdCom_ConfigLayout.LdCom_TxPath -->
+[!IF "($VarTpTxCount + $VarIfTxCount) > 0"!]
+        <field>
+          [!LOOP "node:order(as:modconf('LdCom')[1]/LdComConfig/LdComIPdu/*[./LdComApiType='LDCOM_TP'][./LdComIPduDirection='LDCOM_SEND'], 'node:LdComHandleId')"!]
+          <field>
+             [!CALL "GetOutputPduId","LdComPduRef"="./LdComPduRef"!]
+             <int>[!"num:i($PduID)"!]</int>
+          </field>
+          [!ENDLOOP!]
+          [!LOOP "node:order(as:modconf('LdCom')[1]/LdComConfig/LdComIPdu/*[./LdComApiType='LDCOM_IF'][./LdComIPduDirection='LDCOM_SEND'], 'node:LdComHandleId')"!]
+          <field>
+             [!CALL "GetOutputPduId","LdComPduRef"="./LdComPduRef"!]
+             <int>[!"num:i($PduID)"!]</int>
+          </field>
+          [!ENDLOOP!]
+        </field> <!-- LdCom_ConfigLayout.LdCom_TxPath -->
+[!ENDIF!]
+
+      </instance> <!-- LdCom_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+[!ENDCODE!]
+</xgen>

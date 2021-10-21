@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR WdgIf_TS_TxDxM6I1R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="WdgIf_TS_TxDxM6I1R0_ModuleId"
+             name="WdgIf_TS_TxDxM6I1R0 Module">
+    <module id="WdgIf_TS_TxDxM6I1R0"
+            label="WdgIf"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-WatchdogStack: AUTOSAR WdgIf module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="6"
+            swVersionMinor="1"
+            swVersionPatch="26"
+            swVersionSuffix="B439717"
+            specVersionMajor="2"
+            specVersionMinor="5"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="WdgIf"
+            categoryLayer="Onboard Device Abstraction"
+            categoryCategory="Mode Management"
+            categoryComponent="ECUC">
+      <cluster name="Watchdog Stack"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="WdgIf_TS_TxDxM6I1R0_ConfigId"
+             name="WdgIf_TS_TxDxM6I1R0 Configuration">
+    <configuration moduleId="WdgIf_TS_TxDxM6I1R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/WdgIf.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM6I1R0/WdgIf"/>
+      </data>
+
+      <editor id="WdgIf_TS_TxDxM6I1R0_EditorId"
+              label="Default"
+              tooltip="ACG-WatchdogStack: AUTOSAR WdgIf module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM6I1R0/WdgIf"/>
+          <parameter name="title" value="WdgIf"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="WdgIf_TS_TxDxM6I1R0_GeneratorId"
+             name="WdgIf_TS_TxDxM6I1R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="WdgIf_TS_TxDxM6I1R0_TemplateBasedCodeGeneratorId"
+               moduleId="WdgIf_TS_TxDxM6I1R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+</plugin>

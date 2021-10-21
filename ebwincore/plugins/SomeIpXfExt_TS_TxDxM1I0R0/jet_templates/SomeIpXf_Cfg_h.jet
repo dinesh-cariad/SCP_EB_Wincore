@@ -1,0 +1,231 @@
+<%@ jet package="eb.tresos.someipxf.generated.jet" class="SomeIpXf_Cfg_h" skeleton="File.skeleton"
+        imports="eb.tresos.someipxf.generator.output.entity.DataOutputElement
+                 eb.tresos.xfrm.api.generator.intermediate.BufferLengthType"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final OutModel outmodel = (OutModel)context.gen.getVariable( OutModel.ARG_NAME, OutModel.class, null );
+    final String includeGuardName = getIncludeGuardName( context );
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+
+#include <SchM_SomeIpXfType.h>   /* Module interlink types */
+<%
+  if (!outmodel.hasExternalTriggerOnly())
+  {
+%>
+#include <stddef.h>              /* offsetof */
+<%
+  }
+%>
+
+/*==================[macros]================================================*/
+
+<%= defineMacro( "SOMEIPXF_VERSION_INFO_API",
+        outmodel.isVersionInfoApiEnabled(),
+        "This macro specifies if the SomeIpXf_GetVersionInfo API is enabled by XfrmVersionInfoApi.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_CS_AVAILABLE",
+        outmodel.hasClientServer(),
+        "This macro specifies whether client/server API exists or not.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_SR_AVAILABLE",
+        outmodel.hasSenderReceiver(),
+        "This macro specifies whether sender/receiver API exists or not.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_ET_AVAILABLE",
+        outmodel.hasExternalTrigger(),
+        "This macro specifies whether external trigger API exists or not.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_XFRMBUFFERLENGTHTYPE_ISUINT32",
+        BufferLengthType.UINT32 == outmodel.getBufferLengthType(),
+        "Type of buffer length (uint32 or uint16) according to configuration parameter XfrmBufferLengthType.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_MSGERRORCALLOUT_AVAILABLE",
+        outmodel.isMessageErrorCalloutApiEnabled(),
+        "This macro specifies whether Message Error Callout APIs exist or not.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_ERROR_MESSAGE_TYPE",
+        outmodel.getMessageTypeErrorResponse().getHexValue(),
+        "This macro specifies which MessageType gets used for error response messages.", NL ) %>
+
+/*------------------[Configuration array size definitions]--------------------*/
+<%
+  for (final DataOutputElement outputElem : outmodel.getDataElements())
+  {
+%>
+
+<%= defineMacro( outputElem.getConfigurationArraySizeMacroName(),
+        outputElem.getConfigurationArray().getNumberOfElements(), 
+        "Number of elements in array " + outputElem.getConfigurationArrayName(), NL ) %>
+<%
+  }
+%>
+
+/*------------------[Extensible structure macro definitions]-------------------*/
+
+<%
+  final long maxExtensibleStructNestedDepth = outmodel.getMaxExtensibleStructureNestedDepth();
+%>
+<%= defineMacro( "SOMEIPXF_STRUCT_WITH_LF_AVAILABLE",
+        maxExtensibleStructNestedDepth > 0,
+        "This macro specifies whether structures with length fields exist or not.", NL ) %>
+<%
+  if (maxExtensibleStructNestedDepth > 0)
+  {
+%>
+
+<%= defineMacro( "SOMEIPXF_MAX_NESTED_STRUCT_WITH_LF_DEPTH",
+        maxExtensibleStructNestedDepth,
+        "This macro specifies the maximum number of nested structures with length fields.", NL ) %>
+
+<%
+  }
+%>
+
+/*------------------[Variable Size Array macro definitions]-------------------*/
+
+<%
+  final long maxVariableSizeArrayDim = outmodel.getMaxVarSizeArrayDimensions();
+%>
+<%= defineMacro( "SOMEIPXF_VSA_AVAILABLE",
+        maxVariableSizeArrayDim > 0,
+        "This macro specifies whether variable size arrays exist or not.", NL ) %>
+<%
+  if (maxVariableSizeArrayDim > 0)
+  {
+    final long maximumNestedVariableSizeArrays = outmodel.getMaxVarSizeArrayNestedDepth(); 
+%>
+
+<%= defineMacro( "SOMEIPXF_VSA_MAX_DIM",
+        maxVariableSizeArrayDim,
+        "Maximum number of dimensions of an array of variable size.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_MAX_NESTED_VSA_DEPTH",
+        maximumNestedVariableSizeArrays,
+        "This macro specifies the maximum number of nested variable size arrays.", NL ) %>
+
+<%
+  }
+%>
+
+/*------------------[Fixed Size Arrays macro definitions]---------------------*/
+
+<%
+  final long maxFixedSizeArrayDim = outmodel.getMaxFixedSizeArrayDimensions();
+%>
+<%= defineMacro( "SOMEIPXF_FSA_AVAILABLE",
+        maxFixedSizeArrayDim > 0,
+        "This macro specifies whether fixed size arrays exist or not.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_FSA_WITH_LF_AVAILABLE",
+        outmodel.hasFixedSizeArraysWithLengthFields,
+        "This macro specifies whether fixed size arrays with length fields exist or not.", NL ) %>
+
+<%
+  if(maxFixedSizeArrayDim > 0)
+  {
+%>
+<%= defineMacro( "SOMEIPXF_FSA_MAX_DIM",
+        maxFixedSizeArrayDim,
+        "Maximum number of dimensions of an array of fixed size.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_MAX_NESTED_ARRAY_DEPTH",
+        outmodel.getMaxFixedSizeArrayNestedDepth(),
+        "This macro specifies the maximum number of nested fixed size arrays.", NL ) %>
+
+<%
+  }
+%>
+
+/*------------------[TLV macro definitions]-----------------------------------*/
+
+<%
+  final boolean hasTlvStructs = outmodel.hasTLVStructs();
+  final boolean hasTlvArguments = outmodel.hasTLVArguments();
+  final boolean hasTlv = outmodel.hasTLV();
+%>
+<%= defineMacro( "SOMEIPXF_TLV_ARGUMENT_AVAILABLE",
+        hasTlvArguments,
+        "This macro specifies whether method arguments that use TLV encoding exists or not.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_TLV_STRUCT_AVAILABLE",
+        hasTlvStructs,
+        "This macro specifies whether structs that use TLV encoding exists or not.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_TLV_ARGUMENT_UNIQUE_DATAID_CHECK_ENABLE",
+        outmodel.isTlvArgumentUniqueDataIdCheckEnabled(),
+        "This macro specifies whether detection of duplicated data IDs for arguments on the receiver side is enabled or not.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_TLV_STRUCT_MEMBER_UNIQUE_DATAID_CHECK_ENABLE",
+        outmodel.isTlvStructMemberUniqueDataIdCheckEnabled(),
+        "This macro specifies whether detection of duplicated data IDs for structure members on the receiver side is enabled or not.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_TLV_ARGUMENT_REORDERING_ENABLE",
+        outmodel.isTlvArgumentReorderingEnabled(),
+        "This macro specifies whether reordering of method arguments that use TLV encoding on the receiver side is enabled or not.", NL ) %>
+
+<%= defineMacro( "SOMEIPXF_TLV_STRUCT_MEMBER_REORDERING_ENABLE",
+        outmodel.isTlvStructMemberReorderingEnabled(),
+        "This macro specifies whether reordering of structure members that use TLV encoding on the receiver side is enabled or not.", NL ) %>
+
+<%
+  if(hasTlv)
+  {
+%>
+<%= defineMacro( "SOMEIPXF_MAX_TLV_IDS_BYTES",
+        outmodel.getMaxRequiredBytesForTlvDataIdsOfAllConfigArrays(),
+        "This macro specifies maximum number of bytes used by TLV data IDs of all data element chains.", NL ) %>
+
+<%
+    if(hasTlvArguments)
+    {
+%>
+<%= defineMacro( "SOMEIPXF_MAX_ARGUMENT_TLV_IDS_BYTES",
+        outmodel.getMaxRequiredBytesForArgumentTlvDataIdsOfAllCSDeserializers(),
+        "This macro specifies maximum number of bytes used by TLV data IDs for arguments of all deserializing client/server APIs.", NL ) %>
+<%
+    }
+%>
+<%
+    if(hasTlvStructs)
+    {
+%>
+<%= defineMacro( "SOMEIPXF_MAX_NESTED_TLV_DEPTH",
+        outmodel.getMaxTlvStructureNestedDepth(),
+        "This macro specifies the maximum number of nested TLV structures.", NL ) %>
+<%
+    }
+%>
+<%
+  }
+%>
+
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+
+    <mainFunction name="FrSM_MainFunction"
+        base="as:modconf( 'FrSM' )[1]/FrSMConfig/*[1]/FrSMCluster/*"
+        suffix="concat( '_', node:ref( ./FrSMFrIfClusterRef )/FrIfClstIdx )">
+        <enable type="XPATH" value="node:exists( as:modconf( 'FrIf' ) ) and node:refvalid( ./FrSMFrIfClusterRef )" />
+        <header value="FrSM.h" />
+        <cycleTime type="XPATH" value="./FrSMMainFunctionCycleTime" />
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150" />
+        <callBefore>
+            <mainFunction>FrIf_MainFunction</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>ComM_MainFunction</mainFunction>
+        </callAfter>
+    </mainFunction>
+
+</schm:mainFunctions>

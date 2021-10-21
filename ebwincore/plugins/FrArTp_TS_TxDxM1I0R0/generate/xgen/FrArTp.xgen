@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+[!INCLUDE "..\include\FrArTp_Macros.m"!][!//
+[!INCLUDE "..\include\FrArTp_Variables.m"!][!//
+<?module FrArTp?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <!-- This is the configuration of module FrArTp -->
+  <module name="FrArTp" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+
+      <?artifact directory="include" file="FrArTp_CfgTypes.h" type="types-h" ?>
+
+      [!VAR "relocatable" = "'false'"!][!//
+      [!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('FrArTp')) = 'true'"!][!//
+      [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!][!//
+      [!VAR "relocatable" = "'true'"!][!//
+      [!ENDIF!][!//
+      [!ELSE!][!//
+      [!IF "as:modconf('FrArTp')[1]/FrArTpGeneral/FrArTpRelocatablePbcfgEnable = 'true'"!][!//
+      [!VAR "relocatable" = "'true'"!][!//
+      [!ENDIF!][!//
+      [!ENDIF!][!//
+
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <type name="FrArTp_ConnIdxType" comment="Type to index connections">
+        <reference type="uint8" />
+      </type>
+
+      <type name="FrArTp_ActConnIdxType" comment="Type to index active connections">
+        <reference type="uint8" />
+      </type>
+
+      <type name="FrArTp_ChannelIdxType" comment="Type to index channels">
+        <reference type="uint8" />
+      </type>
+
+      <type name="FrArTp_RxPduIdxType" comment="Type to receive N-PDUs">
+        <reference type="uint8" />
+      </type>
+
+      <type name="FrArTp_TxPduIdxType" comment="Type to index transmit N-PDUs">
+        <reference type="uint8" />
+      </type>
+
+      <type name="FrArTp_TxPoolIdxType" comment="Type to index pools of transmit N-PDUs">
+        <reference type="uint8" />
+      </type>
+
+      <type name="FrArTp_TxPduCfgType" comment="Tx PDU configuration type">
+        <struct>
+          <member name="frIfTxPduId" type="PduIdType" comment="FrIf Tx Pdu ID for calls to FrIf_Transmit"/>
+          <member name="txPoolIdx" type="FrArTp_TxPoolIdxType" comment="Index of the Tx pool this Tx PDU belongs to"/>
+        </struct>
+      </type>
+
+      <type name="FrArTp_TxPoolCfgType" comment="Tx pool configuration type">
+        <struct>
+          <member name="startTxPduIdx" type="FrArTp_TxPduIdxType" comment="Starting index of the Tx PDU of this Tx pool"/>
+          <member name="numTxPdus" type="FrArTp_TxPduIdxType" comment="Number of Tx PDUs within this Tx pool"/>
+        </struct>
+      </type>
+
+      <type name="FrArTp_RxPduCfgType" comment="Rx PDU configuration type">
+        <struct>
+          <member name="startConnIdx" type="FrArTp_ConnIdxType" comment="Start index of connections the Rx PDU is assigned to"/>
+          <member name="numConn" type="FrArTp_ConnIdxType" comment="Number of connections the Rx PDU is assigned to"/>
+          <member name="channelIdx" type="FrArTp_ChannelIdxType" comment="Channel index associated with this Rx PDU"/>
+        </struct>
+      </type>
+
+      <type name="FrArTp_ChannelCfgType" comment="Channel configuration type">
+        <struct>
+          <member name="timeoutAr" type="uint16" comment="AR timeout time in main function cycles"/>
+          <member name="timeBr" type="uint16" comment="BR time in main function cycles"/>
+          <member name="timeoutCr" type="uint16" comment="CR timeout in main function cycles"/>
+          <member name="timeoutAs" type="uint16" comment="AS timeout in main function cycles"/>
+          <member name="timeoutBs" type="uint16" comment="BS timeout in main function cycles"/>
+          <member name="timeCs" type="uint16" comment="CS time in main function cycles"/>
+          <member name="txPoolIdx" type="FrArTp_TxPoolIdxType" comment="Index of the Tx pool for this channel"/>
+          <member name="actConnIdx" type="FrArTp_ActConnIdxType" comment="Active connections state structure start index"/>
+          <member name="numMaxActConn" type="FrArTp_ActConnIdxType" comment="Maximum number of static connections for this channel"/>
+          <member name="addrSize" type="uint8" comment="Size of address information in bytes"/>
+          <member name="payloadLength" type="uint8" comment="Length of channel PDUs in bytes"/>
+          <member name="format" type="uint8" comment="Message format 0: ISO, 1: ISO6, 2: L4G"/>
+          <member name="maxBs" type="uint8" comment="Maximum blocksize value for the receiver"/>
+          <member name="maxWft" type="uint8" comment="Maximum number of wait frames to be sent for a pending connection"/>
+          <member name="stMin" type="uint8" comment="Minimum amount of time between two succeeding CFs in number of main function cylces"/>
+        </struct>
+      </type>
+
+      <type name="FrArTp_ConnectionCfgType" comment="Connection configuration type">
+        <struct>
+          <member name="localAddress" type="uint16" comment="Local address of the connection"/>
+          <member name="remoteAddress" type="uint16" comment="Remote address of the connection"/>
+          <member name="pduRRxPduId" type="PduIdType" comment="PduR Rx Pdu ID / SDU ID for reception"/>
+          <member name="pduRTxPduId" type="PduIdType" comment="PduR Tx Pdu ID / SDU ID for transmission"/>
+          <member name="channelIdx" type="FrArTp_ChannelIdxType" comment="Index of the channel this connection belongs to"/>
+          <member name="isMultRec" type="boolean" comment="Specifies whether the connection is 1:n (true) or 1:1 (false)"/>
+        </struct>
+      </type>
+
+      <!-- This is the type definition of the root structure -->
+      <type name="FrArTp_ConfigType" comment="Main configuration type">
+        <struct>
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform"/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration"/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate public information"/>
+          <member name="mainFunctionPeriod" type="uint16" comment="The calling period of the main function"/>
+          <member name="pConnections" type="FrArTp_ConnectionCfgType" comment="Reference to connection configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="pChannels" type="FrArTp_ChannelCfgType" comment="Reference to channel configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="pTxPdus" type="FrArTp_TxPduCfgType" comment="Reference to Tx PDU configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="pTxPools" type="FrArTp_TxPoolCfgType" comment="Reference to Tx pools configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="pTxSdus" type="FrArTp_ConnIdxType" comment="Reference to Tx SDU configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="pRxSdus" type="FrArTp_ConnIdxType" comment="Reference to Rx SDU configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="pRxPdus" type="FrArTp_RxPduCfgType" comment="Reference to Rx PDU configurations">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="numTxSdus" type="FrArTp_ConnIdxType" comment="Number of Tx SDUs"/>
+          <member name="numRxSdus" type="FrArTp_ConnIdxType" comment="Number of Rx SDUs"/>
+          <member name="numConn" type="FrArTp_ConnIdxType" comment="Number of connections"/>
+          <member name="numTxPdus" type="FrArTp_TxPduIdxType" comment="Number of Tx PDUs"/>
+          <member name="numTxPools" type="FrArTp_TxPoolIdxType" comment="Number of Tx pools"/>
+          <member name="numRxPdus" type="FrArTp_RxPduIdxType" comment="Number of Rx PDUs"/>
+        </struct>
+      </type>
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <?artifact directory="include" file="FrArTp_PBcfg.h" type="postbuild-h" ?>
+      <?artifact directory="src" file="FrArTp_PBcfg.c" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of FrArTp_Pbcfg.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+      <type name="FrArTp_ConfigLayoutType" comment="Configuration layout type">
+        <struct>
+
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="FrArTp_ConfigType" comment="Root configuration of the module"/>
+          <member name="aChannels" count="[!"num:i(count(as:modconf('FrArTp')[1]/FrArTpMultipleConfig/FrArTpChannel/*))"!]" type="FrArTp_ChannelCfgType" comment="Channel configuration array"/>
+          <member name="aRxPdus" count="[!"num:i(count(text:split($RxPdu2RxPoolMap)))"!]" type="FrArTp_RxPduCfgType" comment="Rx PDU configuration array"/>
+          <member name="aConnections" count="[!"num:i(count(text:split($Connection2IdxMap)))"!]" type="FrArTp_ConnectionCfgType" comment="Connection configuration array"/>
+          <member name="aTxPools" count="[!"num:i($TxPoolCounter + 1)"!]" type="FrArTp_TxPoolCfgType" comment="Tx pool configuration array"/>
+          <member name="aTxPdus" count="[!"num:i(count(text:split($TxPdu2TxPoolMap)))"!]" type="FrArTp_TxPduCfgType" comment="Tx PDU configuration array"/>
+[!IF "$numTxSdus > 0"!][!//
+          <member name="aTxSdus" count="[!"num:i($numTxSdus)"!]" type="FrArTp_ConnIdxType" comment="Mapping from Tx SDU IDs to connection indices"/>
+[!ENDIF!][!//
+[!IF "$numRxSdus > 0"!][!//
+          <member name="aRxSdus" count="[!"num:i($numRxSdus)"!]" type="FrArTp_ConnIdxType" comment="Mapping from Rx SDU IDs to connection indices"/>
+[!ENDIF!][!//
+        </struct>
+      </type>
+
+      <type name="FrArTp_ConstConfigLayoutType">
+        <reference type="FrArTp_ConfigLayoutType">
+          <compiler-abstraction>
+            <const memory-class="FRARTP_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialisation:
+          Specifies the content of FrArTp_Pbcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="FrArTp_ConstConfigLayoutType"
+                name="FrArTp_ConfigLayout">
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"node:name(FrArTpMultipleConfig/*[1])"!]</symbolic-value>
+        </parameter>
+
+        <!-- RootCfg -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int> <!-- PlatformSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('FrArTp')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int> <!-- CfgSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('FrArTp')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('FrArTp')[1]/CommonPublishedInformation/Release))"!]</int> <!-- PublicInfoSignature -->
+          </field>
+           <field>
+            <int>[!"num:i(as:modconf('FrArTp')[1]/FrArTpGeneral/FrArTpMainFuncCycle div '0.001')"!]</int> <!-- mainFunctionPeriod -->
+          </field>
+          <field> <!-- pConnections -->
+            <ref>
+              <struct-field name="aConnections" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field> <!-- pChannels -->
+            <ref>
+              <struct-field name="aChannels" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field> <!-- pTxPdus -->
+            <ref>
+              <struct-field name="aTxPdus" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field> <!-- pTxPools -->
+            <ref>
+              <struct-field name="aTxPools" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field> <!-- pTxSdus -->
+[!IF "$numTxSdus > 0"!][!//
+            <ref>
+              <struct-field name="aTxSdus" />
+              <array-field index="0" />
+            </ref>
+[!ELSE!][!//
+            <ref/>
+[!ENDIF!][!//
+          </field>
+          <field> <!-- pRxSdus -->
+[!IF "$numRxSdus > 0"!][!//
+            <ref>
+              <struct-field name="aRxSdus" />
+              <array-field index="0" />
+            </ref>
+[!ELSE!][!//
+            <ref/>
+[!ENDIF!][!//
+          </field>
+          <field> <!-- pRxPdus -->
+            <ref>
+              <struct-field name="aRxPdus" />
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <int>[!"num:i(count(as:modconf('FrArTp')[1]/FrArTpMultipleConfig/FrArTpChannel/*/FrArTpConnection/*[node:exists(FrArTpTxSdu)]))"!]</int> <!-- numTxSdus-->
+          </field>
+          <field>
+            <int>[!"num:i(count(as:modconf('FrArTp')[1]/FrArTpMultipleConfig/FrArTpChannel/*/FrArTpConnection/*[node:exists(FrArTpRxSdu)]))"!]</int> <!-- numRxSdus -->
+          </field>
+          <field>
+            <int>[!"num:i(count(text:split($Connection2IdxMap)))"!]</int> <!-- numConn -->
+          </field>
+          <field>
+            <int>[!"num:i(count(text:split($TxPdu2TxPoolMap)))"!]</int> <!-- numTxPdus -->
+          </field>
+          <field>
+            <int>[!"num:i($TxPoolCounter + 1)"!]</int> <!-- numTxPools -->
+          </field>
+          <field>
+            <int>[!"num:i(count(text:split($RxPdu2RxPoolMap)))"!]</int> <!-- numRxPdus -->
+          </field>
+        </field>
+        <field>
+[!FOR "i" = "1" TO "count(text:split($Channel2IdxMap))"!]
+  [!VAR "channel"="text:split($Channel2IdxMap)[position() = $i]"!]
+  [!VAR "channelPath" = "text:split($channel,':')[1]"!]
+  [!CALL "ChannelCfg", "path"="$channelPath"!]
+[!ENDFOR!]
+        </field> <!-- aChannels -->
+        <field>
+[!FOR "i" = "1" TO "count(text:split($RxPdu2RxPoolMap))"!]
+  [!CALL "RxPduCfg", "rxPduId"="num:i(num:i($i)-1)"!]
+[!ENDFOR!]
+        </field> <!-- aRxPdus -->
+        <field>
+[!FOR "i" = "1" TO "count(text:split($Connection2IdxMap))"!]
+  [!VAR "connection"="text:split($Connection2IdxMap)[position() = $i]"!]
+  [!VAR "connectionPath" = "text:split($connection,':')[2]"!]
+  [!CALL "ConnectionCfg", "path"="$connectionPath"!]
+[!ENDFOR!]
+        </field> <!-- aConnections -->
+        <field>
+[!FOR "i" = "0" TO "num:i($TxPoolCounter)"!][!//
+  [!CALL "TxPoolCfg", "txPoolIdx"="num:i($i)"!][!//
+[!ENDFOR!][!//
+        </field> <!-- aTxPools -->
+        <field>
+[!FOR "i" = "1" TO "count(text:split($TxPdu2TxPoolMap))"!][!//
+  [!CALL "TxPduCfg", "txPduIdx"="num:i(num:i($i)-1)"!][!//
+[!ENDFOR!][!//
+        </field> <!-- aTxPdus -->
+[!IF "$numTxSdus > 0"!][!//
+        <field>
+[!LOOP "node:order(as:modconf('FrArTp')[1]/FrArTpMultipleConfig/FrArTpChannel/*/FrArTpConnection/*[node:exists(FrArTpTxSdu)],'FrArTpTxSdu/FrArTpSduTxId')"!][!//
+  [!CALL "TxSdu2ConnCfg", "path"="as:path(.)"!][!//
+[!ENDLOOP!][!//
+        </field> <!-- aTxSdus -->
+[!ENDIF!]
+[!IF "$numRxSdus > 0"!][!//
+        <field>
+[!LOOP "node:order(as:modconf('FrArTp')[1]/FrArTpMultipleConfig/FrArTpChannel/*/FrArTpConnection/*[node:exists(FrArTpRxSdu)],'FrArTpRxSdu/FrArTpSduRxId')"!][!//
+  [!CALL "RxSdu2ConnCfg", "path"="as:path(.)"!][!//
+[!ENDLOOP!][!//
+        </field> <!-- aRxSdus -->
+[!ENDIF!]
+      </instance> <!-- FrArTp_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <!-- The xpointer atribute shouldrather be something like "xpointer(//module[name='...'])",
+       but unfortunately our XML parser does not support the XPointer xpointer() Scheme.
+       This is also the reason why all these xincludes must be at the end of the file rather
+       than at the beginning, because that way the other xgen files that include this one can
+       be sure that "element(/1/1)" is the FrArTp module element.
+  -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>

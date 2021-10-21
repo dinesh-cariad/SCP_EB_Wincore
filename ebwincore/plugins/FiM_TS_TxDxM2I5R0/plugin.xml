@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR FiM_TS_TxDxM2I5R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="FiM_TS_TxDxM2I5R0_ModuleId"
+             name="FiM_TS_TxDxM2I5R0 Module">
+    <module id="FiM_TS_TxDxM2I5R0"
+            label="FiM"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-DiagnosticStack: AUTOSAR Function Inhibition Manager"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="2"
+            swVersionMinor="5"
+            swVersionPatch="3"
+            swVersionSuffix="B439717"
+            specVersionMajor="2"
+            specVersionMinor="2"
+            specVersionPatch="0"
+            specVersionSuffix="3"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="FiM"
+            categoryLayer="System Services"
+            categoryCategory="Mode Management"
+            categoryComponent="ECUC">
+      <cluster name="Mode Management Stack"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="FiM_TS_TxDxM2I5R0_ConfigId"
+             name="FiM_TS_TxDxM2I5R0 Configuration">
+    <configuration moduleId="FiM_TS_TxDxM2I5R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/FiM.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM2I5R0/FiM"/>
+      </data>
+
+      <editor id="FiM_TS_TxDxM2I5R0_EditorId"
+              label="Default"
+              tooltip="ACG-DiagnosticStack: AUTOSAR Function Inhibition Manager">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM2I5R0/FiM"/>
+          <parameter name="title" value="FiM"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_FiM_TS_TxDxM2I5R0"
+           moduleId="FiM_TS_TxDxM2I5R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.FiMTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="FiM_TS_TxDxM2I5R0_GeneratorId"
+             name="FiM_TS_TxDxM2I5R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="FiM_TS_TxDxM2I5R0_TemplateBasedCodeGeneratorId"
+               moduleId="FiM_TS_TxDxM2I5R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_FiM_TS_TxDxM2I5R0"
+        name="FiM service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="FiM" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/FiM_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.FiM_TS_TxDxM2I5R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+
+    <!-- message id calculator for FiMMessageId -->
+    <pushoperation id="FiMMessageId_FiM_TS_TxDxM2I5R0"
+                   name="FiM/FiMMessageId"
+                   desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="FiM_TS_TxDxM2I5R0"/>
+        <parameter name="listPath"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM2I5R0/ELEMENTS/FiM/FiMConfigSet/FiMConfigSet/FiMMessage"/>
+        <parameter name="idPath" value="FiMMessageId"/>
+        <parameter name="zbcGroups" value="false"/>
+        <parameter name="startingId" value="1"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="target">
+            <equals value="WINDOWS"/>
+          </with>
+          <with variable="moduleId.FiM_TS_TxDxM2I5R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.0"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+</plugin>

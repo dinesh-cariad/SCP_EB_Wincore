@@ -1,0 +1,29 @@
+#!/bin/bash
+echo Info: MCG has been invoked in Linux!
+
+EXTERNAL_GENERATOR="${1}/generator/linux/FrIf_MCG.exe"
+OUTPUT_DIR=$2
+MODULE_CONFIGS=""
+
+while [ -n "$3" ]
+do
+  for i in Fr Fr1 FrIf Dem FrNm FrTp PduR EcuC FrTrcv FrTrcv1
+  do
+    if [[ "$3" = "${i}_"* ]]; then
+      MODULE_CONFIGS="${MODULE_CONFIGS} -c ${OUTPUT_DIR}/${i}.epc"
+    fi
+  done
+  shift
+done
+
+mkdir ${OUTPUT_DIR}/dummy_dir_exec_gen_out
+mkdir ${OUTPUT_DIR}/src
+mkdir ${OUTPUT_DIR}/include
+mkdir ${OUTPUT_DIR}/make
+mkdir ${OUTPUT_DIR}/xgen
+${OUTPUT_DIR}/config/FrIf_ExtGenCfg.sh
+${EXTERNAL_GENERATOR} ${VARIANT_PARAMETER} ${MODULE_CONFIGS} -o ${OUTPUT_DIR}/dummy_dir_exec_gen_out
+mv ${OUTPUT_DIR}/dummy_dir_exec_gen_out/*.c ${OUTPUT_DIR}/src/
+mv ${OUTPUT_DIR}/dummy_dir_exec_gen_out/*.h ${OUTPUT_DIR}/include/
+mv ${OUTPUT_DIR}/dummy_dir_exec_gen_out/*.xgen ${OUTPUT_DIR}/xgen/
+rm -r ${OUTPUT_DIR}/dummy_dir_exec_gen_out

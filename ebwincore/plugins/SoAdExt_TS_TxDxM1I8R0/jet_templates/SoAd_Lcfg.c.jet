@@ -1,0 +1,217 @@
+<%@ jet package="dreisoft.tresos.soad.generated.jet" class="SoAd_Lcfg_c" skeleton="File.skeleton"
+        imports="dreisoft.tresos.soad.generator.intermediate.linktime.api.IfApi
+            dreisoft.tresos.soad.generator.intermediate.linktime.api.TpApi
+            dreisoft.tresos.soad.generator.intermediate.linktime.api.NotificationApi
+            dreisoft.tresos.soad.generator.output.linktime.LinkTimeData
+            dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+
+    final LinkTimeData data = (LinkTimeData)context.gen.getVariable( LinkTimeData.ARG_NAME,
+                                                                     LinkTimeData.class,
+                                                                     null );
+%>
+<%@ include file="head.c.inc" %>
+
+/*
+ * Misra-C:2012 Deviations:
+ *
+ * MISRAC2012-1) Deviated Rule: 9.5 (required)
+ * Where designated initializers are used to initialize an array object
+ * the size of the array shall be specified explicitly.
+ *
+ * Reason:
+ * Link-Time Configuration: Function pointer array with variable size
+ * for configurable upper layer support
+ */
+ 
+/*==================[includes]==============================================*/
+
+#include <SoAd_Lcfg.h>
+#include <SoAd_PBRAMcfg.h>
+<% for( String filename : data.getIncludes() ) { %>
+#include <<%= filename %>>
+<% } %>
+
+/*==================[macros]================================================*/
+
+#if (defined SOAD_DATA_MEM_SIZE_32BIT_WORDS) /* To prevent double definition */
+#error SOAD_DATA_MEM_SIZE_32BIT_WORDS already defined!
+#endif /* (defined SOAD_DATA_MEM_SIZE_32BIT_WORDS) */
+
+/** \brief Derived from SoAdDataMemSize */
+#define SOAD_DATA_MEM_SIZE_32BIT_WORDS ((SOAD_DATA_MEM_SIZE + 3U) / 4U)
+
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+#define SOAD_START_SEC_VAR_CLEARED_32
+#include <SoAd_MemMap.h>
+
+VAR(uint32, SOAD_VAR_CLEARED) SoAd_Mem[SOAD_DATA_MEM_SIZE_32BIT_WORDS];
+
+#define SOAD_STOP_SEC_VAR_CLEARED_32
+#include <SoAd_MemMap.h>
+
+
+/* start const section declaration */
+#define SOAD_START_SEC_CONST_8
+#include <SoAd_MemMap.h>
+
+/**
+ * API function pointer table size variable for modules with interface archetype
+ */
+CONST(uint8, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.IF_API_ARRAY_SIZE %> = <%= data.getIfApiCount() %>U;
+
+/**
+ * API function pointer table size variable for modules with TP archetype
+ */
+CONST(uint8, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.TP_API_ARRAY_SIZE %> = <%= data.getTpApiCount() %>U;
+
+/**
+ * API function pointer table size variable for modules that require notifications
+ */
+CONST(uint8, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.NOTIF_API_ARRAY_SIZE %> = <%= data.getNotificationApiCount() %>U;
+
+/* stop const section declaration */
+#define SOAD_STOP_SEC_CONST_8
+#include <SoAd_MemMap.h>
+
+
+/* start const section declaration */
+#define SOAD_START_SEC_CONST_UNSPECIFIED
+#include <SoAd_MemMap.h>
+
+/**
+ * API function pointer table for modules with interface communication module archetype
+ */
+CONST(<%= LinkTimeData.IF_API_TYPE %>, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.IF_API_ARRAY %>[] =
+{
+<%
+if( data.getIfApiCount() > 0 ) {
+    int index = 0;
+    for( IfApi api : data.getIfApis() ) {
+%>
+    <%= index == 0 ? "" : ", " %>{ /* [<%= index++ %>] <%= api.getModuleConfigName() %> */
+        <%= makeFunctionPointerRepresentation( api.getTxConfirmation() ) %>, /* TxConfirmation */
+        <%= makeFunctionPointerRepresentation( api.getRxIndication() ) %>, /* RxIndication */
+        <%= makeFunctionPointerRepresentation( api.getTriggerTransmit() ) %> /* TriggerTransmit */
+    }
+<%
+    }
+} else {
+%>
+    {
+        <%= makeFunctionPointerRepresentation( null ) %>,
+        <%= makeFunctionPointerRepresentation( null ) %>,
+        <%= makeFunctionPointerRepresentation( null ) %>
+    }
+<%
+}
+%>
+/* Deviation MISRAC2012-1 */
+};
+
+/**
+ * API function pointer table for modules with transport protocol module archetype
+ */
+CONST(<%= LinkTimeData.TP_API_TYPE %>, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.TP_API_ARRAY %>[] =
+{
+<%
+if( data.getTpApiCount() > 0 ) {
+    int index = 0;
+    for( TpApi api : data.getTpApis() ) {
+%>
+   <%= index == 0 ? "" : ", " %>{ /* [<%= index++ %>] <%= api.getModuleConfigName() %> */
+      <%= makeFunctionPointerRepresentation( api.getTxConfirmation() ) %>, /* TxConfirmation */
+      <%= makeFunctionPointerRepresentation( api.getRxIndication() ) %>, /* RxIndication */
+      <%= makeFunctionPointerRepresentation( api.getCopyRxData() ) %>, /* CopyRxData */
+      <%= makeFunctionPointerRepresentation( api.getStartOfReception() ) %>, /* StartOfReception */
+      <%= makeFunctionPointerRepresentation( api.getCopyTxData() ) %> /* CopyTxData */
+   }
+<%
+    }
+} else {
+%>
+    {
+        <%= makeFunctionPointerRepresentation( null ) %>,
+        <%= makeFunctionPointerRepresentation( null ) %>,
+        <%= makeFunctionPointerRepresentation( null ) %>,
+        <%= makeFunctionPointerRepresentation( null ) %>,
+        <%= makeFunctionPointerRepresentation( null ) %>
+    }
+<%
+}
+%>
+/* Deviation MISRAC2012-1 */
+};
+
+/**
+ * API function pointer table for modules that require notifications
+ */
+CONST(<%= LinkTimeData.NOTIF_API_TYPE %>, <%= LinkTimeData.MEMORY_CLASS %>) <%= LinkTimeData.NOTIF_API_ARRAY %>[] =
+{
+<%
+if( data.getNotificationApiCount() > 0 ) {
+    int index = 0;
+    for( NotificationApi api : data.getNotificationApis() ) {
+%>
+    <%= index == 0 ? "" : ", " %>{ /* [<%= index++ %>] <%= api.getModuleConfigName() %> */
+        <%= makeFunctionPointerRepresentation( api.getSoConModeChgNotification() ) %>, /* SoConModeChg */
+        <%= makeFunctionPointerRepresentation( api.getIpAddrAssignChgNotification() ) %> /* LocalIpAddrAssignmentChg */
+    }
+<%
+    }
+} else {
+%>
+    {
+        <%= makeFunctionPointerRepresentation( null ) %>,
+        <%= makeFunctionPointerRepresentation( null ) %>
+    }
+<%
+}
+%>
+/* Deviation MISRAC2012-1 */
+};
+
+/* stop const section declaration */
+#define SOAD_STOP_SEC_CONST_UNSPECIFIED
+#include <SoAd_MemMap.h>
+
+/*==================[internal data]=========================================*/
+
+/* start data section declaration */
+#define SOAD_START_SEC_CONST_32
+#include <SoAd_MemMap.h>
+
+/* value used to validate post build configuration against link time configuration */
+CONST(uint32, SOAD_CONST) SoAd_LcfgSignature = <%= data.getLinktimeConfigSignature() %>U;
+
+/* stop data section declaration */
+#define SOAD_STOP_SEC_CONST_32
+#include <SoAd_MemMap.h>
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.c.inc" %>

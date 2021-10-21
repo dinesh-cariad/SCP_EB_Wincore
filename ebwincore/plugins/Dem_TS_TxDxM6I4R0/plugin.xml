@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR Dem_TS_TxDxM6I4R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Dem_TS_TxDxM6I4R0_ModuleId"
+             name="Dem_TS_TxDxM6I4R0 Module">
+    <module id="Dem_TS_TxDxM6I4R0"
+            label="Dem"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-DiagnosticStack: AUTOSAR Diagnostic Event Manager module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="6"
+            swVersionMinor="4"
+            swVersionPatch="1"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="2"
+            specVersionPatch="0"
+            specVersionSuffix="3"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="Dem"
+            categoryLayer="System Services"
+            categoryCategory="Diagnostic"
+            categoryComponent="ECUC">
+      <cluster name="Diagnostic"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Dem_TS_TxDxM6I4R0_ConfigId"
+             name="Dem_TS_TxDxM6I4R0 Configuration">
+    <configuration moduleId="Dem_TS_TxDxM6I4R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Dem.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the recommended configuration DemRecConfigurationDtcGroupsOpCycle -->
+        <resource value="config_ext/DemRecConfigurationDtcGroupsOpCycle.xdm" type="xdm" id="res_DemRecConfigurationDtcGroupsOpCycle"/>
+        <recconfig
+          name="DemRecConfigurationDtcGroupsOpCycle"
+          default="true"
+          description="Contains standard DTC groups and a standard operation cycle."
+          resourceId="res_DemRecConfigurationDtcGroupsOpCycle"
+          path="ASPath:/TS_TxDxM6I4R0/DemRecConfigurationDtcGroupsOpCycle"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM6I4R0/Dem"/>
+      </data>
+
+      <editor id="Dem_TS_TxDxM6I4R0_EditorId"
+              label="Default"
+              tooltip="ACG-DiagnosticStack: AUTOSAR Diagnostic Event Manager module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM6I4R0/Dem"/>
+          <parameter name="title" value="Dem"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_Dem_TS_TxDxM6I4R0"
+           moduleId="Dem_TS_TxDxM6I4R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.DemTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="Dem_TS_TxDxM6I4R0_GeneratorId"
+             name="Dem_TS_TxDxM6I4R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="Dem_TS_TxDxM6I4R0_TemplateBasedCodeGeneratorId"
+               moduleId="Dem_TS_TxDxM6I4R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate,generate_common"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd,generate_common"/>
+    </generator>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_Dem_TS_TxDxM6I4R0"
+        name="Dem service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="Dem" />
+        <parameter name="req://ecum.initFunctions:1" value="resources/Dem_EcuM_InitFunctions.xml" />
+        <parameter name="req://nvm.blocks:1" value="resources/Dem_NvM_Blocks.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/Dem_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.Dem_TS_TxDxM6I4R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+
+    <!-- handle id calculator for DemEventId -->
+    <pushoperation id="DemEventId_Dem_TS_TxDxM6I4R0"
+                   name="Dem/DemEventId"
+                   desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="Dem_TS_TxDxM6I4R0"/>
+        <parameter name="listPath"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM6I4R0/ELEMENTS/Dem/DemConfigSet/DemConfigSet/DemEventParameter"/>
+        <parameter name="idPath" value="DemEventId"/>
+        <parameter name="zbcGroups" value="false"/>
+        <parameter name="startingId" value="1"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.Dem_TS_TxDxM6I4R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.0"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+
+    <!-- handle id calculator for DemEnableConditionId -->
+    <pushoperation id="DemEnableConditionId_Dem_TS_TxDxM6I4R0"
+                   name="Dem/DemEnableConditionId"
+                   desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="Dem_TS_TxDxM6I4R0"/>
+        <parameter name="listPath"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM6I4R0/ELEMENTS/Dem/DemGeneral/DemEnableCondition"/>
+        <parameter name="idPath" value="DemEnableConditionId"/>
+        <parameter name="zbcGroups" value="false"/>
+        <parameter name="startingId" value="0"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.Dem_TS_TxDxM6I4R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.0"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+
+    <!-- handle id calculator for DemIndicatorID -->
+    <pushoperation id="DemIndicatorID_Dem_TS_TxDxM6I4R0"
+                   name="Dem/DemIndicatorID"
+                   desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="Dem_TS_TxDxM6I4R0"/>
+        <parameter name="listPath"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM6I4R0/ELEMENTS/Dem/DemGeneral/DemIndicator"/>
+        <parameter name="idPath" value="DemIndicatorID"/>
+        <parameter name="zbcGroups" value="false"/>
+        <parameter name="startingId" value="0"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.Dem_TS_TxDxM6I4R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.0"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+
+    <!-- handle id calculator for DemClientId -->
+    <pushoperation id="DemClientId_Dem_TS_TxDxM6I4R0"
+                   name="Dem/DemClientId"
+                   desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="Dem_TS_TxDxM6I4R0"/>
+        <parameter name="listPath"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM6I4R0/ELEMENTS/Dem/DemGeneral/DemClient"/>
+        <parameter name="idPath" value="DemClientId"/>
+        <parameter name="zbcGroups" value="false"/>
+        <parameter name="startingId" value="0"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.Dem_TS_TxDxM6I4R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.0"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+  </extension></plugin>

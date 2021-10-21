@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR EthSM_TS_TxDxM1I6R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="EthSM_TS_TxDxM1I6R0_ModuleId"
+             name="EthSM_TS_TxDxM1I6R0 Module">
+    <module id="EthSM_TS_TxDxM1I6R0"
+            label="EthSM"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-IPStack: AUTOSAR EthSM module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="6"
+            swVersionPatch="14"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="3"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="3"
+            relVersionPatch="0"
+            categoryType="EthSM"
+            categoryLayer="Communication Services"
+            categoryCategory="Communication"
+            categoryComponent="ECUC">
+      <cluster name="Ethernet Stack"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="EthSM_TS_TxDxM1I6R0_ConfigId"
+             name="EthSM_TS_TxDxM1I6R0 Configuration">
+    <configuration moduleId="EthSM_TS_TxDxM1I6R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/EthSM.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM1I6R0/EthSM"/>
+      </data>
+
+      <editor id="EthSM_TS_TxDxM1I6R0_EditorId"
+              label="Default"
+              tooltip="ACG-IPStack: AUTOSAR EthSM module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM1I6R0/EthSM"/>
+          <parameter name="title" value="EthSM"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_EthSM_TS_TxDxM1I6R0"
+           moduleId="EthSM_TS_TxDxM1I6R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.EthSMTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="EthSM_TS_TxDxM1I6R0_GeneratorId"
+             name="EthSM_TS_TxDxM1I6R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="EthSM_TS_TxDxM1I6R0_TemplateBasedCodeGeneratorId"
+               moduleId="EthSM_TS_TxDxM1I6R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_EthSM_TS_TxDxM1I6R0"
+        name="EthSM service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="EthSM" />
+        <parameter name="req://dem.events:1" value="resources/EthSM_Dem_Events.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/EthSM_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.EthSM_TS_TxDxM1I6R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.3" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+</plugin>

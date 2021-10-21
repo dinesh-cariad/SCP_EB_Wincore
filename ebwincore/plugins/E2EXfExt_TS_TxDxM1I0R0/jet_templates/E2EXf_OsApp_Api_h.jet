@@ -1,0 +1,203 @@
+<%@ jet package="eb.tresos.e2exf.generated.jet" class="E2EXf_OsApp_Api_h" skeleton="File.skeleton"
+        imports="
+                java.util.Collection
+                eb.tresos.xfrm.api.generator.FlagSet
+                eb.tresos.e2exf.generator.intermediate.Model
+                eb.tresos.e2exf.generator.intermediate.Profile
+                eb.tresos.e2exf.generator.intermediate.Transformer
+                eb.tresos.e2exf.generator.intermediate.TransformerFlags
+                eb.tresos.e2exf.generator.intermediate.GeneratorPartitionHandler
+                import java.util.ArrayList
+                "
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final String includeGuardName = getIncludeGuardName( context );
+    final Model model = (Model)context.gen.getVariable( Model.ARG_NAME, Model.class, null );
+    final GeneratorPartitionHandler partitionHandler = model.getGeneratorPartitionHandler();
+    final Collection<Profile> supportedProfiles = model.getConfiguredProfiles();
+%>
+<%@ include file="head.h.inc" %>
+
+/*==================[includes]==============================================*/
+
+#include <Std_Types.h>         /* AUTOSAR standard types */
+#include <TransformerTypes.h>  /* Transformer specific standard types **/
+<% if(model.getNumberOfTransformersPerPartition(null, true) > 0) {%>
+#include <E2E_No_Check_E2EXf.h>  /* Profile independent definitions of functions and types */
+<%}%>
+<%for(Profile profile : supportedProfiles) {
+    if(model.getNumberOfTransformersPerPartition(profile, false) > 0) {
+%>
+#include <E2E_<%= profile.getMappedName() %>_E2EXf.h>  /* Profile specific definitions of functions and types */
+<% } } %>
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+#define E2EXF_START_SEC_CODE
+#include <E2EXf_MemMap.h>
+
+/**
+ ** \brief Initializes the state of a partition of the E2E Transformer.
+ **
+ ** This function initializes the E2E library state structures, which is done by calling
+ ** init-functions from all configured partitions.
+ **
+ ** \Reentrancy{Re-entrant}
+ ** \Synchronicity{Synchronous}
+ **/
+E2EXF_DECL_FUNC_PARTITIONINIT(<%= partitionHandler.getPartitionInfix() %>_);
+
+/**
+ ** \brief Deinitializes the state of a partition of the E2E Transformer.
+ **
+ ** \Reentrancy{Re-entrant}
+ ** \Synchronicity{Synchronous}
+ **/
+E2EXF_DECL_FUNC_PARTITIONDEINIT(<%= partitionHandler.getPartitionInfix() %>_);
+<%
+Collection<Transformer> transformers = new ArrayList<Transformer>();
+for(Profile profile : supportedProfiles) {
+    transformers.addAll(model.getTransformersWithProfile(profile, false));
+}
+transformers.addAll(model.getTransformersWithProfile(null, true));
+for (final Transformer transformer : transformers) {
+    final FlagSet<TransformerFlags> flags = transformer.getFlags();
+    final String name = transformer.getName();
+    final boolean inPlace = flags.contains(TransformerFlags.IN_PLACE);
+    final boolean isReceiver = flags.contains(TransformerFlags.INVERSE);
+%>
+
+<% if(!isReceiver) { %>
+/**
+ ** \brief Protects the array/buffer to be transmitted, using the <%= inPlace ? "in-place" : "out-of-place" %> transformation.
+ **
+<% if(!inPlace) { %>
+ ** \param[in]  InputBufferPtr  This argument holds the input data for the transformer.
+<% } %>
+ ** \param[in]  InputBufferLength  This argument holds the length of the E2E transformer's input
+ **             data (in the inputBuffer argument).
+<% if(inPlace) { %>
+ ** \param[in,out]  BufferPtr  This is the buffer where the E2E transformer places its output data.
+ **             With the E2E transformer configured for in-place transformation, it also contains
+ **             its input data.
+ **             With the E2E transformer using in-place transformation and having a headerLength
+ **             different from 0, the output data of the previous transformer begin at position
+ **             headerLength.
+<% } else { %>
+ ** \param[out]  BufferPtr  This is the buffer where the E2E transformer places its output data.
+<% } %>
+ **             It is the buffer allocated by the RTE, where the transformed data has to be stored
+ **             by the transformer.
+ ** \param[out]  BufferLengthPtr  Used length of the buffer
+ **
+ ** \return Function execution success status
+ ** \retval 0x00  (E_OK): Function performed successfully.
+ ** \retval 0x77  (E_SAFETY_SOFT_RUNTIMEERROR): A runtime error occurred, safety properties could
+ **               not be checked (state or status cannot be determined) but non-protected output
+ **               data could be produced nonetheless.
+ ** \retval 0xFF  (E_SAFETY_HARD_RUNTIMEERROR): A runtime error occurred, safety properties could
+ **               not be checked and no output data could be produced.
+ **
+ ** \ServiceID{0x03}
+ ** \Reentrancy{Reentrant}
+ ** \Synchronicity{Synchronous}
+ **/
+<% } else { %>
+/**
+ ** \brief This function checks the received data. using the <%= inPlace ? "in-place" : "out-of-place" %> inverse transformation.
+ **        If the data can be used by the caller, then the function returns E_OK.
+ **
+<% if(!inPlace) { %>
+ ** \param[in]  InputBufferPtr  This argument holds the input data for the transformer.
+ **             If executeDespiteDataUnavailability is set to true, Rte will hand over
+ **             a NULL pointer to the transformer.
+<% } %>
+ ** \param[in]  InputBufferLength  This argument holds the length of the E2E transformer's input
+ **             data (in the inputBuffer argument).
+ **             If executeDespiteDataUnavailability is set to true and the transformer is
+ **             executed without valid input data, the length will be equal to 0.
+<% if(inPlace) { %>
+ ** \param[in,out]  BufferPtr  This is the buffer where the E2E transformer places its output data.
+ **             With the E2E transformer configured for in-place transformation, it also contains
+ **             its input data.
+ **             With the E2E transformer using in-place transformation and having a headerLength
+ **             different from 0, the output data of the previous transformer begin at position
+ **             headerLength.
+<% } else { %>
+ ** \param[out]  BufferPtr  This is the buffer where the E2E transformer places its output data.
+<% } %>
+ **             It is the buffer allocated by the RTE, where the transformed data has to be stored
+ **             by the transformer.
+ ** \param[out]  BufferLengthPtr  Used length of the buffer
+ **
+ ** \return Function execution success status. The high nibble represents the state of the E2E
+ **         state machine, the low nibble represents the status of the last E2E check.
+ **         For the following return codes, please see SWS Transformer General:
+ ** \retval 0x00 (E_OK) This means VALID_OK
+ ** \retval 0x01 (E_SAFETY_VALID_REP)
+ ** \retval 0x02 (E_SAFETY_VALID_SEQ)
+ ** \retval 0x03 (E_SAFETY_VALID_ERR)
+ ** \retval 0x05 (E_SAFETY_VALID_NND)
+ **
+ ** \retval 0x20 (E_SAFETY_NODATA_OK)
+ ** \retval 0x21 (E_SAFETY_NODATA_REP)
+ ** \retval 0x22 (E_SAFETY_NODATA_SEQ)
+ ** \retval 0x23 (E_SAFETY_NODATA_ERR)
+ ** \retval 0x25 (E_SAFETY_NODATA_NND)
+ **
+ ** \retval 0x30 (E_SAFETY_INIT_OK)
+ ** \retval 0x31 (E_SAFETY_INIT_REP)
+ ** \retval 0x32 (E_SAFETY_INIT_SEQ)
+ ** \retval 0x33 (E_SAFETY_INIT_ERR)
+ ** \retval 0x35 (E_SAFETY_INIT_NND)
+ **
+ ** \retval 0x40 (E_SAFETY_INVALID_OK)
+ ** \retval 0x41 (E_SAFETY_INVALID_REP)
+ ** \retval 0x42 (E_SAFETY_INVALID_SEQ)
+ ** \retval 0x43 (E_SAFETY_INVALID_ERR)
+ ** \retval 0x45 (E_SAFETY_INVALID_NND)
+ **
+ ** \retval 0x77 (E_SAFETY_SOFT_RUNTIMEERROR): A runtime error occurred, safety properties could not
+ **         be checked (state or status cannot be determined) but non-protected output data could
+ **         be produced nonetheless.
+ ** \retval 0xFF (E_SAFETY_HARD_RUNTIMEERROR): A runtime error occurred, safety properties could not
+ **         be checked and no output data could be produced.
+ **
+ ** \ServiceID{0x04}
+ ** \Reentrancy{Reentrant}
+ ** \Synchronicity{Synchronous}
+ **/
+<% } %>
+E2EXF_DECL_FUNC_<%= isReceiver ? "INVXF" : "XF" %>_<%= inPlace ? "INPLACE" : "OUTOFPLACE" %>(<%= name %>);
+<% } %>
+
+#define E2EXF_STOP_SEC_CODE
+#include <E2EXf_MemMap.h>
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

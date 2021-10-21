@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+[!/* do not generate this file if RTE is not used */!]
+[!SKIPFILE "as:modconf('DoIP')[1]/DoIPGeneral/DoIPRteUsage != 'true'"!]
+[!VAR "DoIPSVCGetPowerModeSupport" = "node:empty(as:modconf('DoIP')[1]/DoIPGeneral/DoIPPowerModeCallback/DoIPPowerMode)"!][!//
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_DoIP</SHORT-NAME>
+      <ELEMENTS/>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>SwComponentTypes</SHORT-NAME>
+          <ELEMENTS>
+            <!-- !LINKSTO DoIP.ASR41.SWS_DoIP_00052,1 -->
+            <SERVICE-SW-COMPONENT-TYPE >
+              <SHORT-NAME>DoIP</SHORT-NAME>
+              <PORTS>
+[!IF "$DoIPSVCGetPowerModeSupport = 'true'"!][!//
+                <R-PORT-PROTOTYPE>
+                  <!-- !LINKSTO DoIP.ASR41.SWS_DoIP_00261,1 -->
+                  <SHORT-NAME>CBGetPowerMode</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_DoIP/PortInterfaces/CallbackGetPowerMode</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPRoutingActivation/*"!][!//
+[!IF "(node:exists(./DoIPRoutingActivationAuthenticationCallback) and node:empty(./DoIPRoutingActivationAuthenticationCallback/DoIPRoutingActivationAuthenticationFunc)) or (node:exists(./DoIPRoutingActivationConfirmationCallback) and node:empty(./DoIPRoutingActivationConfirmationCallback/DoIPRoutingActivationConfirmationFunc))"!][!//
+                <R-PORT-PROTOTYPE>
+                  <!-- !LINKSTO DoIP.ASR41.SWS_DoIP_00262,1 -->
+                  <SHORT-NAME>CB[!"node:name(.)"!]RoutingActivation</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_DoIP/PortInterfaces/[!"node:name(.)"!]_RoutingActivation</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+                <P-PORT-PROTOTYPE>
+                  <!-- !LINKSTO DoIP.EB.SWS_DoIP_00265,1 -->
+                  <SHORT-NAME>DoIPActivationLineSwitchNotification</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_DoIP/PortInterfaces/DoIPActivationLineStatus</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+              </PORTS>
+
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>DoIPIntBeh</SHORT-NAME>
+
+                  <EVENTS>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ActivationLineSwitchActive</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_DoIP/SwComponentTypes/DoIP/DoIPIntBeh/RE_ActivationLineSwitchActive</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_DoIP/SwComponentTypes/DoIP/DoIPActivationLineSwitchNotification</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_DoIP/PortInterfaces/DoIPActivationLineStatus/ActivationLineSwitchActive</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>                  
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ActivationLineSwitchInactive</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_DoIP/SwComponentTypes/DoIP/DoIPIntBeh/RE_ActivationLineSwitchInactive</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_DoIP/SwComponentTypes/DoIP/DoIPActivationLineSwitchNotification</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_DoIP/PortInterfaces/DoIPActivationLineStatus/ActivationLineSwitchInactive</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>                                      
+                  </EVENTS>
+
+                  <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+
+                  <PORT-API-OPTIONS>
+[!IF "$DoIPSVCGetPowerModeSupport = 'true'"!][!//
+                    <PORT-API-OPTION>
+                        <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                        <INDIRECT-API>false</INDIRECT-API>
+                        <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_DoIP/SwComponentTypes/DoIP/CBGetPowerMode</PORT-REF>
+                    </PORT-API-OPTION>
+[!ENDIF!][!//
+[!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPRoutingActivation/*"!][!//
+[!IF "(node:exists(./DoIPRoutingActivationAuthenticationCallback) and node:empty(./DoIPRoutingActivationAuthenticationCallback/DoIPRoutingActivationAuthenticationFunc)) or (node:exists(./DoIPRoutingActivationConfirmationCallback) and node:empty(./DoIPRoutingActivationConfirmationCallback/DoIPRoutingActivationConfirmationFunc))"!][!//
+                    <PORT-API-OPTION>
+                        <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                        <INDIRECT-API>false</INDIRECT-API>
+                        <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_DoIP/SwComponentTypes/DoIP/CB[!"node:name(.)"!]RoutingActivation</PORT-REF>
+                    </PORT-API-OPTION>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+                    <PORT-API-OPTION>
+                        <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                        <INDIRECT-API>false</INDIRECT-API>
+                        <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_DoIP/SwComponentTypes/DoIP/DoIPActivationLineSwitchNotification</PORT-REF>
+                    </PORT-API-OPTION>
+                  </PORT-API-OPTIONS>
+
+                  <RUNNABLES>
+
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_MainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-READ-ACCESSS/>
+                      <DATA-RECEIVE-POINT-BY-ARGUMENTS/>
+                      <DATA-SEND-POINTS/>
+                      <DATA-WRITE-ACCESSS/>
+                      <SERVER-CALL-POINTS>
+[!IF "$DoIPSVCGetPowerModeSupport = 'true'"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_GetPowerMode</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_DoIP/SwComponentTypes/DoIP/CBGetPowerMode</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_DoIP/PortInterfaces/CallbackGetPowerMode/GetPowerMode</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!][!//
+[!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPRoutingActivation/*"!][!//
+[!IF "(node:exists(./DoIPRoutingActivationAuthenticationCallback) and node:empty(./DoIPRoutingActivationAuthenticationCallback/DoIPRoutingActivationAuthenticationFunc)) or (node:exists(./DoIPRoutingActivationConfirmationCallback) and node:empty(./DoIPRoutingActivationConfirmationCallback/DoIPRoutingActivationConfirmationFunc))"!][!//
+[!IF "node:exists(./DoIPRoutingActivationAuthenticationCallback) and node:empty(./DoIPRoutingActivationAuthenticationCallback/DoIPRoutingActivationAuthenticationFunc)"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_[!"node:name(.)"!]Authentication</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_DoIP/SwComponentTypes/DoIP/CB[!"node:name(.)"!]RoutingActivation</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_DoIP/PortInterfaces/[!"node:name(.)"!]_RoutingActivation/RoutingActivationAuthentication</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!][!//
+[!IF "node:exists(./DoIPRoutingActivationConfirmationCallback) and node:empty(./DoIPRoutingActivationConfirmationCallback/DoIPRoutingActivationConfirmationFunc)"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_[!"node:name(.)"!]Confirmation</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_DoIP/SwComponentTypes/DoIP/CB[!"node:name(.)"!]RoutingActivation</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_DoIP/PortInterfaces/[!"node:name(.)"!]_RoutingActivation/RoutingActivationConfirmation</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+                       
+                      </SERVER-CALL-POINTS>
+                      <SYMBOL>DoIP_MainFunction</SYMBOL>
+                    </RUNNABLE-ENTITY>
+
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ActivationLineSwitchActive</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>DoIP_ActivationLineSwitchActive</SYMBOL>
+                    </RUNNABLE-ENTITY>                    
+                    
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ActivationLineSwitchInactive</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>DoIP_ActivationLineSwitchInactive</SYMBOL>
+                    </RUNNABLE-ENTITY>                                        
+                    
+                  </RUNNABLES>
+
+                  <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </SERVICE-SW-COMPONENT-TYPE >
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_DoIP</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>SwcImplementations</SHORT-NAME>
+          <ELEMENTS>
+            <SWC-IMPLEMENTATION>
+              <SHORT-NAME>DoIPImpl</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Code</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>Resources</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                 <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>1.1.21</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_DoIP/SwComponentTypes/DoIP/DoIPIntBeh</BEHAVIOR-REF>
+            </SWC-IMPLEMENTATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

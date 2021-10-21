@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR Dcm_TS_TxDxM5I0R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Dcm_TS_TxDxM5I0R0_ModuleId"
+             name="Dcm_TS_TxDxM5I0R0 Module">
+    <module id="Dcm_TS_TxDxM5I0R0"
+            label="Dcm"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-DiagnosticStack: AUTOSAR Dcm module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="5"
+            swVersionMinor="0"
+            swVersionPatch="9"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="2"
+            specVersionPatch="0"
+            specVersionSuffix="3"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="Dcm"
+            categoryLayer="Communication Services"
+            categoryCategory="Diagnostic"
+            categoryComponent="ECUC">
+      <cluster name="Diagnostic"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Dcm_TS_TxDxM5I0R0_ConfigId"
+             name="Dcm_TS_TxDxM5I0R0 Configuration">
+    <configuration moduleId="Dcm_TS_TxDxM5I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Dcm.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the recommended configuration DcmRecConfigurationBasic -->
+        <resource value="config_ext/DcmRecConfigurationBasic.xdm" type="xdm" id="res_DcmRecConfigurationBasic"/>
+        <recconfig
+          name="DcmRecConfigurationBasic"
+          default="true"
+          description="Contains selected UDS services and subservices without RTE support."
+          resourceId="res_DcmRecConfigurationBasic"
+          path="ASPath:/TS_TxDxM5I0R0/DcmRecConfigurationBasic"/>
+
+        <!-- register the recommended configuration DcmRecConfigurationDflt -->
+        <resource value="config_ext/DcmRecConfigurationDflt.xdm" type="xdm" id="res_DcmRecConfigurationDflt"/>
+        <recconfig
+          name="DcmRecConfigurationDflt"
+          default="false"
+          description="Contains all internally supported UDS services and subservices without RTE support."
+          resourceId="res_DcmRecConfigurationDflt"
+          path="ASPath:/TS_TxDxM5I0R0/DcmRecConfigurationDflt"/>
+
+        <!-- register the recommended configuration DcmRecConfigurationWithRte -->
+        <resource value="config_ext/DcmRecConfigurationWithRte.xdm" type="xdm" id="res_DcmRecConfigurationWithRte"/>
+        <recconfig
+          name="DcmRecConfigurationWithRte"
+          default="false"
+          description="Contains all internally supported UDS services and subservices with RTE support."
+          resourceId="res_DcmRecConfigurationWithRte"
+          path="ASPath:/TS_TxDxM5I0R0/DcmRecConfigurationWithRte"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM5I0R0/Dcm"/>
+      </data>
+
+      <editor id="Dcm_TS_TxDxM5I0R0_EditorId"
+              label="Default"
+              tooltip="ACG-DiagnosticStack: AUTOSAR Dcm module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM5I0R0/Dcm"/>
+          <parameter name="title" value="Dcm"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_Dcm_TS_TxDxM5I0R0"
+           moduleId="Dcm_TS_TxDxM5I0R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.DcmTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="Dcm_TS_TxDxM5I0R0_GeneratorId"
+             name="Dcm_TS_TxDxM5I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="Dcm_TS_TxDxM5I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="Dcm_TS_TxDxM5I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_Dcm_TS_TxDxM5I0R0"
+        name="Dcm service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="Dcm" />
+        <parameter name="req://nvm.blocks:1" value="resources/Dcm_NvM_Blocks.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/Dcm_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.Dcm_TS_TxDxM5I0R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+  <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="Dcm_TS_TxDxM5I0R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+
+    <!-- handle id calculator for DcmDslTxConfirmationPduId, DcmDslPeriodicTxConfirmationPduId, DcmDslRoeTxConfirmationPduId -->
+    <pushoperation id="TxConfirmationPduId_Dcm_TS_TxDxM5I0R0"
+                   name="Dcm/Dcm_TxConfirmationPduId"
+                   desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="Dcm_TS_TxDxM5I0R0"/>
+        <parameter name="listPath"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I0R0/ELEMENTS/Dcm/DcmConfigSet/DcmConfigSet/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/DcmDslProtocolRow/DcmDslConnection/DcmDslConnection/DcmDslMainConnection/DcmDslProtocolTx"/>
+        <parameter name="listPath_2"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I0R0/ELEMENTS/Dcm/DcmConfigSet/DcmConfigSet/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/DcmDslProtocolRow/DcmDslConnection/DcmDslConnection/DcmDslPeriodicTransmission/DcmDslPeriodicConnection/DcmDslPeriodicConnection"/>
+        <parameter name="listPath_3"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I0R0/ELEMENTS/Dcm/DcmConfigSet/DcmConfigSet/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/DcmDslProtocolRow/DcmDslConnection/DcmDslConnection/DcmDslResponseOnEvent"/>
+        <parameter name="idPath" value="DcmDslTxConfirmationPduId"/>
+        <parameter name="idPath_2" value="DcmDslPeriodicTxConfirmationPduId"/>
+        <parameter name="idPath_3" value="DcmDslRoeTxConfirmationPduId"/>
+        <parameter name="zbcGroups" value="false"/>
+        <parameter name="zbcGroups_2" value="false"/>
+        <parameter name="zbcGroups_3" value="false"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.Dcm_TS_TxDxM5I0R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.0"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+
+    <!-- handle id calculator for DcmDslProtocolRxPduId -->
+    <pushoperation id="ProtocolRxPduId_Dcm_TS_TxDxM5I0R0"
+                   name="Dcm/Dcm_ProtocolRxPduId"
+                   desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="Dcm_TS_TxDxM5I0R0"/>
+        <parameter name="listPath"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I0R0/ELEMENTS/Dcm/DcmConfigSet/DcmConfigSet/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/DcmDslProtocolRow/DcmDslConnection/DcmDslConnection/DcmDslMainConnection/DcmDslProtocolRx/DcmDslProtocolRx"/>
+        <parameter name="idPath" value="DcmDslProtocolRxPduId"/>
+        <parameter name="zbcGroups" value="false"/>
+        <parameter name="startingId" value="0"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.Dcm_TS_TxDxM5I0R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.0"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+
+  </extension>
+</plugin>

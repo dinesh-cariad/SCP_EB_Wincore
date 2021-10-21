@@ -1,0 +1,2934 @@
+<?xml version='1.0'?>
+<datamodel version="7.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/16/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/16/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:cd="http://www.tresos.de/_projects/DataModel2/08/customdata.xsd" 
+         xmlns:f="http://www.tresos.de/_projects/DataModel2/14/formulaexpr.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd"  
+         xmlns:variant="http://www.tresos.de/_projects/DataModel2/11/variant.xsd">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_TxDxM1I8R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="Dlt" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="ADMIN-DATA" type="ADMIN-DATA">
+                <ad:ADMIN-DATA>
+                  <ad:LANGUAGE>EN</ad:LANGUAGE>
+                  <ad:DOC-REVISIONS>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>4.2.0</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>AUTOSAR</ad:ISSUED-BY>
+                      <ad:DATE>2011-11-09T11:36:22Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>1.8.6</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>Elektrobit Automotive GmbH</ad:ISSUED-BY>
+                      <ad:DATE>2021-07-14T23:59:59Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                  </ad:DOC-REVISIONS>
+                </ad:ADMIN-DATA>
+              </a:a>
+              <a:a name="DESC">
+                <a:v>&lt;html&gt;
+                    Configuration of the Dlt (Diagnostic Log and Trace) module.
+                  &lt;/html&gt;</a:v>
+              </a:a>
+              <a:a name="LOWER-MULTIPLICITY" value="0"/>
+              <a:a name="RELEASE" value="asc:4.2"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <a:a name="UUID" value="ECUC:d0c40ae6-f4f4-481e-82d7-113da326c396"/>
+              <v:ctr name="CommonPublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Common Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6"/>
+                <v:var name="ArMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1"/>
+                  <a:da name="DEFAULT" value="4"/>
+                </v:var>
+                <v:var name="ArMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70"/>
+                  <a:da name="DEFAULT" value="2"/>
+                </v:var>
+                <v:var name="ArPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="SwMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="SwMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f"/>
+                  <a:da name="DEFAULT" value="8"/>
+                </v:var>
+                <v:var name="SwPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a318d2d9-0e75-49da-ac43-e7e4e682e2f9"/>
+                  <a:da name="DEFAULT" value="6"/>
+                </v:var>
+                <v:var name="ModuleId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Numeric Module ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:78bc8362-080f-4253-b3da-804ab69a7154"/>
+                  <a:da name="DEFAULT" value="55"/>
+                </v:var>
+                <v:var name="VendorId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Vendor ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="Release" type="STRING_LABEL">
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Release Information"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89"/>
+                  <a:da name="DEFAULT" value=""/>
+                </v:var>
+              </v:ctr>
+              <v:var name="IMPLEMENTATION_CONFIG_VARIANT" type="ENUMERATION">
+                <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                     type="IMPLEMENTATIONCONFIGCLASS">
+                  <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                </a:a>
+                <a:a name="LABEL" value="Config Variant"/>
+                <a:da name="DEFAULT" value="VariantPreCompile"/>
+                <a:da name="RANGE" value="VariantPreCompile"/>
+              </v:var>
+              <v:ctr name="DltGeneral" type="IDENTIFIABLE">
+                <a:a name="DESC" 
+                     value="EN: Flags for adding removing functionality from code."/>
+                <a:a name="UUID" 
+                     value="ECUC:dc794cf6-4757-4873-9431-2ad613223e3b"/>
+                <v:var name="DltRteUsage" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This parameter enables the usage of the RTE for this module.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            For an easy integration it is recommended to disable the usage of the
+                            RTE at the beginning of the integration work.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Rte Usage"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:798910e7-6a2f-481e-868e-e4761f2db77b"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:xpath>
+                      <mt:tst 
+                              true="The usage of the RTE is enabled for the Dlt, but the RTE is disabled or missing." 
+                              expr=". = &apos;true&apos; and count(as:modconf(&apos;Rte&apos;)/*) = 0"/>
+                      <mt:tst 
+                              true="The usage of the RTE is enabled for the Dlt, but the RTE only provides SchM functionality. Check the value of the RteGeneratorOutput configuration parameter." 
+                              expr=". = &apos;true&apos; and node:exists(as:modconf(&apos;Rte&apos;)/RteGeneration/RteGeneratorOutput) and (as:modconf(&apos;Rte&apos;)/RteGeneration/RteGeneratorOutput = &apos;BSW_SCHEDULER_ONLY&apos;)"/>
+                    </mt:xpath>
+                  </a:da>
+                </v:var>
+                <v:var name="DltGeneralStartUpDelayTimer" type="FLOAT">
+                  <a:a name="DESC" 
+                       value="EN: Defines the delay of starting the transmission of messages after the Dlt module has been initialized in seconds."/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:5f6ba53d-0e66-46fe-994f-543216f12345"/>
+                  <a:da name="DEFAULT" value="0.1"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=10.000"/>
+                      <mt:tst expr="&gt;=0.001"/>
+                    </mt:range>
+                    <mt:xpath 
+                              false="DltGeneralStartUpDelayTimer must be a multiple of DltMainFunctionPeriod." 
+                              expr="num:i(. div ../../DltMultipleConfigurationContainer/DltMainFunctionPeriod) * ../../DltMultipleConfigurationContainer/DltMainFunctionPeriod  = ."/>
+                  </a:da>
+                </v:var>
+                <v:var name="DltDevErrorDetect" type="BOOLEAN">
+                  <a:a name="DESC" 
+                       value="EN: Enables/Disables development error detection."/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:27eff560-d84c-4d88-949e-9a5b432dbc63"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="DltEnableTrafficShaper" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Enable Traffic Shaper feature for Dlt.&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="EB"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="2f9d7be9-c181-4f42-b207-b1796c50f2ad"/>
+                  <a:a name="VISIBLE" type="XPath" 
+                       expr="lic:feature(&apos;EB_DLT_MC_OPT&apos;)"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="ENABLE" value="true"/>
+                </v:var>
+                <v:var name="DltImplementAppIdContextIdQuery" type="BOOLEAN">
+                  <a:a name="DESC" 
+                       value="EN: If set the functionality for Verbose Mode shall be available. &lt;p&gt;&lt;b&gt;Note: The functionality related to this parameter is not supported by the current implementation.&lt;/b&gt;&lt;/p&gt;"/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6384a5ee-f631-45a5-9e97-b2a6be818e14"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="false"/>
+                </v:var>
+                <v:var name="DltImplementExtendedHeader" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           If set the extended functionality for the header shall be available.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:72051e53-9842-49c9-8f62-8b593a0e4537"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="true"/>
+                </v:var>
+                <v:var name="DltImplementFilterMessages" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           This flag is for code generation of Dlt.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                           If set the functionality for filtering messages shall be included in the code.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:856a1361-05c1-4b73-a193-244d208267c1"/>
+                  <a:da name="DEFAULT" value="true"/>
+                  <a:da name="EDITABLE" value="true"/>
+                </v:var>
+                <v:var name="DltImplementNVRamStorage" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           If set the functionality for storing and loading information in and from NVRam shall be available.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:b459d722-5902-4cd8-bfad-9d1eb2c83e0a"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="true"/>
+                </v:var>
+                <v:var name="DltImplementSWCInjection" type="BOOLEAN">
+                  <a:a name="DESC" 
+                       value="EN: If the remote call from functions over the Dlt in SW-C shall be available. &lt;p&gt;&lt;b&gt;Note: The functionality related to this parameter is not supported by the current implementation.&lt;/b&gt;&lt;/p&gt;"/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:8bae3785-070c-4d72-b9f0-2f23f6e57f6b"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="false"/>
+                </v:var>
+                <v:var name="DltImplementTimestamp" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           If set the timestamp functionality for the header shall be available.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                          In the AUTOSAR 4.3.1 specifications this parameter is called diferently (DltGeneralTimeStampSupport).
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:8ae7a706-e865-429d-b34f-3da16bd4a58f"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="true"/>
+                </v:var>
+                <v:var name="DltImplementVerboseMode" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           If set the timestamp functionality for the header shall be available.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                          Note: when DltServiceAPI is set to &quot;AUTOSAR_431&quot;, this parameter is disabled.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:37ab72ba-626c-4819-9b76-530db893fc3f"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="(.)=&apos;true&apos; and (not(node:exists(../DltImplementExtendedHeader)) or node:value(../DltImplementExtendedHeader) = &apos;false&apos;)" 
+                        true="DltImplementExtendedHeader must be enabled to have verbose mode implementation generated."/>
+                </v:var>
+                <v:var name="DltImplementVfbTrace" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           If set the header files and the implementation of VFB-trace shall be generated.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:867712da-7313-4f21-8c0f-53a0782c1091"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:xpath>
+                      <mt:tst 
+                              true="VFB tracing is enabled in the Dlt, but the RTE is disabled or missing." 
+                              expr=". = &apos;true&apos; and count(as:modconf(&apos;Rte&apos;)/*) = 0"/>
+                      <mt:tst 
+                              true="VFB tracing is enabled in the Dlt, but RteVfbTraceEnabled parameter is not enabled in the RTE." 
+                              expr=". = &apos;true&apos; and node:exists(as:modconf(&apos;Rte&apos;)/RteGeneration/RteVfbTraceEnabled) and node:value(as:modconf(&apos;Rte&apos;)/RteGeneration/RteVfbTraceEnabled) = &apos;false&apos;"/>
+                    </mt:xpath>
+                  </a:da>
+                  <a:da name="WARNING" type="XPath" 
+                        expr=". = &apos;false&apos; and node:exists(as:modconf(&apos;Rte&apos;)/RteGeneration/RteVfbTraceEnabled) and node:value(as:modconf(&apos;Rte&apos;)/RteGeneration/RteVfbTraceEnabled) = &apos;true&apos; and node:exists(as:modconf(&apos;Rte&apos;)/RteGeneration/RteVfbTraceFunction) and (count(as:modconf(&apos;Rte&apos;)/RteGeneration/RteVfbTraceFunction/*) &gt; 0)" 
+                        true="VFB tracing is enabled in the Rte, but DltImplementVfbTrace parameter is not enabled in the Dlt. VFB functionality will not be provided by the Dlt."/>
+                </v:var>
+                <v:var name="DltVersionInfoApi" type="BOOLEAN">
+                  <a:a name="DESC" 
+                       value="EN: Pre-processor switch for enabling Version Info API support."/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:3fa6a53a-60e1-42e7-97eb-86d5d9639751"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="DltGeneralRegisterContextNotification" 
+                       type="BOOLEAN">
+                  <a:a name="DESC" 
+                       value="EN: If this parameter is set to TRUE, a Dlt Control Message is sent every time a SWC                                   registeres and/or de-registers at/from the Dlt Module. Else, this notification is not sent.                                   TODO This parameter is not enabled yet "/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:751a5524-c7db-11e8-a8d5-f2801f1b9fd1"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(node:value(../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="(node:value(../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                </v:var>
+                <v:var name="DltVfbTraceLogLevel" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           The log level of the log messages generated by the VFB-Trace..
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            Note: The functionality related to this parameter is not supported by the current implementation.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:22380264-b196-44e5-8202-0b65f9d4a6a6"/>
+                  <a:da name="DEFAULT" value="0"/>
+                  <a:da name="EDITABLE" value="false"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=6"/>
+                      <mt:tst expr="&gt;=0"/>
+                    </mt:range>
+                    <mt:xpath 
+                              true="DltImplementVfbTrace must be enabled to have VFB-trace implementation generated." 
+                              expr="(.)=&apos;true&apos; and (not(node:exists(../../DltGeneral/DltImplementVfbTrace)) or node:value(../../DltGeneral/DltImplementVfbTrace) = &apos;false&apos;)"/>
+                  </a:da>
+                </v:var>
+                <v:ref name="DltGptChannel" type="SYMBOLIC-NAME-REFERENCE">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           Reference to the hardware free running timer of the GPT module for timestamps (if no HWFRT is applied, calls to add timestamps are ignored).
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="UUID" 
+                       value="ECUC:35571a7d-1d57-4381-af44-36fd075fccdf"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="REF" 
+                        value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/Gpt/GptChannelConfigSet/GptChannelConfiguration"/>
+                </v:ref>
+                <v:ref name="DltGeneralStbMTimeBaseRef" 
+                       type="SYMBOLIC-NAME-REFERENCE">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            If DltImplementTimestamp is set to TRUE and DltGeneralStbMTimeBaseRef is configured,
+                            the Dlt module shall fetch the time from the StbM module by calling
+                            StbM_GetCurrentTime with the here referenced StbMSynchronizedTimeBase.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="UUID" 
+                       value="ECUC:35571a7d-1d57-4381-af44-36fd075fccd3"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="(node:refvalid(.)) and (../DltImplementTimestamp = &apos;true&apos;) " 
+                        false="DltGeneralStbMTimeBaseRef does not reference a valid StbMSynchronizedTimeBase."/>
+                  <a:da name="REF" 
+                        value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/StbM/StbMSynchronizedTimeBase"/>
+                </v:ref>
+                <v:var name="DltCSPortsQueueLength" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Configuration parameter which allows defining the queue
+                        length of the &lt;em&gt;Client / Server ComSpec Operations&lt;/em&gt;.&lt;/p&gt;
+                        &lt;p&gt;If parameter is set to value 0 no SERVER-COM-SPECs are created and the
+                        queue length will be calculated by RTE based on the number of connected ports,
+                        otherwise the configured DltCSPortsQueueLength value is assigned.&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:f2451c3a-a452-11e7-abc4-cec278b6b50a"/>
+                  <a:da name="DEFAULT" value="1"/>
+                  <a:da name="ENABLE" value="true"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=65535"/>
+                      <mt:tst expr="&gt;=0"/>
+                    </mt:range>
+                  </a:da>
+                </v:var>
+                <v:var name="DltControlMessageMaxResponseSize" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Allows customization of the response buffer&apos;s size for control messages.&lt;/p&gt;
+                        &lt;p&gt;If the GetLogInfo control message is to be used, the following formula must be used to calculate the response size:&lt;/p&gt;
+                        &lt;p&gt;Size when no textual descriptions are requested:&lt;/p&gt;
+                        &lt;p&gt;ResponseBufferSize = 2 bytes + (6 bytes * TotalNoOfAppIds) + (6 bytes * TotalNoOfContextIds) + ReservedBytes&lt;/p&gt;
+                        &lt;p&gt;ReservedBytes (4 bytes) is always filled with 0&lt;/p&gt;
+                        &lt;p&gt;Size when textual descriptions are requested:&lt;/p&gt;
+                        &lt;p&gt;ResponseBufferSize = 2 bytes + (7 bytes * TotalNoOfAppIds) + (7 bytes * TotalNoOfContextIds) + ReservedBytes&lt;/p&gt;
+                        &lt;p&gt;ReservedBytes (4 bytes) is always filled with 0&lt;/p&gt;
+                        &lt;p&gt;Note: Textual descriptions are not supported when the DltServiceAPI configuration parameter is set to &quot;AUTOSAR_421&quot; or &quot;AUTOSAR_422&quot;.
+                                 As such, the description length fields for AppIds (1 byte) and ContextIds (1 byte) will be written and filled with 0.
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:f2451c3a-a452-11e7-abc4-cec278b6b50b"/>
+                  <a:da name="DEFAULT" value="4"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="node:exists(../../DltMultipleConfigurationContainer/DltPduConfig/DltRxPduId)"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=65535"/>
+                      <mt:tst expr="&gt;=4"/>
+                    </mt:range>
+                  </a:da>
+                </v:var>
+                <v:var name="DltTupleEndianness" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           If enabled, the Application and Context Id of a tuple,
+                           under Autosar 4.3.1 (DltServiceAPI == AUTOSAR_431), is taken in MSB order.
+                           If this parameter is disabled, the Application/Context IDs will be interpreted
+                           according to the platform endianness.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                          For Autosar versions different than 4.3.1 (DltServiceAPI == AUTOSAR_421)
+                          this parameter is disabled.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SCOPE" value="LOCAL"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="(node:value(../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                </v:var>
+                <v:var name="DltMessageOptionsBitField" type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Defines what AUTOSAR release to use for Message Options&apos; bit-field.&lt;/p&gt;
+                        &lt;p&gt;On AUTOSAR 4.2.1:&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;Bit 3 is used for verbose_mode&lt;/li&gt;
+                          &lt;li&gt;Bits 0, 1, 2 are used for message_type&lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;On AUTOSAR 4.3.1:&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;Bit 0 is used for verbose_mode&lt;/li&gt;
+                          &lt;li&gt;Bits 1, 2, 3 are used for message_type&lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;Values:&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;AUTOSAR_421&lt;/code&gt; = AUTOSAR 4.2.1&apos;s bit-field (default)&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;AUTOSAR_431&lt;/code&gt; = AUTOSAR 4.3.1&apos;s bit-field&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="AUTOSAR release for Message Options bit-field"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="AUTOSAR_421"/>
+                  <a:da name="RANGE">
+                    <a:v>AUTOSAR_421</a:v>
+                    <a:v>AUTOSAR_431</a:v>
+                  </a:da>
+                </v:var>
+                <v:var name="DltVfbMainFunctionPeriod" type="FLOAT">
+                  <a:a name="DESC" 
+                       value="EN: Period of Dlt_VfbMainFunction() calls in seconds."/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Period of Dlt_VfbMainFunction()"/>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:5f6ba5bd-0e66-46fe-994f-543216f12346"/>
+                  <a:da name="DEFAULT" value="0.1"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=1.000"/>
+                      <mt:tst expr="&gt;=0.001"/>
+                    </mt:range>
+                    <mt:xpath 
+                              false="DltImplementVfbTrace must be enabled in order to change Dlt_VfbMainFunction()&apos;s period." 
+                              expr="(../DltImplementVfbTrace = &apos;true&apos;)"/>
+                  </a:da>
+                </v:var>
+                <v:var name="DltVfbSendHookFunctionParameters" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Enable this parameter in order to send parameter information of the configured hook functions.&lt;/p&gt;
+                        &lt;p&gt;If disabled, only the Message ID will be sent as payload in the trace message.&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Send VFB Hook Function Parameters"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:5f6ba5bd-0e66-5243-994f-7927c6f12355"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="(node:value(../DltImplementVfbTrace) = &apos;true&apos;)"/>
+                </v:var>
+                <v:var name="DltVfbTracePayloadMaxSize" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Maximum size of the trace data (payload) sent by a VFB hook function.&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="VFB Hook Function Payload Max. Size"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="4"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="(node:value(../DltImplementVfbTrace) = &apos;true&apos;) and (node:value(../DltVfbSendHookFunctionParameters) = &apos;true&apos;)"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=255"/>
+                      <mt:tst expr="&gt;=4"/>
+                    </mt:range>
+                  </a:da>
+                </v:var>
+                <v:var name="DltVfbTraceNoOfInterrupts" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;The maximum number of interrupts possible within the system.&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="VFB Trace Number of Max. Interrupts"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="0"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="(node:value(../DltImplementVfbTrace) = &apos;true&apos;)"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=5"/>
+                      <mt:tst expr="&gt;=0"/>
+                    </mt:range>
+                  </a:da>
+                </v:var>
+                <v:ctr name="DltDemEventParameterRefs" type="IDENTIFIABLE">
+                  <a:a name="LABEL" value="Dem Events References"/>
+                  <v:ref name="DLT_E_VFB_BUFFER_FULL" type="REFERENCE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;Reference to the DemEventParameter that shall be issued when the buffer
+                            allocated for the configured trace hook function&apos;s parameters has no available space left.&lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Error for VFB full buffer"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="UUID" 
+                         value="ec251a80-3260-11e2-81c1-0800200c9a66"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(../../../ReportToDem/DltVfbBufferFullReportToDem = &apos;DEM&apos;)"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst expr="node:refvalid(.)" 
+                             false="Invalid reference. A valid reference to a DemEventParameter must be provided."/>
+                      <a:tst 
+                             expr="node:refvalid(.) and (name(as:ref(.)) != &apos;DLT_E_VFB_BUFFER_FULL&apos;)" 
+                             true="Dlt needs the DEM event /Dem/DemConfigSet/*[1]/DemEventParameter/DLT_E_VFB_BUFFER_FULL for a successful build."/>
+                    </a:da>
+                    <a:da name="REF" 
+                          value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/Dem/DemConfigSet/DemEventParameter"/>
+                  </v:ref>
+                </v:ctr>
+              </v:ctr>
+              <v:ctr name="ReportToDem" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                      &lt;p&gt;Production error handling&lt;/p&gt;
+                    &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Production error handling"/>
+                <a:a name="TAB" value="Optimization"/>
+                <a:a name="UUID" value="f36e5680-3260-11e2-81c1-0800200c9a66"/>
+                <a:da name="TITLE" value="Production error handling"/>
+                <v:var name="DltVfbBufferFullReportToDem" type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Defines the handling of the production error:
+                        &lt;em&gt;DLT_E_VFB_BUFFER_FULL&lt;/em&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                        &lt;li&gt;&lt;code&gt;DEM&lt;/code&gt;: All errors are reported to the Diagnostics Event Manager (Dem).&lt;/li&gt;
+                        &lt;li&gt;&lt;code&gt;DET&lt;/code&gt;: All errors are reported to the Development Error Tracer (Det) if enabled.&lt;/li&gt;
+                        &lt;li&gt;&lt;code&gt;DISABLE&lt;/code&gt;: Production errors are not reported at all.&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Dlt VFB buffer full"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Optimization"/>
+                  <a:a name="UUID" value="fb63b100-3260-11e2-81c1-0800200c9a66"/>
+                  <a:da name="DEFAULT" value="DISABLE"/>
+                  <a:da name="RANGE">
+                    <a:v>DEM</a:v>
+                    <a:v>DET</a:v>
+                    <a:v>DISABLE</a:v>
+                  </a:da>
+                  <a:da name="WARNING" type="XPath" 
+                        expr="(. = &apos;DET&apos;) and (../../DltGeneral/DltDevErrorDetect = &apos;false&apos;)" 
+                        true="DltDevErrorDetect is set to false which means that production errors cannot be reported to the development error tracer (Det)."/>
+                </v:var>
+                <v:var name="DltVfbBufferFullDemDetErrorId" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Defines the &lt;code&gt;ErrorId&lt;/code&gt; of the Dlt VFB buffer full
+                            error when it is reported to Det instead of Dem.
+                          &lt;/p&gt;
+
+                          &lt;p&gt;Range:&lt;/p&gt;
+                          &lt;ul&gt;
+                          &lt;li&gt; 30 .. 255 &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Dlt VFB buffer full DET ErrorId"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="01c9b8f0-3261-11e2-81c1-0800200c9a66"/>
+                  <a:da name="DEFAULT" value="30"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="(../DltVfbBufferFullReportToDem = &apos;DET&apos;) and (../../DltGeneral/DltDevErrorDetect = &apos;true&apos;)"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=255"/>
+                    <a:tst expr="&gt;=30"/>
+                  </a:da>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="DltMemory" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                         Configuration parameters for reserving memory for some internal storing and buffer.
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="UUID" 
+                     value="ECUC:1a1331b6-d21c-426c-91e2-a798adec55b3"/>
+                <v:var name="DltInitBufferSize" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           Buffer size for the C-init buffer.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                           This buffer is for storing messages from other BSW modules before Dlt is initialized.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:3d367d10-5882-49fc-8c48-9fe02b6f883a"/>
+                  <a:da name="DEFAULT" value="0"/>
+                  <a:da name="EDITABLE" value="false"/>
+                </v:var>
+                <v:var name="DltMaxCountAppIds" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                           The maximum count of registrable Application Ids.
+                           There shall be a table to manage registered Application IDs,
+                           this is the number of lines to hold in this table.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                           To enable the parameter , AUTOSAR_42 or lower version shall be configured.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:b5e67bde-10d3-4c8b-a84d-2f6dd5c19950"/>
+                  <a:da name="DEFAULT" value="10"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="(node:value(../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) != &apos;AUTOSAR_431&apos;)"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=4294967295"/>
+                    <a:tst expr="&gt;=1"/>
+                  </a:da>
+                </v:var>
+                <v:var name="DltMaxCountContextIds" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            The maximum count of registrable Context Ids.
+                            There shall be a table to manage registered Context IDs,
+                            this is the number of lines to hold in this table.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            Note: To enable the parameter , AUTOSAR_42 or lower version shall be configured.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6c2f1f5e-1d47-49f0-b214-0979978cae61"/>
+                  <a:da name="DEFAULT" value="100"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="(node:value(../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) != &apos;AUTOSAR_431&apos;)"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=4294967295"/>
+                      <mt:tst expr="&gt;=1"/>
+                    </mt:range>
+                    <mt:xpath 
+                              true="When DltEnableBswDistribution is enabled DltMaxCountContextIds must not be greater than 4095." 
+                              expr="((. &gt; 4095) and (lic:feature(&apos;EB_DLT_MC_OPT&apos;) and (node:exists(../../DltMultipleConfigurationContainer/DltBswDistribution/DltEnableBswDistribution))                     and (../../DltMultipleConfigurationContainer/DltBswDistribution/DltEnableBswDistribution=&apos;true&apos;)))"/>
+                  </a:da>
+                </v:var>
+                <v:var name="DltMaxCountContextIdsPerAppId" type="INTEGER">
+                  <a:a name="DESC" 
+                       value="EN: Each Context ID belongs to a specific Application ID.                                   Dlt shall handle the correlation between them.                                   The table of the registered Application IDs shall hold for every Application ID                                   several references to the proper Context IDs. This is the maximum count for Context IDs per Application ID.                                   Note: To enable the parameter , AUTOSAR_42 or lower version shall be configured, otherwise its default value will be equal to 1                                   since in AUTOSAR431 each ApplicationId/ContextId tuple shall be preconfigured and used within the application"/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:7afb6655-4ec4-4d6e-a912-4be203c66610"/>
+                  <a:da name="DEFAULT" value="10"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="(node:value(../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) != &apos;AUTOSAR_431&apos;)"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=4294967295"/>
+                      <mt:tst expr="&gt;=1"/>
+                    </mt:range>
+                    <mt:xpath 
+                              true="DltMaxCountContextIdsPerAppId must not be larger than DltMaxCountContextIds." 
+                              expr=". &gt; ../DltMaxCountContextIds"/>
+                  </a:da>
+                </v:var>
+                <v:var name="DltMessageBufferSize" type="INTEGER">
+                  <a:a name="DESC" 
+                       value="EN: Buffer size for storing Dlt messages for waiting to transmit over the Network (send buffer).                                   This parameter can be enabled only when AUTOSAR_42 or lower version is used"/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:49f7f303-026d-4e27-96bd-88506db89f40"/>
+                  <a:da name="DEFAULT" value="1024"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="(node:value(../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) != &apos;AUTOSAR_431&apos;)"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=4294967295"/>
+                    <a:tst expr="&gt;=20"/>
+                  </a:da>
+                </v:var>
+                <v:var name="DltReceptionBufferSize" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Defines the buffer size for the receiving buffer.
+                            This buffer is for storing messages from communication lower layer.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            Note: As some external Dlt clients might send all Control Messages at once,
+                            this buffer must be large enough to accomodate them all. Length of a Control Message
+                            varies but, to get a sense of how much size one might have, 30 bytes could be initially
+                            considered for one Control Message.
+                          &lt;/p&gt;
+                          &lt;p&gt;Dependency on parameter(s):&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;
+                              Dlt Rx Pdu Id (&lt;code&gt;DltRxPduId&lt;/code&gt;): this parameter must be enabled in order
+                              to be able to configure the Rx buffer size.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:3d367d10-5883-49fc-8c48-9fe02b6f883a"/>
+                  <a:da name="DEFAULT" value="200"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="node:exists(../../DltMultipleConfigurationContainer/DltPduConfig/DltRxPduId)"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=65535"/>
+                      <mt:tst expr="&gt;=1"/>
+                    </mt:range>
+                  </a:da>
+                </v:var>
+              </v:ctr>
+              <v:lst name="DltVfbTrace" type="MAP">
+                <a:da name="MAX" value="0"/>
+                <v:ctr name="DltVfbTrace" type="IDENTIFIABLE">
+                  <a:a name="DESC" 
+                       value="EN: All functions to trace from the VFB by the Dlt."/>
+                  <a:a name="UUID" 
+                       value="ECUC:6c62a8d2-e346-4415-a905-92508689806e"/>
+                  <a:da name="EDITABLE" value="false"/>
+                  <v:var name="DltVfbTraceFunction" type="FUNCTION-NAME">
+                    <a:a name="DESC" 
+                         value="EN: The Dlt generator shall enable VFB tracing for a given hook function when there is a #define in the Dlt-VFB configuration header file for the hook function name and tracing is globally enabled."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="LOCAL"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:1d453c14-033e-4a5d-a5ba-34a735adae68"/>
+                  </v:var>
+                  <v:ref name="DltBswModuleEntryRef" type="FOREIGN-REFERENCE">
+                    <a:a name="DESC" 
+                         value="EN: Foreign reference to the BSWModuleEntry describing the trace function implementation."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="LOCAL"/>
+                    <a:a name="UUID" 
+                         value="ECUC:adef58d2-13df-4dc5-81ec-d9d3e871754e"/>
+                    <a:da name="REF" value="ASTyped:BswModuleEntry"/>
+                  </v:ref>
+                </v:ctr>
+              </v:lst>
+              <v:lst name="DltConfigSet" 
+                     type="MULTIPLE-CONFIGURATION-CONTAINER">
+                <a:a name="LABEL" value="DltConfigSet"/>
+                <a:da name="EDITABLE" type="XPath" 
+                      expr="(node:value(../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                <a:da name="ENABLE" type="XPath" 
+                      expr="(node:value(../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                <a:da name="MAX" value="1"/>
+                <a:da name="MIN" value="1"/>
+                <v:ctr name="DltConfigSet" 
+                       type="MULTIPLE-CONFIGURATION-CONTAINER">
+                  <a:a name="DESC" 
+                       value="EN: This container lists all the global Dlt functionalities that can be enabled or                                   disabled at pre-compile time to optimize resource consumption.                                   It is supported starting with AUTOSAR_431 "/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="UUID" 
+                       value="ECUC:d725b46e-7611-11e8-adc0-fa7ae01bbebc"/>
+                  <v:lst name="DltLogOutput" type="MAP">
+                    <a:da name="MAX" value="1"/>
+                    <v:ctr name="DltLogOutput" type="IDENTIFIABLE">
+                      <a:a name="DESC" 
+                           value="EN: This container contains settings for log/trace message output."/>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS"/>
+                      <a:a name="UUID" 
+                           value="ECUC:ef79e6c4-7851-11e8-adc0-fa7ae01bbebc"/>
+                      <v:ref name="DltDefaultLogChannelRef" type="REFERENCE">
+                        <a:a name="DESC" 
+                             value="EN: Reference to the default log channel, which has to be used for a log/trace output,                                 if no other match has been found."/>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="UUID" 
+                             value="9e866cfa-7857-11e8-adc0-fa7ae01bbebc"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="node:refvalid(.)" 
+                              false="A valid reference to DltLogChannel shall be configured."/>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/Dlt/DltConfigSet/DltLogOutput/DltLogChannel"/>
+                      </v:ref>
+                      <v:lst name="DltLogChannel" type="MAP">
+                        <a:da name="MAX" value="255"/>
+                        <a:da name="MIN" value="1"/>
+                        <v:ctr name="DltLogChannel" type="IDENTIFIABLE">
+                          <a:a name="DESC" 
+                               value="EN: This container contains settings for log/trace message output."/>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS"/>
+                          <a:a name="UUID" 
+                               value="ECUC:56ff9b6a-785a-11e8-adc0-fa7ae01bbebc"/>
+                          <v:var name="DltLogChannelBufferOverflowTimer" 
+                                 type="FLOAT">
+                            <a:a name="DESC" 
+                                 value="EN: Specifies the cycle time in seconds for resetting the buffer overflow flag in                                                             case a buffer overflow occurred.                                             The implementation for this parameter is not done yet"/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="SCOPE" value="ECU"/>
+                            <a:a name="UUID" 
+                                 value="09616802-7873-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="DEFAULT" value="1"/>
+                            <a:da name="EDITABLE" value="false"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&lt;=1E3"/>
+                                <mt:tst expr="&gt;=1"/>
+                              </mt:range>
+                            </a:da>
+                          </v:var>
+                          <v:var name="DltLogChannelBufferSize" type="INTEGER">
+                            <a:a name="DESC" 
+                                 value="EN: Buffer size in bytes for the LogChannel specific message buffer."/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="SCOPE" value="ECU"/>
+                            <a:a name="UUID" 
+                                 value="09616802-7873-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&gt;=0"/>
+                                <mt:tst expr="&lt;=4294967295"/>
+                              </mt:range>
+                              <mt:xpath 
+                                        true="DltMaxMessageLength must not be larger than DltMessageBufferSize." 
+                                        expr=". &lt; ../DltLogChannelMaxMessageLength"/>
+                            </a:da>
+                          </v:var>
+                          <v:var name="DltLogChannelId" type="STRING">
+                            <a:a name="DESC" 
+                                 value="EN: This is the 4 ASCII character long name of the log channel "/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="SCOPE" value="ECU"/>
+                            <a:a name="UUID" 
+                                 value="660994ac-7874-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst 
+                                     expr="not(text:match(.,&apos;^([a-zA-Z0-9]{1,4})&apos;))" 
+                                     true="Please specify 4 character name for the channel id - e.g CHN0."/>
+                              <a:tst 
+                                     expr="text:uniq(as:modconf(&apos;Dlt&apos;)[1]/DltConfigSet/*/DltLogOutput/*/DltLogChannel/*/DltLogChannelId,node:current())" 
+                                     false="Name of the channel id shall be unique."/>
+                            </a:da>
+                          </v:var>
+                          <v:var name="DltLogChannelMaxMessageLength" 
+                                 type="INTEGER">
+                            <a:a name="DESC" 
+                                 value="EN: The maximum length of a Dlt log or trace message."/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="SCOPE" value="ECU"/>
+                            <a:a name="UUID" 
+                                 value="660994ac-7874-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="INVALID" type="Range">
+                              <a:tst expr="&gt;=0"/>
+                              <a:tst expr="&lt;=65535"/>
+                            </a:da>
+                          </v:var>
+                          <v:var name="DltLogChannelMaxNumOfRetries" 
+                                 type="INTEGER">
+                            <a:a name="DESC" 
+                                 value="EN: The maximum number of retries for sending a message on a log channel , in case                                               the message wasn&apos;t successfully sent . This parameter is not used yet"/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="SCOPE" value="ECU"/>
+                            <a:a name="UUID" 
+                                 value="0ce1dca8-7875-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="DEFAULT" value="0"/>
+                            <a:da name="EDITABLE" value="false"/>
+                            <a:da name="INVALID" type="Range">
+                              <a:tst expr="&gt;=0"/>
+                              <a:tst expr="&lt;=255"/>
+                            </a:da>
+                          </v:var>
+                          <v:var name="DltLogChannelThreshold" 
+                                 type="ENUMERATION">
+                            <a:a name="DESC" 
+                                 value="EN: This is the default log level for the channel in use"/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="SCOPE" value="ECU"/>
+                            <a:a name="UUID" 
+                                 value="0ce1dca8-7875-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="RANGE">
+                              <a:v>DLT_LOG_DEBUG</a:v>
+                              <a:v>DLT_LOG_ERROR</a:v>
+                              <a:v>DLT_LOG_FATAL</a:v>
+                              <a:v>DLT_LOG_INFO</a:v>
+                              <a:v>DLT_LOG_OFF</a:v>
+                              <a:v>DLT_LOG_VERBOSE</a:v>
+                              <a:v>DLT_LOG_WARN</a:v>
+                            </a:da>
+                          </v:var>
+                          <v:var name="DltLogChannelTrafficShapingBandwidth" 
+                                 type="INTEGER">
+                            <a:a name="DESC" 
+                                 value="EN: Set the maximum possible bandwith in bit/s.                                               The implementation for this parameter is not done yet"/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="SCOPE" value="LOCAL"/>
+                            <a:a name="UUID" 
+                                 value="0ce1dca8-7875-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="DEFAULT" value="8"/>
+                            <a:da name="EDITABLE" value="false"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&gt;=8"/>
+                                <mt:tst expr="&lt;=4294967295"/>
+                              </mt:range>
+                              <mt:xpath 
+                                        true="DltLogChannelTrafficShapingBandwidth can only be true if DltGeneralTrafficShapingSupport is enabled." 
+                                        expr="(.)=&apos;true&apos; and (not(node:exists(../../../DltGeneral/DltGeneralTrafficShapingSupport)) or                                                      node:value(../../../DltGeneral/DltGeneralTrafficShapingSupport) = &apos;false&apos;)"/>
+                            </a:da>
+                          </v:var>
+                          <v:var name="DltLogChannelTransmitCycle" 
+                                 type="INTEGER">
+                            <a:a name="DESC" 
+                                 value="EN: Specifies the cycle time in ms of the transmit functionality of this log channel."/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="SCOPE" value="ECU"/>
+                            <a:a name="UUID" 
+                                 value="f70a5e0c-7877-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="DEFAULT" value="1"/>
+                            <a:da name="INVALID" type="Range">
+                              <a:tst expr="&gt;=1"/>
+                              <a:tst expr="&lt;=1000"/>
+                            </a:da>
+                          </v:var>
+                          <v:var name="DltLogTraceStatusFlag" type="BOOLEAN">
+                            <a:a name="DESC" 
+                                 value="EN: Parameter to turn on/off sending trace information on this LogChannel completely."/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="SCOPE" value="ECU"/>
+                            <a:a name="UUID" 
+                                 value="5e2fc1a2-7879-11e8-adc0-fa7ae01bbebc"/>
+                          </v:var>
+                          <v:ctr name="DltTxPdu" type="IDENTIFIABLE">
+                            <a:a name="DESC" 
+                                 value="EN:   Contains the configuration parameters of the AUTOSAR Dlt module&apos;s Tx Pdus."/>
+                            <a:a name="UUID" 
+                                 value="85194aa8-7889-11e8-adc0-fa7ae01bbebc"/>
+                            <v:var name="DltITxPduHandleId" type="INTEGER">
+                              <a:a name="DESC" 
+                                   value="EN:   The numerical value used as the ID of this I-PDU.                                            This handle Id is used for the APIs calls Dlt_TxConfirmation,                                          Dlt_TriggerTransmit, Dlt_TriggerIPDUSend or Dlt_TriggerIPDUSendWithMetaData,                                          Dlt_CopyTxData and Dlt_TpTxConfirmation to transmit respectively confirm transmissions of I-PDUs,                                          as well as the PduId passed to the Tx-I-PDU-callout configured with DltIPduCallout and/or DltIPduTriggerTransmitCallout."/>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                              </a:a>
+                              <a:a name="SCOPE" value="ECU"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                              <a:a name="UUID" 
+                                   value="d09f10ce-788a-11e8-adc0-fa7ae01bbebc"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=65535"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath 
+                                          false="Pdu Id shall be 0 based and consecutive " 
+                                          expr="node:isconsecutive(../../../*/DltTxPdu/DltITxPduHandleId,0)"/>
+                              </a:da>
+                            </v:var>
+                            <v:ref name="DltTxPduIdRef" type="REFERENCE">
+                              <a:a name="DESC" 
+                                   value="EN:Reference to the global Pdu structure to allow harmonization of handle IDs in the COM-Stack."/>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                              </a:a>
+                              <a:a name="SCOPE" value="LOCAL"/>
+                              <a:a name="UUID" 
+                                   value="3b2e5b70-788b-11e8-adc0-fa7ae01bbebc"/>
+                              <a:da name="INVALID" type="XPath">
+                                <a:tst expr="node:refvalid(.)" 
+                                       false="A valid reference to EcucPduCollection/Pdu shall be configured "/>
+                                <a:tst 
+                                       expr="text:uniq(../../../*/DltTxPdu/DltTxPduIdRef,.)" 
+                                       false="Reference to the Pdu Collection shall be unique."/>
+                              </a:da>
+                              <a:da name="REF" 
+                                    value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                            </v:ref>
+                            <v:var name="DltITxPduUsesTp" type="BOOLEAN">
+                              <a:a name="DESC" 
+                                   value="EN: If set to TRUE, the PDU is transmitted using the TP API. If FALSE, the IF API is used.                                           Implementation for this parameter is not done yet"/>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                              </a:a>
+                              <a:a name="SCOPE" value="LOCAL"/>
+                              <a:a name="UUID" 
+                                   value="34d40ae0-788b-11e8-adc0-fa7ae01bbebc"/>
+                              <a:da name="EDITABLE" value="false"/>
+                              <a:da name="ENABLE" value="false"/>
+                              <a:da name="RANGE">
+                                <a:v>true</a:v>
+                                <a:v>false</a:v>
+                              </a:da>
+                            </v:var>
+                          </v:ctr>
+                        </v:ctr>
+                      </v:lst>
+                      <v:lst name="DltLogChannelAssignment" type="MAP">
+                        <a:da name="EDITABLE" type="XPath" 
+                              expr="(node:value(../../../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                        <a:da name="ENABLE" value="true"/>
+                        <a:da name="MIN" value="0"/>
+                        <v:ctr name="DltLogChannelAssignment" 
+                               type="IDENTIFIABLE">
+                          <a:a name="DESC" 
+                               value="EN: This container contains a preconfiguration of ApplicationId / ContextId pairs and their assigned log channel."/>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                          </a:a>
+                          <v:ref name="DltLogChannelAssignmentSwcContextRef" 
+                                 type="REFERENCE">
+                            <a:a name="DESC" 
+                                 value="EN: Reference to an ApplicationId/ContextId pair that is assigned to a DltLogChannel."/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="UUID" 
+                                 value="6452cbea-791b-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="EDITABLE" value="true"/>
+                            <a:da name="ENABLE" value="true"/>
+                            <a:da name="INVALID" type="XPath" 
+                                  expr="(node:refvalid(.))" 
+                                  false="DltLogChannelAssignmentSwcContextRef does not reference a valid DltSwcContext."/>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/Dlt/DltSwc/DltSwcContext"/>
+                          </v:ref>
+                          <v:ref name="DltLogChannelRef" type="REFERENCE">
+                            <a:a name="DESC" 
+                                 value="EN: Reference to a DltLogChannel that is assigned to an ApplicationId / ContextId pair."/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="UUID" 
+                                 value="6fa428ea-791b-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="EDITABLE" value="true"/>
+                            <a:da name="ENABLE" value="true"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst expr="node:refvalid(.)" 
+                                     false="DltLogChannelRef does not reference a valid DltLogChannel."/>
+                              <a:tst 
+                                     expr="text:uniq(../../*[DltLogChannelAssignmentSwcContextRef=node:current()/../DltLogChannelAssignmentSwcContextRef]/DltLogChannelRef,.)" 
+                                     false="One DltLogChannelAssignmentSwcContextRef cannot be assigned with the same DltLogChannelRef multiple times."/>
+                            </a:da>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/Dlt/DltConfigSet/DltLogOutput/DltLogChannel"/>
+                            <a:da name="WARNING" type="XPath" 
+                                  expr="(node:path(as:ref(.)) = node:path(as:ref(as:modconf(&apos;Dlt&apos;)/DltConfigSet/*/DltLogOutput/*/DltDefaultLogChannelRef))) and (count(../../*[DltLogChannelAssignmentSwcContextRef=node:current()/../DltLogChannelAssignmentSwcContextRef]/DltLogChannelRef) &lt; 2)" 
+                                  true="SWC contexts are implicitly assigned to the default log channel if no other assignments are configured. If there&apos;s no intention to assign this context to any other log channel, this assignment can be removed."/>
+                          </v:ref>
+                        </v:ctr>
+                      </v:lst>
+                    </v:ctr>
+                  </v:lst>
+                  <v:lst name="DltLogLevelSetting" type="MAP">
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="(node:value(../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:value(../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                    <a:da name="MAX" value="1"/>
+                    <a:da name="MIN" value="1"/>
+                    <v:ctr name="DltLogLevelSetting" type="IDENTIFIABLE">
+                      <a:a name="DESC" 
+                           value="EN: Contains settings for thresholds."/>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS"/>
+                      <v:var name="DltDefaultLogLevel" type="ENUMERATION">
+                        <a:a name="DESC" 
+                             value="EN: This is the effective trace status used in case no filter matches the given ApplicationId and ContextId.                                         This can be seen as a fall-through filter definition with wildcard for ApplicationId and ContextId,                                         which will be used, when no other filter matches."/>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="SCOPE" value="ECU"/>
+                        <a:a name="UUID" 
+                             value="ab2b1d52-ac41-11e8-98d0-529269fb1459"/>
+                        <a:da name="RANGE">
+                          <a:v>DLT_LOG_DEBUG</a:v>
+                          <a:v>DLT_LOG_ERROR</a:v>
+                          <a:v>DLT_LOG_FATAL</a:v>
+                          <a:v>DLT_LOG_INFO</a:v>
+                          <a:v>DLT_LOG_OFF</a:v>
+                          <a:v>DLT_LOG_VERBOSE</a:v>
+                          <a:v>DLT_LOG_WARN</a:v>
+                        </a:da>
+                      </v:var>
+                      <v:lst name="DltLogLevelThreshold" type="MAP">
+                        <a:da name="MIN" value="0"/>
+                        <v:ctr name="DltLogLevelThreshold" type="IDENTIFIABLE">
+                          <a:a name="DESC" 
+                               value="EN: This is the effective trace status used for a valid tuple of ApplicationId/ContextId."/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="ENABLE" value="true"/>
+                          <v:ref name="DltLogLevelThresholdSwcContextRef" 
+                                 type="REFERENCE">
+                            <a:a name="DESC" 
+                                 value="EN: Reference to an ApplicationId/ContextId pair to which a DltTraceStatus is assigned."/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="UUID" 
+                                 value="72a2467a-d2c2-11e8-a8d5-f2801f1b9fd1"/>
+                            <a:da name="EDITABLE" value="true"/>
+                            <a:da name="ENABLE" value="true"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst expr="node:refvalid(.)" 
+                                     false="A valid reference to DltSwcContext should be configured "/>
+                              <a:tst 
+                                     expr="text:uniq(as:modconf(&apos;Dlt&apos;)[1]/DltConfigSet/*/DltLogLevelSetting/*/DltLogLevelThreshold/*/DltLogLevelThresholdSwcContextRef,node:current())" 
+                                     false="Reference shall be unique ."/>
+                            </a:da>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/Dlt/DltSwc/DltSwcContext"/>
+                          </v:ref>
+                          <v:var name="DltSwCLogLevel" type="ENUMERATION">
+                            <a:a name="DESC" 
+                                 value="EN: LogLevel for a mapping ApplicationId/ContextId."/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="UUID" 
+                                 value="1e57fbba-d5d7-11e8-9f8b-f2801f1b9fd1"/>
+                            <a:da name="EDITABLE" value="true"/>
+                            <a:da name="ENABLE" value="true"/>
+                            <a:da name="RANGE">
+                              <a:v>DLT_LOG_DEBUG</a:v>
+                              <a:v>DLT_LOG_ERROR</a:v>
+                              <a:v>DLT_LOG_FATAL</a:v>
+                              <a:v>DLT_LOG_INFO</a:v>
+                              <a:v>DLT_LOG_OFF</a:v>
+                              <a:v>DLT_LOG_VERBOSE</a:v>
+                              <a:v>DLT_LOG_WARN</a:v>
+                            </a:da>
+                          </v:var>
+                        </v:ctr>
+                      </v:lst>
+                    </v:ctr>
+                  </v:lst>
+                  <v:lst name="DltTraceStatusSetting" type="MAP">
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="(node:value(../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:value(../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                    <a:da name="MAX" value="1"/>
+                    <a:da name="MIN" value="1"/>
+                    <v:ctr name="DltTraceStatusSetting" type="IDENTIFIABLE">
+                      <a:a name="DESC" 
+                           value="EN: Contains settings for trace status"/>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS"/>
+                      <a:a name="UUID" 
+                           value="ECUC:5277c03e-7f78-11e8-adc0-fa7ae01bbebc"/>
+                      <v:var name="DltDefaultTraceStatus" type="BOOLEAN">
+                        <a:a name="DESC" 
+                             value="EN: This is the effective trace status used in case no filter matches the given ApplicationId and ContextId.                                         This can be seen as a fall-through filter definition with wildcard for ApplicationId and ContextId,                                         which will be used, when no other filter matches."/>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="SCOPE" value="ECU"/>
+                        <a:a name="UUID" 
+                             value="2cd6e7cc-7f7a-11e8-adc0-fa7ae01bbebc"/>
+                      </v:var>
+                      <v:lst name="DltTraceStatusAssignment" type="MAP">
+                        <a:da name="MIN" value="0"/>
+                        <v:ctr name="DltTraceStatusAssignment" 
+                               type="IDENTIFIABLE">
+                          <a:a name="DESC" 
+                               value="EN: This container contains a preconfiguration of ApplicationId /                                            ContextId pairs and their assigned trace status."/>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+                          </a:a>
+                          <v:ref name="DltTraceStatusAssignmentSwcContextRef" 
+                                 type="REFERENCE">
+                            <a:a name="DESC" 
+                                 value="EN: Reference to an ApplicationId/ContextId pair to which a DltTraceStatus is assigned."/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="UUID" 
+                                 value="52015574-7f79-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst expr="node:refvalid(.)" 
+                                     false="A valid reference to DltSwcContext should be configured "/>
+                              <a:tst 
+                                     expr="text:uniq(as:modconf(&apos;Dlt&apos;)[1]/DltConfigSet/*/DltTraceStatusSetting/*/DltTraceStatusAssignment/*/DltTraceStatusAssignmentSwcContextRef,node:current())" 
+                                     false="Reference shall be unique ."/>
+                            </a:da>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/Dlt/DltSwc/DltSwcContext"/>
+                          </v:ref>
+                          <v:var name="DltTraceStatus" type="BOOLEAN">
+                            <a:a name="DESC" 
+                                 value="EN: Trace status for the given ApplicationId/ContextId tuple."/>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                            </a:a>
+                            <a:a name="SCOPE" value="ECU"/>
+                            <a:a name="UUID" 
+                                 value="a3b80034-7f79-11e8-adc0-fa7ae01bbebc"/>
+                            <a:da name="DEFAULT" value="false"/>
+                          </v:var>
+                        </v:ctr>
+                      </v:lst>
+                    </v:ctr>
+                  </v:lst>
+                </v:ctr>
+              </v:lst>
+              <v:ctr name="DltMultipleConfigurationContainer" 
+                     type="IDENTIFIABLE">
+                <a:a name="DESC" 
+                     value="EN: This container contains the configuration parameters and sub containers of the AUTOSAR Dlt module."/>
+                <a:a name="UUID" 
+                     value="ECUC:42be3745-69d8-4ed2-aae7-fb376d167de3"/>
+                <v:ref name="DltNvRamBlockRef" type="SYMBOLIC-NAME-REFERENCE">
+                  <a:a name="DESC" 
+                       value="EN: Reference to the NvM Block which is used to store the Dlt parameters."/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="UUID" 
+                       value="ECUC:62a6ab9c-882e-4793-a18f-14c791b8bfdf"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;"/>
+                  <a:da name="INVALID" type="XPath">
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (node:value(node:ref(.)/NvMBlockManagementType) != &apos;NVM_BLOCK_NATIVE&apos;)" 
+                           true="The NvMBlockManagementType of the NvRam block referenced by DltNvRamBlockRef must be set to &apos;NVM_BLOCK_NATIVE&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;)and                       (node:value(node:ref(.)/NvMNvBlockNum) != &apos;1&apos;)" 
+                           true="The NvMNvBlockNum of the NvRam block referenced by DltNvRamBlockRef must be 1 for native NvM block type."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (node:value(node:ref(.)/NvMBlockUseSyncMechanism) != &apos;true&apos;)" 
+                           true="The NvMBlockUseSyncMechanism of the NvRam block referenced by DltNvRamBlockRef must be &apos;true&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (node:value(node:ref(.)/NvMBlockWriteProt) != &apos;false&apos;)" 
+                           true="The NvMBlockWriteProt of the NvRam block referenced by DltNvRamBlockRef must be &apos;false&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (node:value(node:ref(.)/NvMResistantToChangedSw) != &apos;false&apos;)" 
+                           true="The NvMResistantToChangedSw of the NvRam block referenced by DltNvRamBlockRef must be &apos;false&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (node:value(node:ref(.)/NvMWriteBlockOnce) != &apos;false&apos;)" 
+                           true="The NvMWriteBlockOnce of the NvRam block referenced by DltNvRamBlockRef must be &apos;false&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       ((node:exists(node:ref(.)/NvMSelectBlockForReadAll)) and                       (node:value(node:ref(.)/NvMSelectBlockForReadAll) != &apos;false&apos;))" 
+                           true="The NvMSelectBlockForReadAll of the NvRam block referenced by DltNvRamBlockRef must be &apos;false&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (not(node:exists(node:ref(.)/NvMSingleBlockCallback)) or                       (node:value(node:ref(.)/NvMSingleBlockCallback) != &apos;Dlt_NvMSingleBlockCallbackNative&apos;))" 
+                           true="The NvMSingleBlockCallback of the NvRam block referenced by DltNvRamBlockRef must be set to &apos;Dlt_NvMSingleBlockCallbackNative&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (not(node:exists(node:ref(.)/NvMReadRamBlockFromNvCallback)) or                       (node:value(node:ref(.)/NvMReadRamBlockFromNvCallback) != &apos;Dlt_NvMReadRamBlockFromNvMNativeCbk&apos;))" 
+                           true="The NvMReadRamBlockFromNvCallback of the NvRam block referenced by DltNvRamBlockRef must be set to &apos;Dlt_NvMReadRamBlockFromNvMNativeCbk&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (not(node:exists(node:ref(.)/NvMWriteRamBlockToNvCallback)) or                       (node:value(node:ref(.)/NvMWriteRamBlockToNvCallback) != &apos;Dlt_NvMWriteRamBlockToNvMNativeCbk&apos;))" 
+                           true="The NvMWriteRamBlockToNvCallback of the NvRam block referenced by DltNvRamBlockRef must be set to &apos;Dlt_NvMWriteRamBlockToNvMNativeCbk&apos;."/>
+                  </a:da>
+                  <a:da name="REF" 
+                        value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor"/>
+                  <a:da name="WARNING" type="XPath">
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (not(node:exists(node:ref(.)/NvMInitBlockCallback)) or                       (node:value(node:ref(.)/NvMInitBlockCallback) != &apos;Dlt_NvMInitNativeBlockCbk&apos;))" 
+                           true="The NvMInitBlockCallback of the NvRam block referenced by DltNvRamBlockRef should be set to &apos;Dlt_NvMInitNativeBlockCbk&apos;.                             Disabling this callback will end up in not using the &apos;restore to default data&apos; functionality."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (node:value(node:ref(.)/NvMBlockUseCrc) != &apos;true&apos;)" 
+                           true="Validity of NvM block native is determined by enabling the configuration parameter NvMBlockUseCrc in NvM module, thus calculating the CRC for the NVRAM block."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (not(node:exists(node:ref(.)/NvMBlockCrcType)) or                       (not(node:value(node:ref(.)/NvMBlockCrcType) != &apos;&apos;)))" 
+                           true="A block CRC type has to be set, which defines CRC data width for the NVRAM block native. The user shall configure NvMBlockCrcType parameter in NvM module, by choosing the block CRC type."/>
+                  </a:da>
+                </v:ref>
+                <v:ref name="DltNvRamDataSetBlockRef" 
+                       type="SYMBOLIC-NAME-REFERENCE">
+                  <a:a name="DESC" 
+                       value="EN: Reference to the NvM DataSetBlock which is used to store the Dlt parameters."/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="UUID" 
+                       value="ECUC:62a6ab9c-882e-4793-a19f-14c791b8bfdf"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;"/>
+                  <a:da name="INVALID" type="XPath">
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;)and                       (node:value(node:ref(.)/NvMBlockManagementType) != &apos;NVM_BLOCK_DATASET&apos;)" 
+                           true="The NvMBlockManagementType of the NvRam block referenced by DltNvRamDataSetBlockRef must be set to &apos;NVM_BLOCK_DATASET&apos;."/>
+                    <a:tst 
+                           expr="(node:exists(../../DltGeneral/DltImplementNVRamStorage) and (../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and node:exists(as:modconf(&apos;Dlt&apos;)/DltMemory/DltMaxCountContextIds) and (node:value(node:ref(.)/NvMNvBlockNum) &gt;  (as:modconf(&apos;Dlt&apos;)/DltMemory/DltMaxCountContextIds)))" 
+                           true="The NvMNvBlockNum of the NvRam block referenced by DltNvRamDataSetBlockRef must not be greater than DltMaxCountContextIds for dataset NvM block type."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;)and                       (node:value(node:ref(.)/NvMBlockUseSyncMechanism) != &apos;true&apos;)" 
+                           true="The NvMBlockUseSyncMechanism of the NvRam block referenced by DltNvRamiDataSetBlockRef must be &apos;true&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;)and                       (node:value(node:ref(.)/NvMBlockWriteProt) != &apos;false&apos;)" 
+                           true="The NvMBlockWriteProt of the NvRam block referenced by DltNvRamDataSetBlockRef must be &apos;false&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;)and                       (node:value(node:ref(.)/NvMResistantToChangedSw) != &apos;false&apos;)" 
+                           true="The NvMResistantToChangedSw of the NvRam block referenced by DltNvRamDataSetBlockRef must be &apos;false&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;)and                       (node:value(node:ref(.)/NvMWriteBlockOnce) != &apos;false&apos;)" 
+                           true="The NvMWriteBlockOnce of the NvRam block referenced by DltNvRamDataSetBlockRef must be &apos;false&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;)and                       ((node:exists(node:ref(.)/NvMSelectBlockForReadAll)) and                       (node:value(node:ref(.)/NvMSelectBlockForReadAll) != &apos;false&apos;))" 
+                           true="The NvMSelectBlockForReadAll of the NvRam block referenced by DltNvRamBlockRef must be &apos;false&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;)and                       (not(node:exists(node:ref(.)/NvMSingleBlockCallback)) or                       (node:value(node:ref(.)/NvMSingleBlockCallback) != &apos;Dlt_NvMSingleBlockCallbackDataSet&apos;))" 
+                           true="The NvMSingleBlockCallback of the NvRam block referenced by DltNvRamDataSetBlockRef must be set to &apos;Dlt_NvMSingleBlockCallbackDataSet&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;)and                       (not(node:exists(node:ref(.)/NvMReadRamBlockFromNvCallback)) or                       (node:value(node:ref(.)/NvMReadRamBlockFromNvCallback) != &apos;Dlt_NvMReadRamBlockFromNvMDataSetCbk&apos;))" 
+                           true="The NvMReadRamBlockFromNvCallback of the NvRam block referenced by DltNvRamDataSetBlockRef must be set to &apos;Dlt_NvMReadRamBlockFromNvMDataSetCbk&apos;."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;)and                       (not(node:exists(node:ref(.)/NvMWriteRamBlockToNvCallback)) or                       (node:value(node:ref(.)/NvMWriteRamBlockToNvCallback) != &apos;Dlt_NvMWriteRamBlockToNvMDataSetCbk&apos;))" 
+                           true="The NvMWriteRamBlockToNvCallback of the NvRam block referenced by DltNvRamDataSetBlockRef must be set to &apos;Dlt_NvMWriteRamBlockToNvMDataSetCbk&apos;."/>
+                  </a:da>
+                  <a:da name="REF" 
+                        value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/NvM/NvMBlockDescriptor"/>
+                  <a:da name="WARNING" type="XPath">
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (not(node:exists(node:ref(.)/NvMInitBlockCallback)) or                       (node:value(node:ref(.)/NvMInitBlockCallback) != &apos;Dlt_NvMInitDataSetBlockCbk&apos;))" 
+                           true="The NvMInitBlockCallback of the NvRam block referenced by DltNvRamDataSetBlockRef should be set to &apos;Dlt_NvMInitDataSetBlockCbk&apos;.                             Disabling this callback will end up in not using the &apos;restore to default data&apos; functionality."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (node:value(node:ref(.)/NvMBlockUseCrc) != &apos;true&apos;)" 
+                           true="Validity of NvM block data set is determined by enabling the configuration parameter NvMBlockUseCrc in NvM module, thus calculating the CRC for the NVRAM block."/>
+                    <a:tst 
+                           expr="(../../DltGeneral/DltImplementNVRamStorage =&apos;true&apos;) and                       (not(node:exists(node:ref(.)/NvMBlockCrcType)) or                       (not(node:value(node:ref(.)/NvMBlockCrcType) != &apos;&apos;)))" 
+                           true="A block CRC type has to be set, which defines CRC data width for the NVRAM block data set. The user shall configure NvMBlockCrcType parameter in NvM module, by choosing the block CRC type."/>
+                  </a:da>
+                </v:ref>
+                <v:ctr name="DltBandwidth" type="IDENTIFIABLE">
+                  <a:a name="DESC" 
+                       value="EN: Configuration parameters controlling network and diagnostic interfaces bandwidth. If DltImplementNVRamStorage is enabled these parameters are the initial values for the NVRam. If DltImplementNVRamStorage is not set, Link-Time or Post-Build configuration shall be uesd."/>
+                  <a:a name="UUID" 
+                       value="ECUC:53adb1a1-f889-4f3b-9efb-be856ca46398"/>
+                  <a:a name="VISIBLE" type="XPath" 
+                       expr="lic:feature(&apos;EB_DLT_MC_OPT&apos;)"/>
+                  <v:var name="DltBandwidthForComModule" type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;For communication over the Dlt Communication Module the maximum bandwidth shall be set. Unit: kbits/s.&lt;/p&gt;
+                            &lt;p&gt;&lt;em&gt;&lt;b&gt;Note&lt;/b&gt;&lt;/em&gt;: Parameter is editable only if Traffic Shaping functionality is enabled
+                                                     via DltEnableTrafficShaper.&lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5f6ba5bd-0e66-46fe-994f-7927c6fa8d49"/>
+                    <a:da name="DEFAULT" value="8"/>
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="((../../../DltGeneral/DltEnableTrafficShaper) = &apos;true&apos;)"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst 
+                                false="DltBandwidthForComModule must be less than or equal to 4294967295." 
+                                expr="&lt;=4294967295"/>
+                        <mt:tst 
+                                false="DltBandwidthForComModule must be greater than or equal to 8." 
+                                expr="&gt;=8"/>
+                      </mt:range>
+                      <mt:xpath 
+                                false="DltBandwidthForComModule must be a multiple of 8." 
+                                expr=". mod 8 = 0"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltBandwidthForDiagChannel" type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;For communication over the DCM and as follows over the diagnostic interface the maximum bandwidth shall be set.&lt;/p&gt;
+                            &lt;p&gt;&lt;em&gt;&lt;b&gt;Note&lt;/b&gt;&lt;/em&gt;: Functionality for DltBandwidthForDiagChannel is currently not implemented.&lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:99ebaf64-1deb-4efb-8430-7f33e6208dc8"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="EDITABLE" value="false"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=4294967295"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltTimePeriodTrafficShaping" type="FLOAT">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;For implementing a traffic shaping, a time window for measuring shall be provided. This parameter
+                                    specifies the size of this Window in milliseconds. Upper limit: 300000ms (5 minutes).&lt;/p&gt;
+                            &lt;p&gt;&lt;em&gt;&lt;b&gt;Note&lt;/b&gt;&lt;/em&gt;: Parameter is editable only if Traffic Shaping functionality is enabled.&lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:b0d3a0cd-d0a7-4897-978e-1981bfcb4b13"/>
+                    <a:da name="DEFAULT" type="XPath" 
+                          expr="../../DltMainFunctionPeriod"/>
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="((../../../DltGeneral/DltEnableTrafficShaper) = &apos;true&apos;)"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=300000.0"/>
+                        <mt:tst expr="&gt;=1.0E-4"/>
+                      </mt:range>
+                      <mt:xpath 
+                                false="DltTimePeriodTrafficShaping must be a multiple of DltMainFunctionPeriod." 
+                                expr="num:i(. div ../../DltMainFunctionPeriod) * ../../DltMainFunctionPeriod  = ."/>
+                    </a:da>
+                  </v:var>
+                </v:ctr>
+                <v:ctr name="DltMessageFiltering" type="IDENTIFIABLE">
+                  <a:a name="DESC" 
+                       value="EN: Configuration parameters for setting message filtering properties in Dlt module."/>
+                  <a:a name="UUID" 
+                       value="ECUC:f3d597a1-feda-425b-9e15-9522cde760ed"/>
+                  <v:var name="DltDefaultMaxLogLevel" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN: The maximum log level a received message (from SW-C to Dlt) can have.                                     This can also be modified at runtime and stored persistently in NVRAM.                                     If DltImplementNVRamStorage is enabled this parameter is the initial value for the corresponding NVRam entry.                                     If DltImplementNVRamStorage is not set, Link-Time or Post-Build configuration shall be used.                                     The value 0 means logging is disabled.                                     Note: This parameter is disabled with AUTOSAR_43 or later version. With the Autosar_43 or later                                     default value for log messages is configured with DltDefaultLogLevel from DltLogLevelSetting."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:f11c0bb5-8364-4bc3-aa4b-52edd8eb4b6b"/>
+                    <a:da name="DEFAULT" value="3"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:value(../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) != &apos;AUTOSAR_431&apos;)"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=6"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltDefaultTraceStatus" type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: Tells if trace messages shall be forwarded by Dlt.                                      This functionality can also be modified at runtime and changed can stored persistently in NVRAM.                                      If DltImplementNVRamStorage is enabled this parameter is the initial value for the corresponding NVRam entry.                                      If DltImplementNVRamStorage is not set, Link-Time or Post-Build configuration shall be used.                                      Note: This parameter is disabled with the Autosar_43 or later. Instead DltDefaultTraceStatus from the                                      DltTraceStatusSetting is used"/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:3c82a23b-cc61-4278-9f45-46666cd43334"/>
+                    <a:da name="DEFAULT" value="true"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:value(../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) != &apos;AUTOSAR_431&apos;)"/>
+                  </v:var>
+                  <v:var name="DltFactoryDefaultMaxLogLevel" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN: The maximum log levels a received message (from SW-C to Dlt) can have. This is for setting DltDefaultMaxLogLevel to factory defaults. The value 0 means logging is disabled."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:461f8e8c-dc26-4cd2-8df9-a6dbcc743a6d"/>
+                    <a:da name="DEFAULT" value="3"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:value(../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) != &apos;AUTOSAR_431&apos;)"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=6"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltFilterMessages" type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: This flag gives the Dlt the instruction to filter or not to filter incoming log or trace messages. If it is not set all incoming messages are forwarded to the communication channel. So also the caller of the DltSendXXXMessage can leave the field trace_info or log_info empty."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:65e72d79-7077-4579-8f2b-c84c370e2de3"/>
+                    <a:da name="DEFAULT" value="true"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(.)=&apos;true&apos; and (not(node:exists(../../../DltGeneral/DltImplementFilterMessages))                                 or node:value(../../../DltGeneral/DltImplementFilterMessages) = &apos;false&apos;)" 
+                          true="DltFilterMessages can only be true if DltImplementFilterMessages is true."/>
+                  </v:var>
+                </v:ctr>
+                <v:var name="DltMainFunctionPeriod" type="FLOAT">
+                  <a:a name="DESC" 
+                       value="EN: Period of Dlt_MainFunction calls in seconds."/>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SCOPE" value="ECU"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:5f6ba5bd-0e66-46fe-994f-543216f12345"/>
+                  <a:da name="DEFAULT" value="0.1"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=1.000"/>
+                    <a:tst expr="&gt;=0.001"/>
+                  </a:da>
+                </v:var>
+                <v:ctr name="DltBswDistribution" type="IDENTIFIABLE">
+                  <a:a name="DESC" 
+                       value="EN: Configuration parameters controlling the BSW distribution of the Dlt module on multi-core platforms."/>
+                  <a:a name="UUID" 
+                       value="ECUC:53adb1a1-f889-1234-9efb-be856ca12345"/>
+                  <v:var name="DltEnableBswDistribution" type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: Enable BSW distribution features for Dlt."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5f6ba5bd-0e66-5243-994f-7927c6f12345"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:exists(as:modconf(&apos;Os&apos;)/OsOS/OsNumberOfCores)) and (node:value(as:modconf(&apos;Os&apos;)/OsOS/OsNumberOfCores) &gt; 1)"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(not(lic:feature(&apos;EB_DLT_MC_OPT&apos;)) and (. = &apos;true&apos;))" 
+                          true=" The selection &apos;DltEnableBswDistribution&apos; is not supported by your license. This functionality is available only with EB_DLT_MC_OPT license. Please make sure to disable this parameter."/>
+                  </v:var>
+                  <v:var name="DltNumberOfSatellites" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN: Number of satellite cores (in addition to the master core)."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5f6ba5bd-0e66-5243-994f-7927abc12345"/>
+                    <a:a name="VISIBLE" type="XPath" 
+                         expr="lic:feature(&apos;EB_DLT_MC_OPT&apos;)"/>
+                    <a:da name="DEFAULT" value="1"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:exists(../DltEnableBswDistribution)) and (../DltEnableBswDistribution=&apos;true&apos;)"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:xpath 
+                                true="DltNumberOfSatellites must be less than OsNumberOfCores because one core must be assigned as Dlt master." 
+                                expr="(. &gt; (node:value(as:modconf(&apos;Os&apos;)/OsOS/OsNumberOfCores)-1) and ((lic:feature(&apos;EB_DLT_MC_OPT&apos;)) and ((node:exists(../DltEnableBswDistribution)) and (../DltEnableBswDistribution=&apos;true&apos;))))"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltNumberOfMessagesPerSatellite" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN: Number of messages per satellite core. The queue size for the reception policy of the master                     is generated according to the number of satellites and according to the value configured for this parameter. This way a                     minimisation of the posibility of losing message, in case the data received events are mapped to a task which is not immediately                     planned and the master cannot read fast enough, is performed."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5f6ba5bd-0e66-5243-995f-7927abc12345"/>
+                    <a:a name="VISIBLE" type="XPath" 
+                         expr="lic:feature(&apos;EB_DLT_MC_OPT&apos;)"/>
+                    <a:da name="DEFAULT" value="1"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:exists(../DltEnableBswDistribution)) and (../DltEnableBswDistribution=&apos;true&apos;)"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=65535"/>
+                      <a:tst expr="&gt;=1"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltCoreSyncQueueSize" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN: The queue size for the reception policy of sync data for each satellite. Increasing this value will decrease the possibility of losing sync data, in case sync data is generated too fast and the satellite RTE task is not scheduled in time to empty the queue. When this queue size is too small, the DET error DLT_E_CORE_SYNC_FAILED is reported."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:0e18ea2f-b1d6-499c-a9e9-7e5d26a75da4"/>
+                    <a:a name="VISIBLE" type="XPath" 
+                         expr="lic:feature(&apos;EB_DLT_MC_OPT&apos;)"/>
+                    <a:da name="DEFAULT" value="1"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:exists(../DltEnableBswDistribution)) and (../DltEnableBswDistribution=&apos;true&apos;)"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=65535"/>
+                      <a:tst expr="&gt;=1"/>
+                    </a:da>
+                  </v:var>
+                  <v:ref name="DltMasterCore" type="SYMBOLIC-NAME-REFERENCE">
+                    <a:a name="DESC" value="EN: Core ID of the Dlt master."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5f6ba5bd-0e66-5432-994f-7927c6f12345"/>
+                    <a:a name="VISIBLE" type="XPath" 
+                         expr="lic:feature(&apos;EB_DLT_MC_OPT&apos;)"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:exists(../DltEnableBswDistribution)) and (../DltEnableBswDistribution=&apos;true&apos;)"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(not(node:refvalid(.)) and (lic:feature(&apos;EB_DLT_MC_OPT&apos;) and (node:exists(../DltEnableBswDistribution)) and (../DltEnableBswDistribution=&apos;true&apos;)))" 
+                          true="DltMasterCore does not reference a valid OsCoreConfig."/>
+                    <a:da name="REF" 
+                          value="ASPathDataOfSchema:/AUTOSAR/Os/OsOS/OsCoreConfig"/>
+                  </v:ref>
+                  <v:lst name="DltSatelliteCore" type="MAP">
+                    <a:a name="VISIBLE" type="XPath" 
+                         expr="lic:feature(&apos;EB_DLT_MC_OPT&apos;)"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:exists(../DltEnableBswDistribution)) and (../DltEnableBswDistribution=&apos;true&apos;)"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(not(count(./*) = ../DltNumberOfSatellites) and lic:feature(&apos;EB_DLT_MC_OPT&apos;) and (node:exists(../DltEnableBswDistribution)) and (../DltEnableBswDistribution=&apos;true&apos;))" 
+                          true="There must be exactly as many DltSatelliteCore entries as specified by DltNumberOfSatellites"/>
+                    <v:ctr name="DltSatelliteCore" type="IDENTIFIABLE">
+                      <a:a name="DESC" value="EN: Core IDs of satellite cores."/>
+                      <a:a name="POSTBUILDCHANGEABLE" value="false"/>
+                      <a:a name="UUID" 
+                           value="ECUC:6c62a8d2-e346-4415-a905-925081238123"/>
+                      <a:da name="EDITABLE" value="true"/>
+                      <v:ref name="DltSatelliteCoreId" 
+                             type="SYMBOLIC-NAME-REFERENCE">
+                        <a:a name="DESC" 
+                             value="EN: Core ID of the core a satellite is running on."/>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="SCOPE" value="ECU"/>
+                        <a:a name="UUID" 
+                             value="ECUC:5f6ba5bd-0e66-5432-994f-7927c6123abc"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(node:ref(.)/OsCoreId = node:ref(../../../DltMasterCore)/OsCoreId) and lic:feature(&apos;EB_DLT_MC_OPT&apos;) and ((node:exists(../../../DltEnableBswDistribution)) and (../../../DltEnableBswDistribution=&apos;true&apos;))" 
+                                 true="DltSatelliteCore must not reference the same node as DltMasterCore"/>
+                          <a:tst 
+                                 expr="not(text:uniq(../../*/DltSatelliteCoreId, .)) and lic:feature(&apos;EB_DLT_MC_OPT&apos;) and ((node:exists(../../../DltEnableBswDistribution)) and (../../../DltEnableBswDistribution=&apos;true&apos;))" 
+                                 true="DltSatelliteCore must have an unique reference."/>
+                        </a:da>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/Os/OsOS/OsCoreConfig"/>
+                      </v:ref>
+                    </v:ctr>
+                  </v:lst>
+                </v:ctr>
+                <v:ctr name="DltPduConfig" type="IDENTIFIABLE">
+                  <a:a name="DESC" 
+                       value="EN: Configuration parameters referencing the Pdus for transmitting and receiving messages."/>
+                  <a:a name="UUID" 
+                       value="ECUC:53adb1a1-f889-4f3b-9efb-be856ca12345"/>
+                  <v:var name="DltRxPduId" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN: PduId of Pdu for receiving messages. If enabled, Dlt can receive Control Messages."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5f6ba5bd-0e66-46fe-994f-7927c6f12345"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=65535"/>
+                        <mt:tst expr="&gt;=0"/>
+                      </mt:range>
+                      <mt:xpath 
+                                true="In order to use Control Messages                                     via communication services, DltImplementExtendedHeader and  must be set to true." 
+                                expr="(not(node:exists(../../../DltGeneral/DltImplementExtendedHeader)) or                                     node:value(../../../DltGeneral/DltImplementExtendedHeader) = &apos;false&apos;)"/>
+                    </a:da>
+                  </v:var>
+                  <v:ref name="DltRxPduRef" type="SYMBOLIC-NAME-REFERENCE">
+                    <a:a name="DESC" 
+                         value="EN: Reference to Pdu for receiving messages. This parameter is only available if DltRxPduId is enabled."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5f6ba5bd-0e66-46fe-995f-7927c6f12345"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="node:exists(../DltRxPduId)"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst expr="node:refvalid(.)" false="Invalid reference."/>
+                      <a:tst 
+                             expr="node:exists(../../DltTxPduRef) and (node:value(../../DltTxPduRef) = node:value(node:current()))" 
+                             true="It is not allowed to configure the same pdu "/>
+                    </a:da>
+                    <a:da name="REF" 
+                          value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                  </v:ref>
+                  <v:var name="DltTxPduId" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN: PduId of Pdu for transmitting messages."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5f6ba5bd-0e66-46fe-994f-7927c6f67890"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:value(../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) != &apos;AUTOSAR_431&apos;)"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=65535"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                  </v:var>
+                  <v:ref name="DltTxPduRef" type="SYMBOLIC-NAME-REFERENCE">
+                    <a:a name="DESC" 
+                         value="EN: Reference to Pdu for transmitting messages.                          Note : This parameter is disabled if AUTOSAR_43 or newer version is configured                                 Default value will be the Pdu wich is assigned to the default log channel"/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5f6ba5bd-0e66-46fe-996f-7927c6f12345"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:value(../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) != &apos;AUTOSAR_431&apos;)"/>
+                    <a:da name="INVALID" type="XPath" expr="node:refvalid(.)" 
+                          false="Invalid reference."/>
+                    <a:da name="REF" 
+                          value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                  </v:ref>
+                  <v:var name="DltEnableMultipleFrames" type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: If enabled, multiple Dlt frames are transmitted within one Pdu. The number of frames per Pdu depends on the size of the individual frames and the DltMaxMessageLength setting, i.e. as many frames are transmitted as fit into one Pdu."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5f6ba5bd-0e66-46fe-1234-7927c6f67890"/>
+                    <a:da name="DEFAULT" value="false"/>
+                  </v:var>
+                  <v:var name="DltDiscardMsgTxFail" type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: Defines if DLT messages are discarded or not when transmit                          request to PduR return an error. If enabled the messages will be discarded                          by DLT when PduR_DltTransmit returns E_NOT_OK."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="LOCAL"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:826a46e2-d971-4d2a-9c76-229a7b56aa59"/>
+                    <a:da name="DEFAULT" value="true"/>
+                  </v:var>
+                </v:ctr>
+                <v:ctr name="DltServiceAPI" type="IDENTIFIABLE">
+                  <a:a name="DESC" value="EN: Support for AUTOSAR API releases"/>
+                  <a:a name="UUID" 
+                       value="ECUC:945869a6-8043-11e8-adc0-fa7ae01bbebc"/>
+                  <v:var name="DltServiceAPI" type="ENUMERATION">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;Defines the default AUTOSAR return values.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;AUTOSAR_421&lt;/code&gt; = AUTOSAR 4.2.1 return values (default)&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;AUTOSAR_422&lt;/code&gt; = AUTOSAR 4.2.2 return values&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;AUTOSAR_431&lt;/code&gt; = AUTOSAR 4.3.1 return values&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Default AUTOSAR return values"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:aa906933-2cc0-11e2-81c1-0800200c9a66"/>
+                    <a:da name="DEFAULT" value="AUTOSAR_421"/>
+                    <a:da name="RANGE">
+                      <a:v>AUTOSAR_421</a:v>
+                      <a:v>AUTOSAR_422</a:v>
+                      <a:v>AUTOSAR_431</a:v>
+                    </a:da>
+                  </v:var>
+                </v:ctr>
+                <v:ctr name="DltProtocol" type="IDENTIFIABLE">
+                  <a:a name="DESC" 
+                       value="EN: Configuration parameters for handling the specific protocol variants."/>
+                  <a:a name="UUID" 
+                       value="ECUC:93a94ed4-d678-4a3e-8c58-29be1f26dcc1"/>
+                  <v:var name="DltHeaderUseEcuId" type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: Corresponds to field WEID (With ECU ID). If set ECU ID shall be placed in the header, else not."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:6b268ebe-3d20-4c23-871c-1710d325e9a4"/>
+                    <a:da name="DEFAULT" value="true"/>
+                  </v:var>
+                  <v:var name="DltEcuId" type="STRING">
+                    <a:a name="DESC" 
+                         value="EN: This is the name of the ECU for use within the Dlt protocol. The meaning is described in the AUTOSAR SWS document. This name is transmitted within the Dlt protocol and contains 4 characters."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:fec6b9e9-76d1-4c6c-8b91-0a0339311bad"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="&apos;Value&apos; = ../../../DltMultipleConfigurationContainer/DltProtocol/DltEcuIdChoice"/>
+                  </v:var>
+                  <v:var name="DltEcuIdCallout" type="STRING">
+                    <a:a name="DESC" 
+                         value="EN: This is the name of the user callout to call in order to get the ECU id."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:da name="DEFAULT" value="Dlt_AppGetEcuIdAddress"/>
+                    <a:da name="EDITABLE" value="false"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="&apos;Callout&apos; = ../../../DltMultipleConfigurationContainer/DltProtocol/DltEcuIdChoice"/>
+                  </v:var>
+                  <v:var name="DltHeaderPayloadEndianes" type="ENUMERATION">
+                    <a:a name="DESC" 
+                         value="EN: Determines the endianess of the CPU (Most Significant Byte)."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:44c2c0a2-cc9c-4891-b17c-ccd176f1a389"/>
+                    <a:da name="DEFAULT" value="LittleEndian"/>
+                    <a:da name="RANGE">
+                      <a:v>BigEndian</a:v>
+                      <a:v>LittleEndian</a:v>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltHeaderUseExtendedHeader" type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: Corresponds to field UEH (Use Extended Header). If set the Extended Header shall be attached, else not."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:4041bbe1-5fa4-499b-9875-be585f933967"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(.)=&apos;true&apos; and (not(node:exists(../../../DltGeneral/DltImplementExtendedHeader)) or                                     node:value(../../../DltGeneral/DltImplementExtendedHeader) = &apos;false&apos;)" 
+                          true="DltHeaderUseExtendedHeader can only be true if DltImplementExtendedHeader is true."/>
+                  </v:var>
+                  <v:var name="DltHeaderUseSessionID" type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: Corresponds to field WSID (with Session ID). If set the Session ID shall be placed in the header, else not."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:1e5526f3-a47b-4fac-996f-6baf27f3f79a"/>
+                    <a:da name="DEFAULT" value="true"/>
+                  </v:var>
+                  <v:var name="DltHeaderUseTimestamp" type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: Corresponds to field WTMS (With Timestamp). If set the timestamp shall be placed in the header, else not."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:5a6f7891-da88-4d3d-8eda-696d7a8787a8"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(.)=&apos;true&apos; and (not(node:exists(../../../DltGeneral/DltImplementTimestamp))                                       or node:value(../../../DltGeneral/DltImplementTimestamp) = &apos;false&apos;)" 
+                          true="DltHeaderUseTimestamp can only be true if DltImplementTimestamp is enabled."/>
+                  </v:var>
+                  <v:var name="DltMaxMessageLength" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN: The maximum length of a Dlt log or trace message."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:ca14ade8-dd63-4f4d-95e6-7e760fc35609"/>
+                    <a:da name="DEFAULT" value="128"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:value(../../../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) != &apos;AUTOSAR_431&apos;)"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=65535"/>
+                        <mt:tst expr="&gt;=8"/>
+                      </mt:range>
+                      <mt:xpath>
+                        <mt:tst 
+                                true="DltMaxMessageLength must not be larger than DltMessageBufferSize." 
+                                expr=". &gt; ../../../DltMemory/DltMessageBufferSize"/>
+                        <mt:tst 
+                                true="When DltEnableBswDistribution is enabled the                     DltMaxMessageLength must not be greater than 8188." 
+                                expr="((. &gt; 8188) and (lic:feature(&apos;EB_DLT_MC_OPT&apos;) and (node:exists(../../DltBswDistribution/DltEnableBswDistribution))                     and (../../DltBswDistribution/DltEnableBswDistribution=&apos;true&apos;)))"/>
+                      </mt:xpath>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltUseVerboseMode" type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: If this flag is set Dlt shall use the Verbose Mode for generating the header of the transport protocol. Also it shall store the information provided by registering Context ID and Application ID (description) at runtime if flag is set. If it is not set, the Non Verbose Mode shall be used."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="ECU"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:2bf031fc-a4f1-4c38-aed3-26e119a6aa73"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst 
+                             expr="(.)=&apos;true&apos; and (not(node:exists(../../../DltGeneral/DltImplementVerboseMode)) or                                     node:value(../../../DltGeneral/DltImplementVerboseMode) = &apos;false&apos;)" 
+                             true="DltUseVerboseMode can only be true if DltImplementVerboseMode is true."/>
+                      <a:tst 
+                             expr="(.)=&apos;true&apos; and (not(node:exists(../DltHeaderUseExtendedHeader)) or                                     node:value(../DltHeaderUseExtendedHeader) = &apos;false&apos;)" 
+                             true="DltUseVerboseMode can only be true if DltHeaderUseExtendedHeader is true."/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltGetSoftwareVersion" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                             Enables the control message GetSoftwareVersion.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="LABEL" value="GetSoftwareVersion control message"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="node:exists(../../../DltMultipleConfigurationContainer/DltPduConfig/DltRxPduId)"/>
+                  </v:var>
+                  <v:var name="DltGetSoftwareVersionLength" type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                             The length of the ECU software version string in bytes.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="LABEL" 
+                         value="GetSoftwareVersion control message length"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(node:value(../DltGetSoftwareVersion) = &apos;true&apos;)"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=255"/>
+                        <mt:tst expr="&gt;=0"/>
+                      </mt:range>
+                      <mt:xpath 
+                                false="The value configured for DltGetSoftwareVersionLength cannot exceed the value configured for DltControlMessageMaxResponseSize." 
+                                expr=" ((node:exists(../../../DltGeneral/DltControlMessageMaxResponseSize) and ((4 + num:i(.)) &lt;= (num:i(../../../DltGeneral/DltControlMessageMaxResponseSize)))) or                                        (not(node:exists(../../../DltGeneral/DltControlMessageMaxResponseSize))))"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltEcuIdChoice" type="ENUMERATION">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                             Enables the user to provide EcuId at runtime via a user defined callout function
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Get EcuId via"/>
+                    <a:da name="DEFAULT" value="Value"/>
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="&apos;true&apos; = ../../../DltMultipleConfigurationContainer/DltProtocol/DltHeaderUseEcuId"/>
+                    <a:da name="RANGE">
+                      <a:v>Value</a:v>
+                      <a:v>Callout</a:v>
+                    </a:da>
+                  </v:var>
+                </v:ctr>
+              </v:ctr>
+              <v:ctr name="DltDefensiveProgramming" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                &lt;p&gt;Parameters for defensive programming&lt;/p&gt;
+                &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Defensive Programming Options"/>
+                <v:var name="DltDefProgEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                    &lt;p&gt;Enables or disables the defensive
+                    programming feature for the module Dlt.&lt;/p&gt;
+                    &lt;p&gt;Note: This feature is dependent on the use of the development error detection module.
+                    To use the defensive programming feature, proceed as follows:
+                    &lt;ol&gt;
+                    &lt;li&gt;Enable development error detection&lt;/li&gt;
+                    &lt;li&gt;Enable defensive programming&lt;/li&gt;
+                    &lt;li&gt;Enable assertions as required&lt;/li&gt;
+                    &lt;/ol&gt;
+                    &lt;/p&gt;
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Defensive Programming"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../../DltGeneral/DltDevErrorDetect = &apos;true&apos;" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="DltPrecondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of precondition assertion checks reported from
+                  the module Dlt.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;DltDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;DltDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Precondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../DltGeneral/DltDevErrorDetect = &apos;true&apos;) and (../DltDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="DltPostcondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of postcondition assertion checks reported from
+                  the module Dlt.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;DltDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;DltDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Postcondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../DltGeneral/DltDevErrorDetect = &apos;true&apos;) and (../DltDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="DltStaticAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of static assertion checks reported from
+                  the module Dlt.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;DltDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;DltDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Static Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../DltGeneral/DltDevErrorDetect = &apos;true&apos;) and (../DltDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="DltUnreachAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of unreachable code assertion checks
+                  reported from the module Dlt.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;DltDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;DltDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Unreachable Code Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../DltGeneral/DltDevErrorDetect = &apos;true&apos;) and (../DltDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="DltInvariantAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of invariant assertion checks
+                  reported from functions of the module Dlt.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;DltDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;DltDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Invariant Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../DltGeneral/DltDevErrorDetect = &apos;true&apos;) and (../DltDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+              </v:ctr>
+              <d:ref type="REFINED_MODULE_DEF" 
+                     value="ASPath:/AUTOSAR/EcucDefs/Dlt"/>
+              <v:lst name="DltSwc" type="MAP">
+                <a:a name="LABEL" value="DltSwc"/>
+                <a:da name="EDITABLE" type="XPath" 
+                      expr="(node:value(../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                <a:da name="ENABLE" type="XPath" 
+                      expr="(node:value(../DltMultipleConfigurationContainer/DltServiceAPI/DltServiceAPI) = &apos;AUTOSAR_431&apos;)"/>
+                <a:da name="MIN" value="1"/>
+                <v:ctr name="DltSwc" type="IDENTIFIABLE">
+                  <a:a name="DESC" 
+                       value="EN: This container purpose is to register a number of Sw Components.                                         It is supported starting with AUTOSAR_431"/>
+                  <a:a name="UUID" 
+                       value="ECUC:30d05022-7938-11e8-adc0-fa7ae01bbebc"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="count(../*[DltSwcSessionId = node:current()/DltSwcSessionId])&gt;1" 
+                        true="Unique DltSwcSessionId values shall be configured."/>
+                  <v:var name="DltSwcSessionId" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN: An ECU wide unique ID to identify the port a SWC (instance) uses.                                       It is supported starting with AUTOSAR_431                                       Note: Base value ID for SWCs will be 0x1000. From this value                                       DltSwcSupportLogLevelChangeNotification parameter will be enabled and can                                       be used.                                       Values &lt; 0x1000 will be for BSW modules and they cannot be notified                                       about log and trace changes"/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="LOCAL"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:dcdf9782-7939-11e8-adc0-fa7ae01bbebc"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=4294967295"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="DltSwcSupportLogLevelChangeNotification" 
+                         type="BOOLEAN">
+                    <a:a name="DESC" 
+                         value="EN: Flag indicating, whether Dlt has to provide a R-Port for the notification of the SWC about LogLevel changes.                                       If this parameter is set to true, at each log information change, Dlt shall notify the SwC via LogLevelChangedNotification                                       about it.                                       Note : Parameter in use only for DltSwcSessionId &gt;= 0x1000"/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="LOCAL"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:655480c8-793a-11e8-adc0-fa7ae01bbebc"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="node:value(../DltSwcSessionId)&gt;=num:hextoint(&apos;0x1000&apos;)"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr=". = &apos;true&apos; and ../DltProvideLogTraceSessionControlPort = &apos;false&apos;" 
+                          true="The DltProvideLogTraceSessionControlPort parameter must be enabled in order to generate the port for the log level/trace status notifications"/>
+                  </v:var>
+                  <v:var name="MaxSwcLogMessageLength" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN:Defines the maximum allowed length (unit16) for LogMessages of a SwC."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="LOCAL"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:c6eb48da-793a-11e8-adc0-fa7ae01bbebc"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="MaxSwcTraceMessageLength" type="INTEGER">
+                    <a:a name="DESC" 
+                         value="EN:Defines the maximum allowed length (unit16) for TraceMessages of a SwC."/>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SCOPE" value="LOCAL"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:c6eb48da-793a-11e8-adc0-fa7ae01bbebc"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:lst name="DltSwcContext" type="MAP">
+                    <a:a name="LABEL" value="DltSwcContext"/>
+                    <a:da name="MIN" value="1"/>
+                    <v:ctr name="DltSwcContext" type="IDENTIFIABLE">
+                      <a:a name="DESC" 
+                           value="EN: This container contains the configuration of ApplicationId / ContextId pairs which are supported by this SWC."/>
+                      <a:a name="UUID" 
+                           value="ECUC:30d05022-7938-11e8-adc0-fa7ae01bbebc"/>
+                      <a:da name="EDITABLE" value="true"/>
+                      <a:da name="ENABLE" value="true"/>
+                      <v:var name="DltSwcApplicationId" type="INTEGER">
+                        <a:a name="DESC" value="EN: SWC Application Id."/>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SCOPE" value="LOCAL"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:58283328-793e-11e8-adc0-fa7ae01bbebc"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&gt;=1"/>
+                          <a:tst expr="&lt;=4294967295"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="DltSwcContextId" type="INTEGER">
+                        <a:a name="DESC" value="EN: SWC Context Id."/>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SCOPE" value="LOCAL"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:77b7c80c-793e-11e8-adc0-fa7ae01bbebc"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&gt;=1"/>
+                          <a:tst expr="&lt;=4294967295"/>
+                        </a:da>
+                      </v:var>
+                    </v:ctr>
+                  </v:lst>
+                  <v:var name="DltProvideControlServicePort" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;Enables the generation of the &lt;code&gt;DltControlService&lt;/code&gt; port&lt;/p&gt;
+
+                            &lt;p&gt;Dependency on parameter(s):&lt;/p&gt;
+                            &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;DltRteUsage&lt;/code&gt; must be enabled.&lt;/li&gt;
+                            &lt;/ul&gt;
+
+                            &lt;p&gt;This port includes the following operations:&lt;/p&gt;
+                            &lt;ul&gt;
+                              &lt;li&gt;SetDefaultLogLevel&lt;/li&gt;
+                              &lt;li&gt;GetDefaultLogLevel&lt;/li&gt;
+                              &lt;li&gt;SetDefaultTraceStatus&lt;/li&gt;
+                              &lt;li&gt;GetDefaultTraceStatus&lt;/li&gt;
+                              &lt;li&gt;SetLogLevel&lt;/li&gt;
+                              &lt;li&gt;GetLogInfo&lt;/li&gt;
+                              &lt;li&gt;SetTraceStatus&lt;/li&gt;
+                              &lt;li&gt;GetTraceStatus&lt;/li&gt;
+                              &lt;li&gt;SetMessageFiltering&lt;/li&gt;
+                              &lt;li&gt;GetLogChannelNames&lt;/li&gt;
+                              &lt;li&gt;GetLogChannelThreshold&lt;/li&gt;
+                              &lt;li&gt;SetLogChannelAssignment&lt;/li&gt;
+                              &lt;li&gt;SetLogChannelThreshold&lt;/li&gt;
+                              &lt;li&gt;ResetToFactoryDefault&lt;/li&gt;
+                              &lt;li&gt;StoreConfiguration&lt;/li&gt;
+                            &lt;/ul&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Generate ControlService Port"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="TAB" value="Rte Ports"/>
+                    <a:da name="DEFAULT" type="XPath" 
+                          expr="node:value(../DltSwcSessionId)&gt;=num:hextoint(&apos;0x1000&apos;)"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="node:value(../DltSwcSessionId)&gt;=num:hextoint(&apos;0x1000&apos;)"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr=". = &apos;true&apos; and as:modconf(&apos;Dlt&apos;)/DltGeneral/DltRteUsage = &apos;false&apos;" 
+                          true="The usage of the RTE is not enabled for the Dlt, see parameter DltRteUsage."/>
+                  </v:var>
+                  <v:var name="DltProvideSwcMessageServicePort" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;Enables the generation of the &lt;code&gt;DltSwcMessageService&lt;/code&gt; port&lt;/p&gt;
+
+                            &lt;p&gt;Dependency on parameter(s):&lt;/p&gt;
+                            &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;DltRteUsage&lt;/code&gt; must be enabled.&lt;/li&gt;
+                            &lt;/ul&gt;
+
+                            &lt;p&gt;This port includes the following operations:&lt;/p&gt;
+                            &lt;ul&gt;
+                              &lt;li&gt;RegisterContext&lt;/li&gt;
+                              &lt;li&gt;UnregisterContext&lt;/li&gt;
+                              &lt;li&gt;SendLogMessage&lt;/li&gt;
+                              &lt;li&gt;SendTraceMessage&lt;/li&gt;
+                            &lt;/ul&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Generate SwcMessageService Port"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="TAB" value="Rte Ports"/>
+                    <a:da name="DEFAULT" type="XPath" 
+                          expr="node:value(../DltSwcSessionId)&gt;=num:hextoint(&apos;0x1000&apos;)"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="node:value(../DltSwcSessionId)&gt;=num:hextoint(&apos;0x1000&apos;)"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr=". = &apos;true&apos; and as:modconf(&apos;Dlt&apos;)/DltGeneral/DltRteUsage = &apos;false&apos;" 
+                          true="The usage of the RTE is not enabled for the Dlt, see parameter DltRteUsage."/>
+                  </v:var>
+                  <v:var name="DltProvideLogTraceSessionControlPort" 
+                         type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;Enables the generation of the &lt;code&gt;LogTraceSessionControl&lt;/code&gt; port&lt;/p&gt;
+
+                            &lt;p&gt;Dependency on parameter(s):&lt;/p&gt;
+                            &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;DltRteUsage&lt;/code&gt; must be enabled.&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;DltSwcSupportLogLevelChangeNotification&lt;/code&gt; must be enabled.&lt;/li&gt;
+                            &lt;/ul&gt;
+
+                            &lt;p&gt;This port includes the following operations:&lt;/p&gt;
+                            &lt;ul&gt;
+                              &lt;li&gt;LogLevelChangedNotification&lt;/li&gt;
+                              &lt;li&gt;TraceStatusChangedNotification&lt;/li&gt;
+                            &lt;/ul&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" 
+                         value="Generate LogTraceSessionControl Port"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="TAB" value="Rte Ports"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="node:value(../DltSwcSessionId)&gt;=num:hextoint(&apos;0x1000&apos;)"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst 
+                             expr=". = &apos;true&apos; and as:modconf(&apos;Dlt&apos;)/DltGeneral/DltRteUsage = &apos;false&apos;" 
+                             true="The usage of the RTE is not enabled for the Dlt, see parameter DltRteUsage."/>
+                      <a:tst 
+                             expr=". = &apos;true&apos; and ../DltSwcSupportLogLevelChangeNotification = &apos;false&apos;" 
+                             true="The DltSwcSupportLogLevelChangeNotification parameter must be enabled in order to use this interface"/>
+                    </a:da>
+                  </v:var>
+                </v:ctr>
+              </v:lst>
+              <v:ctr name="PublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="EB Published Information"/>
+                <a:a name="TAB" value="EB Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07"/>
+                <v:var name="PbcfgMSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Specifies whether or not the Dlt can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="PbcfgM support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+              </v:ctr>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

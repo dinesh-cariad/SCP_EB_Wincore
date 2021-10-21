@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+
+    <mainFunction name="ComM_MainFunction"
+        base="as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*"
+        suffix="concat( '_', ./ComMChannelId )">
+        <header value="ComM.h" />
+        <cycleTime type="XPATH" value="./ComMMainFunctionPeriod" />
+        <!-- For Flexray, the ComM main function has to run with the same period as the whole Flexray stack,
+             thus it shall be mapped on the ComTask. For Can, the ComM main function shall be mapped to the state
+             manager task -->
+        <taskPrefix type="XPATH" value="node:when(ComMBusType='COMM_BUS_TYPE_FR','SchMComTask','SchMDiagStateTask')" />
+        <taskPriority type="XPATH" value="node:when(ComMBusType='COMM_BUS_TYPE_FR','150','50')" />
+        <callBefore>
+            <mainFunction>CanSM_MainFunction</mainFunction>
+            <mainFunction>FrSM_MainFunction</mainFunction>
+            <mainFunction>Nm_MainFunction</mainFunction>
+            <mainFunction>CanNm_MainFunction</mainFunction>
+            <mainFunction>FrNm_MainFunction</mainFunction>
+            <mainFunction>LinSM_MainFunction</mainFunction>
+            <mainFunction>RamTst_MainFunction</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>EcuM_MainFunction</mainFunction>
+            <mainFunction>BswM_MainFunction</mainFunction>
+            <mainFunction>Dem_MainFunction</mainFunction>
+            <mainFunction>FiM_MainFunction</mainFunction>
+        </callAfter>
+    </mainFunction>
+</schm:mainFunctions>

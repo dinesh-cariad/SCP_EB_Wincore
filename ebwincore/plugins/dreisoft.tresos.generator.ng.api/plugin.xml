@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     + Copyright (C) Elektrobit Automotive GmbH
+     + All rights reserved
+     +
+     + NAME: plugin.xml
+     +
+     + $Id: plugin.xml,v 1.9 2010/01/08 17:40:19 mawe2550 Exp $
+     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+
+  <extension
+          point="org.eclipse.ant.core.antTasks">
+    <antTask
+            library="ant_tasks/resources-ant.jar"
+            name="ng.javagen"
+            class="dreisoft.tresos.generator.ng.api.internal.ant.tasks.JavaGenTask">
+    </antTask>
+    <antTask
+          class="dreisoft.tresos.generator.ng.api.internal.ant.tasks.JavaGenSrcTask"
+          library="ant_tasks/resources-ant.jar"
+          name="ng.javagen.src">
+    </antTask>
+
+    <antTask
+            library="ant_tasks/resources-ant.jar"
+            name="ng.jetgen"
+            class="dreisoft.tresos.generator.ng.api.internal.ant.tasks.JetGenTask">
+    </antTask>
+    <antTask
+          class="dreisoft.tresos.generator.ng.api.internal.ant.tasks.JetGenSrcTask"
+          library="ant_tasks/resources-ant.jar"
+          name="ng.jetgen.src">
+    </antTask>
+
+    <antTask
+            library="ant_tasks/resources-ant.jar"
+            name="ng.property"
+            class="dreisoft.tresos.generator.ng.api.internal.ant.tasks.SetPropertyTask">
+    </antTask>
+
+    <antTask
+            library="ant_tasks/resources-ant.jar"
+            name="ng.setgeneratorvar"
+            class="dreisoft.tresos.generator.ng.api.internal.ant.tasks.SetGeneratorVariableTask">
+    </antTask>
+    <antTask
+          class="dreisoft.tresos.generator.ng.api.internal.ant.tasks.GetGeneratorVariableTask"
+          library="ant_tasks/resources-ant.jar"
+          name="ng.getgeneratorvar">
+    </antTask>
+    <antTask
+          class="dreisoft.tresos.generator.ng.api.internal.ant.tasks.JetCTask"
+          library="ant_tasks/resources-ant.jar"
+          name="jetc">
+    </antTask>
+    <antTask
+          class="dreisoft.tresos.generator.ng.api.internal.ant.tasks.TemplateGenTask"
+          library="ant_tasks/resources-ant.jar"
+          name="ng.tmplgen">
+    </antTask>
+    <antTask
+          class="dreisoft.tresos.generator.ng.api.internal.ant.tasks.ExternalGenTask"
+          library="ant_tasks/resources-ant.jar"
+          name="ng.extgen">
+    </antTask>
+
+  </extension>
+  <extension
+        id="jetcompiler"
+        point="org.eclipse.core.runtime.applications">
+     <application>
+        <run
+              class="dreisoft.tresos.generator.ng.api.plugin.JetCApplication">
+        </run>
+     </application>
+  </extension>
+</plugin>

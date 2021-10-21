@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="tresos" default="all" basedir=".">
+    <target name="all">
+
+      <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+          <pathelement location="./ant-contrib-1.0b1.jar"/>
+        </classpath>
+      </taskdef>
+      
+      <ng.property
+        name="variantName"
+        dctxt="Base"
+        xpath="asc:getVariantName()"
+        override="false" >
+      </ng.property>
+      
+      <if>
+        <not><equals arg1="${variantName}" arg2="" /></not>
+        <then>
+          <sequential>
+            <ng.tmplgen
+                template="generate/templates/xgen/FrIf_Fragments.ixgen"
+                file="xgen/FrIf_${variantName}_Fragments.ixgen"
+                dctxt="Fr"
+                failonerror="false"
+                needCodeTags="false" >
+                <variable name="project" value="${genProject}"/>
+            </ng.tmplgen>
+          </sequential>
+        </then>
+        <else>
+          <sequential>
+            <ng.tmplgen
+                template="generate/templates/xgen/FrIf_Fragments.ixgen"
+                file="xgen/FrIf_Fragments.ixgen"
+                dctxt="Fr"
+                failonerror="false"
+                needCodeTags="false" >
+                <variable name="project" value="${genProject}"/>
+            </ng.tmplgen>
+          </sequential>
+        </else>
+      </if>
+
+    </target>
+
+</project>

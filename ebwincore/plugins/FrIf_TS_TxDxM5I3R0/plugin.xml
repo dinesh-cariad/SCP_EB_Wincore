@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+    ** brief AutoCore FrIf_TS_TxDxM5I3R0 plugin
+    **
+    ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+    ** unless expressly agreed to otherwise.
+  -->
+    <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="FrIf_TS_TxDxM5I3R0_ModuleId"
+             name="FrIf_TS_TxDxM5I3R0 Module">
+    <module id="FrIf_TS_TxDxM5I3R0"
+            label="FrIf"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-FlexRayStack: AUTOSAR Flexray Interface"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="5"
+            swVersionMinor="3"
+            swVersionPatch="25"
+            swVersionSuffix="B439717"
+            specVersionMajor="3"
+            specVersionMinor="3"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="FrIf"
+            categoryLayer="Communication HW Abstraction"
+            categoryCategory="FlexRay"
+            categoryComponent="ECUC">
+      <cluster name="FlexRay Stack"/>
+    </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="FrIf_TS_TxDxM5I3R0_ConfigId"
+             name="FrIf_TS_TxDxM5I3R0 Configuration">
+    <configuration moduleId="FrIf_TS_TxDxM5I3R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/FrIf.xdm" type="xdm" id="res_default"/>
+
+
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM5I3R0/FrIf"/>
+      </data>
+
+      <editor id="FrIf_TS_TxDxM5I3R0_EditorId"
+              label="Default"
+              tooltip="ACG-FlexRayStack: AUTOSAR Flexray Interface">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM5I3R0/FrIf"/>
+          <parameter name="title" value="FrIf"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+    <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_FrIf_TS_TxDxM5I3R0"
+           moduleId="FrIf_TS_TxDxM5I3R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.FrIfTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+    <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_FrIf_TS_TxDxM5I3R0"
+        name="FrIf service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="FrIf" />
+        <parameter name="req://dem.events:1" value="resources/FrIf_Dem_Events.xml" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/FrIf_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.FrIf_TS_TxDxM5I3R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="FrIf_TS_TxDxM5I3R0_GeneratorId"
+             name="FrIf_TS_TxDxM5I3R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="FrIf_TS_TxDxM5I3R0_TemplateBasedCodeGeneratorId"
+               moduleId="FrIf_TS_TxDxM5I3R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="FrIf_TS_TxDxM5I3R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+
+
+
+  <extension point="dreisoft.tresos.generator.api.plugin.generator" 
+             id="FrIf_TS_TxDxM5I3R0_GeneratorId"
+             name="FrIf_TS_TxDxM5I3R0 NG Generator">
+    <generator
+        class="dreisoft.tresos.generator.ng.api.NGGenerator"
+        id="FrIf_TS_TxDxM5I3R0_NGGeneratorId"
+        moduleId="FrIf_TS_TxDxM5I3R0">
+      <parameter name="buildfile" 
+                 value="resources/ng_task_build.xml"/>
+    </generator>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+              id="FrIf_TS_TxDxM5I3R0_ExternalGeneratorId"
+              name="FrIf_TS_TxDxM5I3R0 ExternalGenerator">
+    <generator moduleId="FrIf_TS_TxDxM5I3R0"
+            class="dreisoft.tresos.autosar2.generator.ExternalGenerator">
+      <parameter name="generateAllModules" value="true"/>
+      <parameter name="generateIntoOneFile" value="false"/>
+      <parameter name="contentType" value="asc:3.0"/>
+      <!-- this will execute genScript.bat in Windows and genScript (no .sh extension) on Linux -->
+      <!-- the scripts shall contain the OS dependent commands and the MCG binary invocations -->
+      <parameter name="commandline" value="${pluginPath}/generator/genScript ${pluginPath} ${outputDir} ${enabledModules}"/>
+      <parameter name="shell" value="true"/>
+      <parameter name="error" value="^Error:\s*$m\s*$"/>
+      <parameter name="warning" value="^Warning:\s*$m\s*$"/>
+      <parameter name="info" value="^Info:\s*$m\s*$"/>
+      <parameter name="timeout" value="300"/>
+      </generator>
+  </extension>
+
+<!-- register common ComStack modules for FlexRay Stack cluster -->
+  <extension point="dreisoft.tresos.launcher2.api.plugin.modulecluster">
+    <modulecluster>
+      <default>
+        <cluster name="FlexRay Stack"/>
+        <module type="Com"/>
+        <module type="EcuC"/>
+        <module type="PduR"/>
+        <module type="IpduM"/>
+        <module type="IPduMplex"/>
+      </default>
+    </modulecluster>
+  </extension>
+
+  <!-- handle id calculator for FrIfTxPduId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="FrIfTxPduId_FrIf_TS_TxDxM5I3R0"
+    name="FrIf/FrIfTxPduId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="FrIf_TS_TxDxM5I3R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I3R0/ELEMENTS/FrIf/FrIfConfig/FrIfConfig/FrIfPdu"/>
+            <parameter name="idPath" value="FrIfPduDirection/FrIfTxPduId"/>
+            <parameter name="groupBy" value="FrIfPduDirection/FrIfConfirm"/>
+            <parameter name="sortOrder" value="false,true"/>
+            <parameter name="filterPath" value="FrIfPduDirection"/>
+            <parameter name="filterValues" value="FrIfTxPdu"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.FrIf_TS_TxDxM5I3R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+               <equals value="4.0"/>
+            </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for FrIfCtrlIdx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="FrIfCtrlIdx_FrIf_TS_TxDxM5I3R0"
+    name="FrIf/FrIfCtrlIdx"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="FrIf_TS_TxDxM5I3R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I3R0/ELEMENTS/FrIf/FrIfConfig/FrIfConfig/FrIfCluster/FrIfCluster/FrIfController"/>
+            <parameter name="idPath" value="FrIfCtrlIdx"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.FrIf_TS_TxDxM5I3R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+               <equals value="4.0"/>
+            </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for FrIfClstIdx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="FrIfClstIdx_FrIf_TS_TxDxM5I3R0"
+    name="FrIf/FrIfClstIdx"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="FrIf_TS_TxDxM5I3R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I3R0/ELEMENTS/FrIf/FrIfConfig/FrIfConfig/FrIfCluster"/>
+            <parameter name="idPath" value="FrIfClstIdx"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.FrIf_TS_TxDxM5I3R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+               <equals value="4.0"/>
+            </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for FrIfLPduIdx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="FrIfLPduIdx_FrIf_TS_TxDxM5I3R0"
+    name="FrIf/FrIfLPduIdx"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="FrIf_TS_TxDxM5I3R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM5I3R0/ELEMENTS/FrIf/FrIfConfig/FrIfConfig/FrIfCluster/FrIfCluster/FrIfController/FrIfController/FrIfLPdu"/>
+            <parameter name="idPath" value="FrIfLPduIdx"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.FrIf_TS_TxDxM5I3R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+               <equals value="4.0"/>
+            </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+
+</plugin>

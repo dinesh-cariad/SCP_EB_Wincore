@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  ** AutoCore Base_TS_TxDxM5I0R0 plugin
+  **
+  ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+  ** unless expressly agreed to otherwise.
+  -->
+    <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Base_TS_TxDxM5I0R0_ModuleId"
+             name="Base_TS_TxDxM5I0R0 Module">
+    <module id="Base_TS_TxDxM5I0R0"
+            label="Base"
+            mandatory="true"
+            allowMultiple="false"
+            description="ACG-Base: Standard header files of the EB tresos AutoCore"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="5"
+            swVersionMinor="0"
+            swVersionPatch="31"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="3"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="Base"
+            categoryLayer="EB Base Bundle"
+            categoryCategory="EB"
+            categoryComponent="ECUC">
+      <cluster name="Basic Services"/>
+    </module>
+  </extension>
+
+    <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="Base_TS_TxDxM5I0R0_GeneratorId"
+             name="Base_TS_TxDxM5I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="Base_TS_TxDxM5I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="Base_TS_TxDxM5I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+
+      <!-- swcd AUTOSAR 3.2 modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_asr32_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_asr32_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_asr32_swcd,verify_asr32_swcd" value="generate_asr32_swcd"/>
+
+      <!-- swcd AUTOSAR 4.0 modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_asr40_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_asr40_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_asr40_swcd,verify_asr40_swcd" value="generate_asr40_swcd"/>
+    </generator>
+  </extension>
+
+  
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Base_TS_TxDxM5I0R0_ConfigId"
+             name="Base_TS_TxDxM5I0R0 Configuration">
+    <configuration moduleId="Base_TS_TxDxM5I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Base.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM5I0R0/Base"/>
+      </data>
+
+      <editor id="Base_TS_TxDxM5I0R0_EditorId"
+              label="Default"
+              tooltip="ACG-Base: Standard header files of the EB tresos AutoCore">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM5I0R0/Base"/>
+          <parameter name="title" value="Base"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+  
+  Base.EcuConfiguration.Generator.AutosarVersion
+  
+  <!-- Generator for exporting ECU configuration files
+  -->
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+             id="Base_TS_TxDxM5I0R0_Config_GeneratorId"
+             name="Base_TS_TxDxM5I0R0 Config Generator">
+    <generator class="dreisoft.tresos.generator.ng.api.NGGenerator"
+               id="Base_TS_TxDxM5I0R0_NGGeneratorId"
+               moduleId="Base_TS_TxDxM5I0R0">
+               
+      <parameter name="buildfile" value="resources/ng_task_build.xml"/>
+      <parameter name="mode_type" mode="export_asr_config" value="generate"/>
+    </generator>
+  </extension>
+ 
+  
+  
+
+  <!-- Extension for registering the AutoCore product
+    The name, version and the qualifier are printed on the 
+    splashscreen.
+  -->
+  <!-- !LINKSTO Base.EcuConfiguration.Generator,1 -->
+  <extension
+    point="dreisoft.tresos.application.core.plugin.customization">
+    <customization
+      applications="dreisoft.tresos.application.launcher2.plugin.ApplicationTresosGUI"
+      id="plugin.application.launcher2.customization1"
+      toolVersion="28.1.0  b210701-0227">
+      <feature name="AutoCore" 
+        version="8.8.3"
+        />
+    </customization>
+  </extension>
+
+  <!-- default cluster assignments for modules potentially provided by the MCAL vendor -->
+  <extension point="dreisoft.tresos.launcher2.api.plugin.modulecluster">
+    <modulecluster>
+      <default>
+        <cluster name="Basic Services"/>
+        <module type="Os"/>
+      </default>
+      <default>
+        <cluster name="Can Stack"/>
+        <module type="Can"/>
+        <module type="CanTrcv"/>
+      </default>
+      <default>
+        <cluster name="Ethernet Stack"/>
+        <module type="Eth"/>
+        <module type="EthTrcv"/>
+      </default>
+      <default>
+        <cluster name="FlexRay Stack"/>
+        <module type="Fr"/>
+        <module type="FrTrcv"/>
+      </default>
+      <default>
+        <cluster name="Lin Stack"/>
+        <module type="Lin"/>
+        <module type="LinTrcv"/>
+      </default>
+      <default>
+        <cluster name="MCAL"/>
+        <module type="Adc"/>
+        <module type="Dio"/>
+        <module type="Gpt"/>
+        <module type="Icu"/>
+        <module type="Mcu"/>
+        <module type="Port"/>
+        <module type="Pwm"/>
+        <module type="Spi"/>
+      </default>
+      <default>
+        <cluster name="Memory Stack"/>
+        <module type="Ea"/>
+        <module type="Eep"/>
+        <module type="Fee"/>
+        <module type="Fls"/>
+      </default>
+      <default>
+        <cluster name="OS/RTE"/>
+        <module type="Os"/>
+      </default>
+      <default>
+        <cluster name="Tests"/>
+        <module type="CoreTst"/>
+        <module type="RamTst"/>
+        <module type="FlsTst"/>
+      </default>
+      <default>
+        <cluster name="Ttcan Stack"/>
+        <module type="Ttcan"/>
+      </default>
+      <default>
+        <cluster name="Watchdog Stack"/>
+        <module type="Wdg"/>
+        <module type="WdgIf"/>
+      </default>
+    </modulecluster>
+  </extension>
+  
+
+</plugin>
+

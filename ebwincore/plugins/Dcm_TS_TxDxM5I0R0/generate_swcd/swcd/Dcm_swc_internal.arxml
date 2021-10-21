@@ -1,0 +1,1603 @@
+[!AUTOSPACING!][!//
+[!INCLUDE "Dcm_common.m"!][!//
+[!MACRO "Create_Interface_Vars", "VarsAsrVersion", "VarsInterfaceName"!][!//
+[!IF "$InterfaceName = ''"!][!//
+ [!VAR "DCMServices" = "'DCMServices'"!][!//
+ [!VAR "ServiceRequestNotification" = "'ServiceRequestNotification'"!][!//
+ [!VAR "CallbackDCMRequestServices" = "'CallbackDCMRequestServices'"!][!//
+[!ELSE!][!//
+ [!VAR "DCMServices" = "concat('Dcm_',$InterfaceName,'DCMServices')"!][!//
+ [!VAR "ServiceRequestNotification" = "concat('Dcm_',$InterfaceName,'ServiceRequestNotification')"!][!//
+ [!VAR "CallbackDCMRequestServices" = "concat('Dcm_',$InterfaceName,'CallbackDCMRequestServices')"!][!//
+[!ENDIF!][!//
+[!ENDMACRO!][!//
+[!//
+[!//
+[!//
+[!MACRO "Build_Ports", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_Dcm'"!][!//
+[!CALL "Create_Interface_Vars", "VarsAsrVersion"="$AsrVersion", "VarsInterfaceName"="$InterfaceName"!][!//
+        <P-PORT-PROTOTYPE>
+         <SHORT-NAME>[!"$DCMServices"!]</SHORT-NAME>
+         <PROVIDED-COM-SPECS>
+          <SERVER-COM-SPEC>
+           <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]/GetSecurityLevel</OPERATION-REF>
+           <QUEUE-LENGTH>1</QUEUE-LENGTH>
+          </SERVER-COM-SPEC>
+          <SERVER-COM-SPEC>
+           <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]/GetSesCtrlType</OPERATION-REF>
+           <QUEUE-LENGTH>1</QUEUE-LENGTH>
+          </SERVER-COM-SPEC>
+          <SERVER-COM-SPEC>
+           <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]/GetActiveProtocol</OPERATION-REF>
+           <QUEUE-LENGTH>1</QUEUE-LENGTH>
+          </SERVER-COM-SPEC>
+          <SERVER-COM-SPEC>
+           <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]/ResetToDefaultSession</OPERATION-REF>
+           <QUEUE-LENGTH>1</QUEUE-LENGTH>
+          </SERVER-COM-SPEC>
+<!-- !LINKSTO Dcm.EB.CommunicationModeHandling.EnableSetActiveDiagnosis,1 -->
+[!IF "(DcmConfigSet/*[1]/DcmGeneral/DcmDslEnableSetActiveDiagnosis = 'true')"!][!//
+          <SERVER-COM-SPEC>
+           <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]/SetActiveDiagnostic</OPERATION-REF>
+           <QUEUE-LENGTH>1</QUEUE-LENGTH>
+          </SERVER-COM-SPEC>
+[!ENDIF!]
+         </PROVIDED-COM-SPECS>
+         <PROVIDED-INTERFACE-TREF
+          DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]</PROVIDED-INTERFACE-TREF>
+        </P-PORT-PROTOTYPE>
+<!-- !LINKSTO SWS_Dcm_01032,1 -->
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeEvent/*"!]
+       <P-PORT-PROTOTYPE>
+        <SHORT-NAME>DCM_[!"$InterfaceName"!]Roe_[!"node:name(.)"!]</SHORT-NAME>
+        <PROVIDED-COM-SPECS>
+         <SERVER-COM-SPEC>
+          <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DCM_[!"$InterfaceName"!]Roe/TriggerOnEvent</OPERATION-REF>
+          <QUEUE-LENGTH>1</QUEUE-LENGTH>
+         </SERVER-COM-SPEC>
+        </PROVIDED-COM-SPECS>
+        <PROVIDED-INTERFACE-TREF
+         DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/DCM_[!"$InterfaceName"!]Roe</PROVIDED-INTERFACE-TREF>
+       </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!//
+[!IF "($DCM_DSP_USE_SERVICE_0X06 = 'STD_ON') and (as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmGeneral/DcmRteUsage = 'true')"!]
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspTestResultByObdmid/DcmDspTestResultObdmidTid/*"!]
+  [!VAR "OBDMIDname" = "@name"!]
+  [!LOOP "DcmDspTestResultObdmidTids/*/DcmDspTestResultObdmidTidRefs/*[node:refvalid(DcmDspTestResultObdmidTidRef)]/DcmDspTestResultObdmidTidRef"!]
+   [!VAR "TIDname" = "node:ref(.)/@name"!]
+         <R-PORT-PROTOTYPE>
+          <SHORT-NAME>DTRServices_[!"$OBDMIDname"!]_[!"$TIDname"!]</SHORT-NAME>
+          <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_Dcm/PortInterfaces/DTRServices</REQUIRED-INTERFACE-TREF>
+         </R-PORT-PROTOTYPE>
+  [!ENDLOOP!]
+ [!ENDLOOP!]
+[!ENDIF!]
+[!/* -------- Only enable if there is a service handler for OBD service 0x08 ------------------ */!]
+[!IF "node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[DcmDsdSidTabServiceId = num:i(8)])"!]
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRequestControl/*[DcmDspRequestControlUsePort = 'USE_REQUESTCONTROL_SYNCH_CLIENT_SERVER']"!]
+ [!VAR "TIDname" = "node:name(.)"!]
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>RequestControlServices_[!"$TIDname"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_Dcm/PortInterfaces/RequestControlServices_[!"$TIDname"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+ [!ENDLOOP!]
+[!ENDIF!]
+
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspSecurity/DcmDspSecurityRow/*"!]
+[!IF "((DcmDspSecurityUsePort = 'USE_SECURITY_ASYNCH_CLIENT_SERVER') or (DcmDspSecurityUsePort = 'USE_SECURITY_SYNCH_CLIENT_SERVER'))"!]
+[!IF "($InterfaceName = '')"!][!//
+[!VAR "LvlString" = "node:name(.)"!]
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+[!ENDIF!]
+[!ENDIF!]
+[!ENDLOOP!]
+[!//
+[!//
+[!CALL "DspDataElement_Read_Write_Control_ReadScalingDataAccess"!][!//
+[!//
+[!IF "($InterfaceName = '')"!][!//
+ [!VAR "ReceivePoint" = "''"!][!//
+ [!VAR "SendPoint" = "''"!][!//
+ [!VAR "ReceiveSendPoint" = "''"!][!//
+ [!FOR "i" = "1" TO "count(text:split($AccessDidData))"!]
+  [!VAR "x" = "text:split($AccessDidData)[position() = $i]"!][!//
+  [!VAR "DataName" = "text:split($x, '|')[1]"!][!//
+  [!VAR "DataType" = "text:split($x, '|')[3]"!][!//
+  [!VAR "DataSize" = "num:i(text:split($x, '|')[4])"!][!//
+  [!VAR "UsageType" = "text:split($x, '|')[5]"!][!//
+  [!VAR "ReadAccess" = "text:contains(string(text:split($x, '|')[6]), 'Rda')"!][!//
+  [!VAR "WriteAccess" = "text:contains(string(text:split($x, '|')[6]), 'Wra')"!][!//
+  [!VAR "ControlAccess" = "text:contains(string(text:split($x, '|')[6]), 'Cna')"!][!//
+  [!VAR "ReadScalingDataAccess" = "text:contains(string(text:split($x, '|')[6]), 'Rsa')"!][!//
+  [!//
+  [!IF "($ReadAccess = 'true') or ($WriteAccess = 'true') or ($ControlAccess = 'true') or ($ReadScalingDataAccess = 'true')"!][!//
+   [!IF "($UsageType = 'USE_DATA_ASYNCH_CLIENT_SERVER') or ($UsageType = 'USE_DATA_SYNCH_CLIENT_SERVER')"!][!//
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>DataServices_[!"$DataName"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"$DataName"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+   [!ELSEIF "($UsageType = 'USE_DATA_SENDER_RECEIVER') or ($UsageType = 'USE_DATA_SENDER_RECEIVER_AS_SERVICE')"!][!//
+    [!IF "($ReadAccess = 'true') and ($WriteAccess = 'false')"!][!// !LINKSTO SWS_Dcm_01310,...
+     [!VAR "ReceivePoint" = "concat($ReceivePoint, $DataName, ':')"!]
+[!// <!-- !LINKSTO SWS_Dcm_01310_IsNotService_ForRead,1 -->
+[!// <!-- !LINKSTO SWS_Dcm_01310_IsService_ForRead,1 -->
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>DataServices_[!"$DataName"!]</SHORT-NAME>
+         <REQUIRED-COM-SPECS>
+          <NONQUEUED-RECEIVER-COM-SPEC>
+           <DATA-ELEMENT-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"$DataName"!]/data</DATA-ELEMENT-REF>
+           <HANDLE-OUT-OF-RANGE>NONE</HANDLE-OUT-OF-RANGE>
+           <USES-END-TO-END-PROTECTION>false</USES-END-TO-END-PROTECTION>
+           <ALIVE-TIMEOUT>0</ALIVE-TIMEOUT>
+           <ENABLE-UPDATE>false</ENABLE-UPDATE>
+           <HANDLE-NEVER-RECEIVED>false</HANDLE-NEVER-RECEIVED>
+           <HANDLE-TIMEOUT-TYPE>NONE</HANDLE-TIMEOUT-TYPE>
+           <INIT-VALUE>
+     [!IF "contains($DataType, '_N')"!]
+      [!CALL "DspDataTypeArray_Convert", "InputDataType" = "$DataType", "DspDataName" = "$DataName"!]
+      [!VAR "ArraySize" = "num:integer(($DataSize + $out_DspDataTypeArray_Convert_DataTypeBitLength - 1) div $out_DspDataTypeArray_Convert_DataTypeBitLength)"!]
+            <ARRAY-VALUE-SPECIFICATION>
+             <ELEMENTS>
+      [!FOR "i" = "0" TO "$ArraySize - 1"!]
+              <NUMERICAL-VALUE-SPECIFICATION>
+               <VALUE>0</VALUE>
+              </NUMERICAL-VALUE-SPECIFICATION>
+      [!ENDFOR!]
+             </ELEMENTS>
+            </ARRAY-VALUE-SPECIFICATION>
+     [!ELSE!]
+            <NUMERICAL-VALUE-SPECIFICATION>
+             <SHORT-LABEL>InitValue</SHORT-LABEL>
+             <VALUE>0</VALUE>
+            </NUMERICAL-VALUE-SPECIFICATION>
+     [!ENDIF!]
+           </INIT-VALUE>
+          </NONQUEUED-RECEIVER-COM-SPEC>
+         </REQUIRED-COM-SPECS>
+         <REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"$DataName"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+    [!ELSEIF "($ReadAccess = 'false') and ($WriteAccess = 'true')"!][!// !LINKSTO SWS_Dcm_01031,...
+     [!VAR "SendPoint" = "concat($SendPoint, $DataName, ':')"!]
+[!// <!-- !LINKSTO SWS_Dcm_01031_IsNotService,1 -->
+[!// <!-- !LINKSTO SWS_Dcm_01031_IsService,1 -->
+        <P-PORT-PROTOTYPE>
+         <SHORT-NAME>DataServices_[!"$DataName"!]</SHORT-NAME>
+         <PROVIDED-COM-SPECS>
+          <NONQUEUED-SENDER-COM-SPEC>
+           <DATA-ELEMENT-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"$DataName"!]/data</DATA-ELEMENT-REF>
+           <HANDLE-OUT-OF-RANGE>NONE</HANDLE-OUT-OF-RANGE>
+           <USES-END-TO-END-PROTECTION>false</USES-END-TO-END-PROTECTION>
+           <INIT-VALUE>
+     [!IF "contains($DataType, '_N')"!]
+      [!CALL "DspDataTypeArray_Convert", "InputDataType" = "$DataType", "DspDataName" = "$DataName"!]
+      [!VAR "ArraySize" = "num:integer(($DataSize + $out_DspDataTypeArray_Convert_DataTypeBitLength - 1) div $out_DspDataTypeArray_Convert_DataTypeBitLength)"!]
+            <ARRAY-VALUE-SPECIFICATION>
+             <ELEMENTS>
+      [!FOR "i" = "0" TO "$ArraySize - 1"!]
+              <NUMERICAL-VALUE-SPECIFICATION>
+               <VALUE>0</VALUE>
+              </NUMERICAL-VALUE-SPECIFICATION>
+      [!ENDFOR!]
+             </ELEMENTS>
+            </ARRAY-VALUE-SPECIFICATION>
+     [!ELSE!]
+            <NUMERICAL-VALUE-SPECIFICATION>
+             <VALUE>0</VALUE>
+            </NUMERICAL-VALUE-SPECIFICATION>
+     [!ENDIF!]
+           </INIT-VALUE>
+          </NONQUEUED-SENDER-COM-SPEC>
+         </PROVIDED-COM-SPECS>
+         <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"$DataName"!]</PROVIDED-INTERFACE-TREF>
+        </P-PORT-PROTOTYPE>
+    [!ELSEIF "($ReadAccess = 'true') and ($WriteAccess = 'true')"!][!// !LINKSTO SWS_Dcm_01311,...
+     [!VAR "ReceiveSendPoint" = "concat($ReceiveSendPoint, $DataName, ':')"!]
+[!// <!-- !LINKSTO SWS_Dcm_01311_IsNotService_ForRead,1 -->
+[!// <!-- !LINKSTO SWS_Dcm_01311_IsService_ForRead,1 -->
+        <PR-PORT-PROTOTYPE>
+         <SHORT-NAME>DataServices_[!"$DataName"!]</SHORT-NAME>
+         <PROVIDED-COM-SPECS>
+          <NONQUEUED-SENDER-COM-SPEC>
+           <DATA-ELEMENT-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"$DataName"!]/data</DATA-ELEMENT-REF>
+           <HANDLE-OUT-OF-RANGE>NONE</HANDLE-OUT-OF-RANGE>
+           <USES-END-TO-END-PROTECTION>false</USES-END-TO-END-PROTECTION>
+           <INIT-VALUE>
+     [!IF "contains($DataType, '_N')"!]
+      [!CALL "DspDataTypeArray_Convert", "InputDataType" = "$DataType", "DspDataName" = "$DataName"!]
+      [!VAR "ArraySize" = "num:integer(($DataSize + $out_DspDataTypeArray_Convert_DataTypeBitLength - 1) div $out_DspDataTypeArray_Convert_DataTypeBitLength)"!]
+            <ARRAY-VALUE-SPECIFICATION>
+             <ELEMENTS>
+      [!FOR "i" = "0" TO "$ArraySize - 1"!]
+              <NUMERICAL-VALUE-SPECIFICATION>
+               <VALUE>0</VALUE>
+              </NUMERICAL-VALUE-SPECIFICATION>
+      [!ENDFOR!]
+             </ELEMENTS>
+            </ARRAY-VALUE-SPECIFICATION>
+     [!ELSE!]
+            <NUMERICAL-VALUE-SPECIFICATION>
+             <VALUE>0</VALUE>
+            </NUMERICAL-VALUE-SPECIFICATION>
+     [!ENDIF!]
+           </INIT-VALUE>
+          </NONQUEUED-SENDER-COM-SPEC>
+         </PROVIDED-COM-SPECS>
+         <REQUIRED-COM-SPECS>
+          <NONQUEUED-RECEIVER-COM-SPEC>
+           <DATA-ELEMENT-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"$DataName"!]/data</DATA-ELEMENT-REF>
+           <HANDLE-OUT-OF-RANGE>NONE</HANDLE-OUT-OF-RANGE>
+           <USES-END-TO-END-PROTECTION>false</USES-END-TO-END-PROTECTION>
+           <ALIVE-TIMEOUT>0</ALIVE-TIMEOUT>
+           <ENABLE-UPDATE>false</ENABLE-UPDATE>
+           <HANDLE-NEVER-RECEIVED>false</HANDLE-NEVER-RECEIVED>
+           <HANDLE-TIMEOUT-TYPE>NONE</HANDLE-TIMEOUT-TYPE>
+           <INIT-VALUE>
+     [!IF "contains($DataType, '_N')"!]
+            <ARRAY-VALUE-SPECIFICATION>
+             <ELEMENTS>
+      [!FOR "i" = "0" TO "$ArraySize - 1"!]
+              <NUMERICAL-VALUE-SPECIFICATION>
+               <VALUE>0</VALUE>
+              </NUMERICAL-VALUE-SPECIFICATION>
+      [!ENDFOR!]
+             </ELEMENTS>
+            </ARRAY-VALUE-SPECIFICATION>
+     [!ELSE!]
+            <NUMERICAL-VALUE-SPECIFICATION>
+             <SHORT-LABEL>InitValue</SHORT-LABEL>
+             <VALUE>0</VALUE>
+            </NUMERICAL-VALUE-SPECIFICATION>
+     [!ENDIF!]
+           </INIT-VALUE>
+          </NONQUEUED-RECEIVER-COM-SPEC>
+         </REQUIRED-COM-SPECS>
+         <PROVIDED-REQUIRED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"$DataName"!]</PROVIDED-REQUIRED-INTERFACE-TREF>
+        </PR-PORT-PROTOTYPE>
+    [!ENDIF!][!//
+   [!ENDIF!][!//
+  [!ENDIF!][!//
+ [!ENDFOR!][!//
+[!ENDIF!][!//
+[!//
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspDidRange/*[DcmDspDidRangeUsePort = 'true']"!]
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>DataServices_DIDRange_[!"node:name(.)"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_Dcm/PortInterfaces/DataServices_DIDRange_[!"node:name(.)"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+[!ENDLOOP!]
+
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmRequestManufacturerNotificationEnabled = 'true'"!]
+[!LOOP "DcmConfigSet/*[1]/DcmDsl/DcmDslServiceRequestManufacturerNotification/*"!]
+[!IF "($InterfaceName = '')"!][!//
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>[!"$InterfaceName"!]ServiceRequestManufacturerNotification_[!"name(.)"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/[!"$ServiceRequestNotification"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!]
+[!//
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmRequestSupplierNotificationEnabled = 'true'"!]
+[!LOOP "DcmConfigSet/*[1]/DcmDsl/DcmDslServiceRequestSupplierNotification/*"!]
+[!IF "($InterfaceName = '')"!][!//
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>[!"$InterfaceName"!]ServiceRequestSupplierNotification_[!"name(.)"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/[!"$ServiceRequestNotification"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!]
+[!//
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoutine/*[DcmDspRoutineUsePort = 'true' and DcmDspRoutineUsed = 'true']"!]
+[!IF "($InterfaceName = '')"!][!//
+        <!-- !LINKSTO SWS_Dcm_01040,1 -->
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>RoutineServices_[!"$InterfaceName"!][!"name(.)"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+[!ENDIF!]
+[!ENDLOOP!]
+[!//
+[!LOOP "DcmConfigSet/*[1]/DcmDsl/DcmDslCallbackDCMRequestService/*"!]
+[!IF "($InterfaceName = '')"!][!//
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>[!"$InterfaceName"!]CallBackDCMRequestServices_[!"name(.)"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CallbackDCMRequestServices"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+[!ENDIF!]
+[!ENDLOOP!]
+[!//
+[!VAR "ModeDecGpList" = "'#'"!]
+[!LOOP "DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*"!]
+ [!IF "node:exists(DcmSwcModeRef)"!]
+  [!VAR "ModeDecGp" = "text:split(./DcmSwcModeRef/TARGET, '/')[last()-1]"!]
+  [!IF "not(contains($ModeDecGpList, concat('#', $ModeDecGp, '#')))"!]
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>R_SwcMode_[!"@index"!]_[!"$ModeDecGp"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/DcmModeRuleRequiredModeSwIf_[!"@index"!]_[!"$ModeDecGp"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+  [!VAR "ModeDecGpList" = "concat($ModeDecGpList, $ModeDecGp, '#')"!]
+  [!ENDIF!]
+ [!ENDIF!]
+[!ENDLOOP!]
+
+<!-- !LINKSTO Dcm.RequiredPort.DataServices_DcmDspPidData.CSInterface,1 -->
+[!IF "node:exists(DcmConfigSet/*[1]/DcmDsp/DcmDspPid/*[(DcmDspPidService='DCM_SERVICE_01') or (DcmDspPidService='DCM_SERVICE_01_02')]/DcmDspPidData/*[DcmDspPidService01/DcmDspPidDataUsePort = 'USE_DATA_SYNCH_CLIENT_SERVER'])"!]
+      <!-- R-port description to get data for OBD service $01 -->
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspPid/*[(DcmDspPidService='DCM_SERVICE_01') or (DcmDspPidService='DCM_SERVICE_01_02')]/DcmDspPidData/*[DcmDspPidService01/DcmDspPidDataUsePort = 'USE_DATA_SYNCH_CLIENT_SERVER']"!]
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>DataServices_[!"name(.)"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"name(.)"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+ [!ENDLOOP!]
+[!ENDIF!]
+
+[!IF "($InterfaceName = '')"!][!//
+ [!IF "node:exists(DcmConfigSet/*[1]/DcmDsp/DcmDspVehInfo/*/DcmDspVehInfoData/*[DcmDspVehInfoDataUsePort = 'true'])"!]
+      <!-- R-port description to get data for OBD service $09 -->
+  [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspVehInfo/*/DcmDspVehInfoData/*[DcmDspVehInfoDataUsePort = 'true']"!]
+        <!-- !LINKSTO SWS_Dcm_01037,1 -->
+        <R-PORT-PROTOTYPE>
+         <SHORT-NAME>InfotypeServices_[!"name(.)"!]</SHORT-NAME>
+         <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">[!"$TopLevelPackage"!]/PortInterfaces/InfotypeServices_[!"name(.)"!]</REQUIRED-INTERFACE-TREF>
+        </R-PORT-PROTOTYPE>
+  [!ENDLOOP!]
+ [!ENDIF!]
+[!ENDIF!]
+
+[!ENDMACRO!][!//
+[!//
+[!//
+[!//
+[!MACRO "Build_Events", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_Dcm'"!][!//
+[!CALL "Create_Interface_Vars", "VarsAsrVersion"="$AsrVersion", "VarsInterfaceName"="$InterfaceName"!]
+          <OPERATION-INVOKED-EVENT>
+           <SHORT-NAME>[!"$InterfaceName"!]EV_GetSecurityLevel</SHORT-NAME>
+           <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DcmIntBeh/RE_GetSecurityLevel</START-ON-EVENT-REF>
+           <OPERATION-IREF>
+            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$DCMServices"!]</CONTEXT-P-PORT-REF>
+            <TARGET-PROVIDED-OPERATION-REF
+             DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]/GetSecurityLevel</TARGET-PROVIDED-OPERATION-REF>
+           </OPERATION-IREF>
+          </OPERATION-INVOKED-EVENT>
+          <OPERATION-INVOKED-EVENT>
+           <SHORT-NAME>[!"$InterfaceName"!]EV_GetSesCtrlType</SHORT-NAME>
+           <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DcmIntBeh/RE_GetSesCtrlType</START-ON-EVENT-REF>
+           <OPERATION-IREF>
+            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$DCMServices"!]</CONTEXT-P-PORT-REF>
+            <TARGET-PROVIDED-OPERATION-REF
+             DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]/GetSesCtrlType</TARGET-PROVIDED-OPERATION-REF>
+           </OPERATION-IREF>
+          </OPERATION-INVOKED-EVENT>
+          <OPERATION-INVOKED-EVENT>
+           <SHORT-NAME>[!"$InterfaceName"!]EV_GetActiveProtocol</SHORT-NAME>
+           <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DcmIntBeh/RE_GetActiveProtocol</START-ON-EVENT-REF>
+           <OPERATION-IREF>
+            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$DCMServices"!]</CONTEXT-P-PORT-REF>
+            <TARGET-PROVIDED-OPERATION-REF
+             DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]/GetActiveProtocol</TARGET-PROVIDED-OPERATION-REF>
+           </OPERATION-IREF>
+          </OPERATION-INVOKED-EVENT>
+          <OPERATION-INVOKED-EVENT>
+           <SHORT-NAME>[!"$InterfaceName"!]EV_ResetToDefaultSession</SHORT-NAME>
+           <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DcmIntBeh/RE_ResetToDefaultSession</START-ON-EVENT-REF>
+           <OPERATION-IREF>
+            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$DCMServices"!]</CONTEXT-P-PORT-REF>
+            <TARGET-PROVIDED-OPERATION-REF
+             DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]/ResetToDefaultSession</TARGET-PROVIDED-OPERATION-REF>
+           </OPERATION-IREF>
+          </OPERATION-INVOKED-EVENT>
+<!-- !LINKSTO Dcm.EB.CommunicationModeHandling.EnableSetActiveDiagnosis,1 -->
+[!IF "(DcmConfigSet/*[1]/DcmGeneral/DcmDslEnableSetActiveDiagnosis = 'true')"!][!//
+          <OPERATION-INVOKED-EVENT>
+           <SHORT-NAME>[!"$InterfaceName"!]EV_SetActiveDiagnostic</SHORT-NAME>
+           <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DcmIntBeh/RE_SetActiveDiagnostic</START-ON-EVENT-REF>
+           <OPERATION-IREF>
+            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$DCMServices"!]</CONTEXT-P-PORT-REF>
+            <TARGET-PROVIDED-OPERATION-REF
+             DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$DCMServices"!]/SetActiveDiagnostic</TARGET-PROVIDED-OPERATION-REF>
+           </OPERATION-IREF>
+          </OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+<!-- !LINKSTO SWS_Dcm_00699,1 -->
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeEvent/*"!]
+          <OPERATION-INVOKED-EVENT>
+           <SHORT-NAME>[!"$InterfaceName"!]EV_TriggerOnEvent_[!"node:name(.)"!]</SHORT-NAME>
+           <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DcmIntBeh/RE_TriggerOnEvent</START-ON-EVENT-REF>
+           <OPERATION-IREF>
+            <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DCM_[!"$InterfaceName"!]Roe_[!"node:name(.)"!]</CONTEXT-P-PORT-REF>
+            <TARGET-PROVIDED-OPERATION-REF
+             DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DCM_[!"$InterfaceName"!]Roe/TriggerOnEvent</TARGET-PROVIDED-OPERATION-REF>
+           </OPERATION-IREF>
+          </OPERATION-INVOKED-EVENT>
+[!ENDLOOP!]
+[!//
+[!ENDMACRO!][!//
+[!//
+[!//
+[!//
+[!MACRO "Build_Options", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_Dcm'"!][!//
+[!CALL "Create_Interface_Vars", "VarsAsrVersion"="$AsrVersion", "VarsInterfaceName"="$InterfaceName"!]
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspSecurity/DcmDspSecurityRow/*"!]
+[!IF "((DcmDspSecurityUsePort = 'USE_SECURITY_ASYNCH_CLIENT_SERVER') or (DcmDspSecurityUsePort = 'USE_SECURITY_SYNCH_CLIENT_SERVER'))"!]
+[!IF "($InterfaceName = '')"!][!//
+[!VAR "LvlString" = "node:name(.)"!]
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</PORT-REF>
+          </PORT-API-OPTION>
+[!ENDIF!]
+[!ENDIF!]
+[!ENDLOOP!]
+[!//
+[!IF "($InterfaceName = '')"!][!//
+ [!FOR "i" = "1" TO "count(text:split($AccessDidData))"!]
+  [!VAR "x" = "text:split($AccessDidData)[position() = $i]"!][!//
+  [!VAR "DataName" = "text:split($x, '|')[1]"!][!//
+  [!VAR "UsageType" = "text:split($x, '|')[5]"!][!//
+  [!VAR "ReadAccess" = "text:contains(string(text:split($x, '|')[6]), 'Rda')"!][!//
+  [!VAR "WriteAccess" = "text:contains(string(text:split($x, '|')[6]), 'Wra')"!][!//
+  [!VAR "ControlAccess" = "text:contains(string(text:split($x, '|')[6]), 'Cna')"!][!//
+  [!VAR "ReadScalingDataAccess" = "text:contains(string(text:split($x, '|')[6]), 'Rsa')"!][!//
+  [!//
+  [!IF "($ReadAccess = 'true') or ($WriteAccess = 'true') or ($ControlAccess = 'true') or ($ReadScalingDataAccess = 'true')"!][!//
+   [!IF "($UsageType = 'USE_DATA_ASYNCH_CLIENT_SERVER') or ($UsageType = 'USE_DATA_SYNCH_CLIENT_SERVER')"!]
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</PORT-REF>
+          </PORT-API-OPTION>
+   [!ELSEIF "($UsageType = 'USE_DATA_SENDER_RECEIVER') or ($UsageType = 'USE_DATA_SENDER_RECEIVER_AS_SERVICE')"!][!//
+    [!IF "($ReadAccess = 'true') and ($WriteAccess = 'false')"!][!//
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$DataName"!]</PORT-REF>
+          </PORT-API-OPTION>
+    [!ELSEIF "($ReadAccess = 'false') and ($WriteAccess = 'true')"!][!//
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$DataName"!]</PORT-REF>
+          </PORT-API-OPTION>
+    [!ELSEIF "($ReadAccess = 'true') and ($WriteAccess = 'true')"!][!//
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="PR-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$DataName"!]</PORT-REF>
+          </PORT-API-OPTION>
+    [!ENDIF!][!//
+   [!ENDIF!][!//
+  [!ENDIF!]
+ [!ENDFOR!]
+[!ENDIF!][!//
+[!//
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspDidRange/*[DcmDspDidRangeUsePort = 'true']"!]
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_DIDRange_[!"node:name(.)"!]</PORT-REF>
+          </PORT-API-OPTION>
+[!ENDLOOP!]
+
+[!IF "($DCM_DSP_USE_SERVICE_0X06 = 'STD_ON') and (as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmGeneral/DcmRteUsage = 'true')"!]
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspTestResultByObdmid/DcmDspTestResultObdmidTid/*"!]
+  [!VAR "OBDMIDname" = "@name"!]
+  [!LOOP "DcmDspTestResultObdmidTids/*/DcmDspTestResultObdmidTidRefs/*[node:refvalid(DcmDspTestResultObdmidTidRef)]/DcmDspTestResultObdmidTidRef"!]
+   [!VAR "TIDname" = "node:ref(.)/@name"!]
+           <PORT-API-OPTION>
+            <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+            <INDIRECT-API>false</INDIRECT-API>
+            <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DTRServices_[!"$OBDMIDname"!]_[!"$TIDname"!]</PORT-REF>
+           </PORT-API-OPTION>
+  [!ENDLOOP!]
+ [!ENDLOOP!]
+[!ENDIF!]
+
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmRequestManufacturerNotificationEnabled = 'true'"!]
+[!LOOP "DcmConfigSet/*[1]/DcmDsl/DcmDslServiceRequestManufacturerNotification/*"!]
+[!IF "($InterfaceName = '')"!][!//
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]ServiceRequestManufacturerNotification_[!"name(.)"!]</PORT-REF>
+          </PORT-API-OPTION>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!]
+[!//
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmRequestSupplierNotificationEnabled = 'true'"!]
+[!LOOP "DcmConfigSet/*[1]/DcmDsl/DcmDslServiceRequestSupplierNotification/*"!]
+[!IF "($InterfaceName = '')"!][!//
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]ServiceRequestSupplierNotification_[!"name(.)"!]</PORT-REF>
+          </PORT-API-OPTION>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!]
+[!//
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoutine/*[DcmDspRoutineUsePort = 'true' and DcmDspRoutineUsed = 'true']"!]
+[!IF "($InterfaceName = '')"!][!//
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]</PORT-REF>
+          </PORT-API-OPTION>
+[!ENDIF!]
+[!ENDLOOP!]
+[!//
+[!LOOP "DcmConfigSet/*[1]/DcmDsl/DcmDslCallbackDCMRequestService/*"!]
+[!IF "($InterfaceName = '')"!][!//
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]CallBackDCMRequestServices_[!"name(.)"!]</PORT-REF>
+          </PORT-API-OPTION>
+[!ENDIF!]
+[!ENDLOOP!]
+[!//
+
+<!-- !LINKSTO SWS_Dcm_00699,1 -->
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeEvent/*"!]
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-ARG-VALUES>
+            <PORT-DEFINED-ARGUMENT-VALUE>
+             <VALUE>
+              <NUMERICAL-VALUE-SPECIFICATION>
+               <VALUE>[!"DcmDspRoeEventId"!]</VALUE>
+              </NUMERICAL-VALUE-SPECIFICATION>
+             </VALUE>
+             <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</VALUE-TYPE-TREF>
+            </PORT-DEFINED-ARGUMENT-VALUE>
+           </PORT-ARG-VALUES>
+           <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DCM_[!"$InterfaceName"!]Roe_[!"node:name(.)"!]</PORT-REF>
+          </PORT-API-OPTION>
+[!ENDLOOP!]
+
+[!VAR "ModeDecGpList" = "'#'"!]
+[!LOOP "DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*"!]
+ [!IF "node:exists(DcmSwcModeRef)"!]
+  [!VAR "ModeDecGp" = "text:split(./DcmSwcModeRef/TARGET, '/')[last()-1]"!]
+  [!IF "not(contains($ModeDecGpList, concat('#', $ModeDecGp, '#')))"!]
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/R_SwcMode_[!"@index"!]_[!"$ModeDecGp"!]</PORT-REF>
+          </PORT-API-OPTION>
+  [!VAR "ModeDecGpList" = "concat($ModeDecGpList, $ModeDecGp, '#')"!]
+  [!ENDIF!]
+ [!ENDIF!]
+[!ENDLOOP!]
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspPid/*[(DcmDspPidService='DCM_SERVICE_01') or (DcmDspPidService='DCM_SERVICE_01_02')]/DcmDspPidData/*[DcmDspPidService01/DcmDspPidDataUsePort = 'USE_DATA_SYNCH_CLIENT_SERVER']"!]
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"name(.)"!]</PORT-REF>
+          </PORT-API-OPTION>
+[!ENDLOOP!]
+[!IF "($InterfaceName = '')"!][!//
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspVehInfo/*/DcmDspVehInfoData/*[DcmDspVehInfoDataUsePort = 'true']"!]
+          <PORT-API-OPTION>
+           <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+           <INDIRECT-API>false</INDIRECT-API>
+           <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]InfotypeServices_[!"name(.)"!]</PORT-REF>
+          </PORT-API-OPTION>
+ [!ENDLOOP!]
+[!ENDIF!]
+[!/* -------- Only enable if there is a service handler for OBD service 0x08 ------------------ */!]
+[!IF "node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[DcmDsdSidTabServiceId = num:i(8)])"!]
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRequestControl/*[DcmDspRequestControlUsePort = 'USE_REQUESTCONTROL_SYNCH_CLIENT_SERVER']"!]
+[!VAR "TIDname" = "node:name(.)"!]
+       <PORT-API-OPTION>
+        <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+        <INDIRECT-API>false</INDIRECT-API>
+        <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/RequestControlServices_[!"$TIDname"!]</PORT-REF>
+       </PORT-API-OPTION>
+[!ENDLOOP!]
+[!ENDIF!]
+[!ENDMACRO!][!//
+[!//
+[!//
+[!//
+[!MACRO "Build_MainFunction", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_Dcm'"!][!//
+[!CALL "Create_Interface_Vars", "VarsAsrVersion"="$AsrVersion", "VarsInterfaceName"="$InterfaceName"!]
+[!IF "(node:exists(DcmConfigSet/*/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '39') and (./DcmAsyncServiceExecution = 'false')]))"!]
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspSecurity/DcmDspSecurityRow/*"!]
+  [!IF "(DcmDspSecurityUsePort = 'USE_SECURITY_ASYNCH_CLIENT_SERVER') or (DcmDspSecurityUsePort = 'USE_SECURITY_SYNCH_CLIENT_SERVER')"!]
+   [!IF "($InterfaceName = '')"!][!//
+    [!VAR "LvlString" = "node:name(.)"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_SecurityAccessGetSeed_[!"$LvlString"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]/GetSeed</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_SecurityAccessCompareKey_[!"$LvlString"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]/CompareKey</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!IF "node:exists(as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmDsp/DcmDspSecurity/DcmDspSecurityRow/*[(DcmDspSecurityDelayTime != 0) or (DcmDspSecurityDelayTimeOnBoot != 0)])"!]
+     [!IF "DcmDspSecurityAttemptCounterEnabled = 'true'"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_SecurityAccessGetSecurityAttemptCounter_[!"$LvlString"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]/GetSecurityAttemptCounter</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_SecurityAccessSetSecurityAttemptCounter_[!"$LvlString"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]/SetSecurityAttemptCounter</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+     [!ENDIF!]
+    [!ENDIF!]
+   [!ENDIF!]
+  [!ENDIF!]
+ [!ENDLOOP!]
+[!ENDIF!]
+[!//
+[!IF "($DCM_DSP_USE_SERVICE_0X06 = 'STD_ON') and (as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmGeneral/DcmRteUsage = 'true')"!]
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspTestResultByObdmid/DcmDspTestResultObdmidTid/*"!]
+  [!VAR "OBDMIDname" = "@name"!]
+  <!-- !LINKSTO Dcm.dsn.Dsp.DTRService,1 -->
+  [!LOOP "DcmDspTestResultObdmidTids/*/DcmDspTestResultObdmidTidRefs/*[node:refvalid(DcmDspTestResultObdmidTidRef)]/DcmDspTestResultObdmidTidRef"!]
+   [!VAR "TIDname" = "node:ref(.)/@name"!]
+             <SYNCHRONOUS-SERVER-CALL-POINT>
+              <SHORT-NAME>sscp_DTRServices_[!"$OBDMIDname"!]_[!"$TIDname"!]</SHORT-NAME>
+              <OPERATION-IREF>
+               <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DTRServices_[!"$OBDMIDname"!]_[!"$TIDname"!]</CONTEXT-R-PORT-REF>
+               <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dcm/PortInterfaces/DTRServices/GetDTRValue</TARGET-REQUIRED-OPERATION-REF>
+              </OPERATION-IREF>
+              <TIMEOUT>0.0</TIMEOUT>
+             </SYNCHRONOUS-SERVER-CALL-POINT>
+  [!ENDLOOP!]
+ [!ENDLOOP!]
+[!ENDIF!]
+[!/* -------- Only enable if there is a service handler for OBD service 0x08 ------------------ */!]
+[!IF "node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[DcmDsdSidTabServiceId = num:i(8)])"!]
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRequestControl/*[DcmDspRequestControlUsePort = 'USE_REQUESTCONTROL_SYNCH_CLIENT_SERVER']"!]
+[!VAR "TIDname" = "node:name(.)"!]
+           <SYNCHRONOUS-SERVER-CALL-POINT>
+            <SHORT-NAME>sscp_RequestControlServices_[!"$TIDname"!]</SHORT-NAME>
+            <OPERATION-IREF>
+             <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/RequestControlServices_[!"$TIDname"!]</CONTEXT-R-PORT-REF>
+             <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dcm/PortInterfaces/RequestControlServices_[!"$TIDname"!]/RequestControl</TARGET-REQUIRED-OPERATION-REF>
+            </OPERATION-IREF>
+            <TIMEOUT>0.0</TIMEOUT>
+           </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDLOOP!]
+[!ENDIF!]
+[!//
+
+[!FOR "i" = "1" TO "count(text:split($AccessDidData))"!]
+ [!VAR "x" = "text:split($AccessDidData)[position() = $i]"!][!//
+ [!VAR "DataName" = "text:split($x, '|')[1]"!][!//
+ [!VAR "DataPath" = "text:split($x, '|')[2]"!][!//
+ [!VAR "DataSize" = "num:i(text:split($x, '|')[4])"!][!//
+ [!VAR "UsageType" = "text:split($x, '|')[5]"!][!//
+ [!VAR "ReadAccess" = "text:contains(string(text:split($x, '|')[6]), 'Rda')"!][!//
+ [!VAR "WriteAccess" = "text:contains(string(text:split($x, '|')[6]), 'Wra')"!][!//
+ [!VAR "ControlAccess" = "text:contains(string(text:split($x, '|')[6]), 'Cna')"!][!//
+ [!VAR "ReturnControlToECU" = "text:contains(string(text:split($x, '|')[6]), 'Rce')"!][!//
+ [!VAR "ResetToDefault" = "text:contains(string(text:split($x, '|')[6]), 'Rtd')"!][!//
+ [!VAR "FreezeCurrentState" = "text:contains(string(text:split($x, '|')[6]), 'Fcs')"!][!//
+ [!VAR "ShortTermAdjustment" = "text:contains(string(text:split($x, '|')[6]), 'Sta')"!][!//
+ [!VAR "ReadScalingDataAccess" = "text:contains(string(text:split($x, '|')[6]), 'Rsa')"!][!//
+ [!//
+ [!VAR "DataFixedLength" = "as:ref(node:ref(concat($DataPath, '/DcmDspDataInfoRef')))/DcmDspDataFixedLength"!][!//
+ [!//
+[!IF "(($UsageType = 'USE_DATA_ASYNCH_CLIENT_SERVER') or ($UsageType = 'USE_DATA_SYNCH_CLIENT_SERVER')) [!//
+ and (($ReadAccess = 'true') or ($WriteAccess = 'true') or ($ControlAccess = 'true') or ($ReadScalingDataAccess = 'true'))"!][!//
+ [!IF "($InterfaceName = '')"!][!//
+  [!IF "$DataSize != 0"!][!//
+   [!IF "($WriteAccess = 'true')"!]
+    [!IF "(node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '46') and (./DcmAsyncServiceExecution = 'false')]))"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesWriteData_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/WriteData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+   [!ENDIF!]
+   [!IF "(node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '47') and (./DcmAsyncServiceExecution = 'false')]))"!]
+    [!IF "($ShortTermAdjustment = 'true')"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesShortTermAdjustment_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ShortTermAdjustment</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+    [!IF "($ResetToDefault = 'true')"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesResetToDefault_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ResetToDefault</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+    [!IF "($FreezeCurrentState = 'true')"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesFreezeCurrentState_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/FreezeCurrentState</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+   [!ENDIF!]
+<!-- Since resetting control to ECU may happen in the context of the Dcm_MainFunction as well when dropping to the default session, this mapping must always exist -->
+   [!IF "(node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[./DcmDsdSidTabServiceId = '47']))"!]
+    [!IF "($ReturnControlToECU = 'true')"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesReturnControlToECU_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ReturnControlToECU</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+   [!ENDIF!]
+  [!ENDIF!]
+  [!IF "(node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[((./DcmDsdSidTabServiceId = '47') or (./DcmDsdSidTabServiceId = '34')) and (./DcmAsyncServiceExecution = 'false')])) or
+     (node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[./DcmDsdSidTabServiceId = '42'])) or
+     (node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '134') and (./DcmDsdSubService/*/DcmDsdSubServiceId = '3')]))"!]
+   [!IF "($DataFixedLength = 'false') and [!//
+      (($ReadAccess = 'true') or ($ControlAccess = 'true'))"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesReadDataLength_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ReadDataLength</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+   [!ENDIF!]
+   [!IF "($DataSize != 0) and (($ReadAccess = 'true') or ($ControlAccess = 'true'))"!]
+    [!IF "node:value(concat($DataPath, '/DcmDspDataConditionCheckReadFncUsed')) = 'true'"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesConditionCheckRead_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ConditionCheckRead</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesReadData_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ReadData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+   [!ENDIF!]
+  [!ENDIF!]
+  [!IF "($ReadScalingDataAccess = 'true')"!]
+    [!IF "(node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '36') and (./DcmAsyncServiceExecution = 'false')]) and
+      (node:exists(as:ref(node:ref(concat($DataPath, '/DcmDspDataInfoRef')))/DcmDspDataScalingInfoSize)))"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesReadScalingData_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/GetScalingInformation</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+   [!ENDIF!]
+ [!ENDIF!]
+[!//
+[!ENDIF!]
+[!ENDFOR!]
+[!//
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspDidRange/*[DcmDspDidRangeUsePort = 'true']"!]
+ [!IF "DcmDspDidRangeHasGaps = 'true'"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>sscp_DataServicesDIDRangeIsDidAvailable_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_DIDRange_[!"node:name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dcm/PortInterfaces/DataServices_DIDRange_[!"node:name(.)"!]/IsDidAvailable</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+ [!ENDIF!]
+ [!IF "node:exists(node:ref(DcmDspDidRangeInfoRef)/DcmDspDidAccess/DcmDspDidRead)"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>sscp_DataServicesDIDRangeReadDidData_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_DIDRange_[!"node:name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dcm/PortInterfaces/DataServices_DIDRange_[!"node:name(.)"!]/ReadDidData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+ [!ENDIF!]
+ [!IF "node:exists(node:ref(DcmDspDidRangeInfoRef)/DcmDspDidAccess/DcmDspDidWrite)"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>sscp_DataServicesDIDRangeWriteDidData_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_DIDRange_[!"node:name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dcm/PortInterfaces/DataServices_DIDRange_[!"node:name(.)"!]/WriteDidData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+ [!ENDIF!]
+[!ENDLOOP!]
+
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspPid/*[(DcmDspPidService='DCM_SERVICE_01') or (DcmDspPidService='DCM_SERVICE_01_02')]/DcmDspPidData/*[DcmDspPidService01/DcmDspPidDataUsePort = 'USE_DATA_SYNCH_CLIENT_SERVER']"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>sscp_DataServicesReadData_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"name(.)"!]/ReadData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDLOOP!]
+
+[!IF "($InterfaceName = '')"!][!//
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspVehInfo/*/DcmDspVehInfoData/*[DcmDspVehInfoDataUsePort = 'true']"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>sscp_InfotypeServicesGetInfotypeValueData_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/InfotypeServices_[!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dcm/PortInterfaces/InfotypeServices_[!"name(.)"!]/GetInfotypeValueData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+ [!ENDLOOP!]
+[!ENDIF!]
+
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmRequestManufacturerNotificationEnabled = 'true'"!]
+[!LOOP "DcmConfigSet/*[1]/DcmDsl/DcmDslServiceRequestManufacturerNotification/*"!]
+[!IF "($InterfaceName = '')"!][!//
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_ServiceRequestManufacturerNotificationIndication_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]ServiceRequestManufacturerNotification_[!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$ServiceRequestNotification"!]/Indication</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_ServiceRequestManufacturerNotificationConfirmation_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]ServiceRequestManufacturerNotification_[!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$ServiceRequestNotification"!]/Confirmation</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!]
+
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmRequestSupplierNotificationEnabled = 'true'"!]
+[!LOOP "DcmConfigSet/*[1]/DcmDsl/DcmDslServiceRequestSupplierNotification/*"!]
+[!IF "($InterfaceName = '')"!][!//
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_ServiceRequestSupplierNotificationIndication_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]ServiceRequestSupplierNotification_[!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$ServiceRequestNotification"!]/Indication</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_ServiceRequestSupplierNotificationConfirmation_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]ServiceRequestSupplierNotification_[!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$ServiceRequestNotification"!]/Confirmation</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!]
+
+[!IF "(node:exists(DcmConfigSet/*/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '49') and (./DcmAsyncServiceExecution = 'false')]))"!]
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoutine/*[DcmDspRoutineUsePort = 'true' and DcmDspRoutineUsed = 'true']"!]
+  [!IF "($InterfaceName = '')"!][!//
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_RoutineServicesStart_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]/Start</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+   [!IF "DcmDspStopRoutineSupported = 'true'"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_RoutineServicesStop_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]/Stop</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+   [!ENDIF!]
+   [!IF "DcmDspRequestResultsRoutineSupported = 'true'"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_RoutineServicesRequestResults_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]/RequestResults</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+   [!ENDIF!]
+  [!ENDIF!]
+ [!ENDLOOP!]
+[!ENDIF!]
+[!//
+[!LOOP "DcmConfigSet/*[1]/DcmDsl/DcmDslCallbackDCMRequestService/*"!]
+[!IF "($InterfaceName = '')"!][!//
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_CallBackDCMRequestServicesStartProtocol_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]CallBackDCMRequestServices_[!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CallbackDCMRequestServices"!]/StartProtocol</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_CallBackDCMRequestServicesStopProtocol_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]CallBackDCMRequestServices_[!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/[!"$CallbackDCMRequestServices"!]/StopProtocol</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!ENDLOOP!]
+[!//
+[!ENDMACRO!][!//
+[!//
+[!//
+[!//
+[!MACRO "Build_ProcessServiceAsync", "AsrVersion", "InterfaceName" = "''", "TopLevelPackage" = "'/AUTOSAR_Dcm'"!][!//
+[!CALL "Create_Interface_Vars", "VarsAsrVersion"="$AsrVersion", "VarsInterfaceName"="$InterfaceName"!]
+[!IF "(node:exists(DcmConfigSet/*/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '39') and (./DcmAsyncServiceExecution = 'true')]))"!]
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspSecurity/DcmDspSecurityRow/*"!]
+  [!IF "((DcmDspSecurityUsePort = 'USE_SECURITY_ASYNCH_CLIENT_SERVER') or (DcmDspSecurityUsePort = 'USE_SECURITY_SYNCH_CLIENT_SERVER'))"!]
+   [!IF "($InterfaceName = '')"!][!//
+    [!VAR "LvlString" = "node:name(.)"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_SecurityAccessGetSeed_[!"$LvlString"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]/GetSeed</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_SecurityAccessCompareKey_[!"$LvlString"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]/CompareKey</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!IF "node:exists(as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmDsp/DcmDspSecurity/DcmDspSecurityRow/*[(DcmDspSecurityDelayTime != 0) or (DcmDspSecurityDelayTimeOnBoot != 0)])"!]
+     [!IF "DcmDspSecurityAttemptCounterEnabled = 'true'"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_SecurityAccessGetSecurityAttemptCounter_[!"$LvlString"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]/GetSecurityAttemptCounter</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_SecurityAccessSetSecurityAttemptCounter_[!"$LvlString"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/SecurityAccess_[!"$InterfaceName"!][!"$LvlString"!]/SetSecurityAttemptCounter</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+     [!ENDIF!]
+    [!ENDIF!]
+   [!ENDIF!]
+  [!ENDIF!]
+ [!ENDLOOP!]
+[!ENDIF!]
+[!//
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspDidRange/*[DcmDspDidRangeUsePort = 'true']"!]
+ [!IF "DcmDspDidRangeHasGaps = 'true'"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>sscp_DataServicesDIDRangeIsDidAvailable_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_DIDRange_[!"node:name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dcm/PortInterfaces/DataServices_DIDRange_[!"node:name(.)"!]/IsDidAvailable</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+ [!ENDIF!]
+ [!IF "node:exists(node:ref(DcmDspDidRangeInfoRef)/DcmDspDidAccess/DcmDspDidRead)"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>sscp_DataServicesDIDRangeReadDidData_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_DIDRange_[!"node:name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dcm/PortInterfaces/DataServices_DIDRange_[!"node:name(.)"!]/ReadDidData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+ [!ENDIF!]
+ [!IF "node:exists(node:ref(DcmDspDidRangeInfoRef)/DcmDspDidAccess/DcmDspDidWrite)"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>sscp_DataServicesDIDRangeWriteDidData_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_DIDRange_[!"node:name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Dcm/PortInterfaces/DataServices_DIDRange_[!"node:name(.)"!]/WriteDidData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+ [!ENDIF!]
+[!ENDLOOP!]
+
+[!FOR "i" = "1" TO "count(text:split($AccessDidData))"!]
+ [!VAR "x" = "text:split($AccessDidData)[position() = $i]"!]
+ [!VAR "DataName" = "text:split($x, '|')[1]"!][!//
+ [!VAR "DataPath" = "text:split($x, '|')[2]"!][!//
+ [!VAR "DataSize" = "num:i(text:split($x, '|')[4])"!][!//
+ [!VAR "UsageType" = "text:split($x, '|')[5]"!][!//
+ [!VAR "ReadAccess" = "text:contains(string(text:split($x, '|')[6]), 'Rda')"!][!//
+ [!VAR "WriteAccess" = "text:contains(string(text:split($x, '|')[6]), 'Wra')"!][!//
+ [!VAR "ControlAccess" = "text:contains(string(text:split($x, '|')[6]), 'Cna')"!][!//
+ [!VAR "ReturnControlToECU" = "text:contains(string(text:split($x, '|')[6]), 'Rce')"!][!//
+ [!VAR "ResetToDefault" = "text:contains(string(text:split($x, '|')[6]), 'Rtd')"!][!//
+ [!VAR "FreezeCurrentState" = "text:contains(string(text:split($x, '|')[6]), 'Fcs')"!][!//
+ [!VAR "ShortTermAdjustment" = "text:contains(string(text:split($x, '|')[6]), 'Sta')"!][!//
+ [!VAR "ReadScalingDataAccess" = "text:contains(string(text:split($x, '|')[6]), 'Rsa')"!][!//
+ [!//
+ [!VAR "DataFixedLength" = "as:ref(node:ref(concat($DataPath, '/DcmDspDataInfoRef')))/DcmDspDataFixedLength"!][!//
+ [!//
+[!IF "(($UsageType = 'USE_DATA_ASYNCH_CLIENT_SERVER') or ($UsageType = 'USE_DATA_SYNCH_CLIENT_SERVER')) [!//
+ and (($ReadAccess = 'true') or ($WriteAccess = 'true') or ($ControlAccess = 'true') or ($ReadScalingDataAccess = 'true'))"!]
+ [!IF "($InterfaceName = '')"!][!//
+  [!IF "$DataSize != 0"!]
+   [!IF "($WriteAccess = 'true')"!]
+    [!IF "(node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '46') and (./DcmAsyncServiceExecution = 'true')]))"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesWriteData_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/WriteData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+   [!ENDIF!]
+   [!IF "(node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '47') and (./DcmAsyncServiceExecution = 'true')]))"!]
+    [!IF "($ShortTermAdjustment = 'true')"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesShortTermAdjustment_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ShortTermAdjustment</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+    [!IF "($ReturnControlToECU = 'true')"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesReturnControlToECU_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ReturnControlToECU</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+    [!IF "($ResetToDefault = 'true')"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesResetToDefault_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ResetToDefault</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+    [!IF "($FreezeCurrentState = 'true')"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesFreezeCurrentState_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/FreezeCurrentState</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+   [!ENDIF!]
+  [!ENDIF!]
+  [!IF "(node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[((./DcmDsdSidTabServiceId = '47') or (./DcmDsdSidTabServiceId = '34')) and (./DcmAsyncServiceExecution = 'true')]))"!]
+   [!IF "($DataFixedLength = 'false') and [!//
+      (($ReadAccess = 'true') or ($ControlAccess = 'true')) "!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesReadDataLength_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ReadDataLength</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+   [!ENDIF!]
+   [!IF "($DataSize != 0) and (($ReadAccess = 'true') or ($ControlAccess = 'true'))"!]
+    [!IF "node:value(concat($DataPath, '/DcmDspDataConditionCheckReadFncUsed')) = 'true'"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesConditionCheckRead_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ConditionCheckRead</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesReadData_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/ReadData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+   [!ENDIF!]
+  [!ENDIF!]
+  [!IF "($ReadScalingDataAccess = 'true')"!]
+    [!IF "(node:exists(DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '36') and (./DcmAsyncServiceExecution = 'true')]) and
+      (node:exists(as:ref(node:ref(concat($DataPath, '/DcmDspDataInfoRef')))/DcmDspDataScalingInfoSize)))"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_DataServicesReadScalingData_[!"$DataName"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"$InterfaceName"!][!"$DataName"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"$InterfaceName"!][!"$DataName"!]/GetScalingInformation</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+    [!ENDIF!]
+   [!ENDIF!]
+ [!ENDIF!]
+[!ENDIF!]
+[!ENDFOR!]
+
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspPid/*[(DcmDspPidService='DCM_SERVICE_01') or (DcmDspPidService='DCM_SERVICE_01_02')]/DcmDspPidData/*[DcmDspPidService01/DcmDspPidDataUsePort = 'USE_DATA_SYNCH_CLIENT_SERVER']"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>sscp_DataServicesReadData_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/DataServices_[!"name(.)"!]/ReadData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDLOOP!]
+
+[!IF "($InterfaceName = '')"!][!//
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspVehInfo/*/DcmDspVehInfoData/*[DcmDspVehInfoDataUsePort = 'true']"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_InfotypeServicesGetInfotypeValueData_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/[!"$InterfaceName"!]InfotypeServices_[!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/InfotypeServices_[!"name(.)"!]/GetInfotypeValueData</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+ [!ENDLOOP!]
+[!ENDIF!]
+
+[!IF "(node:exists(DcmConfigSet/*/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[(./DcmDsdSidTabServiceId = '49') and (./DcmAsyncServiceExecution = 'true')]))"!]
+ [!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoutine/*[DcmDspRoutineUsePort = 'true' and DcmDspRoutineUsed = 'true']"!]
+  [!IF "($InterfaceName = '')"!][!//
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_RoutineServicesStart_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]/Start</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+   [!IF "DcmDspStopRoutineSupported = 'true'"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_RoutineServicesStop_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]/Stop</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+   [!ENDIF!]
+   [!IF "DcmDspRequestResultsRoutineSupported = 'true'"!]
+            <SYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>[!"$InterfaceName"!]sscp_RoutineServicesRequestResults_[!"name(.)"!]</SHORT-NAME>
+             <OPERATION-IREF>
+              <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]</CONTEXT-R-PORT-REF>
+              <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">[!"$TopLevelPackage"!]/PortInterfaces/RoutineServices_[!"$InterfaceName"!][!"name(.)"!]/RequestResults</TARGET-REQUIRED-OPERATION-REF>
+             </OPERATION-IREF>
+             <TIMEOUT>0.0</TIMEOUT>
+            </SYNCHRONOUS-SERVER-CALL-POINT>
+   [!ENDIF!]
+  [!ENDIF!]
+ [!ENDLOOP!]
+[!ENDIF!]
+[!//
+[!ENDMACRO!][!//
+<?xml version="1.0" encoding="UTF-8"?>
+[!AUTOSPACING!][!//
+[!IF "node:exists(DcmConfigSet/*[1]/DcmDsp/DcmDspData/*[(DcmDspDataUsePort = 'USE_DATA_SENDER_RECEIVER') or (DcmDspDataUsePort = 'USE_DATA_SENDER_RECEIVER_AS_SERVICE')])"!][!//
+ [!VAR "SchemaVersion" = "'AUTOSAR_4-3-0_STRICT_COMPACT.xsd'"!]
+[!ELSE!][!//
+ [!VAR "SchemaVersion" = "'AUTOSAR_4-0-3_STRICT_COMPACT.xsd'"!]
+[!ENDIF!][!//
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://autosar.org/schema/r4.0 [!"$SchemaVersion"!]">
+[!/* do not generate this file if RTE is not used */!][!//
+[!INCLUDE "Dcm.m"!][!//
+[!SKIPFILE "DcmConfigSet/*[1]/DcmGeneral/DcmRteUsage = 'false'"!][!//
+ <AR-PACKAGES>
+  <AR-PACKAGE>
+   <SHORT-NAME>AUTOSAR_Dcm</SHORT-NAME>
+   <ELEMENTS/>
+   <AR-PACKAGES>
+    <AR-PACKAGE>
+     <SHORT-NAME>SwComponentTypes</SHORT-NAME>
+     <ELEMENTS>
+      <SERVICE-SW-COMPONENT-TYPE>
+       <SHORT-NAME>Dcm</SHORT-NAME>
+       <PORTS>
+        [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR40ServiceAPI = 'true'"!][!//
+            <!-- Provide AUTOSAR 4.0 service interface -->
+            [!CALL "Build_Ports", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_Dcm/ASR40'"!]
+        [!ENDIF!][!//
+        [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR42ServiceAPI = 'true'"!][!//
+            <!-- Provide AUTOSAR 4.2 service interface -->
+            [!CALL "Build_Ports", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_Dcm/ASR42'"!]
+        [!ENDIF!][!//
+        [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI != 'NONE'"!][!//
+            <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 -->[!//
+[!//          for the default ASR version, we use at the macro call the default values for the parameters
+            [!CALL "Build_Ports", "AsrVersion"="DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI", "InterfaceName"="''", "TopLevelPackage"="'/AUTOSAR_Dcm'"!]
+        [!ENDIF!][!//
+       </PORTS>
+       <INTERNAL-BEHAVIORS>
+        <SWC-INTERNAL-BEHAVIOR>
+         <SHORT-NAME>DcmIntBeh</SHORT-NAME>
+[!IF "node:exists(DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*[node:exists(DcmSwcModeRef)])"!]
+         <DATA-TYPE-MAPPING-REFS>
+          <DATA-TYPE-MAPPING-REF DEST="DATA-TYPE-MAPPING-SET">/AUTOSAR_Dcm/DataTypeMappingSets/DataTypeMappingSet_0</DATA-TYPE-MAPPING-REF>
+         </DATA-TYPE-MAPPING-REFS>
+[!ENDIF!]
+         <EVENTS>
+          [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR40ServiceAPI = 'true'"!][!//
+              <!-- Provide AUTOSAR 4.0 service interface -->
+              [!CALL "Build_Events", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_Dcm/ASR40'"!]
+          [!ENDIF!][!//
+          [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR42ServiceAPI = 'true'"!][!//
+              <!-- Provide AUTOSAR 4.2 service interface -->
+              [!CALL "Build_Events", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_Dcm/ASR42'"!]
+          [!ENDIF!][!//
+          [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI != 'NONE'"!][!//
+              <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 -->[!//
+[!//            for the default ASR version, we use at the macro call the default values for the parameters
+              [!CALL "Build_Events", "AsrVersion"="DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI", "InterfaceName"="''", "TopLevelPackage"="'/AUTOSAR_Dcm'"!]
+          [!ENDIF!][!//
+         </EVENTS>
+         <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+         <INCLUDED-DATA-TYPE-SETS>
+          <INCLUDED-DATA-TYPE-SET>
+           <DATA-TYPE-REFS>
+           [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR40ServiceAPI = 'true'"!][!//
+            <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ASR40/ImplementationDataTypes/Dcm_ASR40_DidSupportedType</DATA-TYPE-REF>
+            <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ASR40/ImplementationDataTypes/Dcm_ASR40_ConfirmationStatusType</DATA-TYPE-REF>
+            <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ASR40/ImplementationDataTypes/Dcm_ASR40_OpStatusType</DATA-TYPE-REF>
+           <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ImplementationDataTypes/Dcm_NegativeResponseCodeType</DATA-TYPE-REF>
+          [!ENDIF!][!//
+          [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR42ServiceAPI = 'true'"!][!//
+            <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ASR42/ImplementationDataTypes/Dcm_ASR42_DidSupportedType</DATA-TYPE-REF>
+            <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ASR42/ImplementationDataTypes/Dcm_ASR42_ConfirmationStatusType</DATA-TYPE-REF>
+            <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ASR42/ImplementationDataTypes/Dcm_ASR42_OpStatusType</DATA-TYPE-REF>
+           <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ImplementationDataTypes/Dcm_NegativeResponseCodeType</DATA-TYPE-REF>
+          [!ENDIF!][!//
+          [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI != 'NONE'"!][!//
+            <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ImplementationDataTypes/Dcm_DidSupportedType</DATA-TYPE-REF>
+            <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ImplementationDataTypes/Dcm_ConfirmationStatusType</DATA-TYPE-REF>
+            <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ImplementationDataTypes/Dcm_OpStatusType</DATA-TYPE-REF>
+           <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Dcm/ImplementationDataTypes/Dcm_NegativeResponseCodeType</DATA-TYPE-REF>
+          [!ENDIF!][!//
+           </DATA-TYPE-REFS>
+          </INCLUDED-DATA-TYPE-SET>
+         </INCLUDED-DATA-TYPE-SETS>
+         <PORT-API-OPTIONS>
+          [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR40ServiceAPI = 'true'"!][!//
+              <!-- Provide AUTOSAR 4.0 service interface -->
+              [!CALL "Build_Options", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_Dcm/ASR40'"!]
+          [!ENDIF!][!//
+          [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR42ServiceAPI = 'true'"!][!//
+              <!-- Provide AUTOSAR 4.2 service interface -->
+              [!CALL "Build_Options", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_Dcm/ASR42'"!]
+          [!ENDIF!][!//
+          [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI != 'NONE'"!][!//
+              <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 -->[!//
+[!//            for the default ASR version, we use at the macro call the default values for the parameters
+              [!CALL "Build_Options", "AsrVersion"="DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI", "InterfaceName"="''", "TopLevelPackage"="'/AUTOSAR_Dcm'"!]
+          [!ENDIF!][!//
+         </PORT-API-OPTIONS>
+         <RUNNABLES>
+          <RUNNABLE-ENTITY>
+           <SHORT-NAME>RE_GetSecurityLevel</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+           <SW-ADDR-METHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDR-METHOD-REF>
+           <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+           <SYMBOL>Dcm_GetSecurityLevel</SYMBOL>
+          </RUNNABLE-ENTITY>
+          <RUNNABLE-ENTITY>
+           <SHORT-NAME>RE_GetSesCtrlType</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+           <SW-ADDR-METHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDR-METHOD-REF>
+           <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+           <SYMBOL>Dcm_GetSesCtrlType</SYMBOL>
+          </RUNNABLE-ENTITY>
+          <RUNNABLE-ENTITY>
+           <SHORT-NAME>RE_GetActiveProtocol</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+           <SW-ADDR-METHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDR-METHOD-REF>
+           <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+           <SYMBOL>Dcm_GetActiveProtocol</SYMBOL>
+          </RUNNABLE-ENTITY>
+          <RUNNABLE-ENTITY>
+           <SHORT-NAME>RE_ResetToDefaultSession</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+           <SW-ADDR-METHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDR-METHOD-REF>
+           <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+           <SYMBOL>Dcm_ResetToDefaultSession</SYMBOL>
+          </RUNNABLE-ENTITY>
+<!-- !LINKSTO Dcm.EB.CommunicationModeHandling.EnableSetActiveDiagnosis,1 -->
+[!IF "(DcmConfigSet/*[1]/DcmGeneral/DcmDslEnableSetActiveDiagnosis = 'true')"!][!//
+          <RUNNABLE-ENTITY>
+           <SHORT-NAME>RE_SetActiveDiagnostic</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+           <SW-ADDR-METHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDR-METHOD-REF>
+           <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+           <SYMBOL>Dcm_SetActiveDiagnostic</SYMBOL>
+          </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "node:exists(DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeEvent/*)"!]
+          <RUNNABLE-ENTITY>
+           <SHORT-NAME>RE_TriggerOnEvent</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+           <SW-ADDR-METHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDR-METHOD-REF>
+           <ARGUMENTS>
+            <RUNNABLE-ENTITY-ARGUMENT>
+             <SYMBOL>RoeEventId</SYMBOL>
+            </RUNNABLE-ENTITY-ARGUMENT>
+           </ARGUMENTS>
+           <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+           <SYMBOL>Dcm_TriggerOnEvent</SYMBOL>
+          </RUNNABLE-ENTITY>
+[!ENDIF!]
+          <RUNNABLE-ENTITY>
+           <SHORT-NAME>RE_MainFunction</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+           <SW-ADDR-METHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDR-METHOD-REF>
+           <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+           <DATA-READ-ACCESSS/>
+           <DATA-RECEIVE-POINT-BY-ARGUMENTS>
+[!LOOP "text:split($ReceivePoint, ':')"!]
+            <VARIABLE-ACCESS>
+             <SHORT-NAME>VA_R_DataServices_[!"."!]_data</SHORT-NAME>
+             <ACCESSED-VARIABLE>
+              <AUTOSAR-VARIABLE-IREF>
+               <PORT-PROTOTYPE-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"."!]</PORT-PROTOTYPE-REF>
+               <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"."!]/data</TARGET-DATA-PROTOTYPE-REF>
+              </AUTOSAR-VARIABLE-IREF>
+             </ACCESSED-VARIABLE>
+            </VARIABLE-ACCESS>
+[!ENDLOOP!]
+[!LOOP "text:split($ReceiveSendPoint, ':')"!]
+            <VARIABLE-ACCESS>
+             <SHORT-NAME>VA_RWR_DataServices_[!"."!]_data</SHORT-NAME>
+             <ACCESSED-VARIABLE>
+              <AUTOSAR-VARIABLE-IREF>
+               <PORT-PROTOTYPE-REF DEST="PR-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"."!]</PORT-PROTOTYPE-REF>
+               <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"."!]/data</TARGET-DATA-PROTOTYPE-REF>
+              </AUTOSAR-VARIABLE-IREF>
+             </ACCESSED-VARIABLE>
+            </VARIABLE-ACCESS>
+[!ENDLOOP!]
+           </DATA-RECEIVE-POINT-BY-ARGUMENTS>
+           <DATA-SEND-POINTS>
+[!LOOP "text:split($SendPoint, ':')"!]
+            <VARIABLE-ACCESS>
+             <SHORT-NAME>VA_W_DataServices_[!"."!]_data</SHORT-NAME>
+             <ACCESSED-VARIABLE>
+              <AUTOSAR-VARIABLE-IREF>
+               <PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"."!]</PORT-PROTOTYPE-REF>
+               <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"."!]/data</TARGET-DATA-PROTOTYPE-REF>
+              </AUTOSAR-VARIABLE-IREF>
+             </ACCESSED-VARIABLE>
+            </VARIABLE-ACCESS>
+[!ENDLOOP!]
+[!LOOP "text:split($ReceiveSendPoint, ':')"!]
+            <VARIABLE-ACCESS>
+             <SHORT-NAME>VA_RWS_DataServices_[!"."!]_data</SHORT-NAME>
+             <ACCESSED-VARIABLE>
+              <AUTOSAR-VARIABLE-IREF>
+               <PORT-PROTOTYPE-REF DEST="PR-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DataServices_[!"."!]</PORT-PROTOTYPE-REF>
+               <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Dcm/PortInterfaces/DataServices_[!"."!]/data</TARGET-DATA-PROTOTYPE-REF>
+              </AUTOSAR-VARIABLE-IREF>
+             </ACCESSED-VARIABLE>
+            </VARIABLE-ACCESS>
+[!ENDLOOP!]
+           </DATA-SEND-POINTS>
+           <DATA-WRITE-ACCESSS/>
+[!IF "node:exists(DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*[node:exists(DcmSwcModeRef)])"!]
+           <MODE-ACCESS-POINTS>
+[!VAR "ModeDecGpList" = "'#'"!]
+[!LOOP "DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*"!]
+ [!IF "node:exists(DcmSwcModeRef)"!]
+  [!VAR "ModeDecGp" = "text:split(./DcmSwcModeRef/TARGET, '/')[last()-1]"!]
+  [!IF "not(contains($ModeDecGpList, concat('#', $ModeDecGp, '#')))"!]
+            <MODE-ACCESS-POINT>
+             <MODE-GROUP-IREF>
+              <R-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+               <CONTEXT-R-PORT-REF
+                DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/R_SwcMode_[!"@index"!]_[!"$ModeDecGp"!]</CONTEXT-R-PORT-REF>
+               <TARGET-MODE-GROUP-REF
+                DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/PortInterfaces/DcmModeRuleRequiredModeSwIf_[!"@index"!]_[!"$ModeDecGp"!]/DcmModeRuleRequiredModeGp_[!"$ModeDecGp"!]</TARGET-MODE-GROUP-REF>
+              </R-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+             </MODE-GROUP-IREF>
+            </MODE-ACCESS-POINT>
+  [!VAR "ModeDecGpList" = "concat($ModeDecGpList, $ModeDecGp, '#')"!]
+  [!ENDIF!]
+ [!ENDIF!]
+[!ENDLOOP!]
+           </MODE-ACCESS-POINTS>
+[!ENDIF!]
+           <SERVER-CALL-POINTS>
+           [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR40ServiceAPI = 'true'"!][!//
+               <!-- Provide AUTOSAR 4.0 service interface -->
+               [!CALL "Build_MainFunction", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_Dcm/ASR40'"!]
+           [!ENDIF!][!//
+           [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR42ServiceAPI = 'true'"!][!//
+               <!-- Provide AUTOSAR 4.2 service interface -->
+               [!CALL "Build_MainFunction", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_Dcm/ASR42'"!]
+           [!ENDIF!][!//
+           [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI != 'NONE'"!][!//
+               <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 -->[!//
+[!//             for the default ASR version, we use at the macro call the default values for the parameters
+               [!CALL "Build_MainFunction", "AsrVersion"="DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI", "InterfaceName"="''", "TopLevelPackage"="'/AUTOSAR_Dcm'"!]
+           [!ENDIF!][!//
+           </SERVER-CALL-POINTS>
+           <SYMBOL>Dcm_MainFunction</SYMBOL>
+           <WAIT-POINTS/>
+          </RUNNABLE-ENTITY>
+[!IF "DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*/DcmAsyncServiceExecution ='true'"!]
+          <RUNNABLE-ENTITY>
+           <SHORT-NAME>RE_ProcessServiceAsync</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+           <SW-ADDR-METHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDR-METHOD-REF>
+           <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+           <DATA-READ-ACCESSS/>
+           <DATA-RECEIVE-POINT-BY-ARGUMENTS/>
+           <DATA-SEND-POINTS/>
+           <DATA-WRITE-ACCESSS/>
+[!IF "node:exists(DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*[node:exists(DcmSwcModeRef)])"!]
+           <MODE-ACCESS-POINTS>
+[!VAR "ModeDecGpList" = "'#'"!]
+[!LOOP "DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*"!]
+ [!IF "node:exists(DcmSwcModeRef)"!]
+  [!VAR "ModeDecGp" = "text:split(./DcmSwcModeRef/TARGET, '/')[last()-1]"!]
+  [!IF "not(contains($ModeDecGpList, concat('#', $ModeDecGp, '#')))"!]
+            <MODE-ACCESS-POINT>
+             <MODE-GROUP-IREF>
+              <R-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+               <CONTEXT-R-PORT-REF
+                DEST="R-PORT-PROTOTYPE">/AUTOSAR_Dcm/SwComponentTypes/Dcm/R_SwcMode_[!"@index"!]_[!"$ModeDecGp"!]</CONTEXT-R-PORT-REF>
+               <TARGET-MODE-GROUP-REF
+                DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/PortInterfaces/DcmModeRuleRequiredModeSwIf_[!"@index"!]_[!"$ModeDecGp"!]/DcmModeRuleRequiredModeGp_[!"$ModeDecGp"!]</TARGET-MODE-GROUP-REF>
+              </R-MODE-GROUP-IN-ATOMIC-SWC-INSTANCE-REF>
+             </MODE-GROUP-IREF>
+            </MODE-ACCESS-POINT>
+  [!VAR "ModeDecGpList" = "concat($ModeDecGpList, $ModeDecGp, '#')"!]
+  [!ENDIF!]
+ [!ENDIF!]
+[!ENDLOOP!]
+           </MODE-ACCESS-POINTS>
+[!ENDIF!]
+           <SERVER-CALL-POINTS>
+           [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR40ServiceAPI = 'true'"!][!//
+               <!-- Provide AUTOSAR 4.0 service interface -->
+               [!CALL "Build_ProcessServiceAsync", "AsrVersion"="'AUTOSAR_40'", "InterfaceName"="'ASR40_'", "TopLevelPackage"="'/AUTOSAR_Dcm/ASR40'"!]
+           [!ENDIF!][!//
+           [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmEnableASR42ServiceAPI = 'true'"!][!//
+               <!-- Provide AUTOSAR 4.2 service interface -->
+               [!CALL "Build_ProcessServiceAsync", "AsrVersion"="'AUTOSAR_42'", "InterfaceName"="'ASR42_'", "TopLevelPackage"="'/AUTOSAR_Dcm/ASR42'"!]
+           [!ENDIF!][!//
+           [!IF "DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI != 'NONE'"!][!//
+               <!-- Provide default service interface as AUTOSAR 4.2 / 4.0 -->[!//
+[!//             for the default ASR version, we use at the macro call the default values for the parameters
+               [!CALL "Build_ProcessServiceAsync", "AsrVersion"="DcmConfigSet/*[1]/DcmGeneral/DcmServiceAPI/DcmDefaultASRServiceAPI", "InterfaceName"="''", "TopLevelPackage"="'/AUTOSAR_Dcm'"!]
+           [!ENDIF!][!//
+           </SERVER-CALL-POINTS>
+           <SYMBOL>Dcm_ProcessServiceAsync</SYMBOL>
+           <WAIT-POINTS/>
+          </RUNNABLE-ENTITY>
+[!ENDIF!]
+         </RUNNABLES>
+         <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+        </SWC-INTERNAL-BEHAVIOR>
+       </INTERNAL-BEHAVIORS>
+      </SERVICE-SW-COMPONENT-TYPE>
+     </ELEMENTS>
+    </AR-PACKAGE>
+   </AR-PACKAGES>
+  </AR-PACKAGE>
+  <AR-PACKAGE>
+   <SHORT-NAME>EB_Dcm</SHORT-NAME>
+   <AR-PACKAGES>
+    <AR-PACKAGE>
+       <SHORT-NAME>SwcImplementations</SHORT-NAME>
+       <ELEMENTS>
+        <SWC-IMPLEMENTATION>
+         <SHORT-NAME>DcmImpl</SHORT-NAME>
+         <CODE-DESCRIPTORS>
+          <CODE>
+           <SHORT-NAME>Code</SHORT-NAME>
+           <ARTIFACT-DESCRIPTORS>
+            <AUTOSAR-ENGINEERING-OBJECT>
+             <SHORT-LABEL>EngObject</SHORT-LABEL>
+             <CATEGORY>SWSRC</CATEGORY>
+            </AUTOSAR-ENGINEERING-OBJECT>
+           </ARTIFACT-DESCRIPTORS>
+          </CODE>
+         </CODE-DESCRIPTORS>
+         <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+         <RESOURCE-CONSUMPTION>
+          <SHORT-NAME>Resources</SHORT-NAME>
+          <MEMORY-SECTIONS>
+           <MEMORY-SECTION>
+            <SHORT-NAME>CODE</SHORT-NAME>
+            <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+           </MEMORY-SECTION>
+          </MEMORY-SECTIONS>
+         </RESOURCE-CONSUMPTION>
+         <SW-VERSION>5.0.9</SW-VERSION>
+         <VENDOR-ID>1</VENDOR-ID>
+         <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DcmIntBeh</BEHAVIOR-REF>
+        </SWC-IMPLEMENTATION>
+       </ELEMENTS>
+    </AR-PACKAGE>
+   </AR-PACKAGES>
+  </AR-PACKAGE>
+ </AR-PACKAGES>
+</AUTOSAR>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dem:events xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd"
+    xmlns:dem="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd">
+
+    <event name="LINIF_E_TX_BIT_ERROR"
+            base="as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*/LinIfFrame/*"
+            suffix="concat( '_',node:name(./../..),'_',node:name(.))" >
+        <enable type="XPATH"
+            value="as:modconf('LinIf')[1]/LinIfGeneral/ReportToDem/LinIfTxBitErrorReportToDem='DEM'" />
+        <updateReference
+            value="./LinIfFrameDemEventParameterRefs/LINIF_E_TX_BIT_ERROR" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+    <event name="LINIF_E_RX_CHECKSUM_ERROR"
+            base="as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*/LinIfFrame/*"
+            suffix="concat( '_',node:name(./../..),'_',node:name(.))" >
+        <enable type="XPATH"
+            value="as:modconf('LinIf')[1]/LinIfGeneral/ReportToDem/LinIfRxChecksumErrorReportToDem='DEM'" />
+        <updateReference
+            value="./LinIfFrameDemEventParameterRefs/LINIF_E_RX_CHECKSUM_ERROR" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+    <event name="LINIF_E_RX_NO_RESPONSE_ERROR"
+            base="as:modconf('LinIf')[1]/LinIfGlobalConfig/*[1]/LinIfChannel/*/LinIfFrame/*"
+            suffix="concat( '_',node:name(./../..),'_',node:name(.))" >
+        <enable type="XPATH"
+            value="as:modconf('LinIf')[1]/LinIfGeneral/ReportToDem/LinIfRxNoRespErrorReportToDem='DEM'" />
+        <updateReference
+            value="./LinIfFrameDemEventParameterRefs/LINIF_E_RX_NO_RESPONSE_ERROR" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+</dem:events>

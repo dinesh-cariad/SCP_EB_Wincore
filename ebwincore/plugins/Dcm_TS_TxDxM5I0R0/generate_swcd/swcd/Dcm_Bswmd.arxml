@@ -1,0 +1,1428 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+[!AUTOSPACING!][!//
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-2-1_STRICT_COMPACT.xsd">
+ <AR-PACKAGES>
+  <AR-PACKAGE>
+   <SHORT-NAME>AUTOSAR_Dcm</SHORT-NAME>
+   <AR-PACKAGES>
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmRteUsage = 'true'"!]
+    <AR-PACKAGE>
+     <SHORT-NAME>SwcBswMappings</SHORT-NAME>
+     <ELEMENTS>
+     <SWC-BSW-MAPPING>
+      <SHORT-NAME>SwcBswMapping_0</SHORT-NAME>
+      <BSW-BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0</BSW-BEHAVIOR-REF>
+      <RUNNABLE-MAPPINGS>
+       <SWC-BSW-RUNNABLE-MAPPING>
+        <BSW-ENTITY-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/Dcm_MainFunction</BSW-ENTITY-REF>
+        <SWC-RUNNABLE-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DcmIntBeh/RE_MainFunction</SWC-RUNNABLE-REF>
+       </SWC-BSW-RUNNABLE-MAPPING>
+[!IF "DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*/DcmAsyncServiceExecution ='true'"!]
+       <SWC-BSW-RUNNABLE-MAPPING>
+        <BSW-ENTITY-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/Dcm_ProcessServiceAsync</BSW-ENTITY-REF>
+        <SWC-RUNNABLE-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DcmIntBeh/RE_ProcessServiceAsync</SWC-RUNNABLE-REF>
+       </SWC-BSW-RUNNABLE-MAPPING>
+[!ENDIF!]
+      </RUNNABLE-MAPPINGS>
+      <SWC-BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_Dcm/SwComponentTypes/Dcm/DcmIntBeh</SWC-BEHAVIOR-REF>
+     </SWC-BSW-MAPPING>
+     </ELEMENTS>
+    </AR-PACKAGE>
+[!ENDIF!]
+    <AR-PACKAGE>
+     <SHORT-NAME>BswModuleDescriptions</SHORT-NAME>
+     <ELEMENTS>
+      <BSW-MODULE-DESCRIPTION>
+       <SHORT-NAME>Dcm</SHORT-NAME>
+       <MODULE-ID>53</MODULE-ID>
+       <PROVIDED-ENTRYS>
+        <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+         <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_MainFunction</BSW-MODULE-ENTRY-REF>
+        </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!IF "DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*/DcmAsyncServiceExecution ='true'"!]
+        <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+         <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ProcessServiceAsync</BSW-MODULE-ENTRY-REF>
+        </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmComMMultiCoreSupport = 'true'"!]
+        <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+         <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ComM_FullComModeEntered</BSW-MODULE-ENTRY-REF>
+        </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+        <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+         <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ComM_SilentComModeEntered</BSW-MODULE-ENTRY-REF>
+        </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+        <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+         <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ComM_NoComModeEntered</BSW-MODULE-ENTRY-REF>
+        </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+        <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+         <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_HighestPrioFunction</BSW-MODULE-ENTRY-REF>
+        </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+       </PROVIDED-ENTRYS>
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmModeDeclarationSupport = 'true'"!]
+       <PROVIDED-MODE-GROUPS>
+        <!-- !LINKSTO Dcm806,1, Dcm.ModeSwitch.DcmDiagnosticSessionControl,1 -->
+        <MODE-DECLARATION-GROUP-PROTOTYPE>
+         <SHORT-NAME>DcmDiagnosticSessionControl</SHORT-NAME>
+         <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmDiagnosticSessionControl</TYPE-TREF>
+        </MODE-DECLARATION-GROUP-PROTOTYPE>
+        <!-- !LINKSTO Dcm777,1, Dcm.ModeSwitch.DcmEcuReset,1 -->
+        <MODE-DECLARATION-GROUP-PROTOTYPE>
+         <SHORT-NAME>DcmEcuReset</SHORT-NAME>
+         <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmEcuReset</TYPE-TREF>
+        </MODE-DECLARATION-GROUP-PROTOTYPE>
+        <!-- !LINKSTO Dcm807,1, Dcm.ModeSwitch.DcmModeRapidPowerShutDown,1 -->
+        <MODE-DECLARATION-GROUP-PROTOTYPE>
+         <SHORT-NAME>DcmRapidPowerShutdown</SHORT-NAME>
+         <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmRapidPowerShutdown</TYPE-TREF>
+        </MODE-DECLARATION-GROUP-PROTOTYPE>
+
+[!VAR "ChannelNameList" = "'#'"!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+        <!-- !LINKSTO Dcm.CommunicationControl.ModeDeclarationGroupPrototype.DcmDslProtocolRxComMChannelRef,1 -->
+        <!-- !LINKSTO Dcm.ModeSwitch.DcmCommunicationControl,1 -->
+        <MODE-DECLARATION-GROUP-PROTOTYPE>
+         <SHORT-NAME>DcmCommunicationControl_[!"name(.)"!]</SHORT-NAME>
+         <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmCommunicationControl</TYPE-TREF>
+        </MODE-DECLARATION-GROUP-PROTOTYPE>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlAllChannel/*/DcmDspAllComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+        <!-- !LINKSTO Dcm.CommunicationControl.ModeDeclarationGroupPrototype.DcmDspAllComMChannelRef,1 -->
+        <MODE-DECLARATION-GROUP-PROTOTYPE>
+         <SHORT-NAME>DcmCommunicationControl_[!"name(.)"!]</SHORT-NAME>
+         <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmCommunicationControl</TYPE-TREF>
+        </MODE-DECLARATION-GROUP-PROTOTYPE>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlSpecificChannel/*/DcmDspSpecificComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+        <!-- !LINKSTO Dcm.CommunicationControl.ModeDeclarationGroupPrototype.DcmDspSpecificComMChannelRef,1 -->
+        <MODE-DECLARATION-GROUP-PROTOTYPE>
+         <SHORT-NAME>DcmCommunicationControl_[!"name(.)"!]</SHORT-NAME>
+         <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmCommunicationControl</TYPE-TREF>
+        </MODE-DECLARATION-GROUP-PROTOTYPE>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlSubNode/*/DcmDspComControlSubNodeComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+        <!-- !LINKSTO Dcm.CommunicationControl.ModeDeclarationGroupPrototype.DcmDspComControlSubNodeComMChannelRef,1 -->
+        <MODE-DECLARATION-GROUP-PROTOTYPE>
+         <SHORT-NAME>DcmCommunicationControl_[!"name(.)"!]</SHORT-NAME>
+         <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmCommunicationControl</TYPE-TREF>
+        </MODE-DECLARATION-GROUP-PROTOTYPE>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+        <!-- !LINKSTO Dcm781,1, Dcm.ModeSwitch.DcmControlDTCSetting,1 -->
+        <MODE-DECLARATION-GROUP-PROTOTYPE>
+         <SHORT-NAME>DcmControlDTCSetting</SHORT-NAME>
+         <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmControlDTCSetting</TYPE-TREF>
+        </MODE-DECLARATION-GROUP-PROTOTYPE>
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeEvent/*"!]
+        <MODE-DECLARATION-GROUP-PROTOTYPE>
+         <SHORT-NAME>DcmResponseOnEvent_[!"DcmDspRoeEventId"!]</SHORT-NAME>
+         <TYPE-TREF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmResponseOnEvent_[!"DcmDspRoeEventId"!]</TYPE-TREF>
+        </MODE-DECLARATION-GROUP-PROTOTYPE>
+[!ENDLOOP!]
+       </PROVIDED-MODE-GROUPS>
+[!ENDIF!] [!/*IF "DcmConfigSet/*[1]/DcmGeneral/DcmModeDeclarationSupport = 'true'"*/!]
+
+[!IF "node:exists(DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*[node:exists(DcmBswModeRef)])"!]
+[!VAR "ModeDecGpList" = "'#'"!]
+       <REQUIRED-MODE-GROUPS>
+[!LOOP "DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*"!]
+ [!IF "node:exists(DcmBswModeRef)"!]
+   [!VAR "ModeDecGp" = "text:split(./DcmBswModeRef/TARGET, '/')[last()-1]"!]
+   [!IF "not(contains($ModeDecGpList, concat('#', $ModeDecGp, '#')))"!]
+        <MODE-DECLARATION-GROUP-PROTOTYPE>
+         <SHORT-NAME>DcmModeRuleRequiredMode_[!"@index"!]_[!"$ModeDecGp"!]</SHORT-NAME>
+           <TYPE-TREF DEST="MODE-DECLARATION-GROUP">[!"substring-before(substring-after(./DcmBswModeRef/TARGET,':'), concat('/', text:split(./DcmBswModeRef/TARGET, '/')[last()]))"!]</TYPE-TREF>
+        </MODE-DECLARATION-GROUP-PROTOTYPE>
+   [!VAR "ModeDecGpList" = "concat($ModeDecGpList, $ModeDecGp, '#')"!]
+   [!ENDIF!]
+ [!ENDIF!]
+[!ENDLOOP!]
+       </REQUIRED-MODE-GROUPS>
+[!ENDIF!]
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmComMMultiCoreSupport = 'true'"!]
+       <PROVIDED-CLIENT-SERVER-ENTRYS>
+[!LOOP "node:order(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef), 'ComMChannelId')"!]
+        <!-- !LINKSTO Dcm.EB.CommunicationModeHandling.SupportOfDcmAndComMOnDifferentPartitionsCores.SchM_Call_Dcm_ComM_FullComModeEntered,2 -->
+        <BSW-MODULE-CLIENT-SERVER-ENTRY>
+         <SHORT-NAME>ProvidedCSEntry_Dcm_ComM_FullComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+         <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ComM_FullComModeEntered</ENCAPSULATED-ENTRY-REF>
+         <IS-REENTRANT>true</IS-REENTRANT>
+         <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+        </BSW-MODULE-CLIENT-SERVER-ENTRY>
+        <!-- !LINKSTO Dcm.EB.CommunicationModeHandling.SupportOfDcmAndComMOnDifferentPartitionsCores.SchM_Call_Dcm_ComM_SilentComModeEntered,2 -->
+        <BSW-MODULE-CLIENT-SERVER-ENTRY>
+         <SHORT-NAME>ProvidedCSEntry_Dcm_ComM_SilentComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+         <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ComM_SilentComModeEntered</ENCAPSULATED-ENTRY-REF>
+         <IS-REENTRANT>true</IS-REENTRANT>
+         <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+        </BSW-MODULE-CLIENT-SERVER-ENTRY>
+        <!-- !LINKSTO Dcm.EB.CommunicationModeHandling.SupportOfDcmAndComMOnDifferentPartitionsCores.SchM_Call_Dcm_ComM_NoComModeEntered,2 -->
+        <BSW-MODULE-CLIENT-SERVER-ENTRY>
+         <SHORT-NAME>ProvidedCSEntry_Dcm_ComM_NoComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+         <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ComM_NoComModeEntered</ENCAPSULATED-ENTRY-REF>
+         <IS-REENTRANT>true</IS-REENTRANT>
+         <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+        </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!]
+       </PROVIDED-CLIENT-SERVER-ENTRYS>
+
+       <REQUIRED-CLIENT-SERVER-ENTRYS>
+[!LOOP "node:order(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef), 'ComMChannelId')"!]
+        <!-- !LINKSTO Dcm.EB.CommunicationModeHandling.SupportOfDcmAndComMOnDifferentPartitionsCores.SchM_Call_ComM_Dcm_ActiveDiagnostic,2 -->
+        <BSW-MODULE-CLIENT-SERVER-ENTRY>
+         <SHORT-NAME>RequiredCSEntry_ComM_DCM_ActiveDiagnostic_[!"node:name(.)"!]</SHORT-NAME>
+         <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_HighestPrioFunction</ENCAPSULATED-ENTRY-REF>
+         <IS-REENTRANT>true</IS-REENTRANT>
+         <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+        </BSW-MODULE-CLIENT-SERVER-ENTRY>
+        <!-- !LINKSTO Dcm.EB.CommunicationModeHandling.SupportOfDcmAndComMOnDifferentPartitionsCores.SchM_Call_ComM_Dcm_InactiveDiagnostic,2 -->
+        <BSW-MODULE-CLIENT-SERVER-ENTRY>
+         <SHORT-NAME>RequiredCSEntry_ComM_DCM_InactiveDiagnostic_[!"node:name(.)"!]</SHORT-NAME>
+         <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_HighestPrioFunction</ENCAPSULATED-ENTRY-REF>
+         <IS-REENTRANT>true</IS-REENTRANT>
+         <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+        </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!]
+       </REQUIRED-CLIENT-SERVER-ENTRYS>
+[!ENDIF!]
+       <INTERNAL-BEHAVIORS>
+        <BSW-INTERNAL-BEHAVIOR>
+         <SHORT-NAME>InternalBehavior_0</SHORT-NAME>
+[!IF "node:exists(DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*[node:exists(DcmBswModeRef)]) or (as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmGeneral/DcmModeDeclarationSupport = 'true')"!]
+         <DATA-TYPE-MAPPING-REFS>
+          <DATA-TYPE-MAPPING-REF
+           DEST="DATA-TYPE-MAPPING-SET">/AUTOSAR_Dcm/BswModuleDescriptions/ModeMapping</DATA-TYPE-MAPPING-REF>
+         </DATA-TYPE-MAPPING-REFS>
+[!ENDIF!]
+         <EXCLUSIVE-AREAS>
+          <EXCLUSIVE-AREA>
+           <SHORT-NAME>SCHM_DCM_EXCLUSIVE_AREA_0</SHORT-NAME>
+          </EXCLUSIVE-AREA>
+         </EXCLUSIVE-AREAS>
+[!IF "((DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*/DcmAsyncServiceExecution ='true') or (DcmConfigSet/*[1]/DcmGeneral/DcmComMMultiCoreSupport = 'true'))"!]
+         <INTERNAL-TRIGGERING-POINTS>
+[!IF "DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*/DcmAsyncServiceExecution ='true'"!]
+          <BSW-INTERNAL-TRIGGERING-POINT>
+           <SHORT-NAME>Dcm_InternalTriggerServiceAsync</SHORT-NAME>
+          </BSW-INTERNAL-TRIGGERING-POINT>
+[!ENDIF!]
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmComMMultiCoreSupport = 'true'"!]
+          <BSW-INTERNAL-TRIGGERING-POINT>
+           <SHORT-NAME>Dcm_InternalTriggerHighestPrioFunction</SHORT-NAME>
+          </BSW-INTERNAL-TRIGGERING-POINT>
+[!ENDIF!]
+         </INTERNAL-TRIGGERING-POINTS>
+[!ENDIF!]
+         <ENTITYS>
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmComMMultiCoreSupport = 'true'"!]
+[!LOOP "node:order(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef), 'ComMChannelId')"!]
+          <BSW-CALLED-ENTITY>
+           <SHORT-NAME>CalledEntity_Dcm_ComM_FullComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+           <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ComM_FullComModeEntered</IMPLEMENTED-ENTRY-REF>
+          </BSW-CALLED-ENTITY>
+          <BSW-CALLED-ENTITY>
+           <SHORT-NAME>CalledEntity_Dcm_ComM_SilentComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+           <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ComM_SilentComModeEntered</IMPLEMENTED-ENTRY-REF>
+          </BSW-CALLED-ENTITY>
+          <BSW-CALLED-ENTITY>
+           <SHORT-NAME>CalledEntity_Dcm_ComM_NoComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+           <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ComM_NoComModeEntered</IMPLEMENTED-ENTRY-REF>
+          </BSW-CALLED-ENTITY>
+[!ENDLOOP!]
+          <BSW-SCHEDULABLE-ENTITY>
+           <SHORT-NAME>SchedulableEntity_HighestPrioFunction</SHORT-NAME>
+           <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+           <CALL-POINTS>
+[!LOOP "node:order(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef), 'ComMChannelId')"!]
+            <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>AsynchCallPoint_ComM_DCM_ActiveDiagnostic_[!"node:name(.)"!]</SHORT-NAME>
+             <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/RequiredCSEntry_ComM_DCM_ActiveDiagnostic_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+            </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+            <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+             <SHORT-NAME>AsynchCallPoint_ComM_DCM_InactiveDiagnostic_[!"node:name(.)"!]</SHORT-NAME>
+             <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/RequiredCSEntry_ComM_DCM_InactiveDiagnostic_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+            </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDLOOP!]
+           </CALL-POINTS>
+           <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_HighestPrioFunction</IMPLEMENTED-ENTRY-REF>
+          </BSW-SCHEDULABLE-ENTITY>
+[!ENDIF!]
+[!IF "DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*/DcmAsyncServiceExecution ='true'"!]
+          <BSW-SCHEDULABLE-ENTITY>
+           <SHORT-NAME>Dcm_ProcessServiceAsync</SHORT-NAME>
+           <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+            <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/SCHM_DCM_EXCLUSIVE_AREA_0</CAN-ENTER-EXCLUSIVE-AREA-REF>
+           </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+           <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+[!IF "node:exists(DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*[node:exists(DcmBswModeRef)])"!]
+[!VAR "ModeDecGpList" = "'#'"!]
+           <ACCESSED-MODE-GROUPS>
+[!LOOP "DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*"!]
+ [!IF "node:exists(DcmBswModeRef)"!]
+  [!VAR "ModeDecGp" = "text:split(./DcmBswModeRef/TARGET, '/')[last()-1]"!]
+  [!IF "not(contains($ModeDecGpList, concat('#', $ModeDecGp, '#')))"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmModeRuleRequiredMode_[!"@index"!]_[!"$ModeDecGp"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+  [!VAR "ModeDecGpList" = "concat($ModeDecGpList, $ModeDecGp, '#')"!]
+  [!ENDIF!]
+ [!ENDIF!]
+[!ENDLOOP!]
+           </ACCESSED-MODE-GROUPS>
+[!ENDIF!]
+           <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_ProcessServiceAsync</IMPLEMENTED-ENTRY-REF>
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmModeDeclarationSupport = 'true'"!]
+           <MANAGED-MODE-GROUPS>
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmDiagnosticSessionControl</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmEcuReset</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmRapidPowerShutdown</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+
+[!VAR "ChannelNameList" = "'#'"!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlAllChannel/*/DcmDspAllComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlSpecificChannel/*/DcmDspSpecificComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlSubNode/*/DcmDspComControlSubNodeComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmControlDTCSetting</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeEvent/*"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmResponseOnEvent_[!"DcmDspRoeEventId"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!ENDLOOP!]
+           </MANAGED-MODE-GROUPS>
+[!ENDIF!]
+          </BSW-SCHEDULABLE-ENTITY>
+[!ENDIF!]
+          <BSW-SCHEDULABLE-ENTITY>
+           <SHORT-NAME>Dcm_MainFunction</SHORT-NAME>
+           <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+            <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/SCHM_DCM_EXCLUSIVE_AREA_0</CAN-ENTER-EXCLUSIVE-AREA-REF>
+           </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+           <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+
+[!IF "node:exists(DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*[node:exists(DcmBswModeRef)])"!]
+[!VAR "ModeDecGpList" = "'#'"!]
+           <ACCESSED-MODE-GROUPS>
+[!LOOP "DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*"!]
+ [!IF "node:exists(DcmBswModeRef)"!]
+  [!VAR "ModeDecGp" = "text:split(./DcmBswModeRef/TARGET, '/')[last()-1]"!]
+  [!IF "not(contains($ModeDecGpList, concat('#', $ModeDecGp, '#')))"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmModeRuleRequiredMode_[!"@index"!]_[!"$ModeDecGp"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+  [!VAR "ModeDecGpList" = "concat($ModeDecGpList, $ModeDecGp, '#')"!]
+  [!ENDIF!]
+ [!ENDIF!]
+[!ENDLOOP!]
+           </ACCESSED-MODE-GROUPS>
+[!ENDIF!]
+[!IF "((DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*/DcmAsyncServiceExecution ='true') or (DcmConfigSet/*[1]/DcmGeneral/DcmComMMultiCoreSupport = 'true'))"!]
+           <ACTIVATION-POINTS>
+[!IF "DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*/DcmAsyncServiceExecution ='true'"!]
+            <BSW-INTERNAL-TRIGGERING-POINT-REF-CONDITIONAL>
+             <BSW-INTERNAL-TRIGGERING-POINT-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/Dcm_InternalTriggerServiceAsync</BSW-INTERNAL-TRIGGERING-POINT-REF>
+            </BSW-INTERNAL-TRIGGERING-POINT-REF-CONDITIONAL>
+[!ENDIF!]
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmComMMultiCoreSupport = 'true'"!]
+            <BSW-INTERNAL-TRIGGERING-POINT-REF-CONDITIONAL>
+             <BSW-INTERNAL-TRIGGERING-POINT-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/Dcm_InternalTriggerHighestPrioFunction</BSW-INTERNAL-TRIGGERING-POINT-REF>
+            </BSW-INTERNAL-TRIGGERING-POINT-REF-CONDITIONAL>
+[!ENDIF!]
+           </ACTIVATION-POINTS>
+[!ENDIF!]
+           <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dcm/BswModuleEntrys/Dcm_MainFunction</IMPLEMENTED-ENTRY-REF>
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmModeDeclarationSupport = 'true'"!]
+           <MANAGED-MODE-GROUPS>
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmDiagnosticSessionControl</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmEcuReset</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmRapidPowerShutdown</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+
+[!VAR "ChannelNameList" = "'#'"!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlAllChannel/*/DcmDspAllComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlSpecificChannel/*/DcmDspSpecificComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlSubNode/*/DcmDspComControlSubNodeComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmControlDTCSetting</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeEvent/*"!]
+            <MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+             <MODE-DECLARATION-GROUP-PROTOTYPE-REF
+              DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmResponseOnEvent_[!"DcmDspRoeEventId"!]</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+            </MODE-DECLARATION-GROUP-PROTOTYPE-REF-CONDITIONAL>
+[!ENDLOOP!]
+           </MANAGED-MODE-GROUPS>
+[!ENDIF!]
+          </BSW-SCHEDULABLE-ENTITY>
+         </ENTITYS>
+         <EVENTS>
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmComMMultiCoreSupport = 'true'"!]
+[!LOOP "node:order(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef), 'ComMChannelId')"!]
+          <BSW-OPERATION-INVOKED-EVENT>
+           <SHORT-NAME>OpInvokedEvent_Dcm_ComM_FullComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+           <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/CalledEntity_Dcm_ComM_FullComModeEntered_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+           <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/ProvidedCSEntry_Dcm_ComM_FullComModeEntered_[!"node:name(.)"!]</ENTRY-REF>
+          </BSW-OPERATION-INVOKED-EVENT>
+          <BSW-OPERATION-INVOKED-EVENT>
+           <SHORT-NAME>OpInvokedEvent_Dcm_ComM_SilentComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+           <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/CalledEntity_Dcm_ComM_SilentComModeEntered_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+           <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/ProvidedCSEntry_Dcm_ComM_SilentComModeEntered_[!"node:name(.)"!]</ENTRY-REF>
+          </BSW-OPERATION-INVOKED-EVENT>
+          <BSW-OPERATION-INVOKED-EVENT>
+           <SHORT-NAME>OpInvokedEvent_Dcm_ComM_NoComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+           <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/CalledEntity_Dcm_ComM_NoComModeEntered_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+           <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/ProvidedCSEntry_Dcm_ComM_NoComModeEntered_[!"node:name(.)"!]</ENTRY-REF>
+          </BSW-OPERATION-INVOKED-EVENT>
+[!ENDLOOP!]
+          <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+           <SHORT-NAME>IntTriggerOccurredEvent_HighestPrioFunction</SHORT-NAME>
+           <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/SchedulableEntity_HighestPrioFunction</STARTS-ON-EVENT-REF>
+           <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/Dcm_InternalTriggerHighestPrioFunction</EVENT-SOURCE-REF>
+          </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+[!ENDIF!]
+[!IF "DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*/DcmAsyncServiceExecution ='true'"!]
+          <BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+           <SHORT-NAME>BswInternalTriggerOccurredEvent_Async</SHORT-NAME>
+           <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/Dcm_ProcessServiceAsync</STARTS-ON-EVENT-REF>
+           <EVENT-SOURCE-REF DEST="BSW-INTERNAL-TRIGGERING-POINT">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/Dcm_InternalTriggerServiceAsync</EVENT-SOURCE-REF>
+          </BSW-INTERNAL-TRIGGER-OCCURRED-EVENT>
+[!ENDIF!]
+          <BSW-TIMING-EVENT>
+           <SHORT-NAME>TimingEvent_MainFunction</SHORT-NAME>
+           <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/InternalBehavior_0/Dcm_MainFunction</STARTS-ON-EVENT-REF>
+           <PERIOD>[!"DcmConfigSet/*[1]/DcmGeneral/DcmTaskTime"!]</PERIOD>
+          </BSW-TIMING-EVENT>
+         </EVENTS>
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmModeDeclarationSupport = 'true'"!]
+         <MODE-SENDER-POLICYS>
+          <BSW-MODE-SENDER-POLICY>
+           <PROVIDED-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmDiagnosticSessionControl</PROVIDED-MODE-GROUP-REF>
+           <QUEUE-LENGTH>[!"num:integer(count(DcmConfigSet/*[1]/DcmDsp/DcmDspSession/*/DcmDspSessionRow/*))"!]</QUEUE-LENGTH>
+          </BSW-MODE-SENDER-POLICY>
+          <BSW-MODE-SENDER-POLICY>
+           <PROVIDED-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmEcuReset</PROVIDED-MODE-GROUP-REF>
+           <QUEUE-LENGTH>7</QUEUE-LENGTH>
+          </BSW-MODE-SENDER-POLICY>
+          <BSW-MODE-SENDER-POLICY>
+           <PROVIDED-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmRapidPowerShutdown</PROVIDED-MODE-GROUP-REF>
+           <QUEUE-LENGTH>2</QUEUE-LENGTH>
+          </BSW-MODE-SENDER-POLICY>
+[!VAR "ChannelNameList" = "'#'"!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+          <BSW-MODE-SENDER-POLICY>
+           <PROVIDED-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</PROVIDED-MODE-GROUP-REF>
+           <QUEUE-LENGTH>12</QUEUE-LENGTH>
+          </BSW-MODE-SENDER-POLICY>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlAllChannel/*/DcmDspAllComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+          <BSW-MODE-SENDER-POLICY>
+           <PROVIDED-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</PROVIDED-MODE-GROUP-REF>
+           <QUEUE-LENGTH>12</QUEUE-LENGTH>
+          </BSW-MODE-SENDER-POLICY>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlSpecificChannel/*/DcmDspSpecificComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+          <BSW-MODE-SENDER-POLICY>
+           <PROVIDED-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</PROVIDED-MODE-GROUP-REF>
+           <QUEUE-LENGTH>12</QUEUE-LENGTH>
+          </BSW-MODE-SENDER-POLICY>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+[!SELECT "node:refs(DcmConfigSet/*[1]/DcmDsp/DcmDspComControl/DcmDspComControlSubNode/*/DcmDspComControlSubNodeComMChannelRef)"!]
+[!IF "not(contains($ChannelNameList, concat('#', name(.), '#')))"!]
+[!VAR "ChannelName" = "name(.)"!]
+          <BSW-MODE-SENDER-POLICY>
+           <PROVIDED-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmCommunicationControl_[!"name(.)"!]</PROVIDED-MODE-GROUP-REF>
+           <QUEUE-LENGTH>12</QUEUE-LENGTH>
+          </BSW-MODE-SENDER-POLICY>
+[!VAR "ChannelNameList" = "concat($ChannelNameList, $ChannelName, '#')"!]
+[!ENDIF!]
+[!ENDSELECT!]
+          <BSW-MODE-SENDER-POLICY>
+           <PROVIDED-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmControlDTCSetting</PROVIDED-MODE-GROUP-REF>
+           <QUEUE-LENGTH>2</QUEUE-LENGTH>
+          </BSW-MODE-SENDER-POLICY>
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeEvent/*"!]
+          <BSW-MODE-SENDER-POLICY>
+           <PROVIDED-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_Dcm/BswModuleDescriptions/Dcm/DcmResponseOnEvent_[!"DcmDspRoeEventId"!]</PROVIDED-MODE-GROUP-REF>
+           <QUEUE-LENGTH>3</QUEUE-LENGTH>
+          </BSW-MODE-SENDER-POLICY>
+[!ENDLOOP!]
+         </MODE-SENDER-POLICYS>
+[!ENDIF!]
+        </BSW-INTERNAL-BEHAVIOR>
+       </INTERNAL-BEHAVIORS>
+      </BSW-MODULE-DESCRIPTION>
+[!IF "node:exists(DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*[node:exists(DcmBswModeRef)]) or (as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmGeneral/DcmModeDeclarationSupport = 'true')"!]
+      <DATA-TYPE-MAPPING-SET>
+       <SHORT-NAME>ModeMapping</SHORT-NAME>
+       <MODE-REQUEST-TYPE-MAPS>
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmModeDeclarationSupport = 'true'"!]
+        <MODE-REQUEST-TYPE-MAP>
+         <IMPLEMENTATION-DATA-TYPE-REF
+          DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+         <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmDiagnosticSessionControl</MODE-GROUP-REF>
+        </MODE-REQUEST-TYPE-MAP>
+        <MODE-REQUEST-TYPE-MAP>
+         <IMPLEMENTATION-DATA-TYPE-REF
+          DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+         <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmEcuReset</MODE-GROUP-REF>
+        </MODE-REQUEST-TYPE-MAP>
+        <MODE-REQUEST-TYPE-MAP>
+         <IMPLEMENTATION-DATA-TYPE-REF
+          DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+         <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmRapidPowerShutdown</MODE-GROUP-REF>
+        </MODE-REQUEST-TYPE-MAP>
+        <MODE-REQUEST-TYPE-MAP>
+         <IMPLEMENTATION-DATA-TYPE-REF
+          DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+         <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmCommunicationControl</MODE-GROUP-REF>
+        </MODE-REQUEST-TYPE-MAP>
+        <MODE-REQUEST-TYPE-MAP>
+         <IMPLEMENTATION-DATA-TYPE-REF
+          DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+         <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmControlDTCSetting</MODE-GROUP-REF>
+        </MODE-REQUEST-TYPE-MAP>
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeEvent/*"!]
+        <MODE-REQUEST-TYPE-MAP>
+         <IMPLEMENTATION-DATA-TYPE-REF
+          DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+         <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmResponseOnEvent_[!"DcmDspRoeEventId"!]</MODE-GROUP-REF>
+        </MODE-REQUEST-TYPE-MAP>
+[!ENDLOOP!]
+[!ENDIF!] [!/*DcmConfigSet/*[1]/DcmGeneral/DcmModeDeclarationSupport = 'true'*/!]
+
+[!VAR "ModeDecGpList" = "'#'"!]
+[!LOOP "DcmConfigSet/*/DcmProcessingConditions/DcmModeCondition/*"!]
+ [!IF "node:exists(DcmBswModeRef)"!]
+   [!VAR "ModeDecGp" = "text:split(./DcmBswModeRef/TARGET, '/')[last()-1]"!]
+   [!IF "not(contains($ModeDecGpList, concat('#', $ModeDecGp, '#')))"!]
+        <MODE-REQUEST-TYPE-MAP>
+         <IMPLEMENTATION-DATA-TYPE-REF
+          DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+         <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP">[!"substring-before(substring-after(./DcmBswModeRef/TARGET,':'), concat('/', text:split(./DcmBswModeRef/TARGET, '/')[last()]))"!]</MODE-GROUP-REF>
+        </MODE-REQUEST-TYPE-MAP>
+   [!VAR "ModeDecGpList" = "concat($ModeDecGpList, $ModeDecGp, '#')"!]
+   [!ENDIF!]
+ [!ENDIF!]
+[!ENDLOOP!]
+
+       </MODE-REQUEST-TYPE-MAPS>
+      </DATA-TYPE-MAPPING-SET>
+[!ENDIF!]
+     </ELEMENTS>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+     <SHORT-NAME>BswModuleEntrys</SHORT-NAME>
+     <ELEMENTS>
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmComMMultiCoreSupport = 'true'"!]
+      <BSW-MODULE-ENTRY>
+       <SHORT-NAME>Dcm_ComM_FullComModeEntered</SHORT-NAME>
+       <ADMIN-DATA>
+        <SDGS>
+         <SDG GID="EB:DnT">
+          <SD GID="FunctionGroup">Extern</SD>
+          <SD GID="EnableTracing">true</SD>
+         </SDG>
+         </SDGS>
+       </ADMIN-DATA>
+       <SERVICE-ID>35</SERVICE-ID>
+       <IS-REENTRANT>true</IS-REENTRANT>
+       <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+       <CALL-TYPE>REGULAR</CALL-TYPE>
+       <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+       <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+       <ARGUMENTS>
+        <SW-SERVICE-ARG>
+         <SHORT-NAME>NetworkId</SHORT-NAME>
+         <DIRECTION>IN</DIRECTION>
+         <SW-DATA-DEF-PROPS>
+          <SW-DATA-DEF-PROPS-VARIANTS>
+           <SW-DATA-DEF-PROPS-CONDITIONAL>
+            <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+           </SW-DATA-DEF-PROPS-CONDITIONAL>
+          </SW-DATA-DEF-PROPS-VARIANTS>
+         </SW-DATA-DEF-PROPS>
+        </SW-SERVICE-ARG>
+       </ARGUMENTS>
+      </BSW-MODULE-ENTRY>
+      <BSW-MODULE-ENTRY>
+       <SHORT-NAME>Dcm_ComM_SilentComModeEntered</SHORT-NAME>
+       <ADMIN-DATA>
+        <SDGS>
+         <SDG GID="EB:DnT">
+          <SD GID="FunctionGroup">Extern</SD>
+          <SD GID="EnableTracing">true</SD>
+         </SDG>
+         </SDGS>
+       </ADMIN-DATA>
+       <SERVICE-ID>34</SERVICE-ID>
+       <IS-REENTRANT>true</IS-REENTRANT>
+       <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+       <CALL-TYPE>REGULAR</CALL-TYPE>
+       <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+       <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+       <ARGUMENTS>
+        <SW-SERVICE-ARG>
+         <SHORT-NAME>NetworkId</SHORT-NAME>
+         <DIRECTION>IN</DIRECTION>
+         <SW-DATA-DEF-PROPS>
+          <SW-DATA-DEF-PROPS-VARIANTS>
+           <SW-DATA-DEF-PROPS-CONDITIONAL>
+            <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+           </SW-DATA-DEF-PROPS-CONDITIONAL>
+          </SW-DATA-DEF-PROPS-VARIANTS>
+         </SW-DATA-DEF-PROPS>
+        </SW-SERVICE-ARG>
+       </ARGUMENTS>
+      </BSW-MODULE-ENTRY>
+      <BSW-MODULE-ENTRY>
+       <SHORT-NAME>Dcm_ComM_NoComModeEntered</SHORT-NAME>
+       <ADMIN-DATA>
+        <SDGS>
+         <SDG GID="EB:DnT">
+          <SD GID="FunctionGroup">Extern</SD>
+          <SD GID="EnableTracing">true</SD>
+         </SDG>
+         </SDGS>
+       </ADMIN-DATA>
+       <SERVICE-ID>33</SERVICE-ID>
+       <IS-REENTRANT>true</IS-REENTRANT>
+       <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+       <CALL-TYPE>REGULAR</CALL-TYPE>
+       <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+       <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+       <ARGUMENTS>
+        <SW-SERVICE-ARG>
+         <SHORT-NAME>NetworkId</SHORT-NAME>
+         <DIRECTION>IN</DIRECTION>
+         <SW-DATA-DEF-PROPS>
+          <SW-DATA-DEF-PROPS-VARIANTS>
+           <SW-DATA-DEF-PROPS-CONDITIONAL>
+            <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+           </SW-DATA-DEF-PROPS-CONDITIONAL>
+          </SW-DATA-DEF-PROPS-VARIANTS>
+         </SW-DATA-DEF-PROPS>
+        </SW-SERVICE-ARG>
+       </ARGUMENTS>
+      </BSW-MODULE-ENTRY>
+      <BSW-MODULE-ENTRY>
+       <SHORT-NAME>Dcm_HighestPrioFunction</SHORT-NAME>
+       <ADMIN-DATA>
+        <SDGS>
+         <SDG GID="EB:DnT">
+          <SD GID="FunctionGroup">Extern</SD>
+          <SD GID="EnableTracing">true</SD>
+         </SDG>
+         </SDGS>
+       </ADMIN-DATA>
+       <SERVICE-ID>255</SERVICE-ID>
+       <IS-REENTRANT>true</IS-REENTRANT>
+       <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+       <CALL-TYPE>SCHEDULED</CALL-TYPE>
+       <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+       <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+      </BSW-MODULE-ENTRY>
+[!ENDIF!]
+[!IF "DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*/DcmAsyncServiceExecution ='true'"!]
+      <BSW-MODULE-ENTRY>
+       <SHORT-NAME>Dcm_ProcessServiceAsync</SHORT-NAME>
+       <SERVICE-ID>312</SERVICE-ID>
+       <IS-REENTRANT>false</IS-REENTRANT>
+       <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+       <CALL-TYPE>SCHEDULED</CALL-TYPE>
+       <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+       <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+      </BSW-MODULE-ENTRY>
+[!ENDIF!]
+      <BSW-MODULE-ENTRY>
+       <SHORT-NAME>Dcm_MainFunction</SHORT-NAME>
+       <SERVICE-ID>37</SERVICE-ID>
+       <IS-REENTRANT>false</IS-REENTRANT>
+       <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+       <CALL-TYPE>SCHEDULED</CALL-TYPE>
+       <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+       <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+      </BSW-MODULE-ENTRY>
+     </ELEMENTS>
+    </AR-PACKAGE>
+[!IF "DcmConfigSet/*[1]/DcmGeneral/DcmModeDeclarationSupport = 'true'"!]
+    <AR-PACKAGE>
+     <SHORT-NAME>ModeDeclarationGroups</SHORT-NAME>
+     <ELEMENTS>
+      <MODE-DECLARATION-GROUP>
+       <SHORT-NAME>DcmDiagnosticSessionControl</SHORT-NAME>
+       <CATEGORY>EXPLICIT_ORDER</CATEGORY>
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspSession/*/DcmDspSessionRow/*"!]
+ [!IF "./DcmDspSessionLevel = 1"!]
+       <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmDiagnosticSessionControl/[!"./@name"!]</INITIAL-MODE-REF>
+ [!ENDIF!]
+[!ENDLOOP!]
+       <MODE-DECLARATIONS>
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspSession/*/DcmDspSessionRow/*"!]
+       <MODE-DECLARATION>
+        <SHORT-NAME>[!"./@name"!]</SHORT-NAME>
+        <!-- !LINKSTO Dcm778,1 -->
+        <VALUE>[!"num:integer(./DcmDspSessionLevel)"!]</VALUE>
+       </MODE-DECLARATION>
+[!ENDLOOP!]
+       </MODE-DECLARATIONS>
+      <ON-TRANSITION-VALUE>0</ON-TRANSITION-VALUE>
+      </MODE-DECLARATION-GROUP>
+      <MODE-DECLARATION-GROUP>
+       <SHORT-NAME>DcmEcuReset</SHORT-NAME>
+       <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmEcuReset/NONE</INITIAL-MODE-REF>
+       <MODE-DECLARATIONS>
+       <MODE-DECLARATION>
+        <SHORT-NAME>NONE</SHORT-NAME>
+       </MODE-DECLARATION>
+       <MODE-DECLARATION>
+        <SHORT-NAME>HARD</SHORT-NAME>
+       </MODE-DECLARATION>
+       <MODE-DECLARATION>
+        <SHORT-NAME>KEYONOFF</SHORT-NAME>
+       </MODE-DECLARATION>
+       <MODE-DECLARATION>
+        <SHORT-NAME>SOFT</SHORT-NAME>
+       </MODE-DECLARATION>
+       <MODE-DECLARATION>
+        <SHORT-NAME>JUMPTOBOOTLOADER</SHORT-NAME>
+       </MODE-DECLARATION>
+       <MODE-DECLARATION>
+        <SHORT-NAME>JUMPTOSYSSUPPLIERBOOTLOADER</SHORT-NAME>
+       </MODE-DECLARATION>
+       <MODE-DECLARATION>
+        <SHORT-NAME>EXECUTE</SHORT-NAME>
+       </MODE-DECLARATION>
+       </MODE-DECLARATIONS>
+      </MODE-DECLARATION-GROUP>
+      <MODE-DECLARATION-GROUP>
+       <SHORT-NAME>DcmRapidPowerShutdown</SHORT-NAME>
+       <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmRapidPowerShutdown/ENABLE_RAPIDPOWERSHUTDOWN</INITIAL-MODE-REF>
+       <MODE-DECLARATIONS>
+        <MODE-DECLARATION>
+         <SHORT-NAME>ENABLE_RAPIDPOWERSHUTDOWN</SHORT-NAME>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DISABLE_RAPIDPOWERSHUTDOWN</SHORT-NAME>
+        </MODE-DECLARATION>
+       </MODE-DECLARATIONS>
+      </MODE-DECLARATION-GROUP>
+      <!-- !LINKSTO Dcm779,1 -->
+      <MODE-DECLARATION-GROUP>
+       <SHORT-NAME>DcmCommunicationControl</SHORT-NAME>
+       <CATEGORY>EXPLICIT_ORDER</CATEGORY>
+       <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmCommunicationControl/DCM_ENABLE_RX_TX_NORM</INITIAL-MODE-REF>
+       <MODE-DECLARATIONS>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_ENABLE_RX_TX_NORM</SHORT-NAME>
+         <VALUE>0</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_ENABLE_RX_DISABLE_TX_NORM</SHORT-NAME>
+         <VALUE>1</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_DISABLE_RX_ENABLE_TX_NORM</SHORT-NAME>
+         <VALUE>2</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_DISABLE_RX_TX_NORM</SHORT-NAME>
+         <VALUE>3</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_ENABLE_RX_TX_NM</SHORT-NAME>
+         <VALUE>4</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_ENABLE_RX_DISABLE_TX_NM</SHORT-NAME>
+         <VALUE>5</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_DISABLE_RX_ENABLE_TX_NM</SHORT-NAME>
+         <VALUE>6</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_DISABLE_RX_TX_NM</SHORT-NAME>
+         <VALUE>7</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_ENABLE_RX_TX_NORM_NM</SHORT-NAME>
+         <VALUE>8</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_ENABLE_RX_DISABLE_TX_NORM_NM</SHORT-NAME>
+         <VALUE>9</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_DISABLE_RX_ENABLE_TX_NORM_NM</SHORT-NAME>
+         <VALUE>10</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DCM_DISABLE_RX_TX_NORM_NM</SHORT-NAME>
+         <VALUE>11</VALUE>
+        </MODE-DECLARATION>
+       </MODE-DECLARATIONS>
+       <ON-TRANSITION-VALUE>12</ON-TRANSITION-VALUE>
+      </MODE-DECLARATION-GROUP>
+      <MODE-DECLARATION-GROUP>
+       <SHORT-NAME>DcmControlDTCSetting</SHORT-NAME>
+       <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmControlDTCSetting/ENABLEDTCSETTING</INITIAL-MODE-REF>
+       <MODE-DECLARATIONS>
+        <MODE-DECLARATION>
+         <SHORT-NAME>ENABLEDTCSETTING</SHORT-NAME>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>DISABLEDTCSETTING</SHORT-NAME>
+        </MODE-DECLARATION>
+       </MODE-DECLARATIONS>
+      </MODE-DECLARATION-GROUP>
+[!LOOP "DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeEvent/*"!]
+      <!-- !LINKSTO SWS_Dcm_00931,1 -->
+      <MODE-DECLARATION-GROUP>
+       <SHORT-NAME>DcmResponseOnEvent_[!"DcmDspRoeEventId"!]</SHORT-NAME>
+       <CATEGORY>EXPLICIT_ORDER</CATEGORY>
+       <INITIAL-MODE-REF DEST="MODE-DECLARATION">/AUTOSAR_Dcm/ModeDeclarationGroups/DcmResponseOnEvent_[!"DcmDspRoeEventId"!]/EVENT_CLEARED</INITIAL-MODE-REF>
+       <MODE-DECLARATIONS>
+        <MODE-DECLARATION>
+         <SHORT-NAME>EVENT_STARTED</SHORT-NAME>
+         <VALUE>2</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>EVENT_STOPPED</SHORT-NAME>
+         <VALUE>1</VALUE>
+        </MODE-DECLARATION>
+        <MODE-DECLARATION>
+         <SHORT-NAME>EVENT_CLEARED</SHORT-NAME>
+         <VALUE>0</VALUE>
+        </MODE-DECLARATION>
+       </MODE-DECLARATIONS>
+       <ON-TRANSITION-VALUE>3</ON-TRANSITION-VALUE>
+      </MODE-DECLARATION-GROUP>
+[!ENDLOOP!]
+     </ELEMENTS>
+    </AR-PACKAGE>
+[!ENDIF!]
+   </AR-PACKAGES>
+  </AR-PACKAGE>
+  <AR-PACKAGE>
+   <SHORT-NAME>EB_Dcm</SHORT-NAME>
+   <AR-PACKAGES>
+    <AR-PACKAGE>
+     <SHORT-NAME>Implementations</SHORT-NAME>
+     <ELEMENTS>
+      <BSW-IMPLEMENTATION>
+       <SHORT-NAME>BswImplementation_0</SHORT-NAME>
+       <CODE-DESCRIPTORS>
+        <CODE>
+         <SHORT-NAME>Files</SHORT-NAME>
+         <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_ComMChannelStateManager.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_ComMChannelStateManager_External_Interface.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_CommunicationServices.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_CommunicationServices_BufferManager.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_CommunicationServices_MetaData.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_CommunicationServices_RxConnections.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_CommunicationServices_TxConnections.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_DiagnosticSessionHandler.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_PostBootOperationsHandler.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_RoeServices.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_SecurityLevelHandler.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_Supervisor.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_Supervisor_CommunicationSessionHandling.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_Supervisor_MainConnectionHandling.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsl_Supervisor_ProtocolHandling.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_DspExternal.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_ApplicationDiagnosticRequests.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_Contexts.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_DataTransferServices.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_DemFacade.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_DidServices.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_DidSignals.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_EndiannessInterpretation.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_MemoryServices.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_MidServices.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_PidServices.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_CommunicationControl.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_ControlDTCSetting.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_DynamicallyDefineDataIdentifier.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_InputOutputControlByIdentifier.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_LinkControl.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_ReadDTCInformation.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_ReadDataByIdentifier.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_ReadDataByPeriodicIdentifier.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_ReadMemoryByAddress.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_ReadScalingDataByIdentifier.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_RequestControlOfOnBoardSysTstComp.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_RequestDownload.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_RequestOnboardMonitoringTestResults.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_RequestTransferExit.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_RequestUpload.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_RequestVehicleInformation.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_ResponseOnEvent.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_RoutineControl.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_SecurityAccess.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_TesterPresent.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_TransferData.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_WriteDataByIdentifier.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_SvcH_WriteMemoryByAddress.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Dsp_VinServices.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_GenericServiceHandlers.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Hsm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_HsmCfg.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_HsmDcm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_HsmDcmInt.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Trace.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Trace_Internal.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dcm_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsd.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_ComMChannelStateManager.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_CommunicationServices.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_CommunicationServices_BufferManager.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_CommunicationServices_MetaData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_CommunicationServices_RxConnections.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_CommunicationServices_TxConnections.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_DiagnosticSessionHandler.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_PostBootOperationsHandler.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_RoeServices.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_SecurityLevelHandler.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_Supervisor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_Supervisor_CommunicationSessionHandling.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_Supervisor_MainConnectionHandling.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsl_Supervisor_ProtocolHandling.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_ApplicationDiagnosticRequests.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_Contexts.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_DataTransferServices.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_DemFacade.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_DidServices.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_DidSignals.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_EndiannessInterpretation.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_MemoryServices.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_MidServices.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_PidServices.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_CommunicationControl.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_ControlDTCSetting.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_DynamicallyDefineDataIdentifier.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_InputOutputControlByIdentifier.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_LinkControl.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_ReadDTCInformation.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_ReadDataByIdentifier.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_ReadDataByPeriodicIdentifier.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_ReadMemoryByAddress.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_ReadScalingDataByIdentifier.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_RequestControlOfOnBoardSysTstComp.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_RequestDownload.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_RequestOnboardMonitoringTestResults.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_RequestTransferExit.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_RequestUpload.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_RequestVehicleInformation.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_ResponseOnEvent.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_RoutineControl.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_SecurityAccess.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_TesterPresent.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_TransferData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_WriteDataByIdentifier.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_SvcH_WriteMemoryByAddress.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Dsp_VinServices.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_Hsm.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_HsmDcmData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dcm_HsmDcmFnct.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+          <AUTOSAR-ENGINEERING-OBJECT>
+           <SHORT-LABEL>make::Dcm_defs.mak</SHORT-LABEL>
+           <CATEGORY>SWMAKE</CATEGORY>
+          </AUTOSAR-ENGINEERING-OBJECT>
+          <AUTOSAR-ENGINEERING-OBJECT>
+           <SHORT-LABEL>make::Dcm_rules.mak</SHORT-LABEL>
+           <CATEGORY>SWMAKE</CATEGORY>
+          </AUTOSAR-ENGINEERING-OBJECT>
+         </ARTIFACT-DESCRIPTORS>
+        </CODE>
+       </CODE-DESCRIPTORS>
+[!INCLUDE "../Dcm_Bswmd_ResourceConsumption.arxml.m"!]
+      </BSW-IMPLEMENTATION>
+     </ELEMENTS>
+    </AR-PACKAGE>
+   </AR-PACKAGES>
+  </AR-PACKAGE>
+ </AR-PACKAGES>
+</AUTOSAR>

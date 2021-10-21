@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+    <specobjects doctype="lim">
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0001</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                Integration restriction and recommendation.
+                The EB memory stack modules NvM, Ea, and Fee make only limited
+                use of the callback calls from their underlying modules. This
+                also means that callbacks from the Fls to the Fee are not
+                synchronously forwarded to the NvM. During the integration
+                one has to make sure that the NvM, Ea, and Fee main functions
+                are only called from the same task context so that they cannot
+                preempt each other.
+            </description>
+            <rationale> 
+                This approach enables a simple and lock-free implementation
+                resulting in smaller code.
+            </rationale>
+            
+        </specobject>
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0002</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                Contiguous and ascending Flash sectors.
+                The Flash sectors configured in <code>Fee_FlsSectorList</code> of the
+                flash driver configuration should be contiguous if more than
+                one sector is configured and they shall be in the ascending
+                order of their addresses.
+            </description>
+            <rationale> 
+                The logic used for calculating the Fee section size is
+                dependent upon this configuration.
+            </rationale>
+            
+        </specobject>
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0003</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                Flash virtual page size re-configuration.
+                If the flash virtual page size is reconfigured, the Fee module
+                cannot retrieve the data blocks which are present in the
+                flash.
+            </description>
+            <rationale> 
+                Internal management information size and aligned block size
+                are dependent on the virtual page size.
+            </rationale>
+            
+        </specobject>
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0004</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                Flash erase value limitation.
+                Only the first byte of the Fls published parameter <code>FlsErasedValue</code>
+                is used by the Fee module.
+            </description>
+            <rationale>
+                The Fls erased value is not expected to be different from one
+                byte to another.
+            </rationale>
+            
+        </specobject>
+
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0005</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                When the user requests an erase-immediate job for emergency block it shall wait for job compleation 
+                by verifying the result of the job returned by <code>Fee_GetJobResult</code> API.
+            </description>
+            <rationale>
+                If other means are used the user shall still call at least once the API <code>Fee_GetJobResult</code> after termination of the erase immediate job.
+                The reason for this is to be compatible with NvM bahavior.
+            </rationale>
+            
+        </specobject>
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0006</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                Once the emergency block is requested to be written, the user shall stop the <code>NvM_MainFunction</code>'s task 
+                until the emergency block is erased, when the task can be resumed.
+            </description>
+            <rationale>
+                User may read the emergency block any time, once the emergency block is written.
+            </rationale>
+            
+        </specobject>
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0007</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                If the critical block is active in project, the user shall start the <code>NvM_MainFunction</code>'s task 
+                at startup after the emergency block is erased.
+            </description>
+            <rationale>
+                There is the posibility that the critical block to be already written in flash by the time the system starts. 
+                In this case Fee will remain frozen internally until the user requests an erase-immediate of this block. 
+                Meanwile the user might read the emergency block any time.
+            </rationale>
+            
+        </specobject>
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0008</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                If the user requested an erase-immediate for emergency block and immediatelly the environment requires the emergency block to be written again, 
+                the user shall not wait for the erase job to complete, but it shall request the emergency write job immediately 
+                as long as at least one <code>Fee_MainFunction</code> had been called after requesting the erase immediate job.
+            </description>
+            <rationale>
+                The signal to unfreeze Fee from emergency situation is given by the request of the erase immediate.
+                Therefore after the request Fee is not frozen any more, and in case of another emergency write it should 
+                behave consistently.
+                Mind the fact that the code <code>Fee_EraseImmediate(EBlock); Fee_Write(EBlock,Buff);</code> will not work since by the time the write job comes 
+                Fee would still be frozen internally. It needs on cycle of Fee main function after the erase-immediate request in oreder to unfreeze.
+            </rationale>
+            
+        </specobject>
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0009</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                The environment shall be aware that if an emergency write is called when NvM has a job already pending in Fee, the NvM job will be reported as failed.
+            </description>
+            <rationale>
+                NvM is informed about the failure by either the notification callbacks or by NvM's polling mode.
+                In this case the environment must take measures like retying the jobs.
+            </rationale>
+            
+        </specobject>
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0010</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                Any call of Fee_ReadCustom shall be made after Fee initialization is over(when Fee is Idle and not Busy Internal).
+            </description>
+            <rationale>
+                The environment must be aware that Fee_WriteCustom depends on Fee initialization as the blocks that are not configured 
+                can only be detected at initialization.
+            </rationale>
+            
+        </specobject>
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0011</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                The system shall be aware that SCHM_FEE_EXCLUSIVE_AREA_0 is used if Fee_WriteCustom or Fee_ReadCustom are configured. 
+            </description>
+            <rationale>
+                The interrupts will be disabled only for checking and setting a preemption flag, that prevents call colisions of 
+                the custom APIs with the standard APIs called by MemIf.
+            </rationale>
+            
+        </specobject>
+        <specobject>
+            <id>lim.Fee.EB_INTREQ_Fee_0012</id>
+            <status>approved</status>
+            <source>EB integration requirement</source>
+            <version>1</version>
+            <description>
+                If a critical block is active in the project and a custom API(Fee_WriteCustom or Fee_ReadCustom) is used,
+                the user shall consider the possibility of a critical block write request being declined if it preempts
+                a custom API: a retry could be needed, or preemption to be prevented by the system.
+            </description>
+            <rationale>
+            </rationale>
+            
+        </specobject>
+    </specobjects>
+</specdocument>

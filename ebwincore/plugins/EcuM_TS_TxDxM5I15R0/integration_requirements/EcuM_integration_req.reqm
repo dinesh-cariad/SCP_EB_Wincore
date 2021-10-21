@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="swurs">
+    <specobject>
+      <id>intgr.EcuM.EB_INTREQ_EcuM_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In order to ensure the EcuM_GetMostRecentShutdown() and EcuM_GetNextRecentShutdown() APIs
+        return valid data, the following call chain shall be used in a shutdown or reset sequence: 
+          - EcuM_SelectShutdownTarget()
+          - EcuM_SelectShutdownCause()
+          - EcuM_GoDown()
+      </description>
+      <rationale>
+        EcuM_GetMostRecentShutdown() and EcuM_GetNextRecentShutdown() return the values of the shutdown target,
+        reset mode and shutdown cause. They will not return the expected most recent or next recent shutdown values
+        if they are not previously set using the EcuM_SelectShutdownTarget() and EcuM_SelectShutdownCause() APIs.
+      </rationale>
+      
+    </specobject>
+  </specobjects>
+</specdocument>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     + Copyright (C) Elektrobit
+     + All rights reserved
+     +
+     + NAME: plugin.xml
+     +
+     + $Id$
+     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+    id="PduR_TS_TxDxM5I3R0_GeneratorExt">
+    <generator id="PduR_TS_TxDxM5I3R0_Generator"
+      moduleId="PduR_TS_TxDxM5I3R0"
+      class="dreisoft.tresos.pdur.generator.Generator">
+
+       <!-- only having this parameter set to true, a generator is called once for each variant! -->
+       <parameter name="variantAware" value="true"/>
+    </generator>
+  </extension>
+
+  <extension point="dreisoft.tresos.datamodel2.api.plugin.xpathregistration">
+    <xpathfunction>
+      <classregistration
+        class="dreisoft.tresos.pdur.xpath.XPathFunctions"
+              description="xpath function to get the zero cost modules"
+              namespace="asc_PduR"/>
+    </xpathfunction>
+  </extension>
+
+</plugin>

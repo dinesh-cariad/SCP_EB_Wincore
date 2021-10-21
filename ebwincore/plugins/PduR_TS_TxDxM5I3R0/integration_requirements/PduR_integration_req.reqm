@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+
+    <specobject>
+      <id>PduR.EB.IntReq.RestrictTpGwToSF</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Restriction of TP gateway to single frames.
+      TP gateway (1:n, n&gt;1) of an I-PDU from a source transport protocol module to multiple
+      destination transport protocol modules is restricted to single frames (SF) on the Tx-side. This
+      implies that the completely stored I-PDU is fetched with a single call by
+      <code>PduR_&lt;LoTp&gt;CopyTxData</code>. Calling the function
+      <code>PduR_&lt;LoTp&gt;CopyTxData</code> with a size
+      <parameter>PduInfoPtr-&gt;SduLength</parameter> different to the complete I-PDU results in return
+      value <code>BUFREQ_E_BUSY</code>. Calling the function
+      <code>PduR_&lt;LoTp&gt;CopyTxData</code> after requesting the available size of data
+      with <parameter>PduInfoPtr-&gt;SduLength = 0</parameter> by
+      <code>PduR_&lt;LoTp&gt;CopyTxData</code> returns an
+      <parameter>AvailableDataSize</parameter> of the completely stored I-PDU except the last one
+      which returns <parameter>0</parameter>.
+      </description>
+      <rationale>
+      On a transport protocol module, an I-PDU can be transported in multiple N-PDUs (FF and
+      CFs) or in a single N-PDU (SF). The typical case is that an I-PDU transported in multiple
+      N-PDUs does not multicast I-PDUs (i.e. physical addressing) and in a single N-PDU may be
+      multicast I-PDUs (i.e. functional addressing). Furthermore, the consumption of hardware
+      resources (RAM, run time) is reduced.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>PduR.EB.IntReq.BlockLoTpCopyTxDataForTpMulticast</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Blocked <code>PduR_LoTpCopyTxData</code> unless all <code>LoTp_Transmit</code> are called for TP multicast
+      transmission.
+      <code>PduR_LoTpCopyTxData()</code> is blocked for TP multicast transmission (1:n, n&gt;1) unless all calls
+      of <code>LoTp_Transmit()</code> are executed within <code>PduR_UpTransmit()</code>.
+      </description>
+      <rationale>
+      This reduces the number of possible race conditions.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>PduR.EB.IntReq.BlockLoTpCopyTxDataForDirectTpGw</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Blocked <code>PduR_LoTpCopyTxData</code>, unless all <code>LoTp_Transmit</code> are called for a direct TP
+      gateway.
+      <code>PduR_LoTpCopyTxData()</code> is blocked for a direct TP gateway, unless all calls of
+      <code>LoTp_Transmit()</code> are executed within <code>PduR_LoTpRxIndication()</code>.
+      </description>
+      <rationale>
+      This reduces the number of possible race conditions.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>PduR.EB.IntReq.BlockLoTpTxConfirmationForDirectTpGw</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Blocked <code>PduR_LoTpTxConfirmation</code>, unless all <code>LoTp_Transmit</code> are called for a direct TP
+      gateway.
+      <code>PduR_LoTpTxConfirmation()</code> is blocked for a direct TP gateway, unless all calls of
+      <code>LoTp_Transmit()</code> are executed within <code>PduR_LoTpRxIndication()</code>.
+      </description>
+      <rationale>
+      This ensures that no race condition occurs regarding the state handling of LoTp_Transmit within PduR_LoTpRxIndication
+      to PduR_LoTpTxConfirmation. LoTp_Transmit are called for all enabled destinations prior to PduR_LoTpTxConfirmation.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>PduR.EB.IntReq.BlockLoTpTxConfirmationForTpMulticast</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Blocked <code>PduR_LoTpTxConfirmation</code>, unless all <code>LoTp_Transmit</code> are called for a TP
+      multicast transmission.
+      <code>PduR_LoTpTxConfirmation()</code> is blocked for a multicast TP transmission, unless all calls of
+      <code>LoTp_Transmit()</code> are executed within <code>PduR_UpTpTransmit()</code>.
+      </description>
+      <rationale>
+      This ensures that no race condition occurs regarding the state handling of LoTp_Transmit within PduR_UpTpTransmit
+      to PduR_LoTpTxConfirmation. LoTp_Transmit are called for all enabled destinations prior to PduR_LoTpTxConfirmation.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>PduR.EB.IntReq.RestrictNto1toSingleActivatedRPath</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        
+        
+        For N:1 PDU routing, there shall be at most one activated source PDU of the gateway
+        routing path.
+      </description>
+      <rationale>
+        As stated in RfC #71728, comment #3, it will be ensured that at run-time at most one of these N sources will be active.
+        Note that this has been refined in RfC #67569, comment #84.
+        'Active' means, that concurrent calls are not possible, e.g. a CopyRxData from CAN1 can not be interrupted by a
+        StartOfReception from CAN2. I.e. a tester is either used on CAN1 or CAN2, not to both.
+      </rationale>
+      <comment>
+        This requirement covers the TP gatewaying part of SWS_PDUR_00827 from AUTOSAR 4.4.0 release.
+      </comment>
+      
+    </specobject>
+
+    <specobject>
+      <id>PduR.EB.IntReq.QualityMultiCore</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        In general, the usage of PduR with distributed communication stack is not ready for mass production.
+        For details how to use it please refer to the important notes of the release.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>PduR.EB.IntReq.PartitionIndicesInClientServerEntities</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Names of client-server entities shall include partition indices to
+        distinguish different connections between multiple partitions in a unique way.
+        The meaning of them is defined as follows:
+        For distributed modules which are upper and lower layer module of the PduR at the same time
+        (e.g. IpduM), source as well as destination partition indices are to be used, e.g.:
+        IpduM_IfLLClient&lt;SrcIdx&gt;_&lt;DestIdx&gt;, where &lt;SrcIdx&gt; is the index of the
+        source partition and &lt;DestIdx&gt; is the index of the destination partition.
+        For non-distributed modules, only the source partition index &lt;SrcIdx&gt; is required,
+        e.g.: CanIf_IfLLClient&lt;SrcIdx&gt;.
+      </description>
+      <rationale>
+        Restrictions the Rte is imposed require to do so.
+      </rationale>
+      
+      
+    </specobject>
+
+    <specobject>
+      <id>PduR.EB.IntReq.ProtectionMechanismMulticore</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        This protection mechnism constraints apply to PduR module with enabled multicore feature.
+        Critical sections PDUR_EXCLUSIVE_AREA_0 have to be protected with intercore locks
+        (Os spinlocks). This is the default critical sections for most cases.
+        For special cases no expensive intercore lock is necessary. However, following constraints
+        have to be considered:
+        PDUR_EXCLUSIVE_AREA_1 is assigned to protect APIs for gateway use-case for communication
+        interface modules for direct data provision with single buffer and dynamic payload,
+        i.e. PduR_GateIfRxIndicationSbMCoreDynPyld and PduR_GateIfRxIndicationMcUpSbDynPyld.
+        For PDUR_EXCLUSIVE_AREA_1 no protection is necessary if it is ensured that
+        PduR_GateIfRxIndicationSbMCoreDynPyld or PduR_GateIfRxIndicationMcUpSbDynPyld is not called
+        again before IfTransmit or UpIfRxIndication calls have completed. E.g. IfTransmit and
+        UpIfRxIndication APIs represented with synchronous intercore calls (i.e. blocking) or
+        scheduling of integrator ensures this otherwise.
+        PDUR_EXCLUSIVE_AREA_2 is assigned to protect API for multicast transmit use-case for
+        communication interface modules, i.e. PduR_MultiUpMCoreIfTransmit.
+        For PDUR_EXCLUSIVE_AREA_2 no protection is necessary if it is ensured that
+        PduR_MultiUpMCoreIfTransmit is not called again before IfTransmit calls have completed.
+        E.g. IfTransmit APIs represented with synchronous intercore calls (i.e. blocking) or
+        scheduling of integrator ensures this otherwise.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>PduR.EB.IntReq.TriggerTransmitWithMultiCore</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Ensure that PDUs which are transmitted on a network using trigger transmit data provision
+        are assigned throughout the complete communication stack to the very same core / partition
+        dedicated to the respective network.
+      </description>
+      
+    </specobject>
+
+  </specobjects>
+</specdocument>

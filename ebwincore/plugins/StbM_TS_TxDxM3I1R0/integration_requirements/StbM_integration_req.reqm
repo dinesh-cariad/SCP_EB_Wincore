@@ -1,0 +1,558 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+     <application>StbM</application> needs module property files in adjacent modules.
+     For auto detection and full control of adjacent modules, the <application>StbM</application>
+     depends on the existence of a adequate module property file in this adjacent module.
+     A module without module property file suffers the following limitations:<pre>
+     - <application>StbM</application> can not control a master
+     time domain of this BSW module.
+     - <application>StbM</application> can not use a possible
+     hardware timestamp capability of this BSW module.
+     - The <application>StbM</application> configuration must
+     contain a reserved time base for this BSW module.
+     - Parameter <code>StbMDevErrorDetect</code> must be disabled
+     (if at least one such module is used</pre>
+      </description>
+      <rationale>
+      The mechanism of module property files allows the <application>StbM</application>
+      to handle adjacent modules in a generic way.
+      Adjacent modules often do not follow a common guideline for their module
+      configuration and interfaces.
+      In addition the <application>StbM</application> does not need to know how
+      many and which modules shall be handled at configuration time.
+      </rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Limitations on synchronization of schedule tables.
+      To guarantee fault-free synchronization of schedule tables it is necessary
+      to consider the following configuration constraints:
+
+      Os counter interval<pre>
+      - The Os counter interval (depends on <code>OsCounterMaxAllowedValue</code>
+      and the tick time) must be greater than the MainFunction
+      period of <application>StbM</application>.</pre>
+
+      Schedule Table duration <pre>
+      - The duration of the synchronized schedule table (depends on
+      <code>OsScheduleTableDuration</code> and the tick time)
+      must be smaller than one second.
+
+      - In addition the value of <code>OsScheduleTableDuration</code>
+      must not exceed 4294967296.
+
+      - In addition one second must be an integer multiple of the duration
+      of the synchronized schedule table.</pre>
+      </description>
+    </specobject>
+
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+     Call to <code>StbM_BusSetGlobalTime()</code> is mandatory.
+     The <application>StbM</application> requires that any adjacent bus specific time
+     synchronization module (e.g. <application>EthTSyn</application>) notifies updates of the
+     global time by using the API <code>StbM_BusSetGlobalTime()</code> when acting as
+     time consumer (time slave) or time distributor (time gateway).<pre>
+     - The <application>StbM</application> does not obtain the
+     time by itself for any time base with an assigned slave time domain.</pre>
+      </description>
+      <rationale>
+        This mechanism allows a common implementation for different configurations
+        when acting as time distributor (time gateway).
+        <application>StbM</application> only needs to supply the time in the
+        context of <code>StbM_BusSetGlobalTime()</code>.
+        Without this limitation <application>StbM</application> needs to supply the
+        time in the context of:<pre>
+        - <code>StbM_BusSetGlobalTime()</code> if the slave does not
+        support hardware timestamping.
+        - <code>StbM_GetCurrentTime()</code> if the master(s) does not
+        support hardware timestamping.
+        - <code>StbM_MainFunction()</code> if both the slave and the
+        master(s) support hardware timestamping. </pre>
+      </rationale>
+    </specobject>
+
+
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Limitation regarding the invocation of <code>StbM_Init</code> function.
+      The invocation of <code>StbM_Init</code>, should be called after the EcuM module
+      calls <code>NvM_ReadAll</code>.
+      </description>
+      <rationale>
+      If the parameter <code>StbMStoreTimebaseNonVolatile</code> equals STORAGE_AT_SHUTDOWN and there exists a reference
+      from a TimeBase to a NvMBlock, then whenever the TimeStamp will be changed, it will be stored in NvMBlock at SHUTDOWN phase
+      and afterwards at INITIALIZATION phase (<code>StbM_Init</code>), the TimeStamp will be loaded from NvM module.
+      If <code>NvM_ReadAll</code> is not called before StbM_Init, then StbM module will take as initial TimeStamp
+      some garbage values.
+      </rationale>
+      
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Os counter with the highest resolution shall be used.
+      The <application>StbM</application> provides the possibility to derive the
+      current time from an Os counter if no hardware timestamp support is available.
+      In this case it is recommended to select the Os counter via parameter
+      <parameter>StbMLocalTimeHardware</parameter> with the highest resolution.
+      </description>
+      <rationale>
+      The resolution of the Os counter determines the precision of the time base.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0006</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Exclusive access to Os counter used to derive local time.
+      It shall be ensured that the Os counter used by <application>StbM</application>
+      to derive the current time via parameter <parameter>StbMLocalTimeHardware</parameter>
+      is not modified by any other basic software module or application.
+      </description>
+      <rationale>
+      The <application>StbM</application> uses the Os counter to determine the current
+      time if no hardware timestamp support is available.
+      A leap in time of the respective Os counter results in a wrong time.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0007</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+        The exclusive areas which ensure that certain regions in the <code>TSyn/StbM</code> modules are not being preempted
+        must not be configured to interrupt suspending/disabling in case OS counters are used as sources for the virtual local time.
+      </description>
+      <rationale>
+      <application>StbM</application> cannot call <code>GetCounterValue()</code> with interrupts disabled/suspended (according to SWS_Os_00093)
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0008</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       <code>StbM_MainFunction</code> period must not exceed 3 sec.
+      </description>
+      <rationale>
+      <application>StbM</application> needs to update the Main Tuple every 3 sec on the Main Function if no update happened before.
+      </rationale>
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0009</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       <code>GptChannelMode</code> of each Gpt Channel which is configured as Local hardware clock has to be configured to GPT_CH_MODE_CONTINUOUS.
+      </description>
+      <rationale>
+      <application>Gpt</application> channel can be configured in "one-shot mode" or "continuous mode".
+      Gpt Channel mode has to be configured to GPT_CH_MODE_CONTINUOUS, because when the timer reaches the target
+      the timer shall continue running with the value "0" at next time tick, instead of stopping and
+      maintaining its timer value unchanged.      
+      </rationale>
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0010</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       <code>GptChannelTickValueMax</code> of each Gpt Channel which is configured as Local hardware clock has to be configured to
+       the maximum value of UINT32.
+      </description>
+      <rationale>
+      It determines the precision of the time base.   
+      </rationale>
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0011</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       <code>StbMClockFrequency</code> and <code>StbMClockPrescaler</code> of each StbM TimeBase has to be different from zero
+	   and <code>StbMClockFrequency</code>/<code>StbMClockPrescaler</code> shall have a value equal with the value of the GptChannel Frequency from Gpt for a better precision.
+      </description>
+      <rationale>
+      When calling Gpt_GetTimeElapsed() API, StbM obtains the time in GPT ticks.
+	  The time in Gpt ticks has to be converted into nanoseconds, using StbMClockFrequency/StbMClockPrescaler factor,
+	  that is why StbMClockFrequency and StbMClockPrescaler shall be configured to a value different from zero.
+      </rationale>
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0012</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Limitation regarding the invocation of <code>StbM_Init</code> function.
+      In case an StbM TimeBase uses Gpt as time source, the invocation of <code>StbM_Init</code>, should be called after the <code>Gpt_Init</code>.
+      Please also make sure that Gpt is in NORMAL mode (not in SLEEP mode).
+      </description>
+      <rationale>
+      If an StbM Time Base uses Gpt as time source for Virtual Local Time, the <code>Gpt_Init</code> function shall be called
+      before <code>StbM_Init</code>, because Gpt module starts the hardware timers on the configured channels.
+      The Gpt should be in NORMAL mode, because if Notification of customers is enabled, Gpt_EnableNotification() will be called. 
+      </rationale>
+      
+    </specobject>
+
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0013</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+      Limitation regarding the usage of EthTSyn as a StbMLocalTimeHardware reference.
+      An <application>StbM</application> time base can have as StbMLocalTimeHardware
+      reference an EthTSyn Time Domain, only if EthTSyn module has
+      EthTSynHardwareTimestampSupport parameter set to TRUE.
+      This limitation applies to configuration parameter <code>StbMLocalTimeHardware</code>.
+      </description>
+      <rationale>
+      The StbM module will not get the current value of the free running HW counter
+      from the corresponding Ethernet Controller via EthIf_GetCurrentTime(),
+      because the EthIf_GetCurrentTime() call will not be performed,
+      if EthTSynHardwareTimestampSupport parameter is set to FALSE.
+      </rationale>
+      
+    </specobject>
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0014</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       The <code>GptChannelMode</code> of the GptChannelConfiguration channel,
+       configured as StbMGptTimerRef, shall be configured to GPT_CH_MODE_ONESHOT.
+      </description>
+      <rationale>
+        <application>Gpt</application> channel can be configured in "one-shot mode" or "continuous mode".
+        Gpt Channel mode has to be configured to GPT_CH_MODE_ONESHOT, because when the timer reaches the target
+        the timer will expire and maintain its timer value unchanged, until the next Gpt_StartTimer() function call.   
+      </rationale>
+    </specobject>
+    
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0015</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       The <code>GptChannelTickValueMax</code> of the GptChannelConfiguration channel,
+       configured as StbMGptTimerRef, shall be configured to a value greater or equal to
+       the value of StbMTimerStartThreshold converted in ticks.
+      </description>
+      <rationale>
+        For each <application>Gpt</application> channel a <code>GptChannelTickValueMax</code> can be configured.
+        <code>GptChannelTickValueMax</code> parameter shall be configured to a value greater or equal to StbMTimerStartThreshold converted into ticks,
+        because the <application>Gpt</application> module shall be able to count the ticks until expiration time.
+        Expiration time shall not exceed the maximum timer resolution.
+      </rationale>
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0016</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       The <code>GptChannelTickFrequency</code> of the GptChannelConfiguration channel,
+       configured as StbMGptTimerRef, shall be configured to have a tick duration of one micro second.
+      </description>
+      <rationale>
+        For each <application>Gpt</application> channel a <code>GptChannelTickFrequency</code> can be configured.
+        <code>GptChannelTickFrequency</code> parameter shall be configured to have a tick duration of one micro second.
+        See ECUC_StbM_00039 requirement.
+      </rationale>
+    </specobject>
+    
+
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0017</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       If <code>Gpt_ValueType</code> is defined to be of type uint16, 
+       StbMTimerStartThreshold shall be configured to a maximum value of 0.065535 seconds.
+      </description>
+      <rationale>
+        If <code>Gpt_ValueType</code> is defined to uint16, StbMTimerStartThreshold is limited to 0.065535 seconds,
+        in order for Gpt to be able to count the maximum difference of time with which it can be called (65535 ticks).
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0018</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       The channel reference of the GptChannelConfiguration channel,
+       configured as StbMGptTimerRef, shall NOT be used for ANY other purposes within the ECU configuration!
+      </description>
+      <rationale>
+        StbM uses this Gpt channel to monitor notification customers which can not be interrupted by any means.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0019</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       The length of the NvM block used to store the <code>StbM_TimeStamps[].globalTime</code> variable
+       should be double checked. The Service Needs Wizard automatically generates it to 16, which includes
+       padding.
+      </description>
+      <rationale>
+        Depending on compiler options, padding might not be included, so the length will differ.
+      </rationale>
+    </specobject>
+    
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0020</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+        If Offset Correction is used, StbMOffsetCorrectionAdaptionInterval should have a value which is smaller
+        than the synchronization period, but big enough to achieve the desired smoothies of the time from the
+        application point of view.
+        Example: if the slave is synchronized every second, StbMOffsetCorrectionAdaptionInterval could be 0.7s.
+      </description>
+      <rationale>
+        Depending on compiler options, padding might not be included, so the length will differ.
+      </rationale>
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0021</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+       For the different Synchronized/Offset StbM time base roles, the following rules must be followed:
+       <itemizedlist>
+          <listitem>
+            Master: StbMAllowSystemWideGlobalTimeMaster should be set to TRUE
+          </listitem>
+          <listitem>
+            Gateway: StbMAllowSystemWideGlobalTimeMaster should be set to TRUE and StbMIsSystemWideGlobalTimeMaster should be FALSE
+          </listitem>
+          <listitem>
+            Slave: StbMAllowSystemWideGlobalTimeMaster should be set to FALSE and StbMIsSystemWideGlobalTimeMaster should be FALSE
+          </listitem>
+       </itemizedlist>
+       For Pure StbM time bases, the following rules must be followed:
+          <itemizedlist> 
+           <listitem>
+            Master: StbMAllowSystemWideGlobalTimeMaster should be set to TRUE
+          </listitem>
+          </itemizedlist> 
+      </description>
+      <rationale>
+        To assure that the correct Rte C-S Interfaces are generated with respect to the time base role.
+      </rationale>
+    </specobject>
+    
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0022</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+        The SCHM_STBM_EXCLUSIVE_AREA_2 exclusive area which encapsulates the Time Recording feature and ensures that the Time Recording blocks are sent to the Rte
+        without interruption, must be configured as follows:
+        <itemizedlist> 
+          <listitem>
+           If the call to StbM_BusSetGlobalTime API (which is where the time recording blocks are recorded) is performed in the context of that EcucPartition on which the MF is mapped to,
+           then this exclusive area must be configured to "interrupts disabled/suspended" mechanism.
+          </listitem>
+          <listitem>
+           If the call to StbM_BusSetGlobalTime API (which is where the time recording blocks are recorded) is performed in the context of an EcucPartition which is not mapped to the MF,
+           then this exclusive area must be configured to "spin lock" mechanism.
+          </listitem>
+        </itemizedlist> 
+      </description>
+      <rationale>
+        Only one core could be locked, and not all of them.
+      </rationale>
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0023</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+        If Multicore Distribution is supported in StbM, please make sure that the EcucPartition on which StbM_MainFunction() is mapped,
+        is the first entry in StbMEcucPartitionRefList list.
+      </description>
+      <rationale>
+        In StbM module there are APIs which are not multicore capable and they need to be available
+        only on that EcucPartition on which the StbM _MainFunction is mapped to.
+      </rationale>
+      
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0024</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+        StbM provides Multicore Distribution in 2 cases:
+         1. Clients from different COREs want to Set/Get data from StbM, by calling Client-Server Interfaces generated by Rte
+         2. [bus]TSyn modules from different COREs want to Set/Get data from StbM, by calling StbM's APIs
+         
+        For the 1'st case, Multicore Distribution is supported in StbM, only if StbMRteUsage is also enabled.
+        For the 2'nd case, Multicore Distribution is supported in StbM, even if StbMRteUsage is disabled.
+        
+        Note:
+        All mentioned above is true as long as the exclusive areas are appropriately configured.
+      </description>
+      <rationale>
+        Rationale applying to 1'st case:
+          In StbM there are APIs which can be reached through Client-Server Interfaces generated by RTE.
+          Those interfaces are generated only if StbMRteUsage is enabled.
+          Note:
+          All mentioned above is true as long as the exclusive areas are appropriately configured.
+        Rationale applying to 2'nd case:
+          In StbM there are also APIs which do not need to be reached through any Client-Server Interfaces generated by RTE.
+          Those interfaces are provided by StbM and can be called directly by [bus]TSyn modules, even if StbMRteUsage is disabled.
+          Note:
+          All mentioned above is true as long as the exclusive areas are appropriately configured.
+      </rationale>
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0025</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+        In case of Multicore Distribution the StbM_MainFunction shall be mapped, only on the first EcucPartition from the StbMEcucPartitionRefList list.
+        The rest of StbM_MainFunction Dummies (that correspond to the other partitions), shall be ignored during configuration.
+      </description>
+      <rationale>
+        StbM does not support multiple MainFunction usage.
+      </rationale>
+    </specobject>
+    
+    <specobject>
+      <id>lim.StbM.EB_INTREQ_StbM_0026</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+        Make sure that there are suficient stack resources for
+        Time Recording blocks (configured in StbMSyncTimeRecordTableBlockCount) and
+        for Time Validation blocks (configured in StbMTimeValidationRecordTableBlockCount).
+      </description>
+      <rationale>
+        StbM copies Time Recording / Time Validation blocks from a global variable to a local one (on the stack)
+        and passes the copied blocks (from the local variable) to the Application, thought C-S Interface.
+      </rationale>
+    </specobject>
+
+  </specobjects>
+</specdocument>

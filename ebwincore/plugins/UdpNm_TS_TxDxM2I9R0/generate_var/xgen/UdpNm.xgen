@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module UdpNm?>
+
+<!-- !LINKSTO UdpNm.Format.VCC-62,1 -->
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!AUTOSPACING!]
+[!INCLUDE "../../generate_macros/UdpNm_Checks.m"!][!//
+[!SELECT "UdpNmGlobalConfig/*[1]"!]
+[!VAR "UdpNmChannelCount"="num:i(count(UdpNmChannelConfig/*))"!]
+[!IF "as:modconf('UdpNm')[1]/UdpNmGeneral/UdpNmPnSupported = 'true'"!]
+  [!VAR "UdpNm_Pn_Eira_Timer_Arr_Size"="num:i(node:value(UdpNmPnInfo/UdpNmPnInfoLength) * 8)"!]
+  [!VAR "UdpNmPnInfoLength"="num:i(node:value(UdpNmPnInfo/UdpNmPnInfoLength))"!]
+[!ENDIF!]
+[!ENDSELECT!]
+
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "UDPNM_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "UDPNM_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat(name(as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]),'_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="name(as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1])"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+<!-- !LINKSTO UdpNm.EB.PBSelectable.FileName,1 -->
+*/!][!VAR "UDPNM_PBCFG_C_VARIANT"="concat('UdpNm',$UDPNM_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "UDPNM_PBCFG_H_VARIANT"="concat('UdpNm',$UDPNM_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "UDPNM_CONFIG_LAYOUT_VARIANT"="concat('UdpNm',$UDPNM_VARIANT_SUFIX,'ConfigLayout')"!]
+<!-- !LINKSTO UdpNm.EB.PBSelectable.TypeName,1 -->
+[!/* Current Config Type variant based
+*/!][!VAR "UDPNM_CONFIGLAYOUTTYPE_VARIANT"="concat('UdpNm',$UDPNM_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "UDPNM_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('UdpNm',$UDPNM_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+
+
+[!CODE!]
+
+
+  <!-- This is the configuration of module UdpNm -->
+  <module name="UdpNm" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+[!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+      <?artifact directory="include" file="UdpNm_Types.h" type="types-h" generate="yes"?>
+[!ELSE!]
+      <?artifact directory="include" file="UdpNm_Types.h" type="types-h" generate="no"?>
+[!ENDIF!]
+<!-- !LINKSTO UdpNm.Impl.Relocatable,1 -->
+[!VAR "relocatable" = "'false'"!]
+[!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('UdpNm')) = 'true'"!]
+  [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!]
+    [!VAR "relocatable" = "'true'"!]
+  [!ENDIF!]
+[!ELSE!]
+    [!IF "UdpNmGeneral/UdpNmRelocatablePbcfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+    [!ENDIF!]
+[!ENDIF!]
+
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <!-- !LINKSTO SWS_UdpNm_00202,1, SWS_UdpNm_00308,1 -->
+      <!-- This is the type definition of the root structure -->
+      <type name="UdpNm_ConfigType">
+        <struct>
+          <!-- !LINKSTO UdpNm.Impl.Hash,1, UdpNm.EB.PBCFGM106,1 -->
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform"/>
+          <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration"/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration"/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate Public information"/>
+          <member name="UdpNm_ChannelData" type="UdpNm_ChannelDataType" count="[!"$UdpNmChannelCount"!]" comment="UdpNm_ChannelData"/>
+          <member name="BufferOffsets" type="uint32" count="[!"$UdpNmChannelCount"!]" comment="BufferOffsets array"/>
+[!IF "as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmPassiveModeEnabled = 'false'"!]
+          <member name="TxBufferOffset" type="uint32" comment="Offset where Tx buffers starts"/>
+[!ENDIF!]
+          <member name="PbRamSize" type="uint32" comment="Buffer size needed by TX and RX pdus"/>
+[!IF "as:modconf('UdpNm')[1]/UdpNmGeneral/UdpNmPnSupported = 'true'"!]
+          <member name="PnFilterMask" type="uint8" count="[!"$UdpNmPnInfoLength"!]" comment="PnFilterMask array"/>
+          <!-- !LINKSTO SWS_UdpNm_00345,2, UdpNm.ASR431.SWS_UdpNm_00345,1 -->
+          <member name="EiraTimerMap" type="uint8" count="[!"$UdpNm_Pn_Eira_Timer_Arr_Size"!]" comment="EiraTimerMap array"/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="UdpNm_ChannelDataType">
+        <struct>
+          <member name="RxPduLength" type="PduLengthType" comment="PduLength array"/>
+[!IF "as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmComUserDataSupport = 'true'"!]
+          <member name="UserTxConfPduId" type="PduIdType" comment="UserTxConfPduId array"/>
+          <member name="UserRxPduId" type="PduIdType" comment="UserRxPduId"/>
+[!ENDIF!]
+[!IF "UdpNmGlobalConfig/*[1]/UdpNmPassiveModeEnabled = 'false'"!]
+          <member name="TxPduId" type="PduIdType" comment="Pdu ID if transmit PDU (from SoAd)"/>
+[!ENDIF!]
+[!IF "UdpNmGlobalConfig/*[1]/UdpNmPassiveModeEnabled = 'false'"!]
+          <!--  !LINKSTO UdpNm.EB.ECUC_UdpNm_00029,1 -->
+          <member name="MsgCycleOffset" type="uint16" comment="Message cycle offset"/>
+[!ENDIF!]
+[!IF "count(as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmChannelConfig/*[UdpNmNodeIdEnabled='true']) > 0"!]
+          <member name="UdpNmNodeId" type="uint8" comment="NM node identifier"/>
+[!ENDIF!]
+[!IF "as:modconf('UdpNm')[1]/UdpNmGeneral/UdpNmPnSupported = 'true'"!]
+          <member name="PnEnabled" type="boolean" comment="PnEnabled configuration for each channel"/>
+          <!-- !LINKSTO UdpNm.Config.UdpNmPnHandleMultipleNetworkRequests,1 -->
+          <member name="PnHandleMultipleNetworkRequests" type="boolean" comment="PnHandleMultipleNetworkRequests configuration for each channel"/>
+[!ENDIF!]
+[!IF "as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmComUserDataSupport = 'true'"!]
+          <member name="UserRxPduEnabled" type="boolean" comment="Enable of UserRxPduId"/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <!-- !LINKSTO UdpNm.Format.C,1, EB_SWS_UdpNm_00081,1 -->
+      <?artifact directory="include" file="[!"$UDPNM_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$UDPNM_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of UdpNm_Pbcfg.h and UdpNm_Types.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+      <type name="[!"$UDPNM_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="UdpNm_ConfigType"/>
+        </struct>
+      </type>
+
+      <type name="[!"$UDPNM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$UDPNM_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="UDPNM_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialisation:
+          Specifies the content of UdpNm_Pbcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="[!"$UDPNM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]" name="[!"$UDPNM_CONFIG_LAYOUT_VARIANT"!]">
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+
+        <!-- UdpNm_ConfigType -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('UdpNm')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('UdpNm')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('UdpNm')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('UdpNm')[1]/CommonPublishedInformation/Release))"!]</int>
+          </field>
+          <field>
+[!SELECT "UdpNmGlobalConfig/*[1]"!]
+[!LOOP "node:order(UdpNmChannelConfig/*,'UdpNmRxPdu/*[1]/UdpNmRxPduId')"!]
+            <field>
+              <field>
+                <int>[!"num:i(as:ref(UdpNmRxPdu/*[1]/UdpNmRxPduRef)/PduLength)"!]</int>
+              </field> <!-- PduLength -->
+[!IF "as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmComUserDataSupport = 'true'"!]
+              <field>
+                <int>[!//
+[!IF "node:exists(UdpNmUserDataTxPdu)"!][!/*
+  */!][!"num:i(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/
+       PduRDestPdu/*[PduRDestPduRef=node:current()/UdpNmUserDataTxPdu/UdpNmTxUserDataPduRef]/
+       PduRDestPduHandleId)"!][!//
+[!ELSE!][!/*
+  */!]0[!//
+[!ENDIF!]</int>
+              </field> <!-- UserTxConfPduId -->
+              <field>
+                <int>[!//
+[!IF "node:exists(UdpNmUserDataRxPdu)"!][!/*
+  */!][!"as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/
+       PduRSrcPdu[PduRSrcPduRef=node:current()/UdpNmUserDataRxPdu/UdpNmRxUserDataPduRef]/
+       PduRSourcePduHandleId"!][!//
+[!ELSE!][!/*
+  */!]0[!//
+[!ENDIF!]</int>
+               </field> <!-- UserRxPduId -->
+[!ENDIF!]
+[!IF "as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmPassiveModeEnabled = 'false'"!]
+               <field>
+                 <!-- get Tx PduId by EcuC reference from SoAd, existence is checked in xdm -->
+                 <int>[!"as:modconf('SoAd')[1]/SoAdConfig/*/SoAdPduRoute/*[SoAdTxUpperLayerType='IF' and SoAdTxPduRef = node:current()/UdpNmTxPdu/UdpNmTxPduRef]/SoAdTxPduId"!]</int>
+               </field> <!-- TxPduId -->
+[!ENDIF!]
+[!IF "as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmPassiveModeEnabled = 'false'"!]
+               <field>
+                 <!-- Message cycle offset -->
+                 <int>[!"num:i((UdpNmMsgCycleOffset * 1000) div (../../UdpNmMainFunctionPeriod * 1000))"!]</int>
+               </field> <!-- MsgCycleOffset -->
+[!ENDIF!]
+[!IF "count(as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmChannelConfig/*[UdpNmNodeIdEnabled='true']) > 0"!]
+              <field>
+                <int>
+[!IF "node:value(./UdpNmNodeIdEnabled)='true'"!][!/*
+  */!][!"num:i(./UdpNmNodeId)"!][!//
+[!ELSE!][!/*
+  */!]255[!//
+[!ENDIF!]</int>
+              </field> <!-- UdpNmNodeId -->
+[!ENDIF!]
+[!IF "as:modconf('UdpNm')[1]/UdpNmGeneral/UdpNmPnSupported = 'true'"!]
+              <field>
+                <int>[!//
+[!IF "node:exists(./UdpNmPnEnabled)"!]
+  [!IF "node:value(./UdpNmPnEnabled)='true'"!][!/*
+    */!]1[!//
+  [!ELSE!][!/*
+    */!]0[!//
+  [!ENDIF!]
+[!ELSE!]
+0[!//
+[!ENDIF!]</int>
+              </field> <!-- PnEnabled -->
+              <field>
+                <int>[!//
+[!IF "node:exists(./UdpNmPnHandleMultipleNetworkRequests)"!]
+  [!IF "node:value(./UdpNmPnHandleMultipleNetworkRequests)='true'"!][!/*
+    */!]1[!//
+  [!ELSE!][!/*
+    */!]0[!//
+  [!ENDIF!]
+[!ELSE!]
+0[!//
+[!ENDIF!]</int>
+              </field> <!-- PnHandleMultipleNetworkRequests -->
+[!ENDIF!]
+[!IF "as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmComUserDataSupport = 'true'"!]
+              <field>
+                <int>[!//
+  [!IF "node:exists(UdpNmUserDataRxPdu)"!][!/*
+    */!]1[!//
+  [!ELSE!][!/*
+    */!]0[!//
+  [!ENDIF!]</int>
+              </field> <!-- UserRxPduEnabled -->
+[!ENDIF!]
+            </field>
+[!ENDLOOP!]
+[!ENDSELECT!]
+          </field> <!-- UdpNm_ChannelData -->
+[!VAR "Offset" = "0"!][!//
+          <field>
+[!LOOP "node:order(as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmChannelConfig/*,'UdpNmRxPdu/*[1]/UdpNmRxPduId')"!]
+            <field>
+              <int>[!"num:i($Offset)"!]</int>
+            </field>
+[!VAR "Offset" = "$Offset + num:i(node:ref(UdpNmRxPdu/*[1]/UdpNmRxPduRef)/PduLength)"!]
+[!ENDLOOP!]
+          </field> <!-- BufferOffsets -->
+[!IF "as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmPassiveModeEnabled = 'false'"!]
+          <field>
+            <int>[!"num:i($Offset)"!]</int>
+          </field>  <!-- TxBufferOffset -->
+[!ENDIF!]
+[!VAR "CalculatedPbRamSize" = "0"!][!//
+[!LOOP "node:order(as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmChannelConfig/*,'UdpNmRxPdu/*[1]/UdpNmRxPduId')"!]
+  [!VAR "CalculatedPbRamSize" = "$CalculatedPbRamSize + num:i(node:ref(UdpNmRxPdu/*[1]/UdpNmRxPduRef)/PduLength)"!]
+[!ENDLOOP!]
+[!IF "as:modconf('UdpNm')[1]/UdpNmGlobalConfig/*[1]/UdpNmPassiveModeEnabled = 'false'"!]
+  [!VAR "CalculatedPbRamSize" = "$CalculatedPbRamSize * 2"!]
+[!ENDIF!]
+          <field>
+            <int>[!"num:i($CalculatedPbRamSize)"!]</int>
+          </field>  <!-- PbRamSize -->
+[!IF "as:modconf('UdpNm')[1]/UdpNmGeneral/UdpNmPnSupported = 'true'"!]
+          <field>
+  [!SELECT "UdpNmGlobalConfig/*[1]/UdpNmPnInfo"!]
+    [!FOR "bytePos"="0" TO "UdpNmPnInfoLength - 1"!]
+            <field>
+              <int>[!"num:i(UdpNmPnFilterMaskByte/*[UdpNmPnFilterMaskByteIndex = $bytePos]/UdpNmPnFilterMaskByteValue)"!]</int>
+            </field>
+    [!ENDFOR!]
+  [!ENDSELECT!]
+          </field> <!-- PnFilterMask -->
+          <field>
+  [!VAR "Index" = "0"!]
+  [!SELECT "UdpNmGlobalConfig/*[1]"!]
+  [!LOOP "node:order(UdpNmPnInfo/UdpNmPnFilterMaskByte/*,'UdpNmPnFilterMaskByteIndex')"!]
+    [!FOR "BitPos" = "0" TO "7"!]
+            <field>
+              <int>[!//
+      [!IF "bit:getbit(UdpNmPnFilterMaskByteValue, $BitPos) = 'true'"!]
+        [!"num:i($Index)"!]
+        [!VAR "Index" = "$Index + 1"!]
+      [!ELSE!][!/*
+        */!]255[!//
+      [!ENDIF!]</int>
+            </field>
+    [!ENDFOR!]
+  [!ENDLOOP!]
+  [!ENDSELECT!]
+          </field> <!-- EiraTimerMap -->
+[!ENDIF!]
+        </field> <!-- UdpNm_ConfigType -->
+
+      </instance> <!-- UdpNm_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <!-- The xpointer atribute shouldrather be something like "xpointer(//module[name='...'])",
+       but unfortunately our XML parser does not support the XPointer xpointer() Scheme.
+       This is also the reason why all these xincludes must be at the end of the file rather
+       than at the beginning, because that way the other xgen files that include this one can
+       be sure that "element(/1/1)" is the UdpNm module element.
+  -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>
+
+[!ENDCODE!]

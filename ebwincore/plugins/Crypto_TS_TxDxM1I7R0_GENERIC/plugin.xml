@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR Crypto_TS_TxDxM1I7R0_GENERIC plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Crypto_TS_TxDxM1I7R0_GENERIC_ModuleId"
+             name="Crypto_TS_TxDxM1I7R0_GENERIC Module">
+
+    <module id="Crypto_TS_TxDxM1I7R0_GENERIC"
+            label="Crypto"
+            mandatory="false"
+            allowMultiple="true"
+            description="ACG-CRYPTODRIVERSOFTWARE: Crypto Driver"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="7"
+            swVersionPatch="42"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="3"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="3"
+            relVersionPatch="0"
+            categoryType="Crypto"
+            categoryLayer="Crypto Drivers"
+            categoryCategory="Crypto Drivers"
+            categoryComponent="ECUC">
+
+
+      <cluster name="Crypto"/>
+      
+
+
+    </module>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Crypto_TS_TxDxM1I7R0_GENERIC_ConfigId"
+             name="Crypto_TS_TxDxM1I7R0_GENERIC Configuration">
+    <configuration moduleId="Crypto_TS_TxDxM1I7R0_GENERIC">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Crypto.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the pre-configuration Crypto_preconf -->
+        <resource value="config_ext/Crypto_preconf.xdm" type="xdm" id="res_Crypto_preconf"/>
+        <preconfig
+          name="Crypto_preconf"
+          default="true"
+          description="Crypto pre-configuration"
+          resourceId="res_Crypto_preconf"
+          path="ASPath:/TS_TxDxM1I7R0_GENERIC/Crypto_preconf"/>
+
+        <!-- register the recommended configuration Crypto_recconf -->
+        <resource value="config_ext/Crypto_recconf.xdm" type="xdm" id="res_Crypto_recconf"/>
+        <recconfig
+          name="Crypto_recconf"
+          default="true"
+          description="Crypto recommended configuration"
+          resourceId="res_Crypto_recconf"
+          path="ASPath:/TS_TxDxM1I7R0_GENERIC/Crypto_recconf"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM1I7R0_GENERIC/Crypto"/>
+      </data>
+
+      <editor id="Crypto_TS_TxDxM1I7R0_GENERIC_EditorId"
+              label="Default"
+              tooltip="ACG-CRYPTODRIVERSOFTWARE: Crypto Driver">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM1I7R0_GENERIC/Crypto"/>
+          <parameter name="title" value="Crypto"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+             id="Crypto_TS_TxDxM1I7R0_GENERIC_GeneratorId"
+             name="Crypto_TS_TxDxM1I7R0_GENERIC Generator">
+    <generator class="dreisoft.tresos.generator.ng.api.NGGenerator"
+               id="Crypto_TS_TxDxM1I7R0_GENERIC_NGGeneratorId"
+               moduleId="Crypto_TS_TxDxM1I7R0_GENERIC">
+      <parameter mode="generate_swcd" name="buildfile" value="resources/ng_task_build_swcd.xml"/>
+      <parameter mode="generate"      name="buildfile" value="resources/ng_task_build_src.xml"/>
+      <parameter mode="verify_swcd"   name="buildfile" value="resources/ng_task_build_swcd_vrfy.xml"/>
+      <parameter mode="verify"        name="buildfile" value="resources/ng_task_build_src_vrfy.xml"/>
+    </generator>
+  </extension>
+
+
+
+
+
+
+
+  <extension point="org.eclipse.help.toc">
+    <toc file="anchors.xml" primary="true" />
+    <toc file="$nl$/toc.xml" primary="false"/>
+  </extension>
+
+
+
+
+</plugin>

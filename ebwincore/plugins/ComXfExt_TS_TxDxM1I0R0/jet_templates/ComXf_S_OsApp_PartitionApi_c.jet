@@ -1,0 +1,133 @@
+<%@ jet package="eb.tresos.comxf.generated.jet" class="ComXf_S_OsApp_PartitionApi_c" skeleton="File.skeleton"
+    imports="dreisoft.tresos.lib2.api.util.Pair
+             eb.tresos.comxf.generator.intermediate.TransformationFunction
+             eb.tresos.comxf.generator.intermediate.PrimitiveDataElement
+             eb.tresos.comxf.generator.intermediate.GeneratorPartitionHandler
+             eb.tresos.comxf.generator.output.PrimitiveElementGetter
+             eb.tresos.comxf.generator.output.NameGenerator
+             eb.tresos.xfrm.api.generator.Context
+             java.util.List"
+%>
+<%
+    JavaGenContext ctx = null;
+    try {
+        ctx = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final Context XfrmGenContext = (Context)ctx.gen.getVariable( Context.ARG_NAME, Context.class, null );
+    final Model model = (Model)ctx.gen.getVariable( Model.ARG_NAME, Model.class, null );
+    final GeneratorPartitionHandler partitionHandler = model.getGeneratorPartitionHandler();
+%>
+<%@ include file="head.c.inc" %>
+
+/* MISRA-C:2012 Deviation List
+ *
+ * MISRAC2012-1) Deviated Rule: 11.3 (required)
+ * A cast shall not be performed between a pointer to
+ * object type and a pointer to a different object type.
+ *
+ * Reason:
+ * In order to keep up the IEEE754 memory encoding the
+ * used E2E float32 or float64 un-/packing macros are
+ * mapping onto the E2E uint32 or uint64 un-/packing
+ * macros. Those macros implement a pointer cast to uint32
+ * or uint64 and a dereferenced pointer of the float data.
+ * Otherwise the float would be casted explicit to uint32
+ * or uint64 which leads to truncation of the float value.
+ *
+ * MISRAC2012-2) Deviated Rule: 10.8 (required)
+ * The value of a composite expression shall not be cast to
+ * a different essential type category.
+ *
+ * Reason:
+ * The E2E un-/packing macros for signed data types implementing
+ * an explicit unsigned cast of the same type. This is done
+ * because the E2E macros using a right shift for the serialization.
+ * A right shift performed on objects with a signed data type leads to
+ * implementation specific behavior.
+ *
+ */
+
+/*==================[includes]==============================================*/
+
+#include <ComXf_S<%= partitionHandler.getPartitionInfix() %>_PartitionApi.h>        /* Generated module API */
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+#define COMXF_START_SEC_CODE
+#include <ComXf_MemMap.h>
+
+/* Deviation MISRAC2012-1, MISRAC2012-2 <START> */
+
+<% if (!partitionHandler.getTransformationFunctions(partitionHandler.getPartitionName()).isEmpty()) { %>
+/*------------- C O M   b a s e d   s e r i a l i z a t i o n --------------*/
+<% } %>
+<% for (final TransformationFunction function : partitionHandler.getTransformationFunctions(partitionHandler.getPartitionName())) {
+   final long signalGroupBufferSize = function.getBufferSize();
+   final long signalGroupStartingBitPosition = function.getBitOffset();
+   final PrimitiveElementGetter getter = new PrimitiveElementGetter(function.getData());
+   final List<Pair<String, PrimitiveDataElement>> elementList = getter.getPrimitiveElements();
+   %>
+COMXF_S_DEF_FUNC_XF_START(<%= function.getName() %>, <%= function.getDataTypename() %>, <%= signalGroupBufferSize %>U, <%= function.getUnusedBitPattern() %>U)
+<% for(Pair<String, PrimitiveDataElement> element : elementList) {
+        final PrimitiveDataElement primitiveElement = element.getLast();
+        final String typeAndEndian = NameGenerator.makeTypeAndEndianness( primitiveElement, XfrmGenContext );
+        final long occupiedBytes = primitiveElement.getEndianness().getBytesOccupiedBySignal( primitiveElement.getOffset(), primitiveElement.getBitSize() );
+        final long offset = primitiveElement.getOffset() - signalGroupStartingBitPosition;
+ %>
+COMXF_S_PACKSIG(<%= NameGenerator.makeDataElementPtrTx(element.getFirst()) %>, <%= offset %>U, <%= primitiveElement.getBitSize() %>U, <%= typeAndEndian %>, <%= occupiedBytes %>U);
+<%        } %>
+COMXF_S_DEF_FUNC_XF_STOP
+
+<% } %>
+
+<% if (!partitionHandler.getInvTransformationFunctions(partitionHandler.getPartitionName()).isEmpty()) { %>
+/*----------- C O M   b a s e d   d e s e r i a l i z a t i o n ------------*/
+
+<% } %>
+<% for (final TransformationFunction function : partitionHandler.getInvTransformationFunctions(partitionHandler.getPartitionName())) {
+   final long signalGroupBufferSize = function.getBufferSize();
+   final long signalGroupStartingBitPosition = function.getBitOffset();
+   final PrimitiveElementGetter getter = new PrimitiveElementGetter(function.getData());
+   final List<Pair<String, PrimitiveDataElement>> elementList = getter.getPrimitiveElements();
+   %>
+COMXF_S_DEF_FUNC_INVXF_START(<%= function.getName() %>, <%= function.getDataTypename() %>, <%= signalGroupBufferSize %>U)
+<% for(Pair<String, PrimitiveDataElement> element : elementList) {
+       final PrimitiveDataElement primitiveElement = element.getLast();
+       final String typeAndEndian = NameGenerator.makeTypeAndEndianness( primitiveElement, XfrmGenContext );
+       final long occupiedBytes = primitiveElement.getEndianness().getBytesOccupiedBySignal( primitiveElement.getOffset(), primitiveElement.getBitSize() );
+       final long offset = primitiveElement.getOffset() - signalGroupStartingBitPosition;
+%>
+COMXF_S_UNPACKSIG(<%= NameGenerator.makeDataElementPtrRx(element.getFirst()) %>, <%= offset %>U, <%= primitiveElement.getBitSize() %>U, <%= typeAndEndian %>, <%= occupiedBytes %>U);
+<% } %>
+COMXF_S_DEF_FUNC_INVXF_STOP
+
+<% } %>
+
+/* Deviation MISRAC2012-1, MISRAC2012-2 <STOP> */
+
+#define COMXF_STOP_SEC_CODE
+#include <ComXf_MemMap.h>
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.c.inc" %>

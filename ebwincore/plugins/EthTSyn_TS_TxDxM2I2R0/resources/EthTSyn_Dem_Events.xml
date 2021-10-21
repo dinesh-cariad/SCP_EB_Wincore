@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dem:events xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd"
+    xmlns:dem="http://www.tresos.de/_project/AutoCore/dem.events_1.xsd">
+
+
+    <event name="ETHTSYN_E_SYNC_FAILED"
+           base="as:modconf('EthTSyn')[1]/EthTSynGlobalTimeDomain/*[node:containsValue(./EthTSynPortRole, 'EthTSynGlobalTimeSlave')]" 
+           suffix="concat( '_',node:ref(./EthTSynGlobalTimeEthIfRef)/EthIfCtrlIdx)">
+        <enable type="XPATH"
+            value="(as:modconf('EthTSyn')[1]/EthTSynReportError/EthTSynSyncFailedReportError='DEM') and equals(node:name(node:ref(./EthTSynPortRole/EthTSynDemEventParameterRefs/ETHTSYN_E_SYNC_FAILED)), concat( 'ETHTSYN_E_SYNC_FAILED_',node:ref(./EthTSynGlobalTimeEthIfRef)/EthIfCtrlIdx))" />
+        <updateReference
+            value="./EthTSynPortRole/EthTSynDemEventParameterRefs/ETHTSYN_E_SYNC_FAILED" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceCounterBased" />
+        <counterDecrementStepSize value="1" />
+        <counterIncrementStepSize value="1" />
+        <counterJumpDown value="true" />
+        <counterJumpDownValue value="0" />
+        <counterJumpUp value="true" />
+        <counterFailedThreshold value="12" />
+        <counterPassedThreshold value="-1" />
+    </event>
+
+    <event name="ETHTSYN_E_PDELAY_FAILED"   
+         base="as:modconf('EthTSyn')[1]/EthTSynGlobalTimeDomain/*[node:containsValue(./EthTSynPortRole, 'EthTSynGlobalTimeSlave')]" 
+        suffix="concat( '_',node:ref(./EthTSynGlobalTimeEthIfRef)/EthIfCtrlIdx)">
+        <enable type="XPATH"
+            value="(as:modconf('EthTSyn')[1]/EthTSynReportError/EthTSynPdelayFailedReportError='DEM') and equals(node:name(node:ref(./EthTSynPortRole/EthTSynDemEventParameterRefs/ETHTSYN_E_PDELAY_FAILED)), concat( 'ETHTSYN_E_PDELAY_FAILED_',node:ref(./EthTSynGlobalTimeEthIfRef)/EthIfCtrlIdx))" />
+
+        <updateReference
+            value="./EthTSynPortRole/EthTSynDemEventParameterRefs/ETHTSYN_E_PDELAY_FAILED" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceCounterBased" />
+        <counterDecrementStepSize value="1" />
+        <counterIncrementStepSize value="1" />
+        <counterJumpDown value="true" />
+        <counterJumpDownValue value="0" />
+        <counterJumpUp value="true" />
+        <counterFailedThreshold value="6" />
+        <counterPassedThreshold value="-1" />
+    </event>
+    
+    <event name="ETHTSYN_E_UNEXPECTED_SYNC"
+        base="as:modconf('EthTSyn')[1]/EthTSynGlobalTimeDomain/*[node:containsValue(./EthTSynPortRole, 'EthTSynGlobalTimeMaster')]" 
+        suffix="concat( '_',node:ref(./EthTSynGlobalTimeEthIfRef)/EthIfCtrlIdx)">
+        <enable type="XPATH"
+            value="(as:modconf('EthTSyn')[1]/EthTSynReportError/EthTSynUnexpectedSyncReportError='DEM') and equals(node:name(node:ref(./EthTSynPortRole/EthTSynDemEventParameterRefs/ETHTSYN_E_UNEXPECTED_SYNC)), concat( 'ETHTSYN_E_UNEXPECTED_SYNC_',node:ref(./EthTSynGlobalTimeEthIfRef)/EthIfCtrlIdx))" />
+        <updateReference
+            value="./EthTSynPortRole/EthTSynDemEventParameterRefs/ETHTSYN_E_UNEXPECTED_SYNC" />
+        <diagEventDebounceAlgorithm value="DiagEventDebounceMonitorInternal" />
+    </event>
+
+</dem:events>

@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module EcuM?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!AUTOSPACING!]
+[!NOCODE!]
+
+[!INCLUDE "../../generate_macros/EcuM_Checks.m"!][!//
+
+[!// Determine if the PB configuration shall be relocatable
+[!VAR "relocatable" = "'false'"!]
+[!IF "EcuMGeneral/EcuMRelocatablePbcfgEnable = 'true'"!]
+  [!VAR "relocatable" = "'true'"!]
+[!ENDIF!]
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat(string(name(as:modconf('EcuM')[1]/EcuMConfiguration/*[1])),'_',$postBuildVariant)"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "ECUM_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="string(name(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]))"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "ECUM_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+*/!][!VAR "ECUM_PBCFG_C_VARIANT"="concat('EcuM',$ECUM_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "ECUM_PBCFG_H_VARIANT"="concat('EcuM',$ECUM_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "ECUM_CONFIG_LAYOUT_VARIANT"="concat('EcuM',$ECUM_VARIANT_SUFIX,'Configuration')"!]
+[!/* Current Config Type variant based
+*/!][!VAR "ECUM_CONFIGLAYOUTTYPE_VARIANT"="concat('EcuM',$ECUM_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "ECUM_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('EcuM',$ECUM_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+
+[!SELECT "EcuMConfiguration/*[1]/EcuMCommonConfiguration"!][!//
+[!IF "node:exists(EcuMDriverInitListOne)"!]
+[!VAR "NUM_DRIVERS_INIT_LIST_ONE" = "num:i(count(EcuMDriverInitListOne/EcuMDriverInitItem/*[EcuMEnableDriver = 'true']))"!]
+[!ENDIF!]
+[!IF "node:exists(EcuMDriverRestartList)"!]
+[!VAR "NUM_DRIVERS_RESTART_LIST" = "num:i(count(EcuMDriverRestartList/EcuMDriverInitItem/*[EcuMEnableDriver = 'true']))"!]
+[!ENDIF!]
+[!ENDSELECT!]
+
+[!SELECT "EcuMConfiguration/*[1]"!][!//
+[!VAR "EcuMPeriodMainFunction"="../../EcuMGeneral/EcuMMainFunctionPeriod"!][!//
+[!IF "node:exists(./EcuMFixedConfiguration/EcuMRunMinimumDuration) = 'true'"!][!//
+[!VAR "EcuMRunMinimumDuration"="./EcuMFixedConfiguration/EcuMRunMinimumDuration"!][!//
+[!ENDIF!]
+[!VAR "EcuMDefaultSleepMode"="0"!][!//
+[!VAR "EcuMDefaultResetMode"="0"!][!//
+[!IF "node:refexists(EcuMCommonConfiguration/EcuMDefaultShutdownTarget/EcuMDefaultSleepModeRef)"!][!//
+  [!VAR "EcuMDefaultSleepMode"="as:ref(EcuMCommonConfiguration/EcuMDefaultShutdownTarget/EcuMDefaultSleepModeRef)/EcuMSleepModeId"!][!//
+[!ELSEIF "node:refexists(EcuMCommonConfiguration/EcuMDefaultShutdownTarget/EcuMDefaultResetModeRef)"!][!//
+  [!VAR "EcuMDefaultResetMode"="as:ref(EcuMCommonConfiguration/EcuMDefaultShutdownTarget/EcuMDefaultResetModeRef)/EcuMResetModeId"!][!//
+[!ENDIF!][!//
+[!ENDSELECT!]
+
+[!ENDNOCODE!]
+
+[!SELECT "EcuMConfiguration/*[1]"!]
+  <!-- This is the configuration of module EcuM -->
+  <module name="EcuM" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+    [!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+      <?artifact directory="include" file="EcuM_PbCfgTypes.h" type="types-h" generate="yes" ?>
+    [!ELSE!]
+      <?artifact directory="include" file="EcuM_PbCfgTypes.h" type="types-h" generate="no" ?>
+    [!ENDIF!]
+      <!-- !LINKSTO EcuM.Impl.PBVariant.Relocatable,1 -->
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+      <!-- This is the type definition of the root structure -->
+      <!-- !LINKSTO EcuM4038,1 -->
+      <type name="EcuM_ConfigType">
+        <struct>
+          <!-- !LINKSTO EcuM2801,1 -->
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform"/>
+          <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration"/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration"/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate Public information"/>
+          <member name="DefaultAppMode" type="uint8" comment="The referenced OsDefaultAppMode"/>
+          [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverInitListOne)"!]
+          <member name="PtrDriverInitListOne" type="uint8" comment="Reference to EcuM_ConfigLayoutType.DriverInitListOne">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!ENDIF!]
+          [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverRestartList)"!]
+          <member name="PtrDriverRestartList" type="uint8" comment="Reference to EcuM_ConfigLayoutType.DriverRestartList">
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!ENDIF!]
+          [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverInitListOne)"!]
+          <member name="NumDriversInitListOne" type="uint8" comment="Number of configured drivers in Init Block 1 per variant"/>
+          [!ENDIF!]
+          [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverRestartList)"!]
+          <member name="NumDriversRestartList" type="uint8" comment="Number of configured drivers in the Restart List per variant"/>
+          [!ENDIF!]
+          <member name="DefaultShutdownTarget" type="uint8" comment="The selected EcuM shutdown target"/>
+          <member name="DefaultMode" type="uint8" comment="Mode of the default shutdown target (only required if DefaultShutdownState is equal to ECUM_STATE_SLEEP or ECUM_STATE_RESET)."/>
+          [!IF "node:exists(./EcuMFixedConfiguration/EcuMRunMinimumDuration) = 'true'"!]
+          <member name="RunTimeout" type="uint32" comment="EcuM Fixed Run Timeout"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+      <?artifact directory="include" file="[!"$ECUM_PBCFG_H_VARIANT"!]" type="postbuild-h" generate="yes" ?>
+      <?artifact directory="src" file="[!"$ECUM_PBCFG_C_VARIANT"!]" type="postbuild-c" generate="yes" ?>
+      <!--
+          Type declarations:
+          Specifies the content of EcuM_PBcfg.h and EcuM_CfgTypes.h
+      -->
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+      <type name="[!"$ECUM_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="EcuM_ConfigType"/>
+          [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverInitListOne)"!]
+          <member name="DriverInitListOne" type="uint8" count="[!"$NUM_DRIVERS_INIT_LIST_ONE"!]" comment="Configured Drivers List in Init Block 1"/>
+          [!ENDIF!]
+          [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverRestartList)"!]
+          <member name="DriverRestartList" type="uint8" count="[!"$NUM_DRIVERS_RESTART_LIST"!]" comment="Configured Drivers in the Restart List"/>
+          [!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="[!"$ECUM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$ECUM_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="ECUM_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialization:
+          Specifies the content of EcuM_Pbcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+        <instance type="[!"$ECUM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+               name="[!"$ECUM_CONFIG_LAYOUT_VARIANT"!]">
+
+          <parameter name="postbuild-configuration-name">
+            <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+          </parameter>
+
+          <!-- EcuM_ConfigType -->
+          <field>
+            <field>
+              <int>[!"asc:getPlatformSignature()"!]</int>
+            </field>
+            <field>
+              <int>[!"asc:getConfigSignature(as:modconf('EcuM')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+            </field>
+            <field>
+              <int>[!"asc:getConfigSignature(as:modconf('EcuM')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int>
+            </field>
+            <field>
+              <int>[!"asc:getConfigSignature(node:difference(as:modconf('EcuM')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('EcuM')[1]/CommonPublishedInformation/Release))"!]</int>
+            </field>
+            <field>
+              [!IF "node:exists(as:modconf('EcuM')/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMDefaultAppModeBaseId)"!]
+              [!VAR "AppModeValueCounter" = "node:value(as:modconf('EcuM')/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMDefaultAppModeBaseId)"!]
+              [!ELSE!]
+              [!VAR "AppModeValueCounter" = "0"!]
+              [!ENDIF!]
+              [!VAR "EcuMRefName" = "node:name(node:ref(as:modconf('EcuM')/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMDefaultAppMode))"!]
+              [!SELECT "as:modconf('Os')"!]
+              [!LOOP "OsAppMode/*"!]
+              [!IF "$EcuMRefName = node:name(.)"!]
+                <int>[!"num:i($AppModeValueCounter)"!] </int>
+              [!ENDIF!]
+              [!VAR "AppModeValueCounter" = "num:i(($AppModeValueCounter) + 1)"!]
+              [!ENDLOOP!]
+              [!ENDSELECT!]
+            </field> <!-- OsAppMode -->
+            [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverInitListOne)"!]
+            <field>
+              <ref>
+                <struct-field name="DriverInitListOne"/>
+                <array-field index="0" />
+              </ref>
+            </field> <!-- PtrDriverInitListOne -->
+            [!ENDIF!]
+            [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverRestartList)"!]
+            <field>
+              <ref>
+                <struct-field name="DriverRestartList"/>
+                <array-field index="0" />
+              </ref>
+            </field> <!-- PtrDriverRestartList -->
+            [!ENDIF!]
+            [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverInitListOne)"!]
+            <field>
+              <int>[!"$NUM_DRIVERS_INIT_LIST_ONE"!]</int> <!-- NumDriversInitListOne -->
+            </field> <!-- NumDriversInitListOne -->
+            [!ENDIF!]
+            [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverRestartList)"!]
+            <field>
+              <int>[!"$NUM_DRIVERS_RESTART_LIST"!]</int> <!-- NumDriversRestartList -->
+            </field> <!-- NumDriversRestartList -->
+            [!ENDIF!]
+            <field>
+              [!IF "EcuMCommonConfiguration/EcuMDefaultShutdownTarget/EcuMDefaultState = 'EcuMStateReset'"!]
+                <int>144</int> <!-- ECUM_STATE_RESET -->
+              [!ELSEIF "EcuMCommonConfiguration/EcuMDefaultShutdownTarget/EcuMDefaultState = 'EcuMStateSleep'"!]
+                <int>80</int> <!-- ECUM_STATE_SLEEP -->
+              [!ELSE!]
+                <int>128</int> <!-- ECUM_STATE_OFF -->
+              [!ENDIF!]
+            </field> <!-- DefaultShutdownTarget -->
+            <field>
+              [!IF "node:refexists(EcuMCommonConfiguration/EcuMDefaultShutdownTarget/EcuMDefaultSleepModeRef)"!]
+                <int>[!"num:i($EcuMDefaultSleepMode)"!]</int> <!-- DefaultSleepMode -->
+              [!ELSEIF "node:refexists(EcuMCommonConfiguration/EcuMDefaultShutdownTarget/EcuMDefaultResetModeRef)"!]
+                <int>[!"num:i($EcuMDefaultResetMode)"!]</int> <!-- DefaultResetMode -->
+              [!ELSE!]
+                <int>0</int> <!-- DefaultMode default value -->
+              [!ENDIF!]
+            </field> <!-- DefaultMode -->
+            [!IF "node:exists(./EcuMFixedConfiguration/EcuMRunMinimumDuration) = 'true'"!]
+            <field>
+              <int>[!"num:i($EcuMRunMinimumDuration div $EcuMPeriodMainFunction)"!]</int> <!-- EcuMRunMinimumDuration value -->
+            </field> <!-- EcuMRunMinimumDuration -->
+            [!ENDIF!]
+          </field>  <!-- EcuM_ConfigType -->
+          [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverInitListOne)"!]
+          <!-- DriverInitListOne -->
+          <field>
+            [!LOOP "EcuMCommonConfiguration/EcuMDriverInitListOne/EcuMDriverInitItem/*"!]
+            [!IF "EcuMEnableDriver"!]
+            <field>
+              <int>[!"num:i(@index)"!]</int> <!-- Driver index -->
+            </field>
+            [!ENDIF!]
+            [!ENDLOOP!]
+          </field> <!-- DriverInitListOne -->
+          [!ENDIF!]
+          [!IF "node:exists(EcuMCommonConfiguration/EcuMDriverRestartList)"!]
+          <!-- DriverRestartList -->
+          <field>
+            [!LOOP "EcuMCommonConfiguration/EcuMDriverRestartList/EcuMDriverInitItem/*"!]
+            [!IF "EcuMEnableDriver"!]
+            <field>
+              <int>[!"num:i(@index)"!]</int> <!-- Driver index -->
+            </field>
+            [!ENDIF!]
+            [!ENDLOOP!]
+          </field> <!-- DriverRestartList -->
+          [!ENDIF!]
+        </instance> <!-- EcuM_ConfigLayoutType -->
+      </memory-section>
+    </configuration>
+  </module>
+[!ENDSELECT!]
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <!-- The xpointer atribute shouldrather be something like "xpointer(//module[name='...'])",
+       but unfortunately our XML parser does not support the XPointer xpointer() Scheme.
+       This is also the reason why all these xincludes must be at the end of the file rather
+       than at the beginning, because that way the other xgen files that include this one can
+       be sure that "element(/1/1)" is the EcuM module element.
+  -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>

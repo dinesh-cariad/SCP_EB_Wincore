@@ -1,0 +1,3796 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="backgroundEventInstance" type="backgroundEventInstance"/>
+
+  <xs:element name="dataReceivedEventInstance" type="dataReceivedEventInstance"/>
+
+  <xs:element name="model" type="intermediateModel"/>
+
+  <xs:element name="timingEventInstance" type="timingEventInstance"/>
+
+  <xs:complexType name="intermediateModel">
+    <xs:sequence>
+      <xs:element name="ecuc" type="ecuCDataModelAccessor" minOccurs="0"/>
+      <xs:element name="parameterSoftwareComponents" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="parameterSwc" type="parameterComponentInstance" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="events" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="backgroundEventInstance"/>
+              <xs:element name="bswOperationInvokedEventInstance" type="bswOperationInvokedEventInstance"/>
+              <xs:element ref="dataReceivedEventInstance"/>
+              <xs:element name="dataReceiveErrorEventInstance" type="dataReceiveErrorEventInstance"/>
+              <xs:element name="dataSendCompletedEventInstance" type="dataSendCompletedEventInstance"/>
+              <xs:element name="dataWriteCompletedEventInstance" type="dataWriteCompletedEventInstance"/>
+              <xs:element name="externalTriggerOccurredEventInstance" type="externalTriggerOccurredEventInstance"/>
+              <xs:element name="initEventInstance" type="initEventInstance"/>
+              <xs:element name="internalTriggerOccurredEventInstance" type="internalTriggerOccurredEventInstance"/>
+              <xs:element name="modeSwitchedAckEventInstance" type="modeSwitchedAckEventInstance"/>
+              <xs:element name="modeSwitchEventGroupInstance" type="modeSwitchEventGroupInstance"/>
+              <xs:element name="modeSwitchEventInstance" type="modeSwitchEventInstance"/>
+              <xs:element name="modeSwitchStepFinishedEventInstance" type="modeSwitchStepFinishedEventInstance"/>
+              <xs:element name="operationInvokedEventInstance" type="swcOperationInvokedEventInstance"/>
+              <xs:element name="synchronousServerFinishedEventInstance" type="synchronousServerFinishedEventInstance"/>
+              <xs:element name="asynchronousServerCallReturnsEventInstance" type="asynchronousServerCallReturnsEventInstance"/>
+              <xs:element ref="timingEventInstance"/>
+              <xs:element name="transformerHardErrorEventInstance" type="transformerHardErrorEventInstance"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="applicationDataTypes" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="arrayApplicationDataType" type="arrayApplicationDataType"/>
+              <xs:element name="compoundPrimitiveApplicationDataType" type="compoundPrimitiveApplicationDataType"/>
+              <xs:element name="primitiveApplicationDataType" type="primitiveApplicationDataType"/>
+              <xs:element name="recordApplicationDataType" type="recordApplicationDataType"/>
+              <xs:element name="vSALinearArrayApplicationDataType" type="vsaLinearArrayApplicationDataType"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="bswPartitionRef" type="xs:IDREF" minOccurs="0"/>
+      <xs:element name="cooperativeTaskGroups" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="taskGroup" type="osTaskGroup" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="implementationDataTypes" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="arrayApplicationDataType" type="arrayApplicationDataType"/>
+              <xs:element name="arrayImplementationDataType" type="arrayImplementationDataType"/>
+              <xs:element name="functionImplementationDataType" type="functionImplementationDataType"/>
+              <xs:element name="pointerImplementationDataType" type="pointerImplementationDataType"/>
+              <xs:element name="primitiveImplementationDataType" type="primitiveImplementationDataType"/>
+              <xs:element name="structureImplementationDataType" type="structureImplementationDataType"/>
+              <xs:element name="unionImplementationDataType" type="unionImplementationDataType"/>
+              <xs:element name="voidImplementationDataType" type="voidImplementationDataType"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="osEvents" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="osEvent" type="osEvent" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="partitions" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="partition" type="partition" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ecuCDataModelAccessor">
+    <xs:sequence>
+      <xs:element name="rte" type="rteEcuCAccessor" minOccurs="0"/>
+      <xs:element name="com" type="comEcuCAccessor" minOccurs="0"/>
+      <xs:element name="ldcom" type="ldComEcuCAccessor" minOccurs="0"/>
+      <xs:element name="os" type="osEcuCAccessor" minOccurs="0"/>
+      <xs:element name="schM" type="schMEcuCAccessor" minOccurs="0"/>
+      <xs:element name="xfrm" type="xfrmEcuCAccessor" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rteEcuCAccessor">
+    <xs:sequence>
+      <xs:element name="ASR32RteWrapper" type="xs:boolean"/>
+      <xs:element name="bswOsTask" type="xs:string" minOccurs="0"/>
+      <xs:element name="bswOsTaskPeriod" type="xs:double"/>
+      <xs:element name="bswSendSignalGroupQueueLength" type="xs:long"/>
+      <xs:element name="bswSendSignalQueueLength" type="xs:long"/>
+      <xs:element name="calibrationSupport" type="calibrationSupportType" minOccurs="0"/>
+      <xs:element name="comCbkNotInterruptable" type="xs:boolean"/>
+      <xs:element name="comTasksPresent" type="xs:boolean"/>
+      <xs:element name="dataConsistencyMechanism" type="rteEcuCDataConsistencyMechanismType" minOccurs="0"/>
+      <xs:element name="detUninitCheckEnabled" type="xs:boolean"/>
+      <xs:element name="detUsageEnabled" type="xs:boolean"/>
+      <xs:element name="directReadFromCom" type="xs:boolean"/>
+      <xs:element name="disableInvalidationDataConsistency" type="xs:boolean"/>
+      <xs:element name="executeTransformersDespiteLocalDataQueued" type="xs:boolean"/>
+      <xs:element name="executeTransformersDespiteLocalDataUnqueued" type="xs:boolean"/>
+      <xs:element name="functionElision" type="xs:boolean"/>
+      <xs:element name="generateEmptyStartStopStubs" type="xs:boolean"/>
+      <xs:element name="generateRteFreedomFromInterferenceReviewInstructions" type="xs:boolean"/>
+      <xs:element name="generationPhase" type="generationPhase" minOccurs="0"/>
+      <xs:element name="humanReadableBufferNames" type="xs:boolean"/>
+      <xs:element name="interECUInvalidationHandledByRte" type="xs:boolean"/>
+      <xs:element name="interPartitionCommunication" type="interPartitionCommunication" minOccurs="0"/>
+      <xs:element name="interruptBlockingFunction" type="interruptBlockingFunctionType" minOccurs="0"/>
+      <xs:element name="measurementSupportEnabled" type="xs:boolean"/>
+      <xs:element name="OSEKCompatibilityMode" type="xs:boolean"/>
+      <xs:element name="oneScheduleTablePerPartitionEnabled" type="xs:boolean"/>
+      <xs:element name="oneSendSignalQueuePerCoreEnabled" type="xs:boolean"/>
+      <xs:element name="optimizeCdsGeneration" type="xs:boolean"/>
+      <xs:element name="rteOsScheduleTableActivationMechanism" type="scheduleTableActivation" minOccurs="0"/>
+      <xs:element name="osScheduleTableOffsetSecs" type="xs:double"/>
+      <xs:element name="osScheduleTableUserScheduleTableName" type="xs:string" minOccurs="0"/>
+      <xs:element name="osScheduleTableUserScheduleTableRef" type="xs:string" minOccurs="0"/>
+      <xs:element name="osSupportsSpinlockLockMethod" type="xs:boolean"/>
+      <xs:element name="overrideXfBufferComputation" type="xs:boolean"/>
+      <xs:element name="partitionActiveCheckDisabled" type="xs:boolean"/>
+      <xs:element name="respectConfiguredTaskType" type="xs:boolean"/>
+      <xs:element name="rteDataModelExportEnabled" type="xs:boolean"/>
+      <xs:element name="rteMemoryOptimizationEnabled" type="xs:boolean"/>
+      <xs:element name="rteRipsSupportEnabled" type="xs:boolean"/>
+      <xs:element name="sendSignalQueueStrategy" type="sendSignalQueueStrategy" minOccurs="0"/>
+      <xs:element name="singleScheduleTablePartition" type="xs:string" minOccurs="0"/>
+      <xs:element name="spinlockAllocationStrategy" type="spinlockAllocationStrategy" minOccurs="0"/>
+      <xs:element name="taskChainsPresent" type="xs:boolean"/>
+      <xs:element name="timestampGenerationEnabled" type="xs:boolean"/>
+      <xs:element name="unconnectedRequirePorts" type="unconnectedRequirePortsType" minOccurs="0"/>
+      <xs:element name="vfbTraceEnabled" type="xs:boolean"/>
+      <xs:element name="vfbTraceFunctions" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="vfbTraceFunction" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="comEcuCAccessor">
+    <xs:sequence>
+      <xs:element name="multipleComInstances" type="xs:boolean"/>
+      <xs:element name="rxSignalGroupInfos" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="signalGroupContainer" type="signalGroupContainer" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="rxSignalInfos" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="signalContainer" type="signalContainer" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="txSignalGroupInfos" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="signalGroupContainer" type="signalGroupContainer" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="txSignalInfos" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="signalContainer" type="signalContainer" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="signalGroupContainer">
+    <xs:complexContent>
+      <xs:extension base="comContainer">
+        <xs:sequence>
+          <xs:element name="groupSignalContainers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="signalContainer" type="signalContainer" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="comContainer" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="tx" type="xs:boolean"/>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+          <xs:element name="origin" type="xs:string" minOccurs="0"/>
+          <xs:element name="id" type="xs:long"/>
+          <xs:element name="transformerChain" type="transformerChain" minOccurs="0"/>
+          <xs:element name="partitionRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractUUID" abstract="true">
+    <xs:sequence/>
+    <xs:attribute name="id" type="xs:ID"/>
+  </xs:complexType>
+
+  <xs:complexType name="signalContainer">
+    <xs:complexContent>
+      <xs:extension base="comContainer">
+        <xs:sequence>
+          <xs:element name="iSignalToIPduMapping" type="xs:string" minOccurs="0"/>
+          <xs:element name="signalInitValue" type="xs:string" minOccurs="0"/>
+          <xs:element name="signalInvalidValue" type="xs:string" minOccurs="0"/>
+          <xs:element name="signalLength" type="xs:long" minOccurs="0"/>
+          <xs:element name="bitSize" type="xs:long" minOccurs="0"/>
+          <xs:element name="bitPosition" type="xs:long"/>
+          <xs:element name="metaDataPresent" type="xs:boolean"/>
+          <xs:element name="metaDataRequired" type="xs:boolean"/>
+          <xs:element name="type" type="signalType" minOccurs="0"/>
+          <xs:element name="groupSignal" type="xs:boolean"/>
+          <xs:element name="handleId" type="cDefine" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cDefine">
+    <xs:complexContent>
+      <xs:extension base="cExternalDefine">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cExternalDefine">
+    <xs:complexContent>
+      <xs:extension base="cPrimitiveValue">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cPrimitiveValue">
+    <xs:complexContent>
+      <xs:extension base="abstractCPrimitiveValue">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCPrimitiveValue" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="cValue">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cValue" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="cStatement">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cStatement" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="transformerChain" final="extension restriction">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="chainData" type="chainData" minOccurs="0"/>
+          <xs:element name="transformers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="transformer" type="transformerData" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="executeDespiteDataUnavailability" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="chainData" final="extension restriction">
+    <xs:sequence>
+      <xs:element name="chainName" type="xs:string" minOccurs="0"/>
+      <xs:element name="signalName" type="xs:string" minOccurs="0"/>
+      <xs:element name="signalPath" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="transformerData" final="extension restriction">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="originalDataPolicy" type="originalDataPolicy" minOccurs="0"/>
+          <xs:element name="bufferPolicy" type="bufferPolicy" minOccurs="0"/>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+          <xs:element name="protocol" type="xs:string" minOccurs="0"/>
+          <xs:element name="headerLength" type="xs:long"/>
+          <xs:element name="transformerClass" type="transformerClassEnum" minOccurs="0"/>
+          <xs:element name="transformerPath" type="xs:string" minOccurs="0"/>
+          <xs:element name="transformationTechnology" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="partition">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="comTaskRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="canBeRestarted" type="xs:boolean"/>
+          <xs:element name="coreId" type="xs:long"/>
+          <xs:element name="id" type="xs:int"/>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+          <xs:element name="osApplication" type="xs:string" minOccurs="0"/>
+          <xs:element name="partitionSuffix" type="xs:string" minOccurs="0"/>
+          <xs:element name="softwareComponents" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="nvSwc" type="nvSoftwareComponentInstance"/>
+                  <xs:element name="atomicSwc" type="atomicSoftwareComponentInstance"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="receiveBuffers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="receiveBuffer" type="receiveBufferInstance" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="bswModules" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="bswModule" type="bswModuleInstance" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="transformers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="csDeserializer" type="csDeserializer"/>
+                  <xs:element name="csSerializer" type="csSerializer"/>
+                  <xs:element name="invTransformer" type="invTransformer"/>
+                  <xs:element name="originalDataTransformer" type="originalDataTransformer"/>
+                  <xs:element name="srDeserializer" type="srDeserializer"/>
+                  <xs:element name="srSerializer" type="srSerializer"/>
+                  <xs:element name="stdTransformer" type="stdTransformer"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="counter" type="xs:string" minOccurs="0"/>
+          <xs:element name="dataHandleVariables" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="dataHandleVariable" type="dataHandleVariable" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Interrupts" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Interrupt" type="osInterrupt" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="osScheduleTables" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="osScheduleTable" type="osScheduleTable" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="tasks" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="task" type="osTask" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="receiveSignalGroups" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="receiveSignalGroup" type="receiveSignalGroup" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="receiveSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="receiveSignal" type="receiveSignal" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="rteInitializationRunnableBatches" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="rteInitializationRunnableBatch" type="rteInitializationRunnableBatch" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="sendSignalGroups" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="sendSignalGroup" type="sendSignalGroup" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="sendSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="sendSignal" type="sendSignal" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="osTask">
+    <xs:complexContent>
+      <xs:extension base="cExternalDefine">
+        <xs:sequence>
+          <xs:element name="autostart" type="xs:boolean"/>
+          <xs:element name="backgroundTask" type="xs:boolean"/>
+          <xs:element name="cycleLengthNanos" type="xs:long"/>
+          <xs:element name="mappingScenario" type="taskMappingScenarioType" minOccurs="0"/>
+          <xs:element name="maxEventBufferBitPosition" type="xs:int"/>
+          <xs:element name="offsetNanos" type="xs:long"/>
+          <xs:element name="periodNanos" type="xs:long"/>
+          <xs:element name="schMTask" type="xs:boolean"/>
+          <xs:element name="usedOsEvents" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="osEventRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="eventInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="eventInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="priority" type="xs:long" minOccurs="0"/>
+          <xs:element name="runtimePriority" type="xs:long" minOccurs="0"/>
+          <xs:element name="taskSchedule" type="taskSchedule" minOccurs="0"/>
+          <xs:element name="taskType" type="taskType" minOccurs="0"/>
+          <xs:element name="configuredPriority" type="xs:long"/>
+          <xs:element name="unknownTask" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="osEvent">
+    <xs:complexContent>
+      <xs:extension base="cExternalDefine">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractEventInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="mappedTimingRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="eventType" type="eventType" minOccurs="0"/>
+          <xs:element name="tasks" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="taskRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="osEventRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="taskEventMappings" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="taskEventMapping" type="taskEventMapping" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="srcPartitions" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="partitionRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="destPartitionRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="namePrefix" type="xs:string" minOccurs="0"/>
+          <xs:element name="usedOsEvent" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="timingEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractEventInstance">
+        <xs:sequence>
+          <xs:element name="offsetNanos" type="xs:long"/>
+          <xs:element name="periodNanos" type="xs:long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="taskEventMapping">
+    <xs:complexContent>
+      <xs:extension base="abstractEventMapping">
+        <xs:sequence>
+          <xs:element name="osEventName" type="xs:string" minOccurs="0"/>
+          <xs:element name="position" type="xs:long"/>
+          <xs:element name="taskName" type="xs:string" minOccurs="0"/>
+          <xs:element name="mappedToTask" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractEventMapping" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="activationReasonRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="eventName" type="xs:string" minOccurs="0"/>
+          <xs:element name="executableRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="executableEntityActivationReason">
+    <xs:complexContent>
+      <xs:extension base="cDefine">
+        <xs:sequence>
+          <xs:element name="shortname" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractExecutableInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="apis" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="apiRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="executable" type="xs:string" minOccurs="0"/>
+          <xs:element name="runsInsideExclusiveAreas" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="exclusiveArea" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="directCallers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="directCaller" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="activationReasons" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="activationReason" type="executableEntityActivationReason" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="entryPoint" type="xs:string" minOccurs="0"/>
+          <xs:element name="mappedExecutableInstanceRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="externalName" type="xs:string" minOccurs="0"/>
+          <xs:element name="forceUnconnected" type="xs:boolean"/>
+          <xs:element name="executables" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="executableRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="noInterruptLockingRequired" type="xs:boolean"/>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="exclusiveArea">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="dataConsistencyMechanism" type="EADataConsistencyMechanismType" minOccurs="0"/>
+          <xs:element name="configuredDataConsistencyMechanism" type="EaImplMechanism" minOccurs="0"/>
+          <xs:element name="optimizationReason" type="xs:string" minOccurs="0"/>
+          <xs:element name="runsInsideExecutableInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="executableRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="eaImpl" type="exclusiveAreaImplContainer" minOccurs="0"/>
+          <xs:element name="canEnterExecutableInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="executableRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="exclusiveAreaImplContainer">
+    <xs:sequence>
+      <xs:element name="exclusiveAreaImplMechanism" type="EaImplMechanism" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="nvSoftwareComponentInstance">
+    <xs:complexContent>
+      <xs:extension base="atomicSoftwareComponentInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="atomicSoftwareComponentInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractSoftwareComponentInstance">
+        <xs:sequence>
+          <xs:element name="objectCode" type="xs:boolean"/>
+          <xs:element name="runnables" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="runnable" type="runnableInstance" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="arTypedPerInstanceMemorys" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="arTypedPerInstanceMemory" type="arTypedPerInstanceMemory" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="cTypedPerInstanceMemorys" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="cTypedPerInstanceMemory" type="cTypedPerInstanceMemory" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="explicitInterRunnableVariables" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="interRunnableVariable" type="explicitInterRunnableVariable" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="implicitInterRunnableVariables" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="interRunnableVariable" type="implicitInterRunnableVariable" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="parameterDataInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="localParameterDataInstance" type="localParameterDataInstance" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="apis" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="cDataAPIFunction" type="cDataAPIFunction"/>
+                  <xs:element name="callAsynchronousAPIFunction" type="callAsynchronousAPIFunction"/>
+                  <xs:element name="callSynchronousAPIFunction" type="callSynchronousAPIFunction"/>
+                  <xs:element name="resultBlockingAPIFunction" type="resultBlockingAPIFunction"/>
+                  <xs:element name="resultNonBlockingAPIFunction" type="resultNonBlockingAPIFunction"/>
+                  <xs:element name="enterAPIFunction" type="enterAPIFunction"/>
+                  <xs:element name="exitAPIFunction" type="exitAPIFunction"/>
+                  <xs:element name="irvIReadAPIFunction" type="irvIReadAPIFunction"/>
+                  <xs:element name="irvIWriteAPIFunction" type="irvIWriteAPIFunction"/>
+                  <xs:element name="irvReadAPIFunction" type="irvReadAPIFunction"/>
+                  <xs:element name="irvWriteAPIFunction" type="irvWriteAPIFunction"/>
+                  <xs:element name="enhancedModeAPIFunction" type="enhancedModeAPIFunction"/>
+                  <xs:element name="modeAPIFunction" type="rteModeAPIFunction"/>
+                  <xs:element name="switchAckBlockingAPIFunction" type="rteSwitchAckBlockingAPIFunction"/>
+                  <xs:element name="switchAckNonBlockingAPIFunction" type="rteSwitchAckNonBlockingAPIFunction"/>
+                  <xs:element name="switchAPIFunction" type="rteSwitchAPIFunction"/>
+                  <xs:element name="pimAPIFunction" type="pimAPIFunction"/>
+                  <xs:element name="prmAPIFunction" type="prmAPIFunction"/>
+                  <xs:element name="dReadAPIFunction" type="dReadAPIFunction"/>
+                  <xs:element name="feedbackBlockingAPIFunction" type="feedbackBlockingAPIFunction"/>
+                  <xs:element name="feedbackNonBlockingAPIFunction" type="feedbackNonBlockingAPIFunction"/>
+                  <xs:element name="invalidateAPIFunction" type="invalidateAPIFunction"/>
+                  <xs:element name="isUpdatedAPIFunction" type="isUpdatedAPIFunction"/>
+                  <xs:element name="readAPIFunction" type="readAPIFunction"/>
+                  <xs:element name="receiveBlockingAPIFunction" type="receiveBlockingAPIFunction"/>
+                  <xs:element name="receiveNonBlockingAPIFunction" type="receiveNonBlockingAPIFunction"/>
+                  <xs:element name="sendAPIFunction" type="sendAPIFunction"/>
+                  <xs:element name="writeAPIFunction" type="writeAPIFunction"/>
+                  <xs:element name="iInvalidateAPIFunction" type="iInvalidateAPIFunction"/>
+                  <xs:element name="iReadAPIFunction" type="iReadAPIFunction"/>
+                  <xs:element name="iReadRefAPIFunction" type="iReadRefAPIFunction"/>
+                  <xs:element name="iStatusAPIFunction" type="iStatusAPIFunction"/>
+                  <xs:element name="iWriteAPIFunction" type="iWriteAPIFunction"/>
+                  <xs:element name="iWriteRefAPIFunction" type="iWriteRefAPIFunction"/>
+                  <xs:element name="iFeedbackAPIFunction" type="iFeedbackAPIFunction"/>
+                  <xs:element name="irTriggerAPIFunction" type="rteIrTriggerAPIFunction"/>
+                  <xs:element name="triggerAPIFunction" type="rteTriggerAPIFunction"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="supportsMultipleInstantiation" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSoftwareComponentInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractSwcBswInstance">
+        <xs:sequence>
+          <xs:element name="swComponentPrototype" type="xs:string" minOccurs="0"/>
+          <xs:element name="componentTypeName" type="xs:string" minOccurs="0"/>
+          <xs:element name="providePorts" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="port" type="swcPPortInstance" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="requirePorts" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="port" type="swcRPortInstance" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSwcBswInstance" abstract="true">
+    <xs:sequence>
+      <xs:element name="exclusiveAreas" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="exclusiveArea" type="exclusiveArea" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="runnableInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractExecutableInstance">
+        <xs:sequence>
+          <xs:element name="category" type="executableCategoryType" minOccurs="0"/>
+          <xs:element name="runnableArguments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="runnableArgument" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="waitPoints" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="arTypedPerInstanceMemory">
+    <xs:complexContent>
+      <xs:extension base="abstractPerInstanceMemory">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractPerInstanceMemory" abstract="true">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="cTypedPerInstanceMemory">
+    <xs:complexContent>
+      <xs:extension base="abstractPerInstanceMemory">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="explicitInterRunnableVariable">
+    <xs:complexContent>
+      <xs:extension base="abstractInterRunnableVariable">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractInterRunnableVariable" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="implementationDataTypeRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractImplementationDataType" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractDataType">
+        <xs:sequence>
+          <xs:element name="type" type="type" minOccurs="0"/>
+          <xs:element name="srcType" type="xs:string" minOccurs="0"/>
+          <xs:element name="atomicAccess" type="xs:boolean"/>
+          <xs:element name="isRteEmitter" type="xs:boolean"/>
+          <xs:element name="referencedType" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="alignmentPostfix" type="xs:string" minOccurs="0"/>
+          <xs:element name="category" type="xs:string" minOccurs="0"/>
+          <xs:element name="lastTypeOfTypeReferenceChain" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="sizeOf" type="xs:int"/>
+          <xs:element name="swImplPolicy" type="swImplPolicyEnum" minOccurs="0"/>
+          <xs:element name="typedef" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractDataType" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="implicitInterRunnableVariable">
+    <xs:complexContent>
+      <xs:extension base="abstractInterRunnableVariable">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="localParameterDataInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractParameterDataInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractParameterDataInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractCalibrationInstance">
+        <xs:sequence>
+          <xs:element name="shared" type="xs:boolean"/>
+          <xs:element name="nameInDataGroupInstance" type="xs:string" minOccurs="0"/>
+          <xs:element name="implementationDataTypeRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCalibrationInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cDataAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitAPIFunction">
+        <xs:sequence>
+          <xs:element name="parameterDataInstanceRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractExplicitAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractRteAPIFunction">
+        <xs:sequence>
+          <xs:element name="definedBy" type="apiDefinedByType" minOccurs="0"/>
+          <xs:element name="elided" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractRteAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="callAsynchronousAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractCallAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCallAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitCSAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractExplicitCSAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitPortAPIFunction">
+        <xs:sequence>
+          <xs:element name="m_transformerError" type="xfrmErrorVariable" minOccurs="0"/>
+          <xs:element name="operationInstanceRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractExplicitPortAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="xfrmErrorVariable">
+    <xs:complexContent>
+      <xs:extension base="cStructure">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cStructure">
+    <xs:complexContent>
+      <xs:extension base="cStructureUnion">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cStructureUnion" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="cVariable">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cVariable" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="cValue">
+        <xs:sequence>
+          <xs:element name="dataTypeRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rOperationInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractROperationInstance">
+        <xs:sequence>
+          <xs:element name="callSignalRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="resultSignalRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractROperationInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractOperationInstance">
+        <xs:sequence>
+          <xs:element name="intraPartitionPOperationInstanceRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="interPartitionPOperationInstanceRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractOperationInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+          <xs:element name="arguments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="pArgument" type="pArgumentInstance"/>
+                  <xs:element name="rArgument" type="rArgumentInstance"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="applicationErrors" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="applicationError" type="applicationError" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sendSignal">
+    <xs:complexContent>
+      <xs:extension base="abstractComSignal">
+        <xs:sequence>
+          <xs:element name="intraPartitionVariableDataInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="variableDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartitionVariableDataInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="variableDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractComSignal" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="transformable">
+        <xs:sequence>
+          <xs:element name="handleOutOfRange" type="xs:boolean"/>
+          <xs:element name="signalContainerRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="type" type="signalType" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="transformable" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+          <xs:element name="srSerializerRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="transformerChainRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pVariableDataInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractPVariableDataInstance">
+        <xs:sequence>
+          <xs:element name="intraPartitionMergedSRChainsOfSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="srSerializerRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartitionMergedSRChainsOfSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="srSerializerRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="intraPartitionMergedSRChainsOfSignalGroups" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="srSerializerRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartitionMergedSRChainsOfSignalGroups" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="srSerializerRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="ackRequest" type="xs:boolean"/>
+          <xs:element name="ackTimeoutSecs" type="xs:double"/>
+          <xs:element name="interPartitionSendSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="sendSignalRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="rVariableDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="intraPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="rVariableDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="intraPartitionSendSignalGroupMappings" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="sendSignalGroupMappingRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartitionSendSignalGroupMappings" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="sendSignalGroupMappingRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="intraPartitionSendSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="sendSignalRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="allMergedTransformersOfAllSigGrp" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="transformerRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="allMergedTransformersOfAllSigs" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="transformerRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="connected" type="xs:boolean"/>
+          <xs:element name="handleOutOfRange" type="xs:boolean"/>
+          <xs:element name="intraECUTransformer" type="transformerData" minOccurs="0"/>
+          <xs:element name="producerInfo" type="taskPreemptionInfo" minOccurs="0"/>
+          <xs:element name="transmissionAcknowledgements" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractPVariableDataInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractVariableDataInstance">
+        <xs:sequence>
+          <xs:element name="sendWriteExecutables" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="executableRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractVariableDataInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="dataFilter" type="dataFilter" minOccurs="0"/>
+          <xs:element name="queued" type="xs:boolean"/>
+          <xs:element name="variableDataPrototype" type="xs:string" minOccurs="0"/>
+          <xs:element name="dataTypePair" type="dataTypePair" minOccurs="0"/>
+          <xs:element name="dataTypePairOfOuterPort" type="dataTypePairImpl" minOccurs="0"/>
+          <xs:element name="dataHandleVariableRefs" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="dataHandleVariableRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="connectedVariableDataInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="variableDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="implementationDataTypeRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="definedInitValue" type="xs:string" minOccurs="0"/>
+          <xs:element name="invalidationPolicy" type="handleInvalidEnum" minOccurs="0"/>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+          <xs:element name="senderImplementationDataTypeRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="swImplPolicy" type="swImplPolicyEnum" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="srSerializer">
+    <xs:complexContent>
+      <xs:extension base="abstractSerializer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSerializer" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractStdTransformer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractStdTransformer" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractTransformer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractTransformer" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="inPlace" type="xs:boolean"/>
+          <xs:element name="transformerModuleInfo" type="transformerModuleInfo" minOccurs="0"/>
+          <xs:element name="bufferLength" type="xs:long"/>
+          <xs:element name="transformerDataRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="nextTransformers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="transformerRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="function" type="xs:string" minOccurs="0"/>
+          <xs:element name="needsOriginalData" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="transformerModuleInfo">
+    <xs:sequence>
+      <xs:element name="function" type="xs:string" minOccurs="0"/>
+      <xs:element name="module" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rVariableDataInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractRVariableDataInstance">
+        <xs:sequence>
+          <xs:element name="aliveTimeoutSecs" type="xs:double"/>
+          <xs:element name="communicationTimeout" type="xs:boolean"/>
+          <xs:element name="directlyReadFromCom" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="enableUpdate" type="xs:boolean"/>
+          <xs:element name="handleTimeout" type="handleTimeoutEnum" minOccurs="0"/>
+          <xs:element name="handleNeverReceived" type="xs:boolean"/>
+          <xs:element name="interPartitionReceiveSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="receiveSignalRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="intraPartitionReceiveSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="receiveSignalRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="dataReceivedErrorEventRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="readReceiveAPIRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="intraPartitionReceiveSignalGroupMappings" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="receiveSignalGroupMappingRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartitionReceiveSignalGroupMappings" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="receiveSignalGroupMappingRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="pVariableDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="intraPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="pVariableDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="receiveTransformables2comTimeoutFactors">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="key" minOccurs="0" type="xs:string"/>
+                      <xs:element name="value" minOccurs="0" type="xs:int"/>
+                    </xs:sequence>
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="intraPartitionPParameterDataInstanceRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="connected" type="xs:boolean"/>
+          <xs:element name="consumerInfo" type="taskPreemptionInfo" minOccurs="0"/>
+          <xs:element name="handleOutOfRange" type="xs:boolean"/>
+          <xs:element name="intraECUTransformer" type="transformerData" minOccurs="0"/>
+          <xs:element name="invTransformers" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="transformerRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractRVariableDataInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractVariableDataInstance">
+        <xs:sequence>
+          <xs:element name="receiveBufferRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="readReceiveExecutables" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="executableRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="receiveSignal">
+    <xs:complexContent>
+      <xs:extension base="abstractComSignal">
+        <xs:sequence>
+          <xs:element name="intraPartitionVariableDataInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="variableDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartitionVariableDataInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="variableDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dataReceiveErrorEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractNonTimingEventInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractEventInstance">
+        <xs:sequence>
+          <xs:element name="action" type="eventActionType" minOccurs="0"/>
+          <xs:element name="eventBitPosition" type="xs:long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractReadReceiveAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitSRAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractExplicitSRAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitPortAPIFunction">
+        <xs:sequence>
+          <xs:element name="variableDataInstanceRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dataFilter">
+    <xs:sequence>
+      <xs:element name="dataFilterAlgorithm" type="dataFilterAlgorithm" minOccurs="0"/>
+      <xs:element name="mask" type="xs:integer" minOccurs="0"/>
+      <xs:element name="max" type="xs:integer" minOccurs="0"/>
+      <xs:element name="min" type="xs:integer" minOccurs="0"/>
+      <xs:element name="offset" type="xs:long" minOccurs="0"/>
+      <xs:element name="period" type="xs:long" minOccurs="0"/>
+      <xs:element name="x" type="xs:integer" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="dataTypePair">
+    <xs:complexContent>
+      <xs:extension base="dataTypePairImpl">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dataTypePairImpl">
+    <xs:sequence>
+      <xs:element name="applicationDataTypeRef" type="xs:IDREF" minOccurs="0"/>
+      <xs:element name="implementationDataTypeRef" type="xs:IDREF" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="abstractApplicationDataType" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractDataType">
+        <xs:sequence>
+          <xs:element name="applicationDataType" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dataHandleVariable">
+    <xs:complexContent>
+      <xs:extension base="cStructure">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="receiveSignalGroupMapping">
+    <xs:complexContent>
+      <xs:extension base="abstractSignalGroupMapping">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSignalGroupMapping" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="variableDataInstanceRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="mappedGroupSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="signalRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pParameterDataInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractPortParameterDataInstance">
+        <xs:sequence>
+          <xs:element name="intraPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="rParameterDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="intraPartitionSR" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="rVariableDataInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractPortParameterDataInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractParameterDataInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rParameterDataInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractPortParameterDataInstance">
+        <xs:sequence>
+          <xs:element name="intraPartitionPParameterDataInstanceRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="taskPreemptionInfo">
+    <xs:sequence>
+      <xs:element name="tasks" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="taskRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="abstractInvTransformer" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractTransformer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="receiveBufferInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractShareableBuffer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractShareableBuffer" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractBuffer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractBuffer" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="bufferVariable" type="cVariable" minOccurs="0"/>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sendSignalGroupMapping">
+    <xs:complexContent>
+      <xs:extension base="abstractSignalGroupMapping">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractPOperationInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractOperationInstance">
+        <xs:sequence>
+          <xs:element name="intraPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="operationInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="operationInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="operationInvokedEventInstanceRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="directCalledEventMapping" type="directCallEventMapping" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="operationInvokedEventInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractRunnableWithArgsTriggeringEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractRunnableWithArgsTriggeringEventInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence>
+          <xs:element name="pOperationInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="pOperationInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="directCallEventMapping">
+    <xs:complexContent>
+      <xs:extension base="abstractEventMapping">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pArgumentInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractArgumentInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractArgumentInstance" abstract="true">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="direction" type="argumentDirectionType" minOccurs="0"/>
+      <xs:element name="serverArgImplPolicy" type="serverArgumentImplPolicyType" minOccurs="0"/>
+      <xs:element name="argumentTypeRef" type="xs:IDREF" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="rArgumentInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractArgumentInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="applicationError">
+    <xs:sequence>
+      <xs:element name="errorCode" type="xs:long"/>
+      <xs:element name="errorName" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="callSynchronousAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractCallAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="resultBlockingAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractResultAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractResultAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitCSAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="resultNonBlockingAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractResultAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="enterAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitExclusiveAreaAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractExplicitExclusiveAreaAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitAPIFunction">
+        <xs:sequence>
+          <xs:element name="exclusiveAreaRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="exitAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitExclusiveAreaAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="irvIReadAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractImplicitIrvAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractImplicitIrvAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractImplicitAPIFunction">
+        <xs:sequence>
+          <xs:element name="interRunnableVariableRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractImplicitAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractRteAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="irvIWriteAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractImplicitIrvAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="irvReadAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitIrvAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractExplicitIrvAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitAPIFunction">
+        <xs:sequence>
+          <xs:element name="interRunnableVariableRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="irvWriteAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitIrvAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="enhancedModeAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="rteModeAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rteModeAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitModeAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractExplicitModeAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitPortAPIFunction">
+        <xs:sequence>
+          <xs:element name="modeDeclarationGroupInstanceRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractModeDeclarationGroupInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="enhancedModeApi" type="xs:boolean"/>
+          <xs:element name="onTransitionValue" type="xs:long"/>
+          <xs:element name="order" type="orderType" minOccurs="0"/>
+          <xs:element name="prefix" type="xs:string" minOccurs="0"/>
+          <xs:element name="initModeRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="dataTypeRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="modeDeclarations" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="modeDeclaration" type="modeDeclarationInstance" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modeDeclarationInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+          <xs:element name="value" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="primitiveImplementationDataType">
+    <xs:complexContent>
+      <xs:extension base="abstractImplementationDataType">
+        <xs:sequence>
+          <xs:element name="zeroInitializationValue" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rteSwitchAckBlockingAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractRteSwitchAckAPIFunction">
+        <xs:sequence>
+          <xs:element name="timeoutNanos" type="xs:long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractRteSwitchAckAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitModeAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rteSwitchAckNonBlockingAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractRteSwitchAckAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rteSwitchAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitModeAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pimAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractImplicitAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="prmAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitPortAPIFunction">
+        <xs:sequence>
+          <xs:element name="parameterDataInstanceRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dReadAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractReadAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractReadAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractReadReceiveAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="feedbackBlockingAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractFeedbackAPIFunction">
+        <xs:sequence>
+          <xs:element name="timeoutNanos" type="xs:long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractFeedbackAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitSRAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="feedbackNonBlockingAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractFeedbackAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="invalidateAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitSRAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="isUpdatedAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitSRAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="readAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractReadAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="receiveBlockingAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractReadReceiveAPIFunction">
+        <xs:sequence>
+          <xs:element name="timeoutNanos" type="xs:long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="receiveNonBlockingAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractReadReceiveAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="sendAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSendWriteAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSendWriteAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitSRAPIFunction">
+        <xs:sequence>
+          <xs:element name="transformerError" type="xfrmErrorVariable" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="writeAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSendWriteAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="iInvalidateAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractImplicitSRAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractImplicitSRAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractImplicitAPIFunction">
+        <xs:sequence>
+          <xs:element name="variableDataInstanceRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="iReadAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractIReadAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractIReadAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractImplicitSRAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="iReadRefAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractIReadAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="iStatusAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractImplicitSRAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="iWriteAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractIWriteAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractIWriteAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractImplicitSRAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="iWriteRefAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractIWriteAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="iFeedbackAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractImplicitSRAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rteIrTriggerAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rteTriggerAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractExplicitPortAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="swcPPortInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractSwcPortInstance">
+        <xs:sequence>
+          <xs:element name="intraPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="swcRPortInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="swcRPortInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="portDefinedArguments" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="portDefinedArgument" type="portArgumentValue" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSwcPortInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractPortInstance">
+        <xs:sequence>
+          <xs:element name="portInterface" type="xs:string" minOccurs="0"/>
+          <xs:element name="indirectAPI" type="xs:boolean"/>
+          <xs:element name="enableTakeAddress" type="xs:boolean"/>
+          <xs:element name="transformerErrorHandling" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractPortInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="modeDeclarationGroupInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="bswPModeDeclarationGroupInstance" type="bswPModeDeclarationGroupInstance"/>
+                  <xs:element name="bswRModeDeclarationGroupInstance" type="bswRModeDeclarationGroupInstance"/>
+                  <xs:element name="swcPModeDeclarationGroupInstance" type="rtePModeDeclarationGroupInstance"/>
+                  <xs:element name="swcRModeDeclarationGroupInstance" type="rteRModeDeclarationGroupInstance"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+          <xs:element name="operationInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="bswPOperationInstance" type="bswPOperationInstance"/>
+                  <xs:element name="bswROperationInstance" type="bswROperationInstance"/>
+                  <xs:element name="pOperationInstance" type="pOperationInstance"/>
+                  <xs:element name="rOperationInstance" type="rOperationInstance"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="parameterDataInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="rParameterDataInstance" type="rParameterDataInstance"/>
+                  <xs:element name="pParameterDataInstance" type="pParameterDataInstance"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="triggerInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="bswExternalPTrigger" type="bswExternalPTrigger"/>
+                  <xs:element name="bswExternalRTrigger" type="bswExternalRTrigger"/>
+                  <xs:element name="bswInternalPTrigger" type="bswInternalPTrigger"/>
+                  <xs:element name="bswInternalRTrigger" type="bswInternalRTrigger"/>
+                  <xs:element name="swcExternalPTrigger" type="swcExternalPTrigger"/>
+                  <xs:element name="swcExternalRTrigger" type="swcExternalRTrigger"/>
+                  <xs:element name="swcInternalPTrigger" type="swcInternalPTrigger"/>
+                  <xs:element name="swcInternalRTrigger" type="swcInternalRTrigger"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="variableDataInstances" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="bswPVariableDataInstance" type="bswPVariableDataInstance"/>
+                  <xs:element name="bswRVariableDataInstance" type="bswRVariableDataInstance"/>
+                  <xs:element name="pVariableDataInstance" type="pVariableDataInstance"/>
+                  <xs:element name="rVariableDataInstance" type="rVariableDataInstance"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="swcRPortInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractSwcPortInstance">
+        <xs:sequence>
+          <xs:element name="intraPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="swcPPortInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="interPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="swcPPortInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswPModeDeclarationGroupInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractPModeDeclarationGroupInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractPModeDeclarationGroupInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractModeDeclarationGroupInstance">
+        <xs:sequence>
+          <xs:element name="queueLength" type="xs:long"/>
+          <xs:element name="modeSwitchedAck" type="xs:boolean"/>
+          <xs:element name="interPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="rModeDeclarationGroupInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="intraPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="rModeDeclarationGroupInstanceRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractRModeDeclarationGroupInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractModeDeclarationGroupInstance">
+        <xs:sequence>
+          <xs:element name="interPartitionPModeDeclarationGroupInstanceRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="intraPartitionPModeDeclarationGroupInstanceRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="supportsAsyncModeSwitch" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswRModeDeclarationGroupInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractRModeDeclarationGroupInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rtePModeDeclarationGroupInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractPModeDeclarationGroupInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rteRModeDeclarationGroupInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractRModeDeclarationGroupInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswPOperationInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractPOperationInstance">
+        <xs:sequence>
+          <xs:element name="executableRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswCalledInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractBswModuleEntity">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractBswModuleEntity" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractExecutableInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswROperationInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractROperationInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pOperationInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractPOperationInstance">
+        <xs:sequence>
+          <xs:element name="callSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="callSignalRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="executableRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="resultSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="resultSignalRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswExternalPTrigger">
+    <xs:complexContent>
+      <xs:extension base="abstractExternalPTrigger">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractExternalPTrigger" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractPTrigger">
+        <xs:sequence>
+          <xs:element name="interPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="externalRTriggerRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractPTrigger" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractTriggerInstance">
+        <xs:sequence>
+          <xs:element name="queueLength" type="xs:long"/>
+          <xs:element name="swImplPolicy" type="swImplPolicyEnum" minOccurs="0"/>
+          <xs:element name="intraPartition" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="rTriggerRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractTriggerInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractUUID">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractExternalRTrigger" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractRTrigger">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractRTrigger" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractTriggerInstance">
+        <xs:sequence>
+          <xs:element name="triggerEvents" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="triggerEventRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="directCalledEventMappings" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="directCalledEventMapping" type="directCallEventMapping" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="releasedTriggerRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractTriggerOccurredEventInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswExternalRTrigger">
+    <xs:complexContent>
+      <xs:extension base="abstractExternalRTrigger">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswInternalPTrigger">
+    <xs:complexContent>
+      <xs:extension base="abstractInternalPTrigger">
+        <xs:sequence>
+          <xs:element name="triggerPoint" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractInternalPTrigger" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractPTrigger">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswInternalRTrigger">
+    <xs:complexContent>
+      <xs:extension base="abstractInternalRTrigger">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractInternalRTrigger" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractRTrigger">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="swcExternalPTrigger">
+    <xs:complexContent>
+      <xs:extension base="abstractExternalPTrigger">
+        <xs:sequence>
+          <xs:element name="trigger" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="swcExternalRTrigger">
+    <xs:complexContent>
+      <xs:extension base="abstractExternalRTrigger">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="swcInternalPTrigger">
+    <xs:complexContent>
+      <xs:extension base="abstractInternalPTrigger">
+        <xs:sequence>
+          <xs:element name="triggerPoint" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="swcInternalRTrigger">
+    <xs:complexContent>
+      <xs:extension base="abstractInternalRTrigger">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswPVariableDataInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractPVariableDataInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswRVariableDataInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractRVariableDataInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="portArgumentValue">
+    <xs:complexContent>
+      <xs:extension base="cValue">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+          <xs:element name="type" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="value" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswModuleInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractSwcBswInstance">
+        <xs:sequence>
+          <xs:element name="ASR31SchMExclusiveAreaAPISupport" type="xs:boolean"/>
+          <xs:element name="ASR31SchMExclusiveAreaAPIUseInstanceParameter" type="xs:boolean"/>
+          <xs:element name="bswModuleDescription" type="xs:string" minOccurs="0"/>
+          <xs:element name="bswImplementation" type="xs:string" minOccurs="0"/>
+          <xs:element name="internalBehavior" type="xs:string" minOccurs="0"/>
+          <xs:element name="objectCode" type="xs:boolean"/>
+          <xs:element name="bsnps" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="bsnp" type="bswSchedulerNamePrefix" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="postfix" type="xs:string" minOccurs="0"/>
+          <xs:element name="providePorts" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="port" type="bswPPortInstance" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="requirePorts" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="port" type="bswRPortInstance" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswSchedulerNamePrefix">
+    <xs:sequence>
+      <xs:element name="name" type="xs:string" minOccurs="0"/>
+      <xs:element name="bswModuleEntities" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="bswCalledInstance" type="bswCalledInstance"/>
+              <xs:element name="bswInterruptInstance" type="bswInterruptInstance"/>
+              <xs:element name="bswSchedulableInstance" type="bswSchedulableInstance"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="apis" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element name="schMCallAsynchronousAPIFunction" type="schMCallAsynchronousAPIFunction"/>
+              <xs:element name="schMCallSynchronousAPIFunction" type="schMCallSynchronousAPIFunction"/>
+              <xs:element name="schMResultAPIFunction" type="schMResultAPIFunction"/>
+              <xs:element name="schMEnterAPIFunction" type="schMEnterAPIFunction"/>
+              <xs:element name="schMExitAPIFunction" type="schMExitAPIFunction"/>
+              <xs:element name="schMModeAPIFunction" type="schMModeAPIFunction"/>
+              <xs:element name="schMSwitchAckAPIFunction" type="schMSwitchAckAPIFunction"/>
+              <xs:element name="schMSwitchAPIFunction" type="schMSwitchAPIFunction"/>
+              <xs:element name="schMReceiveAPIFunction" type="schMReceiveAPIFunction"/>
+              <xs:element name="schMSendAPIFunction" type="schMSendAPIFunction"/>
+              <xs:element name="schMActMainFunctionAPIFunction" type="schMActMainFunctionAPIFunction"/>
+              <xs:element name="schMTriggerAPIFunction" type="schMTriggerAPIFunction"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="bswInterruptInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractBswModuleEntity">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswSchedulableInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractBswModuleEntity">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMCallAsynchronousAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMCallAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSchMCallAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMCSAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSchMCSAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMAPIFunction">
+        <xs:sequence>
+          <xs:element name="operationInstanceRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSchMAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMCallSynchronousAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMCallAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMResultAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMCSAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMEnterAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMExclusiveAreaAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSchMExclusiveAreaAPIFunction" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMAPIFunction">
+        <xs:sequence>
+          <xs:element name="exclusiveAreaRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMExitAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMExclusiveAreaAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMModeAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMSwitchAckAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMSwitchAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMReceiveAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMSendAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMActMainFunctionAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="schMTriggerAPIFunction">
+    <xs:complexContent>
+      <xs:extension base="abstractSchMAPIFunction">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswPPortInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractBswPortInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractBswPortInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractPortInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswRPortInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractBswPortInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="csDeserializer">
+    <xs:complexContent>
+      <xs:extension base="abstractDeserializer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractDeserializer" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractInvTransformer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="csSerializer">
+    <xs:complexContent>
+      <xs:extension base="abstractSerializer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="invTransformer">
+    <xs:complexContent>
+      <xs:extension base="abstractInvTransformer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="originalDataTransformer">
+    <xs:complexContent>
+      <xs:extension base="stdTransformer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="stdTransformer">
+    <xs:complexContent>
+      <xs:extension base="abstractStdTransformer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="srDeserializer">
+    <xs:complexContent>
+      <xs:extension base="abstractDeserializer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="osInterrupt">
+    <xs:complexContent>
+      <xs:extension base="osTask">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="osScheduleTable">
+    <xs:complexContent>
+      <xs:extension base="cExternalDefine">
+        <xs:sequence>
+          <xs:element name="isSchMScheduleTable" type="xs:boolean"/>
+          <xs:element name="durationNanos" type="xs:long"/>
+          <xs:element name="offsetInTicks" type="xs:int"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="receiveSignalGroup">
+    <xs:complexContent>
+      <xs:extension base="abstractComSignalGroup">
+        <xs:sequence>
+          <xs:element name="receiveSignalGroupMappings" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="signalGroupMapping" type="receiveSignalGroupMapping" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="receiveSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="receiveSignal" type="receiveSignal" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractComSignalGroup" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="transformable">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rteInitializationRunnableBatch">
+    <xs:complexContent>
+      <xs:extension base="abstractPartitionLifecycleAPI">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractPartitionLifecycleAPI" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractLifecycleAPI">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractLifecycleAPI" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="cFunctionBlock">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cFunctionBlock">
+    <xs:complexContent>
+      <xs:extension base="cBlock">
+        <xs:sequence>
+          <xs:element name="empty" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cBlock">
+    <xs:complexContent>
+      <xs:extension base="cStatements">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cStatements">
+    <xs:sequence>
+      <xs:element name="includePrefix" type="xs:string" minOccurs="0"/>
+      <xs:element name="memorySection" type="xs:string" minOccurs="0"/>
+      <xs:element name="prefix" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="sendSignalGroup">
+    <xs:complexContent>
+      <xs:extension base="abstractComSignalGroup">
+        <xs:sequence>
+          <xs:element name="sendSignalGroupMappings" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="signalGroupMapping" type="sendSignalGroupMapping" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="sendSignals" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="sendSignal" type="sendSignal" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ldComEcuCAccessor">
+    <xs:sequence>
+      <xs:element name="rxSignalInfos" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="signalContainer" type="ldComSignalContainer" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="txSignalInfos" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="signalContainer" type="ldComSignalContainer" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ldComSignalContainer">
+    <xs:complexContent>
+      <xs:extension base="signalContainer">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="osEcuCAccessor">
+    <xs:sequence>
+      <xs:element name="allInternalOsResource" type="xs:boolean"/>
+      <xs:element name="allOsSpinlockLockMethodLockAllInterrupts" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="schMEcuCAccessor">
+    <xs:sequence>
+      <xs:element name="schMOsScheduleTableActivationMechanism" type="scheduleTableActivation" minOccurs="0"/>
+      <xs:element name="schMVersionAPIUsed" type="xs:boolean"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="xfrmEcuCAccessor" final="extension restriction">
+    <xs:sequence>
+      <xs:element name="transformerBufferLengthType" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="parameterComponentInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractSoftwareComponentInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="backgroundEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="bswOperationInvokedEventInstance">
+    <xs:complexContent>
+      <xs:extension base="operationInvokedEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dataReceivedEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dataSendCompletedEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="dataWriteCompletedEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="externalTriggerOccurredEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractTriggerOccurredEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="initEventInstance">
+    <xs:complexContent>
+      <xs:extension base="rteInitRunnableBatchEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="rteInitRunnableBatchEventInstance" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="internalTriggerOccurredEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractTriggerOccurredEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modeSwitchedAckEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modeSwitchEventGroupInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modeSwitchEventInstance">
+    <xs:complexContent>
+      <xs:extension base="rteInitRunnableBatchEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="modeSwitchStepFinishedEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="swcOperationInvokedEventInstance">
+    <xs:complexContent>
+      <xs:extension base="operationInvokedEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="synchronousServerFinishedEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="asynchronousServerCallReturnsEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractNonTimingEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="transformerHardErrorEventInstance">
+    <xs:complexContent>
+      <xs:extension base="abstractRunnableWithArgsTriggeringEventInstance">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="arrayApplicationDataType">
+    <xs:complexContent>
+      <xs:extension base="abstractApplicationDataType">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="compoundPrimitiveApplicationDataType">
+    <xs:complexContent>
+      <xs:extension base="primitiveApplicationDataType">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="primitiveApplicationDataType">
+    <xs:complexContent>
+      <xs:extension base="abstractApplicationDataType">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="recordApplicationDataType">
+    <xs:complexContent>
+      <xs:extension base="abstractApplicationDataType">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="vsaLinearArrayApplicationDataType">
+    <xs:complexContent>
+      <xs:extension base="arrayApplicationDataType">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="osTaskGroup">
+    <xs:complexContent>
+      <xs:extension base="linkedHashSet">
+        <xs:sequence>
+          <xs:element name="taskRef" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="linkedHashSet">
+    <xs:complexContent>
+      <xs:extension base="hashSet">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="hashSet">
+    <xs:complexContent>
+      <xs:extension base="abstractSet">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractSet" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractCollection">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCollection" abstract="true">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="arrayImplementationDataType">
+    <xs:complexContent>
+      <xs:extension base="abstractImplementationDataType">
+        <xs:sequence>
+          <xs:element name="underlyingTypeRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="size" type="xs:long"/>
+          <xs:element name="baseType" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="nextDimensionTypeRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="rawSubArrayTypeRef" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="sizeOfCurrentDimension" type="xs:long"/>
+          <xs:element name="totalSize" type="xs:long"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="functionImplementationDataType">
+    <xs:complexContent>
+      <xs:extension base="abstractImplementationDataType">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="pointerImplementationDataType">
+    <xs:complexContent>
+      <xs:extension base="abstractImplementationDataType">
+        <xs:sequence>
+          <xs:element name="targetAdditionalNativeTypeQualifier" type="xs:string" minOccurs="0"/>
+          <xs:element name="additionalNativeTypeQualifier" type="xs:string" minOccurs="0"/>
+          <xs:element name="isConstPointer" type="xs:boolean"/>
+          <xs:element name="isTargetConst" type="xs:boolean"/>
+          <xs:element name="targetTypeRef" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="structureImplementationDataType">
+    <xs:complexContent>
+      <xs:extension base="abstractStructureUnionImplementationDataType">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractStructureUnionImplementationDataType" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="abstractImplementationDataType">
+        <xs:sequence>
+          <xs:element name="elements" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                  <xs:element name="arrayElement" type="cArray"/>
+                  <xs:element name="functionPointerElement" type="cFunctionPointer"/>
+                  <xs:element name="pointerElement" type="cPointer"/>
+                  <xs:element name="primitiveElement" type="cPrimitiveVariable"/>
+                  <xs:element name="structureElement" type="cStructure"/>
+                  <xs:element name="unionElement" type="cUnion"/>
+                </xs:choice>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cArray">
+    <xs:complexContent>
+      <xs:extension base="abstractCAddressVariable">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="abstractCAddressVariable" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="cVariable">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cFunctionPointer">
+    <xs:complexContent>
+      <xs:extension base="abstractCAddressVariable">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cPointer">
+    <xs:complexContent>
+      <xs:extension base="abstractCAddressVariable">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cPrimitiveVariable">
+    <xs:complexContent>
+      <xs:extension base="cVariable">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="cUnion">
+    <xs:complexContent>
+      <xs:extension base="cStructureUnion">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="unionImplementationDataType">
+    <xs:complexContent>
+      <xs:extension base="abstractStructureUnionImplementationDataType">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="voidImplementationDataType" final="extension restriction">
+    <xs:complexContent>
+      <xs:extension base="primitiveImplementationDataType">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="calibrationSupportType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NONE"/>
+      <xs:enumeration value="INITIALIZED_RAM"/>
+      <xs:enumeration value="SINGLE_POINTERED"/>
+      <xs:enumeration value="DOUBLE_POINTERED"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="rteEcuCDataConsistencyMechanismType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OS_RESOURCE"/>
+      <xs:enumeration value="INTERRUPT_BLOCKING"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="generationPhase">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FULL"/>
+      <xs:enumeration value="RTE_ONLY"/>
+      <xs:enumeration value="RTE_CONTRACT"/>
+      <xs:enumeration value="BSW_SCHED_ONLY"/>
+      <xs:enumeration value="BSW_SCHED_CONTRACT"/>
+      <xs:enumeration value="NONE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="interPartitionCommunication">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Disabled"/>
+      <xs:enumeration value="Ioc"/>
+      <xs:enumeration value="SharedMemory"/>
+      <xs:enumeration value="Mixed"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="interruptBlockingFunctionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SUSPEND_RESUME"/>
+      <xs:enumeration value="DISABLE_ENABLE"/>
+      <xs:enumeration value="TS_INT"/>
+      <xs:enumeration value="USER_DEFINED"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="scheduleTableActivation">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ABSOLUTE"/>
+      <xs:enumeration value="NEXT"/>
+      <xs:enumeration value="RELATIVE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="sendSignalQueueStrategy">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="GLOBAL"/>
+      <xs:enumeration value="ONE_PER_CORE"/>
+      <xs:enumeration value="ONE_PER_PARTITION"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="spinlockAllocationStrategy">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ONE_PER_CHANNEL"/>
+      <xs:enumeration value="ONE_PER_ECU"/>
+      <xs:enumeration value="ONE_PER_CORE_GROUP"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="unconnectedRequirePortsType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="WARNING"/>
+      <xs:enumeration value="ERROR"/>
+      <xs:enumeration value="IGNORE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="signalType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UINT8"/>
+      <xs:enumeration value="UINT16"/>
+      <xs:enumeration value="UINT32"/>
+      <xs:enumeration value="UINT64"/>
+      <xs:enumeration value="SINT8"/>
+      <xs:enumeration value="SINT16"/>
+      <xs:enumeration value="SINT32"/>
+      <xs:enumeration value="SINT64"/>
+      <xs:enumeration value="FLOAT32"/>
+      <xs:enumeration value="FLOAT64"/>
+      <xs:enumeration value="BOOLEAN"/>
+      <xs:enumeration value="UINT8_N"/>
+      <xs:enumeration value="UINT8_DYN"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="originalDataPolicy">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="USE_ORIGINAL_DATA"/>
+      <xs:enumeration value="DO_NOT_USE_ORIGINAL_DATA"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="bufferPolicy">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="INPLACE_BUFFER"/>
+      <xs:enumeration value="INDIVIDUAL_BUFFER"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="transformerClassEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SERIALIZER"/>
+      <xs:enumeration value="SAFETY"/>
+      <xs:enumeration value="SECURITY"/>
+      <xs:enumeration value="CUSTOM"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="taskMappingScenarioType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="A1"/>
+      <xs:enumeration value="A2"/>
+      <xs:enumeration value="B1"/>
+      <xs:enumeration value="B2"/>
+      <xs:enumeration value="BSW"/>
+      <xs:enumeration value="NONE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="eventType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RTE"/>
+      <xs:enumeration value="BSW"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="EADataConsistencyMechanismType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="No_Data_Consistency"/>
+      <xs:enumeration value="OS_Resource"/>
+      <xs:enumeration value="Cooperative_Runnable"/>
+      <xs:enumeration value="All_Interrupt_Blocking"/>
+      <xs:enumeration value="OS_Interrupt_Blocking"/>
+      <xs:enumeration value="EB_Fast_Lock"/>
+      <xs:enumeration value="OS_Spinlock"/>
+      <xs:enumeration value="RTE_Plugin"/>
+      <xs:enumeration value="User_Callout"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="EaImplMechanism">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="All_Interrupt_Blocking"/>
+      <xs:enumeration value="OS_Interrupt_Blocking"/>
+      <xs:enumeration value="OS_Resource"/>
+      <xs:enumeration value="Cooperative_Runnable"/>
+      <xs:enumeration value="EB_Fast_Lock"/>
+      <xs:enumeration value="No_Data_Consistency"/>
+      <xs:enumeration value="OS_Spinlock"/>
+      <xs:enumeration value="User_Callout"/>
+      <xs:enumeration value="RTE_Plugin"/>
+      <xs:enumeration value="Unconfigured"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="taskSchedule">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NON"/>
+      <xs:enumeration value="FULL"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="taskType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="BASIC"/>
+      <xs:enumeration value="EXTENDED"/>
+      <xs:enumeration value="AUTO"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="executableCategoryType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CAT1A"/>
+      <xs:enumeration value="CAT1B"/>
+      <xs:enumeration value="CAT2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="type">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ARRAY"/>
+      <xs:enumeration value="STRUCT"/>
+      <xs:enumeration value="UNION"/>
+      <xs:enumeration value="INTEGER"/>
+      <xs:enumeration value="FLOAT"/>
+      <xs:enumeration value="POINTER"/>
+      <xs:enumeration value="FUNCTION"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="swImplPolicyEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CONST"/>
+      <xs:enumeration value="FIXED"/>
+      <xs:enumeration value="MEASUREMENTPOINT"/>
+      <xs:enumeration value="QUEUED"/>
+      <xs:enumeration value="STANDARD"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="apiDefinedByType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="RTE"/>
+      <xs:enumeration value="APPLICATION"/>
+      <xs:enumeration value="BSW_SCHED"/>
+      <xs:enumeration value="NVM"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="handleTimeoutEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NONE"/>
+      <xs:enumeration value="REPLACE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="eventActionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="TRIGGER_EXECUTABLE"/>
+      <xs:enumeration value="RESOLVE_WAITPOINT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="dataFilterAlgorithm">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ALWAYS"/>
+      <xs:enumeration value="NEVER"/>
+      <xs:enumeration value="MASKEDNEWEQUALSX"/>
+      <xs:enumeration value="MASKEDNEWDIFFERSX"/>
+      <xs:enumeration value="MASKEDNEWDIFFERSMASKEDOLD"/>
+      <xs:enumeration value="NEWISWITHIN"/>
+      <xs:enumeration value="NEWISOUTSIDE"/>
+      <xs:enumeration value="ONEEVERYN"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="handleInvalidEnum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NONE"/>
+      <xs:enumeration value="KEEP"/>
+      <xs:enumeration value="REPLACE"/>
+      <xs:enumeration value="EXTERNAL_REPLACEMENT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="argumentDirectionType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="IN"/>
+      <xs:enumeration value="OUT"/>
+      <xs:enumeration value="INOUT"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="serverArgumentImplPolicyType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ARGUMENT_TYPE"/>
+      <xs:enumeration value="POINTER_TO_BASETYPE"/>
+      <xs:enumeration value="POINTER_TO_VOID"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="orderType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="EXPLICIT"/>
+      <xs:enumeration value="ALPHABETIC"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+

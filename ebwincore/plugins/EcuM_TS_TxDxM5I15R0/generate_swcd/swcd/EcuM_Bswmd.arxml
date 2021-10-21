@@ -1,0 +1,998 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+[!AUTOSPACING!][!//
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-2-1_STRICT_COMPACT.xsd">
+[!IF "EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+[!VAR "bswModuleEntryPackageName" = "'SwServices'"!][!//
+[!VAR "swComponentTypePackageName" = "'ComponentTypes'"!][!//
+[!ELSE!][!//
+[!VAR "bswModuleEntryPackageName" = "'BswModuleEntrys'"!][!//
+[!VAR "swComponentTypePackageName" = "'SwComponentTypes'"!][!//
+[!ENDIF!][!//
+
+[!VAR "CROSSCORECOMMWAKEUP" = "as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup = 'true'"!]
+[!VAR "MULTICORE_ENABLED" = "node:exists(as:modconf('Os')[1]/OsOS/OsNumberOfCores) and node:value(as:modconf('Os')/OsOS/OsNumberOfCores) > 1 and node:value(as:modconf('EcuM')/EcuMGeneral/EcuMEnableMulticore) = 'true'"!]
+[!IF "$MULTICORE_ENABLED"!]
+[!VAR "MULTICORE_NUM_CORES" = "node:value(as:modconf('Os')[1]/OsOS/OsNumberOfCores)"!]
+[!ELSE!][!//
+[!VAR "MULTICORE_NUM_CORES" = "1"!]
+[!ENDIF!]
+
+[!IF "node:exists(as:modconf('EcuM')/EcuMGeneral/EcuMMasterCoreId)"!][!//
+[!VAR "ECUM_MASTER_CORE_ID" = "node:value(as:modconf('EcuM')/EcuMGeneral/EcuMMasterCoreId)"!][!//
+[!ELSE!][!//
+[!VAR "ECUM_MASTER_CORE_ID" = "'0'"!][!//
+[!ENDIF!][!//
+
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_EcuM</SHORT-NAME>
+      <AR-PACKAGES>
+[!IF "EcuMGeneral/EcuMRteUsage = 'true'"!]
+        <AR-PACKAGE>
+          <SHORT-NAME>SwcBswMappings</SHORT-NAME>
+          <ELEMENTS>
+            <SWC-BSW-MAPPING>
+              <SHORT-NAME>SwcBswMapping_[!"num:i($ECUM_MASTER_CORE_ID)"!]</SHORT-NAME>
+              <BSW-BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($ECUM_MASTER_CORE_ID)"!]</BSW-BEHAVIOR-REF>
+              <RUNNABLE-MAPPINGS>
+                <SWC-BSW-RUNNABLE-MAPPING>
+                  <BSW-ENTITY-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($ECUM_MASTER_CORE_ID)"!]/EcuM_MainFunction</BSW-ENTITY-REF>
+                  <SWC-RUNNABLE-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_Main</SWC-RUNNABLE-REF>
+                </SWC-BSW-RUNNABLE-MAPPING>
+                [!IF "$MULTICORE_ENABLED"!]
+                <SWC-BSW-RUNNABLE-MAPPING>
+                  <BSW-ENTITY-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($ECUM_MASTER_CORE_ID)"!]/BswCalledEntity_EcuM_SelectShutdownTarget</BSW-ENTITY-REF>
+                  <SWC-RUNNABLE-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_SelectShutdownTarget</SWC-RUNNABLE-REF>
+                </SWC-BSW-RUNNABLE-MAPPING>
+                [!ENDIF!]
+              </RUNNABLE-MAPPINGS>
+              <SWC-BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh</SWC-BEHAVIOR-REF>
+            </SWC-BSW-MAPPING>
+          </ELEMENTS>
+        </AR-PACKAGE>
+[!ENDIF!]
+        <AR-PACKAGE>
+        [!IF "EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+          <SHORT-NAME>Datatypes</SHORT-NAME>
+        [!ELSE!]
+          <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+        [!ENDIF!]
+          <ELEMENTS>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>EcuM_StateType</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <COMPU-METHOD-REF DEST="COMPU-METHOD">/AUTOSAR_EcuM/CompuMethods/STATES</COMPU-METHOD-REF>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE"
+                      >/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+            </IMPLEMENTATION-DATA-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>CompuMethods</SHORT-NAME>
+          <ELEMENTS>
+            <COMPU-METHOD>
+              <SHORT-NAME>STATES</SHORT-NAME>
+              <CATEGORY>TEXTTABLE</CATEGORY>
+              <COMPU-INTERNAL-TO-PHYS>
+                <COMPU-SCALES>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">16</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">16</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_STARTUP</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">17</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">17</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_STARTUP_ONE</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">18</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">18</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_STARTUP_TWO</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">32</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">32</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_WAKEUP</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">33</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">33</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_WAKEUP_ONE</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">34</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">34</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_WAKEUP_VALIDATION</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">35</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">35</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_WAKEUP_REACTION</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">36</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">36</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_WAKEUP_TWO</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">37</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">37</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_WAKEUP_WAKESLEEP</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">38</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">38</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_WAKEUP_TTII</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">48</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">48</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_RUN</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">50</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">50</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_APP_RUN</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">51</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">51</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_APP_POST_RUN</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">64</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">64</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_SHUTDOWN</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">68</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">68</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_PREP_SHUTDOWN</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">73</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">73</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_GO_SLEEP</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">77</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">77</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_GO_OFF_ONE</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">78</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">78</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_GO_OFF_TWO</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">80</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">80</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_SLEEP</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">128</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">128</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_OFF</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                  <COMPU-SCALE>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">144</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">144</UPPER-LIMIT>
+                    <COMPU-CONST>
+                      <VT>ECUM_STATE_RESET</VT>
+                    </COMPU-CONST>
+                  </COMPU-SCALE>
+                </COMPU-SCALES>
+              </COMPU-INTERNAL-TO-PHYS>
+            </COMPU-METHOD>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleDescriptions</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-DESCRIPTION>
+              <SHORT-NAME>EcuM</SHORT-NAME>
+              <MODULE-ID>10</MODULE-ID>
+              <PROVIDED-ENTRYS>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_MainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!IF "$MULTICORE_ENABLED"!][!//
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_UpdateSleepMode</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_SelectShutdownTarget</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_GoDown</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_GoHalt</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_GoPoll</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!][!//
+              </PROVIDED-ENTRYS>
+[!IF "($MULTICORE_ENABLED = 'true') and ($CROSSCORECOMMWAKEUP = 'true')"!]
+              <REQUIRED-CLIENT-SERVER-ENTRYS>
+[!FOR "Idx" = "0" TO "(as:modconf('Os')[1]/OsOS/OsNumberOfCores) - 1"!]
+  [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMChannelRef), 'ComMChannelId')"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_ComM_EcuM_WakeUpIndication_[!"node:name(.)"!]_Core_[!"$Idx"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+  [!ENDLOOP!]
+[!ENDFOR!]
+[!FOR "Idx" = "0" TO "(as:modconf('Os')[1]/OsOS/OsNumberOfCores) - 1"!]
+  [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMPNCRef), 'ComMPncId')"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_ComM_EcuM_PNCWakeUpIndication_[!"node:name(.)"!]_Core_[!"$Idx"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_MainFunction</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+  [!ENDLOOP!]
+[!ENDFOR!]
+
+              </REQUIRED-CLIENT-SERVER-ENTRYS>
+[!ENDIF!]
+
+              [!IF "$MULTICORE_ENABLED"!]
+              <PROVIDED-DATAS>
+                <!-- The master core shall write to this variable data prototype to signal the slave cores that it is ready. -->
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>EcuM_MasterCoreReadyPort</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+                <!-- Each slave core shall write to this variable data prototype to signal that they are ready. The slave core shall pass their coreId. -->
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>EcuM_SlaveCoreReadyPort</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+                <!-- The master core shall write to the SetSleepMode port to inform the slave cores of the currently selected sleep mode. -->
+                <VARIABLE-DATA-PROTOTYPE>
+                  <!-- !LINKSTO EcuM.Impl.Bswmd.ProvidedDatas.SetSleepMode,1 -->
+                  <SHORT-NAME>EcuM_SetSleepMode</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+              </PROVIDED-DATAS>
+
+              <REQUIRED-DATAS>
+                <!-- The slave cores shall read from their port to determine if the master core is ready.
+                The user must connect the EcuM_MasterCoreReadyPort with each EcuM_MasterCoreSyncPort. -->
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>EcuM_MasterCoreSyncPort</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/boolean</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+                <!-- The master core shall read from this variable to determine if the slave cores are ready. The user must connect the EcuM_SlaveCoreReadyPort to the  EcuM_SlaveCoreSyncPort  -->
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>EcuM_SlaveCoreSyncPort</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+                <!-- Each slave core shall read from their GetSleepMode port to determine the current sleep mode -->
+                <VARIABLE-DATA-PROTOTYPE>
+                <!-- !LINKSTO EcuM.Impl.Bswmd.RequiredDatas.GetSleepMode,1 -->
+                  <SHORT-NAME>EcuM_GetSleepMode</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+              </REQUIRED-DATAS>
+              [!ENDIF!]
+
+
+              <INTERNAL-BEHAVIORS>
+                <!-- !LINKSTO EcuM.Impl.Bswmd.InternalExclusiveArea,1 -->
+                <!-- The master core InternalBehavior should always be present -->
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_[!"num:i($ECUM_MASTER_CORE_ID)"!]</SHORT-NAME>
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_ECUM_EXCLUSIVE_AREA_[!"num:i($ECUM_MASTER_CORE_ID)"!]</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+                  <ENTITYS>
+                    [!IF "$MULTICORE_ENABLED"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>BswCalledEntity_EcuM_GoHalt</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+                        <!-- Master core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_EcuM_SlaveCoreSyncPort</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_SlaveCoreSyncPort</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-RECEIVE-POINTS>
+                      <DATA-SEND-POINTS>
+                        <!-- Master core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_EcuM_MasterCoreReadyPort</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_MasterCoreReadyPort</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_GoHalt</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>BswCalledEntity_EcuM_GoDown</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+                        <!-- Master core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_EcuM_SlaveCoreSyncPort</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_SlaveCoreSyncPort</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-RECEIVE-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_GoDown</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>BswCalledEntity_EcuM_SelectShutdownTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+                        <!-- Master core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_EcuM_SetSleepMode</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_SetSleepMode</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_SelectShutdownTarget</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    [!ENDIF!]
+
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>EcuM_MainFunction</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($ECUM_MASTER_CORE_ID)"!]/SCHM_ECUM_EXCLUSIVE_AREA_[!"num:i($ECUM_MASTER_CORE_ID)"!]</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      [!IF "($MULTICORE_ENABLED = 'true') and ($CROSSCORECOMMWAKEUP = 'true')"!]
+                      <CALL-POINTS>
+                      [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMChannelRef), 'ComMChannelId')"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_ComM_EcuM_WakeUpIndication_[!"node:name(.)"!]_[!"num:i($ECUM_MASTER_CORE_ID)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/RequiredCSEntry_ComM_EcuM_WakeUpIndication_[!"node:name(.)"!]_Core_[!"num:i($ECUM_MASTER_CORE_ID)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                      [!ENDLOOP!]
+                      [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMPNCRef), 'ComMPncId')"!]                      
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_ComM_EcuM_PNCWakeUpIndication_[!"node:name(.)"!]_[!"num:i($ECUM_MASTER_CORE_ID)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/RequiredCSEntry_ComM_EcuM_PNCWakeUpIndication_[!"node:name(.)"!]_Core_[!"num:i($ECUM_MASTER_CORE_ID)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>                      
+                      [!ENDLOOP!]
+                      </CALL-POINTS>
+                      [!ENDIF!]
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/[!"$bswModuleEntryPackageName"!]/EcuM_MainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_MainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($ECUM_MASTER_CORE_ID)"!]/EcuM_MainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"EcuMGeneral/EcuMMainFunctionPeriod"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+                  </EVENTS>
+                  [!IF "$MULTICORE_ENABLED"!]
+                  <RECEPTION-POLICYS>
+                    <BSW-QUEUED-DATA-RECEPTION-POLICY>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <RECEIVED-DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_SlaveCoreSyncPort</RECEIVED-DATA-REF>
+                      <QUEUE-LENGTH>[!"num:i($MULTICORE_NUM_CORES - 1)"!]</QUEUE-LENGTH>
+                    </BSW-QUEUED-DATA-RECEPTION-POLICY>
+                  </RECEPTION-POLICYS>
+                  [!ENDIF!]
+                </BSW-INTERNAL-BEHAVIOR>
+                <!-- One InternalBehaviour per core -->
+                [!IF "$MULTICORE_ENABLED"!]
+                  [!FOR "Index" = "0" TO "$MULTICORE_NUM_CORES - 1"!]
+                    [!IF "$Index != $ECUM_MASTER_CORE_ID"!]
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_[!"num:i($Index)"!]</SHORT-NAME>
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_ECUM_EXCLUSIVE_AREA_[!"num:i($Index)"!]</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+                  <ENTITYS>
+
+                    [!IF "$MULTICORE_ENABLED"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>BswCalledEntity_EcuM_GoHalt</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+                        <!-- Slave core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_EcuM_MasterCoreSyncPort</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_MasterCoreSyncPort</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-RECEIVE-POINTS>
+                      <DATA-SEND-POINTS>
+                        <!-- Slave core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_EcuM_SlaveCoreReadyPort</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_SlaveCoreReadyPort</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_GoHalt</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>BswCalledEntity_EcuM_GoPoll</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+                        <!-- Slave core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_EcuM_MasterCoreSyncPort</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_MasterCoreSyncPort</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-RECEIVE-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_GoPoll</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>BswCalledEntity_EcuM_GoDown</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+                        <!-- Slave core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_EcuM_SlaveCoreReadyPort</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_SlaveCoreReadyPort</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/BswModuleEntrys/EcuM_GoDown</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+                    [!ENDIF!]
+
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>EcuM_MainFunction</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($Index)"!]/SCHM_ECUM_EXCLUSIVE_AREA_[!"num:i($Index)"!]</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      [!IF "($MULTICORE_ENABLED = 'true') and ($CROSSCORECOMMWAKEUP = 'true')"!]
+                      <CALL-POINTS>
+                      [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMChannelRef), 'ComMChannelId')"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_ComM_EcuM_WakeUpIndication_[!"node:name(.)"!]_[!"num:i($Index)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/RequiredCSEntry_ComM_EcuM_WakeUpIndication_[!"node:name(.)"!]_Core_[!"num:i($Index)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                      [!ENDLOOP!]                      
+                      [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMPNCRef), 'ComMPncId')"!]                      
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_ComM_EcuM_PNCWakeUpIndication_[!"node:name(.)"!]_[!"num:i($Index)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/RequiredCSEntry_ComM_EcuM_PNCWakeUpIndication_[!"node:name(.)"!]_Core_[!"num:i($Index)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>                      
+                      [!ENDLOOP!]                      
+                      </CALL-POINTS>
+                      [!ENDIF!] 
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/[!"$bswModuleEntryPackageName"!]/EcuM_MainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>EcuM_UpdateSleepMode</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($Index)"!]/SCHM_ECUM_EXCLUSIVE_AREA_[!"num:i($Index)"!]</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+                        <!-- Slave core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_EcuM_GetSleepMode</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_GetSleepMode</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-RECEIVE-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_EcuM/[!"$bswModuleEntryPackageName"!]/EcuM_UpdateSleepMode</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_MainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($Index)"!]/EcuM_MainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"EcuMGeneral/EcuMMainFunctionPeriod"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+                    <BSW-DATA-RECEIVED-EVENT>
+                        <SHORT-NAME>DataReceivedEvent_UpdateSleepMode</SHORT-NAME>
+                        <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($Index)"!]/EcuM_UpdateSleepMode</STARTS-ON-EVENT-REF>
+                        <DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/EcuM_GetSleepMode</DATA-REF>
+                    </BSW-DATA-RECEIVED-EVENT>
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+                    [!ENDIF!]
+                  [!ENDFOR!]
+                [!ENDIF!]
+              </INTERNAL-BEHAVIORS>
+            </BSW-MODULE-DESCRIPTION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>[!"$bswModuleEntryPackageName"!]</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>EcuM_MainFunction</SHORT-NAME>
+              <SERVICE-ID>24</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!IF "$MULTICORE_ENABLED"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>EcuM_UpdateSleepMode</SHORT-NAME>
+              <SERVICE-ID>0</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>EcuM_SelectShutdownTarget</SHORT-NAME>
+              <SERVICE-ID>6</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>UNSPECIFIED</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <RETURN-TYPE>
+                <SHORT-NAME>returnType</SHORT-NAME>
+                <DIRECTION>OUT</DIRECTION>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Std/ImplementationDataTypes/Std_ReturnType</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </RETURN-TYPE>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>target</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_EcuM/ImplementationDataTypes/EcuM_StateType</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>mode</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>EcuM_GoDown</SHORT-NAME>
+              <SERVICE-ID>31</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>UNSPECIFIED</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>EcuM_GoHalt</SHORT-NAME>
+              <SERVICE-ID>32</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>UNSPECIFIED</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>EcuM_GoPoll</SHORT-NAME>
+              <SERVICE-ID>33</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>UNSPECIFIED</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_EcuM</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Implementations</SHORT-NAME>
+          <ELEMENTS>
+            <!-- The master core BswImplementation should always be present -->
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_[!"num:i($ECUM_MASTER_CORE_ID)"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_BSW.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_BSW_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_BootTarget.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Trace.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Trace_Internal.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::EcuM.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::EcuM_ASR32_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::EcuM_ASR40_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::EcuM_BootTarget.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::EcuM_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::EcuM_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::EcuM_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>INTERNAL_VAR_POWER_ON_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_POWER_ON_INIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_POWER_ON_INIT_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_POWER_ON_INIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  [!IF "node:exists(as:modconf('EcuM')/EcuMGeneral/EcuMUseBoottargetSec) and node:value(as:modconf('EcuM')/EcuMGeneral/EcuMUseBoottargetSec) = 'true'"!]
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>ECUM_BOOTTARGET</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  [!ENDIF!]
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>5.15.7</SW-VERSION>
+[!IF "EcuMGeneral/EcuMRteUsage = 'true'"!]
+              <!-- Only defined for the master core -->
+              <SWC-BSW-MAPPING-REF DEST="SWC-BSW-MAPPING">/AUTOSAR_EcuM/SwcBswMappings/SwcBswMapping_[!"num:i($ECUM_MASTER_CORE_ID)"!]</SWC-BSW-MAPPING-REF>
+[!ENDIF!]
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($ECUM_MASTER_CORE_ID)"!]</BEHAVIOR-REF>
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+<VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM5I15R0/EcuM</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+            <!-- One BswImplementation per core -->
+            [!IF "$MULTICORE_ENABLED"!]
+              [!FOR "Index" = "0" TO "$MULTICORE_NUM_CORES - 1"!]
+                [!IF "$Index != $ECUM_MASTER_CORE_ID"!]
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_[!"num:i($Index)"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_BSW.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_BSW_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_BootTarget.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Trace.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Trace_Internal.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::EcuM_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::EcuM.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::EcuM_ASR32_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::EcuM_ASR40_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::EcuM_BootTarget.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::EcuM_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::EcuM_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::EcuM_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>INTERNAL_VAR_POWER_ON_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_POWER_ON_INIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_POWER_ON_INIT_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_POWER_ON_INIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>5.15.7</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_EcuM/BswModuleDescriptions/EcuM/InternalBehavior_[!"num:i($Index)"!]</BEHAVIOR-REF>
+              <!-- Only defined for the slave cores -->
+              <VENDOR-API-INFIX>Core_[!"num:i($Index)"!]</VENDOR-API-INFIX>
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM5I15R0/EcuM</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+                [!ENDIF!]
+              [!ENDFOR!]
+            [!ENDIF!]
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+
+  </AR-PACKAGES>
+</AUTOSAR>

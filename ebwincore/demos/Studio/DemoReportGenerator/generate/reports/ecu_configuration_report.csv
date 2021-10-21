@@ -1,0 +1,74 @@
+ [!NOCODE!]
+
+---------------------------------------------------------------------------------------------------------------------
+ Template for a csv report of the configuration generator.
+
+ Copy directory DemoReportGenerator to plugins/ directory of EB tresos Studio and change the plug-in
+ and this template to your needs.
+
+ A report is generated each time code is generated for a project. The report is stored into the file
+ reports/ecu_configuration_report.csv
+
+ Copyright (C) Elektrobit Automotive GmbH - All rights reserved
+ ---------------------------------------------------------------------------------------------------------------------
+
+-
+- This macro replace hostile characters in comments and values
+-
+[!MACRO "clean","field"="'desc'"!][!//
+"[!"text:replaceAll(text:replaceAll(doc:field(.,'COMMENTS',0,$field,'text/plain',$lang),';',' '),'["\r\n]','')"!]"[!//
+[!ENDMACRO!]
+
+[!AUTOSPACING!]
+[!ENDNOCODE!][!//
+[!INDENT "0"!][!//
+Project: [!"$project"!]
+
+Module;XPath;Value;Labels;Comments
+[!/* loop over all elements */!][!//
+[!LOOP "/AUTOSAR/TOP-LEVEL-PACKAGES/*/ELEMENTS/*"!][!//
+[!/* Only print information for modules for which code is generated */!][!//
+  [!IF "./@type='MODULE-CONFIGURATION' and node:exists(.)"!][!//
+    [!IF "node:containsValue( text:split( $generateModules ), concat( name(.), '_', name(node:dtos(.)/../..) ) )"!][!//
+[!/* get the Module name*/!][!//
+      [!VAR "module" = "text:replaceAll(name(.),';',' ')"!][!//
+      [!VAR "len" = "length(node:path(.))+2"!][!//
+[!/* Loop about all children in the tree*/!][!//
+      [!LOOP ".//*"!][!//
+[!/*Print the Module*/!][!//
+          [!"$module"!];[!//
+[!/*Print the Path*/!][!//
+          [!"node:path(.)"!];[!//
+[!/*Print the Value*/!][!//
+          [!"text:replace(.,';',' ')"!];[!//
+[!/*Print the Labels (custom attribute)*/!][!//
+          [!"text:join(custAttr:getValues(.,'label'), ',')"!];[!//
+[!/*If comments are present add them to the output*/!][!//
+        [!IF "doc:has(.,'COMMENTS')"!][!//
+[!/* get used Languages*/!][!//
+          [!VAR "langs" = "text:join(doc:languages(., "COMMENTS", 0), ',')"!][!//
+          [!VAR "nrOfLangs" = "count(text:split($langs, ','))"!][!//
+[!/*Loop over all Languages*/!][!//
+          [!FOR "x" = "1" TO "$nrOfLangs"!][!//
+[!/*get the language*/!][!//
+            [!VAR "lang" = "text:split($langs, ',')[num:i($x)]"!][!//
+[!/*Print the Comment Label*/!][!//
+            [!CALL "clean","field"="'label'"!];[!//
+[!/*Print the Comment Description*/!][!//
+            [!CALL "clean","field"="'desc'"!];[!//
+[!/*Print the Comment Status*/!][!//
+            [!"doc:field(.,'COMMENTS',0,'status','text/plain',$lang)"!];[!//
+[!/*Print the Comment User*/!][!//
+            [!"doc:field(.,'COMMENTS',0,'user','text/plain',$lang)"!];[!//
+[!/*Print the Comment Date*/!][!//
+            [!"doc:field(.,'COMMENTS',0,'date','text/plain',$lang)"!];[!//
+[!/*Print the Comment Language*/!][!//
+            [!"$lang"!];[!//
+          [!ENDFOR!][!//
+        [!ENDIF!][!//
+[!/*Line break*/!]
+      [!ENDLOOP!][!//
+   [!ENDIF!][!//
+  [!ENDIF!][!//
+[!ENDLOOP!][!//
+[!ENDINDENT!][!//

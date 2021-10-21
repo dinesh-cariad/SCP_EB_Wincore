@@ -1,0 +1,1545 @@
+<?xml version="1.0" encoding="UTF-8"?>
+[!AUTOSPACING!]
+<AUTOSAR xmlns="http://autosar.org/3.2.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/3.2.2 AUTOSAR_STRICT_COMPACT.xsd">
+[!IF "not(node:exists(as:modconf('ComM')[1]/ComMConfigSet/*[1]))"!][!//
+[!ERROR "Configuration not exist!"!][!//
+[!ENDIF!][!//
+[!/* do not generate this file if RTE is not used */!]
+[!SKIPFILE "ComMGeneral/ComMRteUsage = 'false'"!][!//
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+[!VAR "swComponentTypePackageName" = "'ComponentTypes'"!][!//
+[!VAR "swcImplementationPackageName" = "'Implementations'"!][!//
+[!VAR "swcImplementationDataTypesPackageName" = "'Datatypes'"!][!//
+[!VAR "ReRequestedComModeName" = "'RE_GetRequestedMode'"!][!//
+[!VAR "ReRequestedComModeSymbolName" = "'ComM_Rte_GetRequestedMode'"!][!//
+[!ELSE!][!//
+[!VAR "swComponentTypePackageName" = "'SwComponentTypes'"!][!//
+[!VAR "swcImplementationPackageName" = "'SwcImplementations'"!][!//
+[!VAR "swcImplementationDataTypesPackageName" = "'ImplementationDataTypes'"!][!//
+[!VAR "ReRequestedComModeName" = "'RE_GetRequestedComMode'"!][!//
+[!VAR "ReRequestedComModeSymbolName" = "'ComM_Rte_GetRequestedComMode'"!][!//
+[!ENDIF!][!//
+  <TOP-LEVEL-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_ComM</SHORT-NAME>
+      <ELEMENTS/>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>[!"$swComponentTypePackageName"!]</SHORT-NAME>
+          <ELEMENTS>
+            <SERVICE-COMPONENT-TYPE>
+              <SHORT-NAME>ComM</SHORT-NAME>
+              <!-- All per-user client-server ports have a queue
+                   length of 1 as we do not expect a single SW-Cs
+                   to call the same operation repeatedly in very
+                   short cycles. -->
+              <PORTS>
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR32ServiceAPI = 'true'"!]
+                <!-- Provide AUTOSAR 3.2 service -->
+[!LOOP "ComMConfigSet/*[1]/ComMUser/*"!]
+                <!-- Instance of ComM_CurrentMode -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>UM_ASR32_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <MODE-SWITCH-COM-SPEC>
+                      <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_CurrentMode/currentMode</MODE-GROUP-REF>
+                      <QUEUE-LENGTH>3</QUEUE-LENGTH>
+                    </MODE-SWITCH-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_CurrentMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <!-- Instance of ComM_UserRequest -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>UR_ASR32_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/RequestComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/GetCurrentComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/GetMaxComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/GetRequestedMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+                <!-- Instance of ComM_ECUModeLimitation -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>ComM_ASR32_ECUModeLimitation</SHORT-NAME>
+                  <!-- Let the Rte decide on the optimal queue
+                       length depending on the number of connected
+                       clients. -->
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ECUModeLimitation</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- Instance of ComM_ChannelLimitation -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>CL_ASR32_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelLimitation/LimitChannelToNoComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelLimitation/GetInhibitionStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelLimitation</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- Instance of ComM_ChannelWakeup -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>CW_ASR32_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelWakeup/PreventWakeUp</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelWakeup/GetInhibitionStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelWakeup</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!ENDIF!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR40ServiceAPI = 'true'"!]
+                <!-- Provide AUTOSAR 4.0 service -->
+[!LOOP "ComMConfigSet/*[1]/ComMUser/*"!]
+                <!-- Instance of ComM_CurrentMode -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>UM_ASR40_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <MODE-SWITCH-COM-SPEC>
+                      <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_CurrentMode/currentMode</MODE-GROUP-REF>
+                      <QUEUE-LENGTH>3</QUEUE-LENGTH>
+                    </MODE-SWITCH-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_CurrentMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <!-- Instance of ComM_UserRequest -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>UR_ASR40_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/RequestComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/GetCurrentComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/GetCurrentPNCComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/GetMaxComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/GetRequestedComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*[ComMFullCommRequestNotificationEnabled = 'true']"!]
+                <!-- Instance of ComM_CurrentChannelRequest -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>CR_ASR40_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <UNQUEUED-SENDER-COM-SPEC>
+                      <DATA-ELEMENT-REF DEST="DATA-ELEMENT-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_CurrentChannelRequest/fullComRequestors</DATA-ELEMENT-REF>
+                      <USES-END-TO-END-PROTECTION>false</USES-END-TO-END-PROTECTION>
+                      <INIT-VALUE-REF DEST="RECORD-SPECIFICATION">/AUTOSAR_ComM/ASR40/ConstantSpecifications/ComM_ConstantSpecification_0/ComM_ASR40_InitConst_UserHandleArray</INIT-VALUE-REF>
+                    </UNQUEUED-SENDER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_CurrentChannelRequest</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+                <!-- Instance of ComM_ECUModeLimitation -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>ComM_ASR40_ECUModeLimitation</SHORT-NAME>
+                  <!-- Let the Rte decide on the optimal queue
+                       length depending on the number of connected
+                       clients. -->
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ECUModeLimitation</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- Instance of ComM_ChannelLimitation -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>CL_ASR40_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelLimitation/LimitChannelToNoComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelLimitation/GetInhibitionStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelLimitation</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- Instance of ComM_ChannelWakeup -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>CW_ASR40_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelWakeup/PreventWakeUp</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelWakeup/GetInhibitionStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelWakeup</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!ENDIF!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI != 'NONE'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMUser/*"!]
+                <!-- Instance of ComM_CurrentMode -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>UM_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <MODE-SWITCH-COM-SPEC>
+                      <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_CurrentMode/currentMode</MODE-GROUP-REF>
+                      <QUEUE-LENGTH>3</QUEUE-LENGTH>
+                    </MODE-SWITCH-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/AUTOSAR_ComM/PortInterfaces/ComM_CurrentMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <!-- Instance of ComM_UserRequest -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>UR_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/RequestComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/GetCurrentComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!IF "../../../../ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_40'"!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/GetCurrentPNCComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ENDIF!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/GetMaxComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!IF "../../../../ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_32'"!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/GetRequestedMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ELSE!][!//
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/GetRequestedComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ENDIF!]
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_40'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*[ComMFullCommRequestNotificationEnabled = 'true']"!]
+                <!-- Instance of ComM_CurrentChannelRequest -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>CR_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <UNQUEUED-SENDER-COM-SPEC>
+                      <DATA-ELEMENT-REF DEST="DATA-ELEMENT-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_CurrentChannelRequest/fullComRequestors</DATA-ELEMENT-REF>
+                      <USES-END-TO-END-PROTECTION>false</USES-END-TO-END-PROTECTION>
+                      <INIT-VALUE-REF DEST="RECORD-SPECIFICATION">/AUTOSAR_ComM/ConstantSpecifications/ComM_ConstantSpecification_0/ComM_InitConst_UserHandleArray</INIT-VALUE-REF>
+                    </UNQUEUED-SENDER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/AUTOSAR_ComM/PortInterfaces/ComM_CurrentChannelRequest</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+                <!-- Instance of ComM_ECUModeLimitation -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>ComM_ECUModeLimitation</SHORT-NAME>
+                  <!-- Let the Rte decide on the optimal queue
+                       length depending on the number of connected
+                       clients. -->
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- Instance of ComM_ChannelLimitation -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>CL_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelLimitation/LimitChannelToNoComMode</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelLimitation/GetInhibitionStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelLimitation</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- Instance of ComM_ChannelWakeup -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>CW_[!"name(.)"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelWakeup/PreventWakeUp</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelWakeup/GetInhibitionStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelWakeup</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDLOOP!]
+[!ENDIF!]
+[!ENDIF!]
+              </PORTS>
+            </SERVICE-COMPONENT-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>InternalBehaviors</SHORT-NAME>
+          <ELEMENTS>
+            <INTERNAL-BEHAVIOR>
+              <SHORT-NAME>SwcInternalBehavior_0</SHORT-NAME>
+              <COMPONENT-REF DEST="SERVICE-COMPONENT-TYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM</COMPONENT-REF>
+              <EVENTS>
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR32ServiceAPI = 'true'"!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+                <!-- Conditionally existing events for interface ComM_ECUModeLimitation -->
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_LimitECUToNoComMode</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_LimitECUToNoComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ASR32_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ECUModeLimitation/LimitECUToNoComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_ReadInhibitCounter</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_ReadInhibitCounter</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ASR32_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ECUModeLimitation/ReadInhibitCounter</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_ResetInhibitCounter</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_ResetInhibitCounter</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ASR32_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ECUModeLimitation/ResetInhibitCounter</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_SetECUGroupClassification</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_SetECUGroupClassification</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ASR32_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ECUModeLimitation/SetECUGroupClassification</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- Conditionally existing events for interfance ComM_ChannelLimitation -->
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_LimitChannelToNoComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_LimitChannelToNoComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CL_ASR32_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelLimitation/LimitChannelToNoComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_GetInhibitionStatus_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_GetInhibitionStatus</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CL_ASR32_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelLimitation/GetInhibitionStatus</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+                <!-- Conditionally existing events for interfance ComM_ChannelWakeup -->
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_PreventWakeup_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_PreventWakeUp</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CW_ASR32_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelWakeup/PreventWakeUp</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_GetInhibitionStatus_ChannelWakeup_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_GetInhibitionStatus</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CW_ASR32_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_ChannelWakeup/GetInhibitionStatus</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ENDLOOP!]
+[!ENDIF!]
+                <!-- Standard events -->
+[!LOOP "ComMConfigSet/*[1]/ComMUser/*"!]
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_RequestComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_RequestComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR32_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/RequestComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_GetCurrentComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_GetCurrentComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR32_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/GetCurrentComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_GetMaxComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_GetMaxComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR32_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/GetMaxComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR32_GetRequestedMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR32_GetRequestedMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR32_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_UserRequest/GetRequestedMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR40ServiceAPI = 'true'"!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+                <!-- Conditionally existing events for interface ComM_ECUModeLimitation -->
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_LimitECUToNoComMode</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_LimitECUToNoComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ASR40_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ECUModeLimitation/LimitECUToNoComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_ReadInhibitCounter</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_ReadInhibitCounter</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ASR40_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ECUModeLimitation/ReadInhibitCounter</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_ResetInhibitCounter</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_ResetInhibitCounter</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ASR40_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ECUModeLimitation/ResetInhibitCounter</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_SetECUGroupClassification</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_SetECUGroupClassification</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ASR40_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ECUModeLimitation/SetECUGroupClassification</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- Conditionally existing events for interfance ComM_ChannelLimitation -->
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_LimitChannelToNoComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_LimitChannelToNoComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CL_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelLimitation/LimitChannelToNoComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_GetInhibitionStatus_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_GetInhibitionStatus</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CL_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelLimitation/GetInhibitionStatus</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+                <!-- Conditionally existing events for interfance ComM_ChannelWakeup -->
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_PreventWakeup_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_PreventWakeUp</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CW_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelWakeup/PreventWakeUp</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_GetInhibitionStatus_ChannelWakeup_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_GetInhibitionStatus</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CW_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_ChannelWakeup/GetInhibitionStatus</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ENDLOOP!]
+[!ENDIF!]
+                <!-- Standard events -->
+[!LOOP "ComMConfigSet/*[1]/ComMUser/*"!]
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_RequestComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_RequestComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/RequestComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_GetCurrentComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_GetCurrentComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/GetCurrentComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_GetCurrentPNCComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_GetCurrentPNCComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/GetCurrentPNCComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_GetMaxComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_GetMaxComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/GetMaxComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ASR40_GetRequestedComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ASR40_GetRequestedComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_UserRequest/GetRequestedComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI != 'NONE'"!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+                <!-- Conditionally existing events for interface ComM_ECUModeLimitation -->
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_LimitECUToNoComMode</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_LimitECUToNoComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/LimitECUToNoComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ReadInhibitCounter</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ReadInhibitCounter</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/ReadInhibitCounter</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_ResetInhibitCounter</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_ResetInhibitCounter</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/ResetInhibitCounter</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_SetECUGroupClassification</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_SetECUGroupClassification</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/ComM_ECUModeLimitation</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ECUModeLimitation/SetECUGroupClassification</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- Conditionally existing events for interfance ComM_ChannelLimitation -->
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_LimitChannelToNoComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_LimitChannelToNoComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CL_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelLimitation/LimitChannelToNoComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_GetInhibitionStatus_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_GetInhibitionStatus</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CL_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelLimitation/GetInhibitionStatus</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+                <!-- Conditionally existing events for interfance ComM_ChannelWakeup -->
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_PreventWakeup_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_PreventWakeUp</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CW_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelWakeup/PreventWakeUp</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_GetInhibitionStatus_ChannelWakeup_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_GetInhibitionStatus</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CW_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_ChannelWakeup/GetInhibitionStatus</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ENDLOOP!]
+[!ENDIF!]
+                <!-- Standard events -->
+[!LOOP "ComMConfigSet/*[1]/ComMUser/*"!]
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_RequestComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_RequestComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/RequestComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_GetCurrentComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_GetCurrentComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/GetCurrentComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!IF "../../../../ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_40'"!]
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_GetCurrentPNCComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_GetCurrentPNCComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/GetCurrentPNCComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_GetMaxComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/RE_GetMaxComMode</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/GetMaxComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!IF "../../../../ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_32'"!]
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_GetRequestedMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/[!"$ReRequestedComModeName"!]</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/GetRequestedMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ELSE!][!//
+                <OPERATION-INVOKED-EVENT>
+                  <SHORT-NAME>EV_GetRequestedComMode_[!"name(.)"!]</SHORT-NAME>
+                  <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0/[!"$ReRequestedComModeName"!]</START-ON-EVENT-REF>
+                  <OPERATION-IREF>
+                    <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                    <OPERATION-PROTOTYPE-REF DEST="OPERATION-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_UserRequest/GetRequestedComMode</OPERATION-PROTOTYPE-REF>
+                  </OPERATION-IREF>
+                </OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!]
+              </EVENTS>
+[!IF "count(as:modconf('ComM')[1]/ComMConfigSet/*/ComMUser/*) = 0"!]
+                  <INCLUDED-DATA-TYPE-SETS>
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR32ServiceAPI = 'true'"!]
+                  	<INCLUDED-DATA-TYPE-SET>
+                      <DATA-TYPE-REFS>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_ComM/ASR32/ImplementationDataTypes/ComM_ASR32_ModeType</DATA-TYPE-REF>
+                      </DATA-TYPE-REFS>
+                    </INCLUDED-DATA-TYPE-SET>
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR40ServiceAPI = 'true'"!]
+                  	<INCLUDED-DATA-TYPE-SET>
+                      <DATA-TYPE-REFS>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_ComM/ASR40/ImplementationDataTypes/ComM_ASR40_ModeType</DATA-TYPE-REF>
+                      </DATA-TYPE-REFS>
+                    </INCLUDED-DATA-TYPE-SET>
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI != 'NONE'"!]
+                  	<INCLUDED-DATA-TYPE-SET>
+                      <DATA-TYPE-REFS>
+                        <DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_ModeType</DATA-TYPE-REF>
+                      </DATA-TYPE-REFS>
+                    </INCLUDED-DATA-TYPE-SET>
+
+[!ENDIF!]
+                  </INCLUDED-DATA-TYPE-SETS>
+[!ENDIF!]
+              <PORT-API-OPTIONS>
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR32ServiceAPI = 'true'"!]
+<!-- Port API options for AUTOSAR 3.2 -->
+[!LOOP "ComMConfigSet/*[1]/ComMUser/*"!]
+                <!-- UM-port [!"name(.)"!], switch functions must be accessible via function pointer -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UM_ASR32_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+                <!-- UR-port [!"name(.)"!]: Port defined argument values + no indirect API -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-ARG-VALUES>
+                    <INTEGER-LITERAL>
+                      <SHORT-NAME>PORTARG_UR_ASR32_[!"name(.)"!]</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                      <VALUE>[!"num:integer(ComMUserIdentifier)"!]</VALUE>
+                    </INTEGER-LITERAL>
+                  </PORT-ARG-VALUES>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR32_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- CW-port [!"name(.)"!] -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-ARG-VALUES>
+                    <INTEGER-LITERAL>
+                      <SHORT-NAME>PORTARG_CW_ASR32_[!"name(.)"!]</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                      <VALUE>[!"num:integer(ComMChannelId)"!]</VALUE>
+                    </INTEGER-LITERAL>
+                  </PORT-ARG-VALUES>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CW_ASR32_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- CL-port [!"name(.)"!] -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-ARG-VALUES>
+                    <INTEGER-LITERAL>
+                      <SHORT-NAME>PORTARG_CL_ASR32_[!"name(.)"!]</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+                      <VALUE>[!"num:integer(ComMChannelId)"!]</VALUE>
+                    </INTEGER-LITERAL>
+                  </PORT-ARG-VALUES>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CL_ASR32_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!ENDIF!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR40ServiceAPI = 'true'"!]
+<!-- Port API options for AUTOSAR 4.0 -->
+[!LOOP "ComMConfigSet/*[1]/ComMUser/*"!]
+                <!-- UM-port [!"name(.)"!], switch functions must be accessible via function pointer -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UM_ASR40_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+                <!-- UR-port [!"name(.)"!]: Port defined argument values + no indirect API -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-ARG-VALUES>
+                    <INTEGER-LITERAL>
+                      <SHORT-NAME>PORTARG_UR_ASR40_[!"name(.)"!]</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_UserHandleType</TYPE-TREF>
+                      <VALUE>[!"num:integer(ComMUserIdentifier)"!]</VALUE>
+                    </INTEGER-LITERAL>
+                  </PORT-ARG-VALUES>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_ASR40_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*[ComMFullCommRequestNotificationEnabled = 'true']"!]
+                <!-- CR-port [!"name(.)"!], write functions must be accessible via function pointer -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CR_ASR40_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- CW-port [!"name(.)"!] -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-ARG-VALUES>
+                    <INTEGER-LITERAL>
+                      <SHORT-NAME>PORTARG_CW_ASR40_[!"name(.)"!]</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_UserHandleType</TYPE-TREF>
+                      <VALUE>[!"num:integer(ComMChannelId)"!]</VALUE>
+                    </INTEGER-LITERAL>
+                  </PORT-ARG-VALUES>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CW_ASR40_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- CL-port [!"name(.)"!] -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-ARG-VALUES>
+                    <INTEGER-LITERAL>
+                      <SHORT-NAME>PORTARG_CL_ASR40_[!"name(.)"!]</SHORT-NAME>
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ASR40/Datatypes/ComM_ASR40_UserHandleType</TYPE-TREF>
+                      <VALUE>[!"num:integer(ComMChannelId)"!]</VALUE>
+                    </INTEGER-LITERAL>
+                  </PORT-ARG-VALUES>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CL_ASR40_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!ENDIF!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI != 'NONE'"!]
+                <!-- Port API options for default AUTOSAR version -->
+[!LOOP "ComMConfigSet/*[1]/ComMUser/*"!]
+                <!-- UM-port [!"name(.)"!], switch functions must be accessible via function pointer -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UM_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+                <!-- UR-port [!"name(.)"!]: Port defined argument values + no indirect API -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-ARG-VALUES>
+                    <INTEGER-LITERAL>
+                      <SHORT-NAME>PORTARG_UR_[!"name(.)"!]</SHORT-NAME>
+[!IF "../../../../ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+[!ELSE!][!//
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_UserHandleType</TYPE-TREF>
+[!ENDIF!]
+                      <VALUE>[!"num:integer(ComMUserIdentifier)"!]</VALUE>
+                    </INTEGER-LITERAL>
+                  </PORT-ARG-VALUES>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UR_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_40'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*[ComMFullCommRequestNotificationEnabled = 'true']"!]
+                <!-- CR-port [!"name(.)"!], write functions must be accessible via function pointer -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CR_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- CW-port [!"name(.)"!] -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-ARG-VALUES>
+                    <INTEGER-LITERAL>
+                      <SHORT-NAME>PORTARG_CW_[!"name(.)"!]</SHORT-NAME>
+[!IF "../../../../ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+[!ELSE!][!//
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_UserHandleType</TYPE-TREF>
+[!ENDIF!]
+                      <VALUE>[!"num:integer(ComMChannelId)"!]</VALUE>
+                    </INTEGER-LITERAL>
+                  </PORT-ARG-VALUES>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CW_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <!-- CL-port [!"name(.)"!] -->
+                <PORT-API-OPTION>
+                  <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                  <INDIRECT-API>false</INDIRECT-API>
+                  <PORT-ARG-VALUES>
+                    <INTEGER-LITERAL>
+                      <SHORT-NAME>PORTARG_CL_[!"name(.)"!]</SHORT-NAME>
+[!IF "../../../../ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_PlatformTypes/Datatypes/uint8</TYPE-TREF>
+[!ELSE!][!//
+                      <TYPE-TREF DEST="INTEGER-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/ComM_UserHandleType</TYPE-TREF>
+[!ENDIF!]
+                      <VALUE>[!"num:integer(ComMChannelId)"!]</VALUE>
+                    </INTEGER-LITERAL>
+                  </PORT-ARG-VALUES>
+                  <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CL_[!"name(.)"!]</PORT-REF>
+                </PORT-API-OPTION>
+[!ENDLOOP!]
+[!ENDIF!]
+[!ENDIF!]
+              </PORT-API-OPTIONS>
+              <RUNNABLES>
+                <!-- Standard runnables -->
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR32ServiceAPI = 'true'"!]
+[!IF "count(as:modconf('ComM')[1]/ComMConfigSet/*/ComMUser/*) != 0"!]
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_RequestComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR32_Rte_RequestComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_GetCurrentComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR32_Rte_GetCurrentComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_GetMaxComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR32_Rte_GetMaxComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_GetRequestedMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR32_Rte_GetRequestedMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+                <!-- Conditionally existing runnables for interface ComM_ECUModeLimitation -->
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_LimitECUToNoComMode</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_ASR32_Rte_LimitECUToNoComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_ReadInhibitCounter</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_ASR32_Rte_ReadInhibitCounter</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_ResetInhibitCounter</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_ASR32_Rte_ResetInhibitCounter</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_SetECUGroupClassification</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_ASR32_Rte_SetECUGroupClassification</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <!-- Conditionally existing runnables for interface ComM_ChannelLimitation -->
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_LimitChannelToNoComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>Status</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR32_Rte_LimitChannelToNoComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_GetInhibitionStatus</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>Status</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR32_Rte_GetInhibitionStatus</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+                <!-- Conditionally existing runnables for interface ComM_ChannelWakeup -->
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR32_PreventWakeUp</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>Status</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR32_Rte_PreventWakeUp</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMEnableASR40ServiceAPI = 'true'"!]
+[!IF "count(as:modconf('ComM')[1]/ComMConfigSet/*/ComMUser/*) != 0"!]
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_RequestComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR40_Rte_RequestComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_GetCurrentComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR40_Rte_GetCurrentComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_GetCurrentPNCComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR40_Rte_GetCurrentPNCComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_GetMaxComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR40_Rte_GetMaxComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_GetRequestedComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR40_Rte_GetRequestedComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+                <!-- Conditionally existing runnables for interface ComM_ECUModeLimitation -->
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_LimitECUToNoComMode</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_ASR40_Rte_LimitECUToNoComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_ReadInhibitCounter</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_ASR40_Rte_ReadInhibitCounter</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_ResetInhibitCounter</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_ASR40_Rte_ResetInhibitCounter</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_SetECUGroupClassification</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_ASR40_Rte_SetECUGroupClassification</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <!-- Conditionally existing runnables for interface ComM_ChannelLimitation -->
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_LimitChannelToNoComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>Status</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR40_Rte_LimitChannelToNoComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_GetInhibitionStatus</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>Status</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR40_Rte_GetInhibitionStatus</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+                <!-- Conditionally existing runnables for interface ComM_ChannelWakeup -->
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ASR40_PreventWakeUp</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>Status</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_ASR40_Rte_PreventWakeUp</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI != 'NONE'"!]
+[!IF "count(as:modconf('ComM')[1]/ComMConfigSet/*/ComMUser/*) != 0"!]
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_RequestComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_Rte_RequestComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_GetCurrentComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_Rte_GetCurrentComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_40'"!]
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_GetCurrentPNCComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_Rte_GetCurrentPNCComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDIF!]
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_GetMaxComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_Rte_GetMaxComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>[!"$ReRequestedComModeName"!]</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>ComMode</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>[!"$ReRequestedComModeSymbolName"!]</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "ComMGeneral/ComMModeLimitationEnabled = 'true'"!]
+                <!-- Conditionally existing runnables for interface ComM_ECUModeLimitation -->
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_LimitECUToNoComMode</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_Rte_LimitECUToNoComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ReadInhibitCounter</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_Rte_ReadInhibitCounter</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_ResetInhibitCounter</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_Rte_ResetInhibitCounter</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_SetECUGroupClassification</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <SYMBOL>ComM_Rte_SetECUGroupClassification</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <!-- Conditionally existing runnables for interface ComM_ChannelLimitation -->
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_LimitChannelToNoComMode</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>Status</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_Rte_LimitChannelToNoComMode</SYMBOL>
+                </RUNNABLE-ENTITY>
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_GetInhibitionStatus</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>Status</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_Rte_GetInhibitionStatus</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "ComMGeneral/ComMWakeupInhibitionEnabled = 'true'"!]
+                <!-- Conditionally existing runnables for interface ComM_ChannelWakeup -->
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_PreventWakeUp</SHORT-NAME>
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                    <ARGUMENTS>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>pdav0</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                      <RUNNABLE-ENTITY-ARGUMENT>
+                        <SYMBOL>Status</SYMBOL>
+                      </RUNNABLE-ENTITY-ARGUMENT>
+                    </ARGUMENTS>
+                    <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                  <SYMBOL>ComM_Rte_PreventWakeUp</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!ENDIF!]
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <RUNNABLE-ENTITY>
+                  <SHORT-NAME>RE_Main_[!"ComMChannelId"!]</SHORT-NAME>
+                  <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+[!IF "ComMFullCommRequestNotificationEnabled = 'true'"!]
+                  <DATA-SEND-POINTS>
+[!IF "../../../../ComMGeneral/ComMServiceAPI/ComMEnableASR40ServiceAPI = 'true'"!]
+                    <DATA-SEND-POINT>
+                      <SHORT-NAME>DSP_ASR40_RE_Main_[!"ComMChannelId"!]</SHORT-NAME>
+                      <DATA-ELEMENT-IREF>
+                        <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CR_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                        <DATA-ELEMENT-PROTOTYPE-REF DEST="DATA-ELEMENT-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_CurrentChannelRequest/fullComRequestors</DATA-ELEMENT-PROTOTYPE-REF>
+                      </DATA-ELEMENT-IREF>
+                    </DATA-SEND-POINT>
+[!ENDIF!]
+[!IF "../../../../ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_40'"!]
+                    <DATA-SEND-POINT>
+                      <SHORT-NAME>DSP_RE_Main_[!"ComMChannelId"!]</SHORT-NAME>
+                      <DATA-ELEMENT-IREF>
+                        <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/CR_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                        <DATA-ELEMENT-PROTOTYPE-REF DEST="DATA-ELEMENT-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_CurrentChannelRequest/fullComRequestors</DATA-ELEMENT-PROTOTYPE-REF>
+                      </DATA-ELEMENT-IREF>
+                    </DATA-SEND-POINT>
+[!ENDIF!]
+                  </DATA-SEND-POINTS>
+[!ENDIF!]
+                  <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                  <MODE-SWITCH-POINTS>
+                    [!IF "../../../../ComMGeneral/ComMServiceAPI/ComMEnableASR32ServiceAPI = 'true'"!]
+                    <!-- Create switch points for the Users which are directly mapped to a channel -->
+                    [!IF "num:i(count(ComMUserPerChannel/*)) != 0"!]
+                    [!LOOP "ComMUserPerChannel/*"!]
+                    [!SELECT "as:ref(ComMUserChannel)"!]
+                    <MODE-SWITCH-POINT>
+                      <SHORT-NAME>MSP_ASR32_[!"name(.)"!]</SHORT-NAME>
+                      <MODE-GROUP-IREF>
+                        <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UM_ASR32_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                        <MODE-DECLARATION-GROUP-PROTOTYPE-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_CurrentMode/currentMode</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+                      </MODE-GROUP-IREF>
+                    </MODE-SWITCH-POINT>
+                    [!ENDSELECT!]
+                    [!ENDLOOP!]
+                    [!ENDIF!]
+                    <!-- Create switch points for the Users which are mapped to a channel via PNCs -->
+                    [!IF "num:i(count(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[(node:ref(.)/ComMChannelId=node:current()/ComMChannelId)]/../../ComMUserPerPnc/*))) != 0"!]
+                    [!LOOP "node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[(node:ref(.)/ComMChannelId=node:current()/ComMChannelId)]/../../ComMUserPerPnc/*)"!]
+                    <MODE-SWITCH-POINT>
+                      <SHORT-NAME>MSP_ASR32_[!"name(.)"!]</SHORT-NAME>
+                      <MODE-GROUP-IREF>
+                        <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UM_ASR32_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                        <MODE-DECLARATION-GROUP-PROTOTYPE-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_ComM/ASR32/PortInterfaces/ComM_ASR32_CurrentMode/currentMode</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+                      </MODE-GROUP-IREF>
+                    </MODE-SWITCH-POINT>
+                    [!ENDLOOP!]
+                    [!ENDIF!]
+                    [!ENDIF!]
+                    [!IF "../../../../ComMGeneral/ComMServiceAPI/ComMEnableASR40ServiceAPI = 'true'"!]
+                    <!-- Create switch points for the Users which are directly mapped to a channel -->
+                    [!IF "num:i(count(ComMUserPerChannel/*)) != 0"!]
+                    [!LOOP "ComMUserPerChannel/*"!]
+                    [!SELECT "as:ref(ComMUserChannel)"!]
+                    <MODE-SWITCH-POINT>
+                      <SHORT-NAME>MSP_ASR40_[!"name(.)"!]</SHORT-NAME>
+                      <MODE-GROUP-IREF>
+                        <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UM_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                        <MODE-DECLARATION-GROUP-PROTOTYPE-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_CurrentMode/currentMode</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+                      </MODE-GROUP-IREF>
+                    </MODE-SWITCH-POINT>
+                    [!ENDSELECT!]
+                    [!ENDLOOP!]
+                    [!ENDIF!]
+                    <!-- Create switch points for the Users which are mapped to a channel via PNCs -->
+                    [!IF "num:i(count(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[(node:ref(.)/ComMChannelId=node:current()/ComMChannelId)]/../../ComMUserPerPnc/*))) != 0"!]
+                    [!LOOP "node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[(node:ref(.)/ComMChannelId=node:current()/ComMChannelId)]/../../ComMUserPerPnc/*)"!]
+                    <MODE-SWITCH-POINT>
+                      <SHORT-NAME>MSP_ASR40_[!"name(.)"!]</SHORT-NAME>
+                      <MODE-GROUP-IREF>
+                        <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UM_ASR40_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                        <MODE-DECLARATION-GROUP-PROTOTYPE-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_ComM/ASR40/PortInterfaces/ComM_ASR40_CurrentMode/currentMode</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+                      </MODE-GROUP-IREF>
+                    </MODE-SWITCH-POINT>
+                    [!ENDLOOP!]
+                    [!ENDIF!]
+                    [!ENDIF!]
+                    [!IF "../../../../ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI != 'NONE'"!]
+                    <!-- Create switch points for the Users which are directly mapped to a channel -->
+                    [!IF "num:i(count(ComMUserPerChannel/*)) != 0"!]
+                    [!LOOP "ComMUserPerChannel/*"!]
+                    [!SELECT "as:ref(ComMUserChannel)"!]
+                    <MODE-SWITCH-POINT>
+                      <SHORT-NAME>MSP_[!"name(.)"!]</SHORT-NAME>
+                      <MODE-GROUP-IREF>
+                        <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UM_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                        <MODE-DECLARATION-GROUP-PROTOTYPE-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_CurrentMode/currentMode</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+                      </MODE-GROUP-IREF>
+                    </MODE-SWITCH-POINT>
+                    [!ENDSELECT!]
+                    [!ENDLOOP!]
+                    [!ENDIF!]
+                    <!-- Create switch points for the Users which are mapped to a channel via PNCs -->
+                    [!IF "num:i(count(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[(node:ref(.)/ComMChannelId=node:current()/ComMChannelId)]/../../ComMUserPerPnc/*))) != 0"!]
+                    [!LOOP "node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMChannelPerPnc/*[(node:ref(.)/ComMChannelId=node:current()/ComMChannelId)]/../../ComMUserPerPnc/*)"!]
+                    <MODE-SWITCH-POINT>
+                      <SHORT-NAME>MSP_[!"name(.)"!]</SHORT-NAME>
+                      <MODE-GROUP-IREF>
+                        <P-PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/UM_[!"name(.)"!]</P-PORT-PROTOTYPE-REF>
+                        <MODE-DECLARATION-GROUP-PROTOTYPE-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_ComM/PortInterfaces/ComM_CurrentMode/currentMode</MODE-DECLARATION-GROUP-PROTOTYPE-REF>
+                      </MODE-GROUP-IREF>
+                    </MODE-SWITCH-POINT>
+                    [!ENDLOOP!]
+                    [!ENDIF!]
+                    [!ENDIF!]
+                  </MODE-SWITCH-POINTS>
+                  <SYMBOL>ComM_MainFunction_[!"ComMChannelId"!]</SYMBOL>
+                </RUNNABLE-ENTITY>
+[!ENDLOOP!]
+              </RUNNABLES>
+              <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+            </INTERNAL-BEHAVIOR>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_ComM</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>[!"$swcImplementationPackageName"!]</SHORT-NAME>
+          <ELEMENTS>
+            <SWC-IMPLEMENTATION>
+              <SHORT-NAME>SwcImplementation_0</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>ComMCode</SHORT-NAME>
+                  <TYPE>SRC</TYPE>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>Resources</SHORT-NAME>
+                <OBJECT-FILE-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <ALIGNMENT>1</ALIGNMENT>
+                    <SECTION-NAME>CODE</SECTION-NAME>
+                    <SECTION-TYPE>CODE</SECTION-TYPE>
+                    <SIZE>0</SIZE>
+                    <SW-ADDR-METHOD-REFS>
+                      <SW-ADDR-METHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDR-METHOD-REF>
+                    </SW-ADDR-METHOD-REFS>
+                  </MEMORY-SECTION>
+                </OBJECT-FILE-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-MAJOR-VERSION>5</SW-MAJOR-VERSION>
+              <SW-MINOR-VERSION>19</SW-MINOR-VERSION>
+              <SW-PATCH-VERSION>7</SW-PATCH-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <BEHAVIOR-REF DEST="INTERNAL-BEHAVIOR">/AUTOSAR_ComM/InternalBehaviors/SwcInternalBehavior_0</BEHAVIOR-REF>
+            </SWC-IMPLEMENTATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+  </TOP-LEVEL-PACKAGES>
+</AUTOSAR>

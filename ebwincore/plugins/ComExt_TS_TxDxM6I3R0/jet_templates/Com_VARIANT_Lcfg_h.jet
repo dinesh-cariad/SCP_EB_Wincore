@@ -1,0 +1,70 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_VARIANT_Lcfg_h"
+        imports="dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException
+            dreisoft.tresos.com.generator.Com_ConfigLayoutType
+            dreisoft.tresos.com.generated.operationstatus.GeneratorOperationStatus
+            dreisoft.tresos.com.generator.input.entity.Cache
+            dreisoft.tresos.com.tools.FileGeneratorHelper
+            dreisoft.tresos.com.generator.ComCfgDataModel" %>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    Cache cache = (Cache) context.gen.getVariable("Com.cache", Cache.class, null);
+    Com_ConfigLayoutType comPBCfgDataModel = (Com_ConfigLayoutType) context.gen.getVariable("comPBCfgDataModel", Com_ConfigLayoutType.class, null);
+    ComCfgDataModel comCfgDataModel = (ComCfgDataModel) context.gen.getVariable("comCfgDataModel", ComCfgDataModel.class, null);
+
+    boolean comGenerationSuccessful = !context.gen.isVerifying();
+    final String includeGuardName = "COM_" + cache.PbVariant.toUpperCase() + "_LCFG_H";
+    
+    long comPBRAMSize;
+    // if maximum PB RAM size if given => use it; otherwise use required size
+    if (comCfgDataModel.getComDataMemSize() > 0) {
+        comPBRAMSize = comCfgDataModel.getComDataMemSize();
+    }
+    else {
+        comPBRAMSize = comPBCfgDataModel.getRequiredPBRAMSize();
+    }
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+
+/*==================[macros]================================================*/
+
+<%= FileGeneratorHelper.defineMacroSignedValue( FileGeneratorHelper.getComDataMemSizeMacroName(cache.PbVariant),
+        comPBRAMSize,
+        NL ) %>
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>
+<%
+if (comGenerationSuccessful == true)
+{
+    context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE( "Com_" + cache.PbVariant + "_Lcfg.h" ) );
+}
+else {
+    return "";
+}
+%>

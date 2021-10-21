@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+
+    <mainFunction name="SomeIpTp_MainFunctionTx">
+        <header value="SomeIpTp.h" />
+      <cycleTime type="XPATH" value="as:modconf('SomeIpTp')[1]/SomeIpTpGeneral/SomeIpTpTxMainFunctionPeriod"/>
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150"/>
+        <callBefore>
+          <mainFunction>SoAd_MainFunction</mainFunction>
+	</callBefore>
+        <callAfter>
+          <mainFunction>LdCom_MainFunction</mainFunction>
+        </callAfter>
+    </mainFunction>
+    <mainFunction name="SomeIpTp_MainFunctionRx">
+        <header value="SomeIpTp.h" />
+      <cycleTime type="XPATH" value="as:modconf('SomeIpTp')[1]/SomeIpTpGeneral/SomeIpTpRxMainFunctionPeriod"/>
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150"/>
+        <callBefore>
+          <mainFunction>SoAd_MainFunction</mainFunction>
+	</callBefore>
+        <callAfter>
+          <mainFunction>LdCom_MainFunction</mainFunction>
+        </callAfter>
+    </mainFunction>
+</schm:mainFunctions>

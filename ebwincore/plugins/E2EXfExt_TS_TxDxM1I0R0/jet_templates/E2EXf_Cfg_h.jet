@@ -1,0 +1,65 @@
+<%@ jet package="eb.tresos.e2exf.generated.jet" class="E2EXf_Cfg_h" skeleton="File.skeleton"
+        imports="
+                eb.tresos.e2exf.generator.intermediate.Model
+                "
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final String includeGuardName = getIncludeGuardName( context );
+    final Model model = (Model)context.gen.getVariable( Model.ARG_NAME, Model.class, null );
+%>
+<%@ include file="head.h.inc" %>
+
+/*==================[includes]==============================================*/
+
+#include <Std_Types.h>
+
+/*==================[macros]================================================*/
+
+<%= defineMacro( "E2EXF_VERSION_INFO_API",
+        model.isVersionInfoApiEnabled(),
+        "This macro specifies if the E2EXf_GetVersionInfo API is enabled by XfrmVersionInfoApi.", NL ) %>
+
+<%= defineMacro( "E2EXF_XFRMBUFFERLENGTH_TYPE",
+        model.getBufferLengthType().asCType(),
+        "Type of buffer length (uint32 or uint16) according to configuration parameter XfrmBufferLengthType.", NL ) %>
+
+<%= defineMacro( "E2EXF_IN_USE",
+        true,
+        "This macro specifies if E2EXf module is in use.", NL ) %>
+
+<%= defineMacro( "E2EXF_WAIT_FOR_FIRST_DATA_INIT_VALUE",
+        Boolean.toString(model.initValueForWaitForFirstData()).toUpperCase(),
+        "This macro specifies the initial value of WaitForFirstData profile parameter according to configuration parameter E2EWaitForFirstData.",
+        NL ) %>
+
+<%= defineMacro( "E2ESM_MAX_WINDOW_SIZE",
+        model.getE2EStateMachineMaxWindowSize(),
+        "This macro specifies the maximum value of all configured windowSize profile parameter values.", NL ) %>
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<xform xmlns:xs="http://www.tresos.de/_projects/tresos/09/widgets.xsd">
+
+    <!--
+        This page is an example for a simple guided config gui. It consists
+        of one page which contains two groups. The content of the first group 
+        is editable by the user. The second group presents a preview of the
+        result of the values from the first group.
+        
+    -->
+    <Page id="dreisoft.tresos.gcdemo8" title="Demo 8"
+        description="A page implementation for adding a prefix to a value and displaying the result.">
+
+        <!--  you can use groups on pages to structure the content -->
+        <Group widgetId="PrefixGroup" frame="TITLE" label="Prefix">
+                
+            <!--  ### line 1: browser -->
+                
+            <!-- the following adds a full-width browser widget to the group -->
+            <Browser widgetId="BrowserWidget1" horizontalSpan="4" width="200">
+                <text><![CDATA[
+                  Changing the values below causes the preview to be updated.
+                ]]></text>
+            </Browser>  				
+
+            <!--  ### line 2: label + checkbox -->
+
+            <Label text="Add prefix"/>
+            <!-- please note: all GUI widgets need a memento ID; if it is not explicitly 
+            given in the XML, the memento ID is identical to the widget ID -->
+            <CheckBox widgetId="PrefixCheckbox" mementoId="AddPrefix"/>
+
+            <!-- the content area is split into 4 columns; the API tries to distribute 
+            the GUI widgets in a sensible way, but sometimes some extra information is 
+            needed; this spacer eats up the two remaining horizontal columns, because the
+            checkbox used above does not -->
+            <Spacer horizontalSpan="2"/>
+
+            <!--  ### line 3: label + text entry-->
+            <Label text="Prefix"/>
+            <Text widgetId="PrefixText" format="TEXT"/>
+        </Group>
+        <Group widgetId="PreviewGroup" frame="TITLE" label="Preview">            
+
+            <!--  ### line 1: browser -->
+            <Browser widgetId="BrowserWidget2" horizontalSpan="4" width="200">
+                <text><![CDATA[
+                  The value below is a preview of the data that is written back into
+                  the data model when the guided config wizard is closed.
+                ]]></text>
+            </Browser>  				
+            
+            <!--  ### line 2: label + text entry -->
+            <Label text="Preview"/>
+            <Text widgetId="PreviewText" format="TEXT"/>
+        </Group>
+    </Page>
+</xform>

@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR Crc_TS_TxDxM6I11R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Crc_TS_TxDxM6I11R0_ModuleId"
+             name="Crc_TS_TxDxM6I11R0 Module">
+    <module id="Crc_TS_TxDxM6I11R0"
+            label="Crc"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-MemoryStack: AUTOSAR CRC Routines"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="6"
+            swVersionMinor="11"
+            swVersionPatch="13"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="2"
+            specVersionPatch="0"
+            specVersionSuffix="3"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="Crc"
+            categoryLayer="Standard Library"
+            categoryCategory="Memory"
+            categoryComponent="ECUC">
+      <cluster name="Memory Stack"/>
+<cluster name="Libraries"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Crc_TS_TxDxM6I11R0_ConfigId"
+             name="Crc_TS_TxDxM6I11R0 Configuration">
+    <configuration moduleId="Crc_TS_TxDxM6I11R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Crc.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the recommended configuration CrcRecConfigurationCrc16Crc32 -->
+        <resource value="config_ext/CrcRecConfigurationCrc16Crc32.xdm" type="xdm" id="res_CrcRecConfigurationCrc16Crc32"/>
+        <recconfig
+          name="CrcRecConfigurationCrc16Crc32"
+          default="true"
+          description="CRC16 and CRC32 are enabled."
+          resourceId="res_CrcRecConfigurationCrc16Crc32"
+          path="ASPath:/TS_TxDxM6I11R0/CrcRecConfigurationCrc16Crc32"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM6I11R0/Crc"/>
+      </data>
+
+      <editor id="Crc_TS_TxDxM6I11R0_EditorId"
+              label="Default"
+              tooltip="ACG-MemoryStack: AUTOSAR CRC Routines">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM6I11R0/Crc"/>
+          <parameter name="title" value="Crc"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="Crc_TS_TxDxM6I11R0_GeneratorId"
+             name="Crc_TS_TxDxM6I11R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="Crc_TS_TxDxM6I11R0_TemplateBasedCodeGeneratorId"
+               moduleId="Crc_TS_TxDxM6I11R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+</plugin>

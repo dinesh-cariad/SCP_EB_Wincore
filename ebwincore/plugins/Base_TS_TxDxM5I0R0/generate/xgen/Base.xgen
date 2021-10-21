@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+[!AUTOSPACING!]
+<?module Base?>
+[!IF "node:exists(as:modconf('Base')[1]/BaseCpuConfig/BaseCpuConfig_type)"!][!//
+  [!VAR "CpuTypeProperty" = "as:modconf('Base')[1]/BaseCpuConfig/BaseCpuConfig_type"!][!//
+  [!IF "$CpuTypeProperty = '8' or $CpuTypeProperty = '16' or $CpuTypeProperty = '32' or $CpuTypeProperty = '64'"!][!//
+    [!VAR "CpuType"="concat('CPU_TYPE_',$CpuTypeProperty)"!][!//
+  [!ELSE!][!//
+    [!ERROR!][!//
+      Base: Invalid value for configuration parameter 'BaseCpuConfig_type': '[!"$CpuTypeProperty"!]' (must be 8, 16, 32 or 64)
+    [!ENDERROR!][!//
+  [!ENDIF!][!//
+[!ELSE!][!//
+  [!ERROR!][!//
+      Base: Configuration parameter 'BaseCpuConfig_type' specifying the type of the CPU not found
+  [!ENDERROR!][!//
+[!ENDIF!][!//
+[!//
+[!IF "node:exists(as:modconf('Base')[1]/BaseCpuConfig/BaseCpuConfig_bitorder)"!][!//
+  [!VAR "CpuBitorderProperty" = "as:modconf('Base')[1]/BaseCpuConfig/BaseCpuConfig_bitorder"!][!//
+  [!IF "$CpuBitorderProperty = 'LE'"!][!//
+    [!VAR "CpuBitorder" = "'most-significant-bit-last'"!][!//
+  [!ELSEIF "$CpuBitorderProperty = 'BE'"!][!//
+    [!VAR "CpuBitorder" = "'most-significant-bit-first'"!][!//
+  [!ELSE!][!//
+    [!ERROR!][!//
+      Base: Invalid value for configuration parameter 'BaseCpuConfig_bitorder': '[!"$CpuBitorderProperty"!]' (must be 'LE' or 'BE')
+    [!ENDERROR!][!//
+  [!ENDIF!][!//
+[!ELSE!][!//
+  [!ERROR!][!//
+      Base: Configuration parameter 'BaseCpuConfig_bitorder' specifying the bit order of the CPU not found
+  [!ENDERROR!][!//
+[!ENDIF!][!//
+[!//
+[!IF "node:exists(as:modconf('Base')[1]/BaseCpuConfig/BaseCpuConfig_byteorder)"!][!//
+  [!VAR "CpuByteorderProperty" = "as:modconf('Base')[1]/BaseCpuConfig/BaseCpuConfig_byteorder"!][!//
+  [!IF "$CpuByteorderProperty = 'LE'"!][!//
+    [!VAR "CpuByteorder" = "'most-significant-byte-last'"!][!//
+  [!ELSEIF "$CpuByteorderProperty = 'BE'"!][!//
+    [!VAR "CpuByteorder" = "'most-significant-byte-first'"!][!//
+  [!ELSE!][!//
+    [!ERROR!][!//
+      Base: Invalid value for configuration parameter 'BaseCpuConfig_byteorder': '[!"$CpuByteorderProperty"!]' (must be 'LE' or 'BE')
+    [!ENDERROR!][!//
+  [!ENDIF!][!//
+[!ELSE!][!//
+  [!ERROR!][!//
+      Base: Configuration parameter 'BaseCpuConfig_byteorder' specifying the byte order of the CPU order not found.
+  [!ENDERROR!][!//
+[!ENDIF!][!//
+[!//
+[!/* PduIdTypeEnum is fixed to UINT16, see deviations of EcuC */!][!//
+[!IF "node:exists(as:modconf('EcuC')[1]/EcucPduCollection/PduIdTypeEnum) and
+          (as:modconf('EcuC')[1]/EcucPduCollection/PduIdTypeEnum != 'UINT16')"!]
+[!ERROR  "For PduIdTypeEnum only data type UINT16 is supported"!]
+[!ENDIF!]
+[!//
+[!/* PduLengthTypeEnum is only configurable to UINT16 and UINT32, see deviations of EcuC */!][!//
+[!VAR "VarPduLengthTypeEnum" = "'UINT16'"!][!//
+[!IF "node:exists(as:modconf('EcuC')[1]/EcucPduCollection/PduLengthTypeEnum)"!][!//
+  [!VAR "VarPduLengthTypeEnum" = "as:modconf('EcuC')[1]/EcucPduCollection/PduLengthTypeEnum"!][!//
+  [!IF "($VarPduLengthTypeEnum != 'UINT16') and ($VarPduLengthTypeEnum != 'UINT32')"!][!//
+    [!ERROR  "For PduLengthTypeEnum only data type UINT16 or UINT32 is supported"!][!//
+  [!ENDIF!][!//
+[!ENDIF!][!//
+[!//
+<xgen xmlns="http://www.elektrobit.com/2013/xgen">
+  <module name="Base" version="[!"$moduleSoftwareVer"!]">
+    <configuration class="PreCompile">
+      <?artifact directory="include" file="Platform_Types.h" type="platform-types-h" generate="no"?>
+
+      <parameter name="cpu-word-size">
+        <integer-value>[!"$CpuTypeProperty"!]</integer-value>
+      </parameter>
+      <parameter name="bit-ordering">
+        <symbolic-value>[!"$CpuBitorderProperty"!]</symbolic-value>
+      </parameter>
+      <parameter name="byte-ordering">
+        <symbolic-value>[!"$CpuByteorderProperty"!]</symbolic-value>
+      </parameter>
+
+[!INCLUDE "../include/TypeLists.m"!]
+[!VAR "ListLength"="count(text:split($AutosarTypeList,','))"!][!//
+[!FOR "i"="1" TO  "num:i($ListLength)"!][!//
+  [!VAR "Type"="text:split($AutosarTypeList,',')[num:i($i)]"!][!//
+  [!VAR "property"="concat('BaseType_',$Type)"!][!//
+  [!IF "node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$property])"!][!//
+    [!VAR "baseType"="as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$property]"!][!//
+    [!VAR "nativeTypeBase"="normalize-space(text:replace($baseType,'(un)?signed',''))"!][!//
+      <type name="[!"$Type"!]">
+        <basetype-ref type="[!"$nativeTypeBase"!]" signed="[!"not(contains($baseType, 'unsigned'))"!]"/>
+      </type>
+  [!ELSE!][!//
+    [!ERROR!][!//
+      Base: No mapping to C type found for AUTOSAR type [!"$Type"!]
+    [!ENDERROR!][!//
+  [!ENDIF!][!//
+[!ENDFOR!][!//
+[!//
+[!VAR "ListLength"="count(text:split($DerivedTypeList,','))"!][!//
+[!FOR "i"="1" TO  "num:i($ListLength)"!][!//
+  [!VAR "Type"="text:split($DerivedTypeList,',')[num:i($i)]"!][!//
+  [!VAR "property"="concat('DerivedType_',$Type)"!]
+  [!IF "node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$property])"!]
+    [!VAR "baseType"="as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$property]"!][!//
+    [!VAR "nativeTypeBase"="normalize-space(text:replace($baseType,'(un)?signed',''))"!][!//
+      <type name="[!"$Type"!]">
+        <basetype-ref type="[!"$nativeTypeBase"!]" signed="[!"not(contains($baseType, 'unsigned'))"!]"/>
+      </type>
+  [!ELSE!][!//
+    [!ERROR!][!//
+      Base: No mapping to C type found for derived type [!"$Type"!]
+    [!ENDERROR!][!//
+  [!ENDIF!][!//
+[!ENDFOR!][!//
+
+[!VAR "ListLength"="count(text:split($CTypeList, ','))"!][!//
+[!FOR "i"="1" TO  "num:i($ListLength)"!][!//
+  [!VAR "CType"="text:split($CTypeList, ',')[num:i($i)]"!][!//
+  [!VAR "sizeProperty"="concat('BaseType_Size_',text:replace($CType,' ',''))"!][!//
+  [!VAR "alignmentProperty"="concat('BaseType_Alignment_',text:replace($CType,' ',''))"!][!//
+  [!VAR "atomicProperty"="concat('BaseType_AtomicAccess_',text:replace($CType,' ',''))"!][!//
+  [!IF "node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$sizeProperty]) and node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$alignmentProperty]) and node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$atomicProperty])"!][!//
+      <base-type name="[!"$CType"!]" size="[!"as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$sizeProperty]"!]" alignment="[!"as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$alignmentProperty]"!]" atomic-access="[!"as:modconf('Base')[1]/BaseTypes/*[node:name(.)=$atomicProperty]"!]" />
+  [!ENDIF!][!//
+[!ENDFOR!][!//
+[!//
+[!IF "node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)='BaseType_Size_farpointer']) and node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)='BaseType_Alignment_farpointer'])"!][!//
+  [!IF "node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)='BaseType_AtomicAccess_farpointer'])"!][!//
+    [!VAR "atomic"="as:modconf('Base')[1]/BaseTypes/*[node:name(.)='BaseType_AtomicAccess_farpointer']"!][!//
+  [!ELSE!][!//
+    [!VAR "atomic"="'false'"!][!//
+  [!ENDIF!][!//
+      <base-type name="farpointer" size="[!"as:modconf('Base')[1]/BaseTypes/*[node:name(.)='BaseType_Size_farpointer']"!]" alignment="[!"as:modconf('Base')[1]/BaseTypes/*[node:name(.)='BaseType_Alignment_farpointer']"!]" atomic-access="[!"$atomic"!]"/>
+[!ENDIF!][!//
+
+      <!-- Platform-specific information about structs and arrays. -->
+      <!-- See ASCPROJECT-831 for a rationale for the multiple alignment values -->
+      <!-- and a description of the 'up-to-size' attribute. -->
+      <struct-properties>
+[!IF "node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)='ComplexType_Alignment_struct'])"!][!//
+  [!VAR "prop"="as:modconf('Base')[1]/BaseTypes/*[node:name(.)='ComplexType_Alignment_struct']"!][!//
+  [!FOR "i"="1" TO "num:i(count(text:split($prop, ',')))"!][!//
+    [!VAR "item"="text:split($prop, ',')[number($i)]"!][!//
+    [!IF "count(text:split($item, '->')) = 1"!][!//
+        <minimum-alignment value="[!"$item"!]" />
+    [!ELSE!][!//
+        <minimum-alignment up-to-size="[!"text:split($item, '->')[1]"!]" value="[!"text:split($item, '->')[2]"!]" />
+    [!ENDIF!][!//
+  [!ENDFOR!][!//
+[!ELSE!][!//
+        <minimum-alignment value="1" />
+[!ENDIF!][!//
+      </struct-properties>
+
+      <array-properties>
+[!IF "node:exists(as:modconf('Base')[1]/BaseTypes/*[node:name(.)='ComplexType_Alignment_array'])"!][!//
+  [!VAR "prop"="as:modconf('Base')[1]/BaseTypes/*[node:name(.)='ComplexType_Alignment_array']"!][!//
+  [!FOR "i"="1" TO "num:i(count(text:split($prop, ',')))"!][!//
+    [!VAR "item"="text:split($prop, ',')[number($i)]"!][!//
+    [!IF "count(text:split($item, '->')) = 1"!][!//
+        <minimum-alignment value="[!"$item"!]" />
+    [!ELSE!][!//
+        <minimum-alignment up-to-size="[!"text:split($item, '->')[1]"!]" value="[!"text:split($item, '->')[2]"!]" />
+    [!ENDIF!][!//
+  [!ENDFOR!][!//
+[!ELSE!][!//
+        <minimum-alignment value="1" />
+[!ENDIF!][!//
+      </array-properties>
+    </configuration>
+
+    <configuration class="PreCompile">
+      <?artifact directory="include" file="Can_GeneralTypes_Cfg.h" type="types-h" generate="no"?>
+
+      <type name="Can_HwHandleType">
+[!IF "node:exists(as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicHandleTypeEnum) and
+      (as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicHandleTypeEnum = 'UINT16')"!][!//
+        <reference type="uint16" />
+[!ELSE!][!//
+        <reference type="uint8" />
+[!ENDIF!][!//
+      </type>
+      <type name="Can_IdType">
+[!IF "node:exists(as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicCanIdTypeEnum) and
+      (as:modconf('CanIf')[1]/CanIfPublicCfg/CanIfPublicCanIdTypeEnum = 'UINT16')"!][!//
+        <reference type="uint16" />
+[!ELSE!][!//
+        <reference type="uint32" />
+[!ENDIF!][!//
+      </type>
+    </configuration>
+
+    <configuration class="PreCompile">
+      <?artifact directory="include" file="TSPBConfig_BasicTypes.h" type="types-h" generate="no"?>
+
+      <type name="TS_CfgOffsetType">
+        <reference type="uint32"/>
+      </type>
+      <type name="TS_VarOffsetType">
+        <reference type="uint16"/>
+      </type>
+    </configuration>
+
+    <configuration class="PreCompile">
+      <?artifact directory="include" file="ComStack_Cfg.h" type="types-h" generate="no"?>
+
+      <!-- PduIdTypeEnum is fixed to UINT16, see deviations of EcuC -->
+      <type name="PduIdType">
+        <reference type="uint16" />
+      </type>
+      <!-- PduLengthTypeEnum is only configurable to UINT16 and UINT32, see deviations of EcuC -->
+      <type name="PduLengthType">
+        <reference type="[!IF "$VarPduLengthTypeEnum = 'UINT16'"!]uint16[!ELSE!]uint32[!ENDIF!]" />
+      </type>
+    </configuration>
+
+  </module>
+</xgen>

@@ -1,0 +1,415 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_PBcfg_Int_h"
+        imports="dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException
+            dreisoft.tresos.com.generator.Com_ConfigLayoutType
+            dreisoft.tresos.com.generated.operationstatus.GeneratorOperationStatus" %>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    boolean comGenerationSuccessful = !context.gen.isVerifying();
+    final String includeGuardName = "COM_PBCFG_INT_H";
+
+    // get post-build data model
+    Com_ConfigLayoutType comPBCfgDataModel = (Com_ConfigLayoutType) context.gen.getVariable("comPBCfgDataModel", Com_ConfigLayoutType.class, null);
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+
+#include <Com_Rules.h>         /* Module pre-compile time config */
+
+
+/*==================[macros]================================================*/
+
+#if (defined COM_IPDU_INIT_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_IPDU_INIT_ARRAY_SIZE already defined
+#endif /* if (defined COM_IPDU_INIT_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_IPDU_INIT_ARRAY_SIZE */
+#define COM_IPDU_INIT_ARRAY_SIZE <%= (comPBCfgDataModel.ComIPduInit != null) ? comPBCfgDataModel.ComIPduInit.getLength() : 0 %>U
+
+
+#if (defined COM_IPDU_TMS_FLAGS_INIT_VALUES_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_IPDU_TMS_FLAGS_INIT_VALUES_ARRAY_SIZE already defined
+#endif /* if (defined COM_IPDU_TMS_FLAGS_INIT_VALUES_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_IPDU_TMS_FLAGS_INIT_VALUES_ARRAY_SIZE */
+#define COM_IPDU_TMS_FLAGS_INIT_VALUES_ARRAY_SIZE <%= (comPBCfgDataModel.ComIPduTMSFlagsInitValues != null) ? comPBCfgDataModel.ComIPduTMSFlagsInitValues.getLength() : 0 %>U
+
+#if (defined COM_RX_IPDU_TIMEOUT_NOTIFICATION_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_IPDU_TIMEOUT_NOTIFICATION_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_IPDU_TIMEOUT_NOTIFICATION_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_IPDU_TIMEOUT_NOTIFICATION_ARRAY_SIZE */
+#define COM_RX_IPDU_TIMEOUT_NOTIFICATION_ARRAY_SIZE <%= (comPBCfgDataModel.ComRxTimeoutNotificationList != null) ? comPBCfgDataModel.ComRxTimeoutNotificationList.getLength() : 0 %>U
+
+
+#if (defined COM_TX_IPDU_TIMEOUT_NOTIFICATION_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_IPDU_TIMEOUT_NOTIFICATION_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_IPDU_TIMEOUT_NOTIFICATION_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_IPDU_TIMEOUT_NOTIFICATION_ARRAY_SIZE */
+#define COM_TX_IPDU_TIMEOUT_NOTIFICATION_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxTimeoutNotificationList != null) ? comPBCfgDataModel.ComTxTimeoutNotificationList.getLength() : 0 %>U
+
+
+#if (defined COM_TX_IPDU_NOTIFICATION_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_IPDU_NOTIFICATION_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_IPDU_NOTIFICATION_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_IPDU_NOTIFICATION_ARRAY_SIZE */
+#define COM_TX_IPDU_NOTIFICATION_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxNotificationList != null) ? comPBCfgDataModel.ComTxNotificationList.getLength() : 0 %>U
+
+
+#if (defined COM_RX_SIGNAL_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_SIGNAL_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_SIGNAL_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_SIGNAL_ARRAY_SIZE */
+#define COM_RX_SIGNAL_ARRAY_SIZE <%= (comPBCfgDataModel.ComRxSignal != null) ? comPBCfgDataModel.ComRxSignal.getLength() : 0 %>U
+
+#if (defined COM_TX_SIGNAL_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_SIGNAL_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_SIGNAL_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_SIGNAL_ARRAY_SIZE */
+#define COM_TX_SIGNAL_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxSignal != null) ? comPBCfgDataModel.ComTxSignal.getLength() : 0 %>U
+
+
+#if (defined COM_RX_FIRST_TIMEOUT_FACTOR_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_FIRST_TIMEOUT_FACTOR_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_FIRST_TIMEOUT_FACTOR_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_FIRST_TIMEOUT_FACTOR_ARRAY_SIZE */
+#define COM_RX_FIRST_TIMEOUT_FACTOR_ARRAY_SIZE 0U
+
+
+#if (defined COM_RX_TIMEOUT_FACTOR_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_TIMEOUT_FACTOR_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_TIMEOUT_FACTOR_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_TIMEOUT_FACTOR_ARRAY_SIZE */
+#define COM_RX_TIMEOUT_FACTOR_ARRAY_SIZE 0U
+
+#if (defined COM_TX_TIMEOUT_FACTOR_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_TIMEOUT_FACTOR_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_TIMEOUT_FACTOR_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_TIMEOUT_FACTOR_ARRAY_SIZE */
+#define COM_TX_TIMEOUT_FACTOR_ARRAY_SIZE 0U
+
+#if (defined COM_TX_IPDU_MINIMUM_DELAY_TIME_FACTOR_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_IPDU_MINIMUM_DELAY_TIME_FACTOR_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_IPDU_MINIMUM_DELAY_TIME_FACTOR_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_IPDU_MINIMUM_DELAY_TIME_FACTOR_ARRAY_SIZE */
+#define COM_TX_IPDU_MINIMUM_DELAY_TIME_FACTOR_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxIPduMinimumDelayTimeFactor != null) ? comPBCfgDataModel.ComTxIPduMinimumDelayTimeFactor.getLength() : 0 %>U
+
+
+#if (defined COM_RX_IPDU_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_IPDU_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_IPDU_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_IPDU_ARRAY_SIZE */
+#define COM_RX_IPDU_ARRAY_SIZE <%= (comPBCfgDataModel.ComRxIPdu != null) ? comPBCfgDataModel.ComRxIPdu.getLength() : 0 %>U
+
+
+#if (defined COM_TX_IPDU_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_IPDU_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_IPDU_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_IPDU_ARRAY_SIZE */
+#define COM_TX_IPDU_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxIPdu != null) ? comPBCfgDataModel.ComTxIPdu.getLength() : 0 %>U
+
+#if (defined COM_RX_SIGNAL_GROUP_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_SIGNAL_GROUP_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_SIGNAL_GROUP_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_SIGNAL_GROUP_ARRAY_SIZE */
+#define COM_RX_SIGNAL_GROUP_ARRAY_SIZE <%= (comPBCfgDataModel.ComRxSignalGroup != null) ? comPBCfgDataModel.ComRxSignalGroup.getLength() : 0 %>U
+
+#if (defined COM_TX_SIGNAL_GROUP_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_SIGNAL_GROUP_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_SIGNAL_GROUP_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_SIGNAL_GROUP_ARRAY_SIZE */
+#define COM_TX_SIGNAL_GROUP_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxSignalGroup != null) ? comPBCfgDataModel.ComTxSignalGroup.getLength() : 0 %>U
+
+
+#if (defined COM_TX_MODE_N_TIMES_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_MODE_N_TIMES_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_MODE_N_TIMES_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_MODE_N_TIMES_ARRAY_SIZE */
+#define COM_TX_MODE_N_TIMES_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxModeNTimes != null) ? comPBCfgDataModel.ComTxModeNTimes.getLength() : 0 %>U
+
+#if (defined COM_TX_MODE_PERIODIC_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_MODE_PERIODIC_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_MODE_PERIODIC_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_MODE_PERIODIC_ARRAY_SIZE
+ * Note: in the TxModePeriodicArray also the parameters of the
+ * COM_TX_MODE_MIXED_DIRECT are stored */
+#define COM_TX_MODE_PERIODIC_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxModePeriodic != null) ? comPBCfgDataModel.ComTxModePeriodic.getLength() : 0 %>U
+
+#if (defined COM_TX_MODE_MIXED_N_TIMES_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_MODE_MIXED_N_TIMES_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_MODE_MIXED_N_TIMES_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_MODE_MIXED_N_TIMES_ARRAY_SIZE */
+#define COM_TX_MODE_MIXED_N_TIMES_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxModeMixedNTimes != null) ? comPBCfgDataModel.ComTxModeMixedNTimes.getLength() : 0 %>U
+
+
+#if (defined COM_SIGGW_RX_IPDU_LIST_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_SIGGW_RX_IPDU_LIST_ARRAY_SIZE already defined
+#endif /* if (defined COM_SIGGW_RX_IPDU_LIST_ARRAY_SIZE) */
+
+/** \brief Define COM_SIGGW_RX_IPDU_LIST_ARRAY_SIZE */
+#define COM_SIGGW_RX_IPDU_LIST_ARRAY_SIZE <%= comPBCfgDataModel.Com_RootConfig.ComSigGWRxIPduArraySize.getValue()%>U
+
+
+#if (defined COM_IPDU_GROUPS_NUM) /* To prevent double declaration */
+#error COM_IPDU_GROUPS_NUM already defined
+#endif /* if (defined COM_IPDU_GROUPS_NUM) */
+
+/* Generator has to set the value */
+/** \brief Define COM_IPDU_GROUPS_NUM */
+#define COM_IPDU_GROUPS_NUM <%= comPBCfgDataModel.Com_RootConfig.ComIPduGroupsNum.getValue()%>U
+
+
+#if (defined COM_RX_IPDU_SIGNAL_GROUP_LIST_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_IPDU_SIGNAL_GROUP_LIST_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_IPDU_SIGNAL_GROUP_LIST_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_IPDU_SIGNAL_GROUP_LIST_ARRAY_SIZE */
+#define COM_RX_IPDU_SIGNAL_GROUP_LIST_ARRAY_SIZE <%= (comPBCfgDataModel.ComRxIPduSignalGroupList != null) ? comPBCfgDataModel.ComRxIPduSignalGroupList.getLength() : 0 %>U
+
+
+#if (defined COM_TX_IPDU_SIGNAL_GROUP_LIST_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_IPDU_SIGNAL_GROUP_LIST_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_IPDU_SIGNAL_GROUP_LIST_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_IPDU_SIGNAL_GROUP_LIST_ARRAY_SIZE */
+#define COM_TX_IPDU_SIGNAL_GROUP_LIST_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxIPduSignalGroupList != null) ? comPBCfgDataModel.ComTxIPduSignalGroupList.getLength() : 0 %>U
+
+
+#if (defined COM_RX_IPDU_SIGNAL_LIST_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_IPDU_SIGNAL_LIST_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_IPDU_SIGNAL_LIST_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_IPDU_SIGNAL_LIST_ARRAY_SIZE */
+#define COM_RX_IPDU_SIGNAL_LIST_ARRAY_SIZE <%= (comPBCfgDataModel.ComRxIPduSignalList != null) ? comPBCfgDataModel.ComRxIPduSignalList.getLength() : 0 %>U
+
+#if (defined COM_TX_IPDU_SIGNAL_LIST_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_IPDU_SIGNAL_LIST_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_IPDU_SIGNAL_LIST_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_IPDU_SIGNAL_LIST_ARRAY_SIZE */
+#define COM_TX_IPDU_SIGNAL_LIST_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxIPduSignalList != null) ? comPBCfgDataModel.ComTxIPduSignalList.getLength() : 0 %>U
+
+
+#if (defined COM_MDT_QUEUE_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_MDT_QUEUE_ARRAY_SIZE already defined
+#endif /* if (defined COM_MDT_QUEUE_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_MDT_QUEUE_ARRAY_SIZE */
+#define COM_MDT_QUEUE_ARRAY_SIZE <%= (comPBCfgDataModel.ComMDTQueueList != null) ? comPBCfgDataModel.ComMDTQueueList.getLength() : 0 %>U
+
+
+#if (defined COM_PERIODIC_QUEUE_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_PERIODIC_QUEUE_ARRAY_SIZE already defined
+#endif /* if (defined COM_PERIODIC_QUEUE_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_PERIODIC_QUEUE_ARRAY_SIZE */
+#define COM_PERIODIC_QUEUE_ARRAY_SIZE <%= (comPBCfgDataModel.ComPeriodicQueueList != null) ? comPBCfgDataModel.ComPeriodicQueueList.getLength() : 0 %>U
+
+
+#if (defined COM_N_TIMES_QUEUE_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_N_TIMES_QUEUE_ARRAY_SIZE already defined
+#endif /* if (defined COM_N_TIMES_QUEUE_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_N_TIMES_QUEUE_ARRAY_SIZE */
+#define COM_N_TIMES_QUEUE_ARRAY_SIZE <%= (comPBCfgDataModel.ComNTimesQueueList != null) ? comPBCfgDataModel.ComNTimesQueueList.getLength() : 0 %>U
+
+#if (defined COM_RX_TIMEOUT_QUEUE_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_TIMEOUT_QUEUE_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_TIMEOUT_QUEUE_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_TIMEOUT_QUEUE_ARRAY_SIZE */
+#define COM_RX_TIMEOUT_QUEUE_ARRAY_SIZE <%= (comPBCfgDataModel.ComRxTimeoutQueueList != null) ? comPBCfgDataModel.ComRxTimeoutQueueList.getLength() : 0 %>U
+
+#if (defined COM_RX_TIMEOUT_SIGNAL_QUEUE_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_TIMEOUT_SIGNAL_QUEUE_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_TIMEOUT_SIGNAL_QUEUE_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_TIMEOUT_SIGNAL_QUEUE_ARRAY_SIZE */
+#define COM_RX_TIMEOUT_SIGNAL_QUEUE_ARRAY_SIZE <%= (comPBCfgDataModel.ComRxTimeoutSignalQueueList != null) ? comPBCfgDataModel.ComRxTimeoutSignalQueueList.getLength() : 0 %>U
+
+#if (defined COM_RX_TIMEOUT_SIGNAL_GROUP_QUEUE_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_RX_TIMEOUT_SIGNAL_GROUP_QUEUE_ARRAY_SIZE already defined
+#endif /* if (defined COM_RX_TIMEOUT_SIGNAL_GROUP_QUEUE_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_RX_TIMEOUT_SIGNAL_GROUP_QUEUE_ARRAY_SIZE */
+#define COM_RX_TIMEOUT_SIGNAL_GROUP_QUEUE_ARRAY_SIZE <%= (comPBCfgDataModel.ComRxTimeoutSignalGroupQueueList != null) ? comPBCfgDataModel.ComRxTimeoutSignalGroupQueueList.getLength() : 0 %>U
+
+#if (defined COM_TX_TIMEOUT_QUEUE_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_TX_TIMEOUT_QUEUE_ARRAY_SIZE already defined
+#endif /* if (defined COM_TX_TIMEOUT_QUEUE_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_TX_TIMEOUT_QUEUE_ARRAY_SIZE */
+#define COM_TX_TIMEOUT_QUEUE_ARRAY_SIZE <%= (comPBCfgDataModel.ComTxTimeoutQueueList != null) ? comPBCfgDataModel.ComTxTimeoutQueueList.getLength() : 0 %>U
+
+#if (defined COM_CBK_TX_ACK_DEFERRED_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_CBK_TX_ACK_DEFERRED_ARRAY_SIZE already defined
+#endif /* if (defined COM_CBK_TX_ACK_DEFERRED_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_CBK_TX_ACK_DEFERRED_ARRAY_SIZE */
+#define COM_CBK_TX_ACK_DEFERRED_ARRAY_SIZE <%= (comPBCfgDataModel.ComCbkTxAckDeferredList != null) ? comPBCfgDataModel.ComCbkTxAckDeferredList.getLength() : 0 %>U
+
+
+#if (defined COM_CONFIGURATION_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_CONFIGURATION_ARRAY_SIZE already defined
+#endif /* if (defined COM_CONFIGURATION_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_CONFIGURATION_ARRAY_SIZE */
+#define COM_CONFIGURATION_ARRAY_SIZE 0U /* still hardcoded */
+
+
+#if (defined COM_GW_SOURCE_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_GW_SOURCE_ARRAY_SIZE already defined
+#endif /* if (defined COM_GW_SOURCE_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_GW_SOURCE_ARRAY_SIZE */
+#define COM_GW_SOURCE_ARRAY_SIZE <%= (comPBCfgDataModel.ComGWSource != null) ? comPBCfgDataModel.ComGWSource.getLength() : 0 %>U
+
+
+#if (defined COM_GW_DESTINATION_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_GW_DESTINATION_ARRAY_SIZE already defined
+#endif /* if (defined COM_GW_DESTINATION_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_GW_DESTINATION_ARRAY_SIZE */
+#define COM_GW_DESTINATION_ARRAY_SIZE <%= (comPBCfgDataModel.ComGWDestination != null) ? comPBCfgDataModel.ComGWDestination.getLength() : 0 %>U
+
+
+#if (defined COM_FILTER_8_BIT_MASK_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_FILTER_8_BIT_MASK_ARRAY_SIZE already defined
+#endif /* if (defined COM_FILTER_8_BIT_MASK_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_FILTER_8_BIT_MASK_ARRAY_SIZE */
+#define COM_FILTER_8_BIT_MASK_ARRAY_SIZE <%= (comPBCfgDataModel.ComFilter8BitMask != null) ? comPBCfgDataModel.ComFilter8BitMask.getLength() : 0 %>U
+
+#if (defined COM_FILTER_16_BIT_MASK_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_FILTER_16_BIT_MASK_ARRAY_SIZE already defined
+#endif /* if (defined COM_FILTER_16_BIT_MASK_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_FILTER_16_BIT_MASK_ARRAY_SIZE */
+#define COM_FILTER_16_BIT_MASK_ARRAY_SIZE <%= (comPBCfgDataModel.ComFilter16BitMask != null) ? comPBCfgDataModel.ComFilter16BitMask.getLength() : 0 %>U
+
+#if (defined COM_FILTER_32_BIT_MASK_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_FILTER_32_BIT_MASK_ARRAY_SIZE already defined
+#endif /* if (defined COM_FILTER_32_BIT_MASK_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_FILTER_32_BIT_MASK_ARRAY_SIZE */
+#define COM_FILTER_32_BIT_MASK_ARRAY_SIZE <%= (comPBCfgDataModel.ComFilter32BitMask != null) ? comPBCfgDataModel.ComFilter32BitMask.getLength() : 0 %>U
+
+#if (defined COM_FILTER_8_BIT_MASK_X_MIN_MAX_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_FILTER_8_BIT_MASK_X_MIN_MAX_ARRAY_SIZE already defined
+#endif /* if (defined COM_FILTER_8_BIT_MASK_X_MIN_MAX_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_FILTER_8_BIT_MASK_X_MIN_MAX_ARRAY_SIZE */
+#define COM_FILTER_8_BIT_MASK_X_MIN_MAX_ARRAY_SIZE <%= (comPBCfgDataModel.ComFilter8BitMaskXMinMax != null) ? comPBCfgDataModel.ComFilter8BitMaskXMinMax.getLength() : 0 %>U
+
+#if (defined COM_FILTER_16_BIT_MASK_X_MIN_MAX_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_FILTER_16_BIT_MASK_X_MIN_MAX_ARRAY_SIZE already defined
+#endif /* if (defined COM_FILTER_16_BIT_MASK_X_MIN_MAX_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_FILTER_16_BIT_MASK_X_MIN_MAX_ARRAY_SIZE */
+#define COM_FILTER_16_BIT_MASK_X_MIN_MAX_ARRAY_SIZE <%= (comPBCfgDataModel.ComFilter16BitMaskXMinMax != null) ? comPBCfgDataModel.ComFilter16BitMaskXMinMax.getLength() : 0 %>U
+
+#if (defined COM_FILTER_32_BIT_MASK_X_MIN_MAX_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_FILTER_32_BIT_MASK_X_MIN_MAX_ARRAY_SIZE already defined
+#endif /* if (defined COM_FILTER_32_BIT_MASK_X_MIN_MAX_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_FILTER_32_BIT_MASK_X_MIN_MAX_ARRAY_SIZE */
+#define COM_FILTER_32_BIT_MASK_X_MIN_MAX_ARRAY_SIZE <%= (comPBCfgDataModel.ComFilter32BitMaskXMinMax != null) ? comPBCfgDataModel.ComFilter32BitMaskXMinMax.getLength() : 0 %>U
+
+#if (defined COM_FILTER_ONE_EVERY_N_ARRAY_SIZE) /* To prevent double declaration */
+#error COM_FILTER_ONE_EVERY_N_ARRAY_SIZE already defined
+#endif /* if (defined COM_FILTER_ONE_EVERY_N_ARRAY_SIZE) */
+
+/* Generator has to set the value */
+/** \brief Define COM_FILTER_ONE_EVERY_N_ARRAY_SIZE */
+#define COM_FILTER_ONE_EVERY_N_ARRAY_SIZE <%= (comPBCfgDataModel.ComFilterOneEveryN != null) ? comPBCfgDataModel.ComFilterOneEveryN.getLength() : 0 %>U
+
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>
+<%
+if (comGenerationSuccessful == true)
+{
+    context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE( "Com_PBcfg_Int.h" ) );
+}
+else {
+    return "";
+}
+%>

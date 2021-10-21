@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<!-- Copyright (C) Elektrobit Automotive GmbH - All rights reserved -->
+<datamodel version="2.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/06/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/06/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr name="AUTOSAR" type="AUTOSAR" factory="autosar">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_T00D0M0I0R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="GCDemo3" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:da name="TITLE" type="Bound" expr="AttributeExamples/PageTitle"/>
+              <a:a name="DESC" value="The TITLE is the value of node PageTitle"/>
+              <a:a name="LOWER-MULTIPLICITY" value="1"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <v:ctr name="ExamplesCommon" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                    <a:v>EN:
+                        &lt;html&gt;
+                          All parameters in this container can be set via a guidedconfig wizard.
+                          Parameter changes are done via PushEvents and PushOperations.
+                        &lt;/html&gt;</a:v>
+                </a:a>
+                <v:var name="Bool" type="BOOLEAN">
+                  <a:a name="TAB" value="Stuff"/>
+                  <a:a name="LABEL" value="Float Activator"/>
+                </v:var>
+                <v:var name="Int" type="INTEGER">
+                  <a:a name="TAB" value="Stuff"/>
+                  <a:a name="LABEL" value="Labeled Int"/>
+                </v:var>
+                <v:var name="Float" type="FLOAT">
+                  <a:a name="TAB" value="Stuff"/>
+                  <a:da name="ENABLE" type="XPath" expr="../Bool"/>                  
+                </v:var>
+                <v:var name="String" type="STRING">
+                  <a:a name="TAB" value="Stuff"/>
+                </v:var>
+                <v:lst name="StringList">
+                  <a:a name="TAB" value="Stuff"/>
+                  <v:var name="List" type="STRING"/>
+                </v:lst>
+              </v:ctr>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

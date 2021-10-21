@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+
+    <specobject>
+      <id>lim.FrArTp.EB_INTREQ_FrArTp_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The integrator must assure that the following functions do not interrupt each other or themselves:
+        FrArTp_RxIndication, FrArTp_TxConfirmation, FrArTp_TriggerTransmit, FrArTp_MainFunction;
+      </description>
+      <rationale>This limitation reduces code size and execution time.</rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.FrArTp.EB_INTREQ_FrArTp_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The integrator must assure that the following functions are not preempted by any other function:
+        FrArTp_RxIndication, FrArTp_TxConfirmation, FrArTp_TriggerTransmit;
+      </description>
+      <rationale>This limitation reduces code size and execution time.</rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.FrArTp.EB_INTREQ_FrArTp_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The integrator must assure that the following functions are not preempted and do not preempt any other function:
+        FrArTp_Init;
+      </description>
+      <rationale>This limitation reduces code size and execution time.</rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.FrArTp.EB_INTREQ_FrArTp_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The integrator must assure that only the last transmit PDU (in temporal order) of each PDU
+        pool has a TxConfirmation in FrIf configured. It follows that all other PDUs must not
+        have a TxConfirmation in FrIf configured. The temporal order corresponds to the FrArTpPduId,
+        see lim.FrArTp.EB_INTREQ_FrArTp_0005.
+      </description>
+      <rationale>This limitation originates from the FrArTp SWS: SWS_FrArTp_00182.</rationale>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.FrArTp.EB_INTREQ_FrArTp_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The integrator must assure that the FrIf transmits N-PDUs of a pool in temporal order
+        according to ascending FrArTpPduId from FrArTp. Additionally, all PDUs of a pool shall be
+        arranged such that they are always received in the same order in which they have been
+        transmitted, independent of the current cycle in the FlexRay communication round.
+      </description>
+      <rationale>This limitation originates from the FrArTp SWS: SWS_FrArTp_00174.</rationale>
+      
+    </specobject>
+
+  </specobjects>
+</specdocument>

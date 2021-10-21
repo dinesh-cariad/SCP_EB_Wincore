@@ -1,0 +1,2801 @@
+<?xml version='1.0'?>
+<datamodel version="7.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/16/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/16/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:cd="http://www.tresos.de/_projects/DataModel2/08/customdata.xsd" 
+         xmlns:f="http://www.tresos.de/_projects/DataModel2/14/formulaexpr.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd"  
+         xmlns:variant="http://www.tresos.de/_projects/DataModel2/11/variant.xsd">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_TxDxM6I8R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="CanTp" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="ADMIN-DATA" type="ADMIN-DATA">
+                <ad:ADMIN-DATA>
+                  <ad:LANGUAGE>EN</ad:LANGUAGE>
+                  <ad:DOC-REVISIONS>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>4.2.0</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>AUTOSAR</ad:ISSUED-BY>
+                      <ad:DATE>2011-11-09T11:36:22Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>6.8.42</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>Elektrobit Automotive GmbH</ad:ISSUED-BY>
+                      <ad:DATE>2021-07-14T23:59:59Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                  </ad:DOC-REVISIONS>
+                </ad:ADMIN-DATA>
+              </a:a>
+              <a:a name="DESC">
+                <a:v>&lt;html&gt;
+                        Configuration of the CanTp (CAN Transport Protocol) module.
+                      &lt;/html&gt;</a:v>
+              </a:a>
+              <a:a name="LOWER-MULTIPLICITY" value="0"/>
+              <a:a name="POSTBUILDVARIANTSUPPORT" value="true"/>
+              <a:a name="RELEASE" value="asc:4.0"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <a:a name="UUID" value="0392f7bf-7614-4fa3-9d83-f973f9d21929"/>
+              <v:var name="IMPLEMENTATION_CONFIG_VARIANT" type="ENUMERATION">
+                <a:a name="LABEL" value="Config Variant"/>
+                <a:a name="UUID" value="aa40f8a0-3fb3-4999-9d77-553b947e54e6"/>
+                <a:da name="DEFAULT" value="VariantPostBuild"/>
+                <a:da name="EDITABLE" value="false"/>
+                <a:da name="RANGE" value="VariantPostBuild"/>
+              </v:var>
+              <v:ctr name="CanTpDefensiveProgramming" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                &lt;p&gt;Parameters for defensive programming&lt;/p&gt;
+                &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Defensive Programming Options"/>
+                <v:var name="CanTpDefProgEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                    &lt;p&gt;Enables or disables the defensive
+                    programming feature for the module CanTp.&lt;/p&gt;
+                    &lt;p&gt;Note: This feature is dependent on the use of the development error detection module.
+                    To use the defensive programming feature, proceed as follows:
+                    &lt;ol&gt;
+                    &lt;li&gt;Enable development error detection&lt;/li&gt;
+                    &lt;li&gt;Enable defensive programming&lt;/li&gt;
+                    &lt;li&gt;Enable assertions as required&lt;/li&gt;
+                    &lt;/ol&gt;
+                    &lt;/p&gt;
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Defensive Programming"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../../CanTpGeneral/CanTpDevErrorDetect = &apos;true&apos;" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanTpPrecondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of precondition assertion checks reported from
+                  the module CanTp.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanTpDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanTpDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Precondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanTpGeneral/CanTpDevErrorDetect = &apos;true&apos;) and (../CanTpDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanTpPostcondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of postcondition assertion checks reported from
+                  the module CanTp.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanTpDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanTpDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Postcondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanTpGeneral/CanTpDevErrorDetect = &apos;true&apos;) and (../CanTpDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanTpStaticAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of static assertion checks reported from
+                  the module CanTp.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanTpDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanTpDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Static Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanTpGeneral/CanTpDevErrorDetect = &apos;true&apos;) and (../CanTpDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanTpUnreachAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of unreachable code assertion checks
+                  reported from the module CanTp.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanTpDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanTpDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Unreachable Code Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanTpGeneral/CanTpDevErrorDetect = &apos;true&apos;) and (../CanTpDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="CanTpInvariantAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of invariant assertion checks
+                  reported from functions of the module CanTp.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;CanTpDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;CanTpDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Invariant Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../CanTpGeneral/CanTpDevErrorDetect = &apos;true&apos;) and (../CanTpDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="CanTpGeneral" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                        This container contains the general configuration parameters of the CanTp
+                        module.
+                      &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="UUID" 
+                     value="ECUC:738fd332-49f9-4028-a587-4dd2cf717e05"/>
+                <v:var name="CanTpChangeParameterApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          This parameter, if set to true, enables the
+                          CanTp_ChangeParameter and CanTp_ChangeRxParameter APIs for this Module.
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the
+                              module code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.config.ram.reduction&quot;&gt;
+                              &lt;strong&gt;RAM reduction (config):&lt;/strong&gt;
+                              Disabling this parameter reduces the RAM consumption of the
+                              module configuration.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:d4c70e88-7a39-41a2-aeea-b7bb0ae249ef"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpDevErrorDetect" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Switches the Development Error Detection and Notification ON or OFF.
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                              &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the ROM consumption of the
+                              module code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.exetime.increase&quot;&gt;
+                              &lt;strong&gt;Execution time increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the execution time of the
+                              module code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:d7ad678b-0f30-45a2-b3c2-dd92c02c073e"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="CanTpPaddingByte" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Used for the initialization of unused bytes with a certain value, for CAN 2.0 frames and CAN FD frames (if CANTP_PADDING_BYTE_CANFD is not configured).
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:5fddf0b7-8088-444c-a2fa-1d8ecca9a85e"/>
+                  <a:da name="DEFAULT" value="0"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=255"/>
+                    <a:tst expr="&gt;=0"/>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTpReadParameterApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          This parameter, if set to true, enables the
+                          CanTp_ReadParameter API for this Module.
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the
+                              module code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.config.ram.reduction&quot;&gt;
+                              &lt;strong&gt;RAM reduction (config):&lt;/strong&gt;
+                              Disabling this parameter reduces the RAM consumption of the
+                              module configuration.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:d7ad678b-0f30-45a2-b3c2-dd92c02c073e"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpVersionInfoApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          The function CanTp_GetVersionInfo is configurable (On/Off) by this
+                          configuration parameter.
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                              &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the ROM consumption of the
+                              module code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:9fae5ee7-951f-4717-8197-d9fb2cda46aa"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpChangeTxParameterApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        This parameter, if set to true, enables the
+                        CanTp_ChangeTxParameter and CanTp_ResetTxParameter APIs for this Module.
+                        &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                            &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                            Disabling this parameter reduces the ROM consumption of the
+                            module code.
+                          &lt;/li&gt;
+                          &lt;li class=&quot;optimization.config.ram.reduction&quot;&gt;
+                            &lt;strong&gt;RAM reduction (config):&lt;/strong&gt;
+                            Disabling this parameter reduces the RAM consumption of the
+                            module configuration.
+                          &lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:8c910115-2ae2-4b9b-aa4d-66115332f56b"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpPaddingByteCanFD" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Used for the initialization of unused bytes with a certain value, for CAN FD frames.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:4dffd17d-db3e-43b6-884b-45c677bcaef8"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=255"/>
+                    <a:tst expr="&gt;=0"/>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTpRelocatablePbcfgEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                         Enables/disable support for relocatable postbuild configuration.
+                         &lt;ul&gt;
+                           &lt;li&gt;True: Postbuild configuration relocatable in memory.&lt;/li&gt;
+                           &lt;li&gt;False: Postbuild configuration not relocatable in memory.&lt;/li&gt;
+                         &lt;/ul&gt;
+                          &lt;p&gt;
+                          &lt;strong&gt;Note:&lt;/strong&gt;
+                          If PbcfgM support is enabled for CanTp, this feature is managed by
+                          by the parameter PbcfgMRelocatableCfgEnable.
+                          &lt;/p&gt;
+                       &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="true"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(node:contains(node:refs(as:modconf(&apos;PbcfgM&apos;)/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf(&apos;CanTp&apos;)) = &apos;true&apos;)" 
+                        true="false" false="true"/>
+                </v:var>
+                <v:var name="CanTpDynamicNSaEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Enables or disables the support for setting of the N_SA values for Rx
+                          and Tx N-SDUs during runtime.&lt;/p&gt;
+                          &lt;p&gt;If the parameter is disabled, normal Autosar behaviour is activated,
+                          which means, that the N_SA parameter is defined during the configuration
+                          and cannot be changed.&lt;/p&gt;
+                          &lt;p&gt;If it is enabled, the N_SA values of each Rx and Tx N-SDU can be
+                          changed via CanTp_SetNSa() during runtime. In this case, the current
+                          value can be read via CanTp_GetNSa().&lt;/p&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.config.ram.increase&quot;&gt;
+                              &lt;strong&gt;RAM increase (config):&lt;/strong&gt;
+                              Enabling this parameter increases the RAM consumption of the module
+                              configuration.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                              &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.exetime.increase&quot;&gt;
+                              &lt;strong&gt;Execution time increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the execution time of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="65d9a487-e0ee-497a-8512-1c941213102b"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpCancelReceiveApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Preprocessor switch for enabling the reception cancellation API
+                          function.&lt;/p&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                              &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.exetime.increase&quot;&gt;
+                              &lt;strong&gt;Execution time increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the execution time of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="ad4a1980-1dd2-4b49-8c32-a4ce1575d15a"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpCancelTransmitApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Preprocessor switch for enabling the transmit cancellation API
+                          function.&lt;/p&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                              &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.exetime.increase&quot;&gt;
+                              &lt;strong&gt;Execution time increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the execution time of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="fa221ef1-2850-4961-aa4f-0121a5cacfa1"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpGptUsageEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Preprocessor switch to enable the general purpose timer instead of the
+                             main function period for timeout handling of the channels.&lt;/p&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the ROM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="7b50c2b5-cb20-45ff-9988-03bf840fc856"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpMaxParallelTxChannels" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Limits the total number of parallel transmit channels.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="OPTIONAL" value="TRUE"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="UUID" value="d8a22011-6175-40cc-807f-442ca05c3645"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=32767"/>
+                      <mt:tst expr="&gt;=1"/>
+                    </mt:range>
+                    <mt:xpath>
+                      <mt:tst 
+                              true="The value of CanTpMaxParallelRxChannels shall also be provided." 
+                              expr="(node:exists(.) and not(node:exists(../CanTpMaxParallelRxChannels)))"/>
+                      <mt:tst 
+                              true="The value of CanTpMaxParallelTxChannels shall be smaller or equal than CanTpMaxTxChannels." 
+                              expr="(node:exists(.) and (node:value(.) &gt; node:value(../CanTpMaxTxChannels)))"/>
+                    </mt:xpath>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTpMaxParallelRxChannels" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Limits the total number of parallel receive channels.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="OPTIONAL" value="TRUE"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="UUID" value="35309e84-02ad-4091-a3d5-efbd40566462"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=32767"/>
+                      <mt:tst expr="&gt;=1"/>
+                    </mt:range>
+                    <mt:xpath>
+                      <mt:tst 
+                              true="The value of CanTpMaxParallelTxChannels shall also be provided." 
+                              expr="(node:exists(.) and not(node:exists(../CanTpMaxParallelTxChannels)))"/>
+                      <mt:tst 
+                              true="The value of CanTpMaxParallelRxChannels shall be smaller or equal than CanTpMaxRxChannels." 
+                              expr="(node:exists(.) and (node:value(.) &gt; node:value(../CanTpMaxRxChannels)))"/>
+                    </mt:xpath>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTpMaxTxChannels" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Limits the total number of transmit channels.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="UUID" value="86cfdb7d-1a19-4ec1-8a6e-496f4f86231e"/>
+                  <a:da name="DEFAULT" value="10"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=32767"/>
+                    <a:tst expr="&gt;=1"/>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTpMaxRxChannels" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Limits the total number of receive channels.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="UUID" value="5be3a8a5-34e2-4bdc-8acd-36465748bf27"/>
+                  <a:da name="DEFAULT" value="10"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=32767"/>
+                    <a:tst expr="&gt;=1"/>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTpMaxRxNSdus" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Limits the total number of RX-PDUs.
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="UUID" value="1143b659-96f6-452a-a7d1-b8fcd5f0f7c5"/>
+                  <a:da name="DEFAULT" type="XPath" 
+                        expr="num:i(count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*))"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=32767"/>
+                    <a:tst expr="&gt;=0"/>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTpMaxTxNSdus" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                            Limits the total number of TX-PDUs.
+                          &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="UUID" value="5fd217c7-147f-483c-a9df-1495ad5dd7aa"/>
+                  <a:da name="DEFAULT" type="XPath" 
+                        expr="num:i(count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*))"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=32767"/>
+                    <a:tst expr="&gt;=0"/>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTpMaxFcPdus" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                            Limits the total number of flow control PDUs.
+                          &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="UUID" value="ea42950e-ad24-4831-889e-f78ed4b219a0"/>
+                  <a:da name="DEFAULT" type="XPath" 
+                        expr="num:i(count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*[node:exists(CanTpRxFcNPdu)]))"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=32767"/>
+                    <a:tst expr="&gt;=0"/>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTpDynIdSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable/Disable support for dynamic ID handling via N-PDU MetaData.&lt;/p&gt;
+                          
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.ram.reduction&quot;&gt;
+                              &lt;strong&gt;RAM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the RAM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="dd9dd12c-a738-11eb-bcbc-0242ac130002"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpFlexibleDataRateSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable/Disable support for CAN FD frames up to 64 byte.&lt;/p&gt;
+                          
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.ram.reduction&quot;&gt;
+                              &lt;strong&gt;RAM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the RAM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpGenericConnectionSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable/Disable support for handling of generic connection using N-SDUs
+                          with MetaData.&lt;/p&gt;
+                          
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.ram.reduction&quot;&gt;
+                              &lt;strong&gt;RAM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the RAM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="ff98958c-a738-11eb-bcbc-0242ac130002"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr=". = &apos;true&apos; and as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpDynIdSupport = &apos;false&apos;" 
+                        true="The config parameter CanTpDynIdSupport needs to be enabled to use Generic Connection support."/>
+                </v:var>
+                <v:var name="CanTpNbrWaitRepeatedSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable/Disable support of different timeout values for repeated FC WAIT PDUs.&lt;/p&gt;
+                          
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.ram.reduction&quot;&gt;
+                              &lt;strong&gt;RAM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the RAM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="17f9ca5c-c06a-11e6-a4a6-cec0c932ce01"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="CanTpStallHandlingSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;Enable/Disable support of stallhandlig feature for received messages.
+                          When this feature is enabled, if there is an ongoing reception and another
+                          RxIndication occurs before the ending of the first one, RxIndication
+                          will be postponed.
+                          &lt;/p&gt;
+                          
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.code.ram.reduction&quot;&gt;
+                              &lt;strong&gt;RAM reduction (code):&lt;/strong&gt;
+                              Disabling this parameter reduces the RAM consumption of the module
+                              code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                  <a:a name="UUID" value="17f9ca5c-c06a-11e6-a4a6-cec0c932ce01"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+              </v:ctr>
+              <d:ref type="REFINED_MODULE_DEF" 
+                     value="ASPath:/AUTOSAR/EcucDefs/CanTp"/>
+              <v:ctr name="CanTpJumpTable" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                        This container contains the jumptable related configuration
+                        parameters of the CanTp module.
+                      &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="UUID" value="882250c0-4664-4a33-b1f1-4917e4a9768a"/>
+                <v:var name="CanTpJumpTableMode" type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Switches the jump table support ON/OFF and defines the jump table mode if
+                          enabled.
+                          &lt;ul&gt;
+                            &lt;li&gt;OFF: Jump table support is off.&lt;/li&gt;
+                            &lt;li&gt;SERVER: Jump table support is enabled and the module acts as jump
+                                table server (which means it provides all functionality).&lt;/li&gt;
+                            &lt;li&gt;CLIENT: Jump table support is enabled and the module acts as jump
+                                table client (it provides the means to call CanTp server APIs).&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.config.rom.increase&quot;&gt;
+                              &lt;strong&gt;ROM increase (config):&lt;/strong&gt;
+                              Enabling this parameter increases the ROM consumption of the module configuration.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.config.ram.increase&quot;&gt;
+                              &lt;strong&gt;RAM increase (config):&lt;/strong&gt;
+                              Enabling this parameter increases the RAM consumption of the module configuration.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Setting this parameter to a value of SERVER for the bootloader and CLIENT for
+                              the application (or vice versa) reduces the ROM consumption of the module code
+                              compared to disabling this parameter for the application and the bootloader.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.exetime.increase&quot;&gt;
+                              &lt;strong&gt;Execution time increase (code):&lt;/strong&gt;
+                              Enabling this parameter increases the execution time of the module code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="65d9a496-e0ee-497a-8512-1c941213102a"/>
+                  <a:da name="DEFAULT" value="OFF"/>
+                  <a:da name="RANGE">
+                    <a:v>OFF</a:v>
+                    <a:v>SERVER</a:v>
+                    <a:v>CLIENT</a:v>
+                  </a:da>
+                </v:var>
+                <v:var name="CanTpUseSchMMacros" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Defines if the CanTp uses SchM macros or adds the SchM functions to its exit
+                          jumptable.
+                          &lt;ul&gt;
+                            &lt;li&gt;True: The CanTp uses SchM macros.&lt;/li&gt;
+                            &lt;li&gt;False: The CanTp adds SchM function pointers to the exit jumptable.&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;This parameter is only used if jump table support is enabled.&lt;/p&gt;
+                          &lt;p&gt;&lt;b&gt;Please make sure, that this parameter is configured equal for the jump
+                          table server and all associated clients.&lt;/b&gt;&lt;/p&gt;
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                              Enabling this parameter reduces the ROM consumption of the module configuration.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Enabling this parameter reduces the ROM consumption of the module code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                              &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                              Enabling this parameter reduces the execution time of the module code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="65d9a496-e0ee-497a-8514-1c941213102a"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../CanTpJumpTableMode != &apos;OFF&apos;"/>
+                </v:var>
+                <v:var name="CanTpUseWrapperMacros" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Defines if the CanTp provides wrapper functions or macros for accessing the API
+                          functions via the entry jumptable. The names of those wrapper functions/macros
+                          are those of the original API functions.
+                          &lt;ul&gt;
+                            &lt;li&gt;True: Wrapper macros are defined.&lt;/li&gt;
+                            &lt;li&gt;False: Wrapper functions are defined.&lt;/li&gt;
+                          &lt;/ul&gt;
+                          This parameter is only used if CanTpJumpTableMode is set to CLIENT.
+                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                              Enabling this parameter reduces the ROM consumption of the module configuration.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                              Enabling this parameter reduces the ROM consumption of the module code.
+                            &lt;/li&gt;
+                            &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                              &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                              Enabling this parameter reduces the execution time of the module code.
+                            &lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="65d9a496-e0ee-497a-8624-1d941213102a"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../CanTpJumpTableMode = &apos;CLIENT&apos;"/>
+                </v:var>
+                <v:var name="CanTpJumpTableAddress" type="STRING">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;This parameter defines the base address of the entry jumptable. The entry jumptable
+                          is the jumptable, via which an application can access the CanTp API functions.&lt;/p&gt;
+                          &lt;p&gt;This parameter is only used if CanTpJumpTableMode is set to CLIENT.&lt;/p&gt;
+                          &lt;p&gt;&lt;b&gt;Please note, that the value of this parameter is directly written to the C code
+                          and must therefore be a correct symbol or address for being compilable.&lt;/b&gt;&lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="56d9a496-e0ee-497a-8514-1c941213102a"/>
+                  <a:da name="DEFAULT" value="0x0"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../CanTpJumpTableMode = &apos;CLIENT&apos;"/>
+                </v:var>
+                <v:var name="CanTpJumpTableIncludeFile" type="STRING">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;This parameter defines the name of the include file that shall be included,
+                          if a symbol is used for parameter CanTpJumpTableAddress.&lt;/p&gt;
+                          &lt;p&gt;&lt;b&gt;Please enable this parameter only if CanTpJumpTableAddress is set to a
+                          symbol. The named include file must then provide the symbol declaration.&lt;/b&gt;&lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="56d9a496-e0ee-497a-8514-1c941213102b"/>
+                  <a:da name="DEFAULT" value=""/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../CanTpJumpTableMode = &apos;CLIENT&apos;"/>
+                  <a:da name="ENABLE" value="false"/>
+                </v:var>
+              </v:ctr>
+              <v:lst name="CanTpConfig" type="MULTIPLE-CONFIGURATION-CONTAINER">
+                <a:da name="INVALID" type="XPath">
+                  <a:tst 
+                         expr="count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*[node:exists(CanTpRxFcNPdu)])                     &gt; as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpMaxFcPdus" 
+                         true="The total amount of all /CanTpChannel/*/CanTpTxNSdu/*/CanTpRxFcNPdu must not exceed /CanTpGeneral/CanTpMaxFcPdus"/>
+                  <a:tst 
+                         expr="count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*) &gt; as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpMaxRxNSdus" 
+                         true="The total amount of all /CanTpChannel/*/CanTpRxNSdu must not exceed /CanTpGeneral/CanTpMaxRxNSdus"/>
+                  <a:tst 
+                         expr="count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*) &gt; as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpMaxTxNSdus" 
+                         true="The total amount of all /CanTpChannel/*/CanTpTxNSdu must not exceed /CanTpGeneral/CanTpMaxTxNSdus"/>
+                </a:da>
+                <a:da name="MAX" value="1"/>
+                <a:da name="MIN" value="1"/>
+                <v:ctr name="CanTpConfig" 
+                       type="MULTIPLE-CONFIGURATION-CONTAINER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        This container contains the configuration parameters and sub containers of
+                        the AUTOSAR CanTp module. This container is a
+                        MultipleConfigurationContainer, i.e. this container and its sub-containers
+                        exist once per configuration set.
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="UUID" value="f3430b59-0996-4434-a319-d244b11c7270"/>
+                  <v:var name="CanTpMainFunctionPeriod" type="FLOAT">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            Allow to configure the time for the MainFunction (as float in seconds). Please note: This period shall be the same as call cycle time of the periodic task were CanTp Main function is called.
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="ECUC:9411ad02-2e5e-499f-b474-41daf0a62d3b"/>
+                    <a:da name="DEFAULT" value="0.005"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=0.255"/>
+                      <a:tst expr="&gt;=0.0001"/>
+                    </a:da>
+                  </v:var>
+                  <v:lst name="CanTpChannel" type="MAP">
+                    <a:da name="MIN" value="1"/>
+                    <v:ctr name="CanTpChannel" type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              This container contains the configuration parameters of the CanTp
+                              channel.
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="POSTBUILDCHANGEABLE" value="true"/>
+                      <a:a name="POSTBUILDVARIANTMULTIPLICITY" value="true"/>
+                      <a:a name="UUID" 
+                           value="b1ed4da4-43dd-4359-8943-37c0034d8938"/>
+                      <v:var name="CanTpChannelMode" type="ENUMERATION">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                The CAN Transport Layer supports half and full duplex channel modes.
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                    &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                    Choosing the value CANTP_MODE_HALF_DUPLEX for this parameter
+                                    reduces the ROM consumption of the module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.config.ram.reduction&quot;&gt;
+                                    &lt;strong&gt;RAM reduction (config):&lt;/strong&gt;
+                                    Choosing the value CANTP_MODE_HALF_DUPLEX for this parameter
+                                    reduces the RAM consumption of the module.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="9daeb2e6-ef78-47a2-a026-ef84ea0e8d72"/>
+                        <a:da name="DEFAULT" value="CANTP_MODE_HALF_DUPLEX"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="(. = &apos;CANTP_MODE_FULL_DUPLEX&apos;) and                                        (count(../CanTpRxNSdu/*) = 0)" 
+                                 true="A full duplex channel must have both Rx and Tx N-SDUs. There are no Rx N-SDUs (container CanTpRxNSdu) configured for this channel."/>
+                          <a:tst 
+                                 expr="(. = &apos;CANTP_MODE_FULL_DUPLEX&apos;) and                                        (count(../CanTpTxNSdu/*) = 0)" 
+                                 true="A full duplex channel must have both Rx and Tx N-SDUs. There are no Tx N-SDUs (container CanTpTxNSdu) configured for this channel."/>
+                        </a:da>
+                        <a:da name="RANGE">
+                          <a:v>CANTP_MODE_FULL_DUPLEX</a:v>
+                          <a:v>CANTP_MODE_HALF_DUPLEX</a:v>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanTpSTminTimeoutHandling" 
+                             type="ENUMERATION">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                Decides whether waiting for STmin timing is done via the GPT or
+                                from the CanTp_MainFunction.
+                                &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                &lt;ul&gt;
+                                  &lt;li class=&quot;optimization.config.rom.increase&quot;&gt;
+                                    &lt;strong&gt;ROM increase (config):&lt;/strong&gt;
+                                    Setting this parameter to Gpt increases the ROM consumption of
+                                    the module configuration.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.rom.increase&quot;&gt;
+                                    &lt;strong&gt;ROM increase (code):&lt;/strong&gt;
+                                    Setting this parameter to Gpt increases the ROM consumption of
+                                    the module code.
+                                  &lt;/li&gt;
+                                  &lt;li class=&quot;optimization.code.exetime.increase&quot;&gt;
+                                    &lt;strong&gt;Execution time increase (code):&lt;/strong&gt;
+                                    Setting this parameter to Gpt increases the execution time of
+                                    the module code.
+                                  &lt;/li&gt;
+                                &lt;/ul&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="UUID" 
+                             value="ae5a702e-e450-4247-af95-f8396d8415af"/>
+                        <a:da name="DEFAULT" value="CanTpMainFunction"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr=". = &apos;Gpt&apos; and as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpGptUsageEnable = &apos;false&apos;" 
+                              true="The config parameter CanTpGptUsageEnable need to be enabled to use Gpt."/>
+                        <a:da name="RANGE">
+                          <a:v>Gpt</a:v>
+                          <a:v>CanTpMainFunction</a:v>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanTpGptChannelId" type="STRING">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                 Identifier/Channel Handle of the GPT timer to be used for this
+                                 channel.
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="UUID" 
+                             value="11bcb35e-5917-4978-94c0-7d0ea05472a0"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="../CanTpSTminTimeoutHandling = &apos;Gpt&apos;"/>
+                        <a:da name="INVALID" type="XPath" expr=". != &apos;&apos;" 
+                              false="A channel Identifier is required"/>
+                      </v:var>
+                      <v:var name="CanTpGptChannelResolution" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                 The resolution of the associated GPT channel (in ns per tick).
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="f8b1b3d7-cd1f-421f-8b85-2eccf9c4a610"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="../CanTpSTminTimeoutHandling = &apos;Gpt&apos;"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=1000000000"/>
+                          <a:tst expr="&gt;0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="CanTpGptChannelCallbackName" type="STRING">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                 &lt;p&gt;Identifier of the GPT callback routine for this channel.&lt;/p&gt;
+                                 &lt;p&gt;An appropriate callback function with this name will be created
+                                 by the CanTp.&lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="UUID" 
+                             value="6892c283-0f83-4256-8cc8-6ad2e4108231"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="../CanTpSTminTimeoutHandling = &apos;Gpt&apos;"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="(. != &apos;&apos;) and text:uniq( text:split( text:concat( text:concat( text:join(text:concat(&apos;CanTp_STminCallback_&apos;, num:i(text:range(0.0,count(../../*)-1)))),&apos; &apos;), text:join(../../*/CanTpGptChannelCallbackName) )), .)" 
+                              false="A unique callback name is required."/>
+                      </v:var>
+                      <v:lst name="CanTpRxNSdu" type="MAP">
+                        <v:ctr name="CanTpRxNSdu" type="IDENTIFIABLE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  The following parameters need to be configured for each CAN
+                                  N-SDU that the CanTp module receives via the CanTpChannel.
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="POSTBUILDCHANGEABLE" value="true"/>
+                          <a:a name="POSTBUILDVARIANTMULTIPLICITY" value="true"/>
+                          <a:a name="UUID" 
+                               value="aa01da3a-a4bc-4b78-8c9e-15cfc4273820"/>
+                          <v:var name="CanTpBs" type="INTEGER">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;
+                                      Sets the maximum number of N-PDUs the CanTp receiver allows
+                                      the sender to send, before waiting for an authorization to
+                                      continue transmission of the following N-PDUs. For further
+                                      details on this parameter value see ISO 15765-2
+                                      specification.
+                                    &lt;/p&gt;
+                                    &lt;p&gt;
+                                      &lt;strong&gt;Note:&lt;/strong&gt; For reasons of buffer length, the CAN Transport Layer
+                                      can adapt the BS value within the limit of this maximum BS.
+                                    &lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTMULTIPLICITY" 
+                                 value="true"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="aef63f9f-7a74-40ea-9d24-0329fa930062"/>
+                            <a:da name="DEFAULT" value="16"/>
+                            <a:da name="ENABLE" type="XPath" 
+                                  expr="../CanTpRxTaType = &apos;CANTP_PHYSICAL&apos;"/>
+                            <a:da name="INVALID" type="Range">
+                              <a:tst expr="&lt;=255"/>
+                              <a:tst expr="&gt;=0"/>
+                            </a:da>
+                          </v:var>
+                          <v:var name="CanTpNar" type="FLOAT">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Value in seconds of the N_Ar timeout. N_Ar is the time for
+                                    transmission of a CAN frame (any N_PDU) on the receiver side.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTMULTIPLICITY" 
+                                 value="true"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="3043a42b-632c-4274-9746-e29c3a831da8"/>
+                            <a:da name="DEFAULT" value="0.1"/>
+                            <a:da name="ENABLE" type="XPath" 
+                                  expr="../CanTpRxTaType = &apos;CANTP_PHYSICAL&apos;"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&gt;=0.00001"/>
+                                <mt:tst expr="&lt;=16711"/>
+                              </mt:range>
+                              <mt:xpath 
+                                        true="Resulting number of MainFunction ticks exceeds 65535. Decrease value or increase MainFunction period." 
+                                        expr="(    num:i( (. div ../../../../../CanTpMainFunctionPeriod)          - 0.00001         ) + 1  ) &gt; 65535"/>
+                            </a:da>
+                            <a:da name="WARNING" type="XPath" 
+                                  expr="(    (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &gt; 0.00001  ) or  ( (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &lt; -0.00001  )" 
+                                  true="Value is not divisible by CanTpMainFunctionPeriod."/>
+                          </v:var>
+                          <v:var name="CanTpNbr" type="FLOAT">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;
+                                      Value in seconds of the performance requirement for (N_Br +
+                                      N_Ar). N_Br is the elapsed time between the receiving indication
+                                      of a FF or CF or the transmit confirmation of a FC, until the
+                                      transmit request of the next FC.
+                                    &lt;/p&gt;
+                                    &lt;p&gt;
+                                      &lt;strong&gt;Note:&lt;/strong&gt; N_Br is only respected when sending FC(WT)
+                                      frames, other flow control status (CTS, OVFLW) are
+                                      sent at once when their conditions are met.
+                                    &lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="721cb4fc-21ae-4c5b-aa49-93f7f4a32ce3"/>
+                            <a:da name="DEFAULT" value="0.1"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&gt;=0"/>
+                                <mt:tst expr="&lt;=16711"/>
+                              </mt:range>
+                              <mt:xpath 
+                                        true="Resulting number of MainFunction ticks exceeds 65535. Decrease value or increase MainFunction period." 
+                                        expr="(    num:i( (. div ../../../../../CanTpMainFunctionPeriod)          - 0.00001         ) + 1  ) &gt; 65535"/>
+                            </a:da>
+                            <a:da name="WARNING" type="XPath" 
+                                  expr="(    (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &gt; 0.00001  ) or  ( (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &lt; -0.00001  )" 
+                                  true="Value is not divisible by CanTpMainFunctionPeriod."/>
+                          </v:var>
+                          <v:var name="CanTpNbrWaitRepeated" type="FLOAT">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;
+                                      Vendor specific configuration parameter for handling of dedicated N_Br
+                                      timeout values for repeated FC WAIT PDUs.
+                                      Value in seconds of the performance requirement for(N_Br_WT + N_Ar).
+                                      N_Br_WT is the elapsed time until the next Flow Control transmission
+                                      when sending subsequent FC WAIT PDUs.
+                                    &lt;/p&gt;
+                                    &lt;p&gt;
+                                      &lt;strong&gt;Note:&lt;/strong&gt; N_Br_WT is only respected when sending FC(WT)
+                                      frames, starting with the second FC(WT).
+                                    &lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="OPTIONAL" value="true"/>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="72d81812-c05f-11e6-a4a6-cec0c932ce01"/>
+                            <a:da name="DEFAULT" value="0.0"/>
+                            <a:da name="ENABLE" value="false"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&gt;=0"/>
+                                <mt:tst expr="&lt;=16711"/>
+                              </mt:range>
+                              <mt:xpath 
+                                        true="The config parameter CanTpNbrWaitRepeatedSupport needs to be enabled to use CanTpNbrWaitRepeated." 
+                                        expr="node:exists(.) and as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpNbrWaitRepeatedSupport = &apos;false&apos;"/>
+                            </a:da>
+                            <a:da name="WARNING" type="XPath" 
+                                  expr="(    (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &gt; 0.00001  ) or  ( (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &lt; -0.00001  )" 
+                                  true="Value is not divisible by CanTpMainFunctionPeriod."/>
+                          </v:var>
+                          <v:var name="CanTpNcr" type="FLOAT">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Value in seconds of the N_Cr timeout. N_Cr is the time until
+                                    reception of the next Consecutive Frame N_PDU is expected.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTMULTIPLICITY" 
+                                 value="true"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="ca0a3db0-dd06-479c-963a-b1d1c5153abd"/>
+                            <a:da name="DEFAULT" value="1.0"/>
+                            <a:da name="ENABLE" type="XPath" 
+                                  expr="../CanTpRxTaType = &apos;CANTP_PHYSICAL&apos;"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&gt;=0.00001"/>
+                                <mt:tst expr="&lt;=16711"/>
+                              </mt:range>
+                              <mt:xpath 
+                                        true="Resulting number of MainFunction ticks exceeds 65535. Decrease value or increase MainFunction period." 
+                                        expr="(    num:i( (. div ../../../../../CanTpMainFunctionPeriod)          - 0.00001         ) + 1  ) &gt; 65535"/>
+                            </a:da>
+                            <a:da name="WARNING" type="XPath" 
+                                  expr="(    (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &gt; 0.00001  ) or  ( (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &lt; -0.00001  )" 
+                                  true="Value is not divisible by CanTpMainFunctionPeriod."/>
+                          </v:var>
+                          <v:var name="CanTpRxAddressingFormat" 
+                                 type="ENUMERATION">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;Declares which communication addressing format is supported for
+                                    this Rx N-SDU.&lt;/p&gt;
+                                    &lt;p&gt;Enum values:&lt;/p&gt;
+                                    &lt;ul&gt;
+                                     &lt;li&gt;
+                                      CANTP_STANDARD: Use normal addressing format.
+                                     &lt;/li&gt;
+                                     &lt;li&gt;
+                                      CANTP_EXTENDED: Use extended addressing format.
+                                     &lt;/li&gt;
+                                     &lt;li&gt;
+                                      CANTP_NORMALFIXED: Use normal fixed addressing format.
+                                     &lt;/li&gt;
+                                     &lt;li&gt;
+                                      CANTP_MIXED: Use mixed addressing format.
+                                     &lt;/li&gt;
+                                    &lt;/ul&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="TAB" value="Addressing"/>
+                            <a:a name="UUID" 
+                                 value="2284d766-31ed-434f-887a-9d649944c6de"/>
+                            <a:da name="DEFAULT" value="CANTP_STANDARD"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst 
+                                     expr=". = &apos;CANTP_NORMALFIXED&apos; and as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpDynIdSupport = &apos;false&apos;" 
+                                     true="CanTpDynIdSupport must be enabled when CANTP_NORMALFIXED is used."/>
+                              <a:tst 
+                                     expr=". = &apos;CANTP_NORMALFIXED&apos; and (not(node:exists(as:ref(../CanTpRxNSduRef)/MetaDataTypeRef)) or                                           not(node:exists(as:ref(../CanTpRxNPdu/CanTpRxNPduRef)/MetaDataTypeRef)) or                                           (node:exists(../CanTpTxFcNPdu) and not(node:exists(as:ref(../CanTpTxFcNPdu/CanTpTxFcNPduRef)/MetaDataTypeRef))))" 
+                                     true="MetaDataTypeRef must be configured when CANTP_NORMALFIXED is used."/>
+                              <a:tst 
+                                     expr=". = &apos;CANTP_NORMALFIXED&apos; and node:exists(as:ref(../CanTpRxNSduRef)/MetaDataTypeRef) and                                           (not(node:exists(as:ref(as:ref(../CanTpRxNSduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = &apos;SOURCE_ADDRESS_16&apos;])) or                                           not(node:exists(as:ref(as:ref(../CanTpRxNSduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = &apos;TARGET_ADDRESS_16&apos;])))" 
+                                     true="MetaDataItemTypes SOURCE_ADDRESS_16 and TARGET_ADDRESS_16 must be configured for the CanTpRxNPdus with CANTP_NORMALFIXED."/>
+                              <a:tst 
+                                     expr=". = &apos;CANTP_NORMALFIXED&apos; and node:exists(as:ref(../CanTpRxNPdu/CanTpRxNPduRef)/MetaDataTypeRef) and                                           not(node:exists(as:ref(as:ref(../CanTpRxNPdu/CanTpRxNPduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = &apos;CAN_ID_32&apos;]))" 
+                                     true="MetaDataItemType CAN_ID_32 must be configured for the CanTpRxNPdus with CANTP_NORMALFIXED."/>
+                              <a:tst 
+                                     expr=". = &apos;CANTP_NORMALFIXED&apos; and(node:exists(../CanTpTxFcNPdu)) and node:exists(as:ref(../CanTpTxFcNPdu/CanTpTxFcNPduRef)/MetaDataTypeRef) and                                             not(node:exists(as:ref(as:ref(../CanTpTxFcNPdu/CanTpTxFcNPduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = &apos;CAN_ID_32&apos;]))" 
+                                     true="MetaDataItemType CAN_ID_32 must be configured for the CanTpTxFcNPdus with CANTP_NORMALFIXED."/>
+                            </a:da>
+                            <a:da name="RANGE">
+                              <a:v>CANTP_EXTENDED</a:v>
+                              <a:v>CANTP_MIXED</a:v>
+                              <a:v>CANTP_NORMALFIXED</a:v>
+                              <a:v>CANTP_STANDARD</a:v>
+                            </a:da>
+                          </v:var>
+                          <v:var name="CanTpRxDl" type="INTEGER">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;
+                                      &lt;b&gt;This parameter has been deprecate according to AUTOSAR RFC53101.&lt;/b&gt;
+                                    &lt;/p&gt;
+                                    &lt;p&gt;
+                                      Data Length Code of this RxNsdu. In case of variable message
+                                      length, this value indicates the minimum data length.
+                                    &lt;/p&gt;
+                                    &lt;p&gt;
+                                      Depending on SF or FF N-SDU the value will be limited to 7
+                                      (6 for an extended addressing format) and 4095 respectively.
+                                    &lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="7c849637-839a-4a24-8fd7-4274286351f8"/>
+                            <a:da name="DEFAULT" value="1"/>
+                            <a:da name="EDITABLE" value="false"/>
+                          </v:var>
+                          <v:var name="CanTpRxNSduId" type="INTEGER">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;Unique identifier used by the upper layer to call CanTp_CancelReceive,
+                                    CanTp_ChangeParameter and CanTp_ReadParameter.&lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                            <a:a name="UUID" 
+                                 value="ECUC:3a4bcfb0-4e57-4fac-a38a-2fe13b81ba11"/>
+                            <a:da name="DEFAULT" type="XPath" 
+                                  expr="num:i(count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*) - 1)"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&lt;=65535"/>
+                                <mt:tst expr="&gt;=0"/>
+                              </mt:range>
+                              <mt:xpath>
+                                <mt:tst 
+                                        false="IDs must be zero-based and consecutive. This value is not unique." 
+                                        expr="text:uniq(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*/CanTpRxNSduId, .)"/>
+                                <mt:tst 
+                                        false="IDs must be zero-based and consecutive. The value one less than this value is missing." 
+                                        expr=" (. = 0)                                 or (count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*[CanTpRxNSduId = (node:current() - 1)]) &gt; 0)"/>
+                              </mt:xpath>
+                            </a:da>
+                          </v:var>
+                          <v:var name="CanTpRxPaddingActivation" 
+                                 type="ENUMERATION">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;Defines if the receive frame uses padding or not.&lt;/p&gt;
+                                    Definition of enumeration values:
+                                    &lt;ul&gt;
+                                      &lt;li&gt;
+                                       CANTP_OFF:
+                                       The transmit N-PDU does not use padding for SF,
+                                       CF and the last CF. (N-PDU length is dynamic)
+                                      &lt;/li&gt;
+                                      &lt;li&gt;
+                                       CANTP_ON:
+                                       Enabled mandatory padding to 8 bytes for CAN 2.0 PDUs only
+                                       (SF, FC and last CF).
+                                      &lt;/li&gt;
+                                      &lt;li&gt;
+                                       CANTP_ON_CAN_CAN_FD:
+                                       Enable mandatory padding to 8 bytes for CAN 2.0 PDUs and 64 bytes for CAN FD PDUs
+                                      &lt;/li&gt;
+                                    &lt;/ul&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="OPTIONAL" value="false"/>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="b459ac23-dbf5-4fef-aba8-96f2ed290187"/>
+                            <a:da name="DEFAULT" value="CANTP_ON"/>
+                            <a:da name="RANGE">
+                              <a:v>CANTP_OFF</a:v>
+                              <a:v>CANTP_ON</a:v>
+                              <a:v>CANTP_ON_CAN_CAN_FD</a:v>
+                            </a:da>
+                          </v:var>
+                          <v:var name="CanTpRxTaType" type="ENUMERATION">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Declares the communication type of this Rx N-SDU.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="7810b6b6-9015-4b80-9499-022ae9a5957f"/>
+                            <a:da name="DEFAULT" value="CANTP_PHYSICAL"/>
+                            <a:da name="RANGE">
+                              <a:v>CANTP_FUNCTIONAL</a:v>
+                              <a:v>CANTP_PHYSICAL</a:v>
+                            </a:da>
+                          </v:var>
+                          <v:var name="CanTpRxWftMax" type="INTEGER">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;This parameter indicates how many Flow Control wait N-PDUs
+                                    can be consecutively transmitted by the receiver. It is local
+                                    to the node and is not transmitted inside the FC protocol data
+                                    unit.&lt;/p&gt;
+                                    &lt;p&gt;CanTpRxWftMax is used to avoid sender nodes being potentially
+                                    hooked-up in case of a temporarily reception inability on the
+                                    part of the receiver nodes, whereby the sender could be waiting
+                                    continuously.&lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTMULTIPLICITY" 
+                                 value="true"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="9b4f44c0-ccf4-4b00-925d-78e3757f368a"/>
+                            <a:da name="DEFAULT" value="4"/>
+                            <a:da name="ENABLE" type="XPath" 
+                                  expr="../CanTpRxTaType = &apos;CANTP_PHYSICAL&apos;"/>
+                            <a:da name="INVALID" type="Range">
+                              <a:tst expr="&lt;=255"/>
+                              <a:tst expr="&gt;=0"/>
+                            </a:da>
+                          </v:var>
+                          <v:var name="CanTpSTmin" type="FLOAT">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;
+                                      Sets the duration of the minimum time (in seconds) the CanTp
+                                      sender shall wait between the transmissions of two CF N-PDUs.
+                                    &lt;/p&gt;
+                                    &lt;p&gt;
+                                      For further details on this parameter value see ISO 15765-2
+                                      specification.
+                                    &lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTMULTIPLICITY" 
+                                 value="true"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="152689f4-dfb8-4624-98ea-f144d2f81c5d"/>
+                            <a:da name="DEFAULT" value="0.0"/>
+                            <a:da name="ENABLE" type="XPath" 
+                                  expr="../CanTpRxTaType = &apos;CANTP_PHYSICAL&apos;"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&lt;=0.127"/>
+                                <mt:tst expr="&gt;=0.0"/>
+                              </mt:range>
+                            </a:da>
+                          </v:var>
+                          <v:ref name="CanTpRxNSduRef" type="REFERENCE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Reference to a PDU in the COM-Stack.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="UUID" 
+                                 value="48a43f6d-1183-4678-91ae-a67a480066ea"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst 
+                                     expr="text:uniq(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*/CanTpRxNSduRef, .)" 
+                                     false="Rx N-SDU references must be unique."/>
+                              <a:tst 
+                                     expr="count(as:modconf(&apos;PduR&apos;)[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRSrcPdu[PduRSrcPduRef = node:current()])                                       &lt; 1" 
+                                     true="Found no routing path in PduR for this N-SDU. Exactly one routing path must exist."/>
+                              <a:tst 
+                                     expr="count(as:modconf(&apos;PduR&apos;)[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRSrcPdu[PduRSrcPduRef = node:current()])                                       &gt; 1" 
+                                     true="Found multiple routing paths in PduR for this N-SDU. Exactly one routing path must exist."/>
+                              <a:tst 
+                                     expr="node:refvalid(.) and node:ref(.)/PduLength &gt; 65535" 
+                                     true="The referenced PDU exceeds the maximum allowed length of 65535."/>
+                            </a:da>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                          </v:ref>
+                          <v:ctr name="CanTpNAe" type="IDENTIFIABLE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Contains the parameters needed to configure each Rx N-SDU with
+                                    CanTpRxAddressingFormat set to CANTP_MIXED.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="FRAME" value="NONE"/>
+                            <a:a name="TAB" value="Addressing"/>
+                            <a:a name="UUID" 
+                                 value="7d149976-55c4-4327-be49-340ad930e5e1"/>
+                            <v:var name="CanTpNAe" type="INTEGER">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      If an Rx N-SDU is configured for mixed addressing format, this
+                                      parameter contains the value of the transport protocol
+                                      address extension.
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                              <a:a name="UUID" 
+                                   value="fd0598e6-0e29-423e-b963-426efecff379"/>
+                              <a:da name="ENABLE" type="XPath" 
+                                    expr="../../CanTpRxAddressingFormat = &apos;CANTP_MIXED&apos;"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=255"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath 
+                                          true="The CanTpRxNPdu has no unique handle ID. All CanTpNAe using the same CanTpRxNPduId must be different." 
+                                          expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*                  [                    (CanTpRxNPdu/CanTpRxNPduId = node:current()/../../CanTpRxNPdu/CanTpRxNPduId)                    and (CanTpNAe/CanTpNAe = node:current())                  ]                )         ) &gt; 1                "/>
+                              </a:da>
+                            </v:var>
+                          </v:ctr>
+                          <v:ctr name="CanTpNSa" type="IDENTIFIABLE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Contains the parameters needed to configure each Rx N-SDU with:
+                                    - CanTpRxAddressingFormat set to CANTP_EXTENDED or 
+                                    - CanTpRxAddressingFormat set to CANTP_NORMALFIXED and CanTpDynIdSupport
+                                      enabled and CanTpGenericConnectionSupport disabled.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="FRAME" value="NONE"/>
+                            <a:a name="TAB" value="Addressing"/>
+                            <a:a name="UUID" 
+                                 value="8209031a-ed98-45bc-9a98-ac69dc7edc58"/>
+                            <v:var name="CanTpNSa" type="INTEGER">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      If an Rx N-SDU is configured for extended addressing format
+                                      or normal fixed addressing format (CanTpDynIdSupport enabled
+                                      and CanTpGenericConnectionSupport disabled), this parameter
+                                      contains the value of the transport protocol address of the
+                                      local node (e.g., this ECU).
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                              <a:a name="UUID" 
+                                   value="93164bf7-06cf-4d9c-8e92-934eeb1623b8"/>
+                              <a:da name="ENABLE" type="XPath" 
+                                    expr="../../CanTpRxAddressingFormat = &apos;CANTP_EXTENDED&apos; or                                         (../../CanTpRxAddressingFormat = &apos;CANTP_NORMALFIXED&apos; and                                          as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpGenericConnectionSupport = &apos;false&apos;)"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=255"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath 
+                                          true="The CanTpRxNPdu has no unique handle ID. All CanTpNSa using the same CanTpRxNPduId must be different." 
+                                          expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*                  [                    (CanTpRxNPdu/CanTpRxNPduId = node:current()/../../CanTpRxNPdu/CanTpRxNPduId)                    and (CanTpNSa/CanTpNSa = node:current())                  ]                )         ) &gt; 1                "/>
+                              </a:da>
+                            </v:var>
+                          </v:ctr>
+                          <v:ctr name="CanTpNTa" type="IDENTIFIABLE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    The following parameters need to be configured for each RxNsdu
+                                    with:
+                                    - the CanTpRxAddressingFormat set to CANTP_EXTENDED.
+                                    - the CanTpRxAddressingFormat set to CANTP_NORMALFIXED and
+                                      CanTpDynIdSupport enabled.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="FRAME" value="NONE"/>
+                            <a:a name="TAB" value="Addressing"/>
+                            <a:a name="UUID" 
+                                 value="0d8611d8-678d-4a0e-8f2d-a0baa627c6e7"/>
+                            <v:var name="CanTpNTa" type="INTEGER">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      If a Rx N-SDU is configured for extended addressing format
+                                      or normal fixed addressing format (CanTpDynIdSupport enabled),
+                                      this parameter contains the value of the transport protocol
+                                      address of the remote node (e.g., the diagnostic tester),
+                                      if an Rx N-SDU is configured with:
+                                      - extended addressing format
+                                      - Normal fixed addressing format and CanTpDynIdSupport is
+                                        enabled.
+                                      .
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                              <a:a name="UUID" 
+                                   value="b1fc82cb-5a83-4751-b7d2-2661c884ca2f"/>
+                              <a:da name="ENABLE" type="XPath" 
+                                    expr="../../CanTpRxAddressingFormat = &apos;CANTP_EXTENDED&apos; or                                          ../../CanTpRxAddressingFormat = &apos;CANTP_NORMALFIXED&apos;"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=255"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath/>
+                              </a:da>
+                            </v:var>
+                          </v:ctr>
+                          <v:ctr name="CanTpRxNPdu" type="IDENTIFIABLE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Used for grouping of the ID of a PDU and the Reference to a PDU.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="FRAME" value="LINE"/>
+                            <a:a name="TAB" value="N-PDU Linking"/>
+                            <a:a name="UUID" 
+                                 value="bea65933-a3a0-4366-9367-f975774d99cf"/>
+                            <v:var name="CanTpRxNPduId" type="INTEGER">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      &lt;p&gt;The N-PDU identifier attached to the RxNsdu is identified
+                                      by CanTpRxNSduId.&lt;/p&gt;
+                                      &lt;p&gt;Each RxNsdu identifier is linked to only one SF/FF/CF N-PDU
+                                      identifier. Nevertheless, in the case of extended or mixed
+                                      addressing format, the same N-PDU identifier can be used for
+                                      several N-SDU identifiers. The distinction is made by the N_TA
+                                      or N_AE value (first data byte of SF or FF).&lt;/p&gt;
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                              <a:a name="UUID" 
+                                   value="3b5ae0c9-2f8f-4d85-93c9-7de6b0796a9b"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=65535"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath>
+                                  <mt:tst 
+                                          false="Value must be greater than or equal to zero." 
+                                          expr=". &gt;= 0"/>
+                                  <mt:tst 
+                                          false="Rx N-PDU IDs must be unique for all Rx N-PDUs when standard addressing is used." 
+                                          expr="(../../CanTpRxAddressingFormat != &apos;CANTP_STANDARD&apos;) or                                   (text:uniq(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*/CanTpRxNPdu/CanTpRxNPduId, .))"/>
+                                  <mt:tst 
+                                          true="Same CanTpRxNPduId and CanTpRxFcNPduId must use same addressing format (mixed or extended)." 
+                                          expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*                  [                    node:exists(CanTpRxFcNPdu)                    and (CanTpRxFcNPdu/CanTpRxFcNPduId = node:current())                    and (CanTpTxAddressingFormat != node:current()/../../CanTpRxAddressingFormat)                  ]                )           + count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*                    [                      (CanTpRxNPdu/CanTpRxNPduId = node:current())                      and (CanTpRxAddressingFormat != node:current()/../../CanTpRxAddressingFormat)                    ]                  )         ) &gt; 0                "/>
+                                </mt:xpath>
+                              </a:da>
+                            </v:var>
+                            <v:ref name="CanTpRxNPduRef" type="REFERENCE">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      Reference to a PDU in the COM-Stack.
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                              <a:a name="UUID" 
+                                   value="72c55973-7224-4bec-b6b9-e3f93381887b"/>
+                              <a:da name="INVALID" type="XPath">
+                                <a:tst expr="node:refvalid(.)" 
+                                       false="A reference to an EcuC PDU is required."/>
+                                <a:tst 
+                                       expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*                  [node:exists(CanTpRxFcNPdu)]/CanTpRxFcNPdu                  [                    (CanTpRxFcNPduRef = node:current())                    and (CanTpRxFcNPduId != node:current()/../CanTpRxNPduId)                  ]                )           + count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*/CanTpRxNPdu                    [                      (CanTpRxNPduRef = node:current())                      and (CanTpRxNPduId != node:current()/../CanTpRxNPduId)                    ]                  )          ) &gt; 0                  " 
+                                       true="Rx N-PDUs having the same EcuC reference must use the same N-PDU ID and the addressing format extended or mixed."/>
+                                <a:tst 
+                                       expr="count(as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfRxPduCfg/*[CanIfRxPduRef = node:current()]) = 0" 
+                                       true="No CAN Interface Rx PDU found referencing this N-PDU."/>
+                                <a:tst 
+                                       expr="(count(as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfRxPduCfg/*[CanIfRxPduRef = node:current()]) &gt; 0)                                              and                                              (as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfRxPduCfg/*[CanIfRxPduRef = node:current()][1]/CanIfRxPduUserRxIndicationUL                                               != &apos;CAN_TP&apos;)" 
+                                       true="CanIfRxPduUserRxIndicationUL of this Rx N-PDU shall be set to &apos;CAN_TP&apos; in CAN Interface configuration."/>
+                                <a:tst 
+                                       expr="(node:value(./../../CanTpRxPaddingActivation) != &apos;CANTP_ON_CAN_CAN_FD&apos;) and not(         as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpFlexibleDataRateSupport = &apos;false&apos;         or(             node:refvalid(.)             and(                  node:ref(.)/PduLength = 8                  or node:ref(.)/PduLength = 12                  or node:ref(.)/PduLength = 16                  or node:ref(.)/PduLength = 20                  or node:ref(.)/PduLength = 24                  or node:ref(.)/PduLength = 32                  or node:ref(.)/PduLength = 48                  or node:ref(.)/PduLength = 64                )           )                )" 
+                                       true="The length of the referenced PDU (PduLength in EcuC) does not match a valid CAN FD length. Allowed values are 8, 12, 16, 20, 24, 32, 48, 64."/>
+                              </a:da>
+                              <a:da name="REF" 
+                                    value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                            </v:ref>
+                          </v:ctr>
+                          <v:ctr name="CanTpTxFcNPdu" type="IDENTIFIABLE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Used for grouping of the ID of a PDU and the reference to a PDU.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="FRAME" value="LINE"/>
+                            <a:a name="TAB" value="N-PDU Linking"/>
+                            <a:a name="UUID" 
+                                 value="b5f9b632-6032-45df-813f-5450a368f64d"/>
+                            <a:da name="ENABLE" type="XPath" 
+                                  expr="../CanTpRxTaType = &apos;CANTP_PHYSICAL&apos;"/>
+                            <v:var name="CanTpTxFcNPduConfirmationPduId" 
+                                   type="INTEGER">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      &lt;p&gt;Handle ID to be used by the CanIf to confirm the
+                                      transmission of the CanTpTxFcNPdu to the CanIf module.&lt;/p&gt;
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                              <a:a name="UUID" 
+                                   value="4c4c6ca6-4ced-4b6e-9e03-9d414b7a2eba"/>
+                              <a:da name="EDITABLE" value="true"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=65535"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath>
+                                  <mt:tst 
+                                          false="Value must be greater than or equal to zero." 
+                                          expr=". &gt;= 0"/>
+                                  <mt:tst 
+                                          true="The common set of handle IDs configured as CanTpTxFcNPduConfirmationPduId and CanTpTxNPduConfirmationPduId must be 0-based and dense." 
+                                          expr="                                       (                                          count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*[node:exists(CanTpTxFcNPdu)]/                                             CanTpTxFcNPdu[CanTpTxFcNPduConfirmationPduId = node:current()])                                       ) &gt; 1                                   "/>
+                                  <mt:tst 
+                                          true="Tx N-PDUs having the same IDs must use the same reference." 
+                                          expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*                  [node:exists(CanTpTxFcNPdu)]/CanTpTxFcNPdu                  [                    (CanTpTxFcNPduRef != node:current()/../CanTpTxFcNPduRef )                    and (CanTpTxFcNPduConfirmationPduId = node:current())                  ]                )           + count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*/CanTpTxNPdu                    [                      (CanTpTxNPduRef != node:current()/../CanTpTxFcNPduRef )                      and (CanTpTxNPduConfirmationPduId = node:current())                    ]                  )          ) &gt; 0                  "/>
+                                </mt:xpath>
+                              </a:da>
+                            </v:var>
+                            <v:ref name="CanTpTxFcNPduRef" type="REFERENCE">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      Reference to a PDU in the COM-Stack.
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                              <a:a name="UUID" 
+                                   value="abc7400c-6284-41ec-814e-7e89e3f61f78"/>
+                              <a:da name="INVALID" type="XPath">
+                                <a:tst 
+                                       expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*                  [node:exists(CanTpTxFcNPdu)]/CanTpTxFcNPdu                  [                    (CanTpTxFcNPduRef = node:current())                    and (CanTpTxFcNPduConfirmationPduId != node:current()/../CanTpTxFcNPduConfirmationPduId )                  ]                )           + count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*/CanTpTxNPdu                    [                      (CanTpTxNPduRef = node:current())                      and (CanTpTxNPduConfirmationPduId != node:current()/../CanTpTxFcNPduConfirmationPduId )                    ]                  )          ) &gt; 0                  " 
+                                       true="Tx N-PDUs having the same EcuC reference must use the same N-PDU ID and the addressing format extended or mixed."/>
+                                <a:tst 
+                                       expr="count(as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()]) = 0" 
+                                       true="No CAN Interface Tx PDU found referencing this N-PDU."/>
+                                <a:tst 
+                                       expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*                  [node:exists(CanTpTxFcNPdu)]/CanTpTxFcNPdu                  [                    CanTpTxFcNPduRef = node:current()                  ]                )         ) &gt; 1                " 
+                                       true="Multiple CanTpTxFcNPduRef&apos;s shall not use the same EcuC reference."/>
+                                <a:tst 
+                                       expr="(count(as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()]) &gt; 0)                                              and                                              (as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()][1]/CanIfTxPduUserTxConfirmationUL                                               != &apos;CAN_TP&apos;)" 
+                                       true="CanIfTxPduUserTxConfirmationUL of this Tx N-PDU shall be set to &apos;CAN_TP&apos; in CAN Interface configuration."/>
+                              </a:da>
+                              <a:da name="REF" 
+                                    value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                            </v:ref>
+                          </v:ctr>
+                        </v:ctr>
+                      </v:lst>
+                      <v:lst name="CanTpTxNSdu" type="MAP">
+                        <v:ctr name="CanTpTxNSdu" type="IDENTIFIABLE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  The following parameters need to be configured for each CAN N-SDU
+                                  that the CanTp module transmits via the CanTpChannel.
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="POSTBUILDCHANGEABLE" value="true"/>
+                          <a:a name="POSTBUILDVARIANTMULTIPLICITY" value="true"/>
+                          <a:a name="UUID" 
+                               value="50060ab4-fe4a-4f82-835b-c24fb29a9387"/>
+                          <v:var name="CanTpNas" type="FLOAT">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Value in second of the N_As timeout. N_As is the time for the
+                                    transmission of a CAN frame (any N-PDU) on the part of the
+                                    sender.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="26511abc-10c2-4bb0-b28f-726bb1746da3"/>
+                            <a:da name="DEFAULT" value="0.1"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&gt;=0.00001"/>
+                                <mt:tst expr="&lt;=16711"/>
+                              </mt:range>
+                              <mt:xpath 
+                                        true="Resulting number of MainFunction ticks exceeds 65535. Decrease value or increase MainFunction period." 
+                                        expr="(    num:i( (. div ../../../../../CanTpMainFunctionPeriod)          - 0.00001         ) + 1  ) &gt; 65535"/>
+                            </a:da>
+                            <a:da name="WARNING" type="XPath" 
+                                  expr="(    (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &gt; 0.00001  ) or  ( (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &lt; -0.00001  )" 
+                                  true="Value is not divisible by CanTpMainFunctionPeriod."/>
+                          </v:var>
+                          <v:var name="CanTpNbs" type="FLOAT">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Value in seconds of the N_Bs timeout. N_Bs is the time of
+                                    transmission until reception of the next Flow Control N-PDU.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTMULTIPLICITY" 
+                                 value="true"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="91a799e3-46c6-4abe-b0e2-c18118ab4d13"/>
+                            <a:da name="DEFAULT" value="1.0"/>
+                            <a:da name="ENABLE" type="XPath" 
+                                  expr="../CanTpTxTaType = &apos;CANTP_PHYSICAL&apos;"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&gt;=0.00001"/>
+                                <mt:tst expr="&lt;=16711"/>
+                              </mt:range>
+                              <mt:xpath 
+                                        true="Resulting number of MainFunction ticks exceeds 65535. Decrease value or increase MainFunction period." 
+                                        expr="(    num:i( (. div ../../../../../CanTpMainFunctionPeriod)          - 0.00001         ) + 1  ) &gt; 65535"/>
+                            </a:da>
+                            <a:da name="WARNING" type="XPath" 
+                                  expr="(    (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &gt; 0.00001  ) or  ( (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &lt; -0.00001  )" 
+                                  true="Value is not divisible by CanTpMainFunctionPeriod."/>
+                          </v:var>
+                          <v:var name="CanTpNcs" type="FLOAT">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;
+                                      Value in seconds of the performance requirement of (N_Cs +
+                                      N_As). N_Cs is the time which elapses between the transmit
+                                      request of a CF N-PDU until the transmit request of the next
+                                      CF N-PDU.
+                                    &lt;/p&gt;
+                                    &lt;p&gt;
+                                      &lt;strong&gt;Note:&lt;/strong&gt; N_Cs is used as buffer request
+                                      timeout by Autosar. Therefore it should be greater
+                                      than the minimum separation time (STmin) of
+                                      connections allowing segmented frames. Otherwise,
+                                      the transmission of following consecutive frames
+                                      is prevented by this timeout if the connections
+                                      block size allows the transmission of several
+                                      consecutive frames between two flow control
+                                      frames.
+                                    &lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="c522de3a-f821-4fea-a20b-2312d2b05a4a"/>
+                            <a:da name="DEFAULT" value="0.9"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&gt;=0.00001"/>
+                                <mt:tst expr="&lt;=16711"/>
+                              </mt:range>
+                              <mt:xpath 
+                                        true="Resulting number of MainFunction ticks exceeds 65535. Decrease value or increase MainFunction period." 
+                                        expr="(    num:i( (. div ../../../../../CanTpMainFunctionPeriod)          - 0.00001         ) + 1  ) &gt; 65535"/>
+                            </a:da>
+                            <a:da name="WARNING" type="XPath" 
+                                  expr="(    (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &gt; 0.00001  ) or  ( (  (. div ../../../../../CanTpMainFunctionPeriod)     - round(. div ../../../../../CanTpMainFunctionPeriod)    ) &lt; -0.00001  )" 
+                                  true="Value is not divisible by CanTpMainFunctionPeriod."/>
+                          </v:var>
+                          <v:var name="CanTpTc" type="BOOLEAN">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;
+                                    Switch for enabling Transmit Cancellation for a certain Tx N-Sdu.
+                                    &lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="b58eeca2-6820-4103-8216-4e9e36699457"/>
+                            <a:da name="DEFAULT" value="true"/>
+                            <a:da name="EDITABLE" value="true"/>
+                          </v:var>
+                          <v:var name="CanTpTxAddressingFormat" 
+                                 type="ENUMERATION">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;Declares which communication addressing format is supported
+                                    for this Tx N-SDU.&lt;/p&gt;
+                                    &lt;p&gt;Definition of Enumeration values:&lt;/p&gt;
+                                    &lt;ul&gt;
+                                      &lt;li&gt;
+                                        CANTP_STANDARD: Use normal addressing format.
+                                      &lt;/li&gt;
+                                      &lt;li&gt;
+                                        CANTP_EXTENDED: Use extended addressing format
+                                        (the N_TA container of this TxNsdu will be used).
+                                      &lt;/li&gt;
+                                      &lt;li&gt;
+                                        CANTP_NORMALFIXED: Use normal fixed addressing format.
+                                      &lt;/li&gt;
+                                      &lt;li&gt;
+                                        CANTP_MIXED: Use mixed addressing format
+                                        (the N_AE container of this TxNsdu will be used).
+                                      &lt;/li&gt;
+                                    &lt;/ul&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="TAB" value="Addressing"/>
+                            <a:a name="UUID" 
+                                 value="92780c04-b15d-4249-beb9-26730fc070f9"/>
+                            <a:da name="DEFAULT" value="CANTP_STANDARD"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst 
+                                     expr=". = &apos;CANTP_NORMALFIXED&apos; and as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpDynIdSupport = &apos;false&apos;" 
+                                     true="CanTpDynIdSupport must be enabled when CANTP_NORMALFIXED is used."/>
+                              <a:tst 
+                                     expr=". = &apos;CANTP_NORMALFIXED&apos; and (not(node:exists(as:ref(../CanTpTxNSduRef)/MetaDataTypeRef)) or                                             not(node:exists(as:ref(../CanTpTxNPdu/CanTpTxNPduRef)/MetaDataTypeRef)) or                                             ((node:exists(../CanTpRxFcNPdu)) and not(node:exists(as:ref(../CanTpRxFcNPdu/CanTpRxFcNPduRef)/MetaDataTypeRef))))" 
+                                     true="MetaDataTypeRef must be enabled when CANTP_NORMALFIXED is used."/>
+                              <a:tst 
+                                     expr=". = &apos;CANTP_NORMALFIXED&apos; and node:exists(as:ref(../CanTpTxNSduRef)/MetaDataTypeRef) and                                            (not(node:exists(as:ref(as:ref(../CanTpTxNSduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = &apos;SOURCE_ADDRESS_16&apos;])) or                                            not(node:exists(as:ref(as:ref(../CanTpTxNSduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = &apos;TARGET_ADDRESS_16&apos;])))" 
+                                     true="MetaDataItemTypes SOURCE_ADDRESS_16 and TARGET_ADDRESS_16 must be configured for the CanTpTxNPdus with CANTP_NORMALFIXED."/>
+                              <a:tst 
+                                     expr=". = &apos;CANTP_NORMALFIXED&apos; and node:exists(as:ref(../CanTpTxNPdu/CanTpTxNPduRef)/MetaDataTypeRef) and                                            not(node:exists(as:ref(as:ref(../CanTpTxNPdu/CanTpTxNPduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = &apos;CAN_ID_32&apos;])) " 
+                                     true="MetaDataItemType CAN_ID_32 must be configured for the CanTpTxNPdus with CANTP_NORMALFIXED."/>
+                              <a:tst 
+                                     expr=". = &apos;CANTP_NORMALFIXED&apos; and(node:exists(../CanTpRxFcNPdu)) and node:exists(as:ref(../CanTpRxFcNPdu/CanTpRxFcNPduRef)/MetaDataTypeRef) and                                            not(node:exists(as:ref(as:ref(../CanTpRxFcNPdu/CanTpRxFcNPduRef)/MetaDataTypeRef)/MetaDataItem/*[MetaDataItemType = &apos;CAN_ID_32&apos;])) " 
+                                     true="MetaDataItemType CAN_ID_32 must be configured for the CanTpRxFcNPdus with CANTP_NORMALFIXED."/>
+                            </a:da>
+                            <a:da name="RANGE">
+                              <a:v>CANTP_EXTENDED</a:v>
+                              <a:v>CANTP_MIXED</a:v>
+                              <a:v>CANTP_NORMALFIXED</a:v>
+                              <a:v>CANTP_STANDARD</a:v>
+                            </a:da>
+                          </v:var>
+                          <v:var name="CanTpTxDl" type="INTEGER">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;
+                                      &lt;b&gt;This parameter has been deprecate according to AUTOSAR RFC53101.&lt;/b&gt;
+                                    &lt;/p&gt;
+                                    &lt;p&gt;
+                                      Data Length Code of this Tx N-SDU. In case of variable length
+                                      message, this value indicates the minimum data length.
+                                    &lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="771ff982-6ae4-4de6-83da-0dfa5957780c"/>
+                            <a:da name="DEFAULT" value="1"/>
+                            <a:da name="EDITABLE" value="false"/>
+                          </v:var>
+                          <v:var name="CanTpTxNSduId" type="INTEGER">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Unique identifier to a structure that contains all useful
+                                    information to process the transmission of a Tx N-SDU.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                            <a:a name="UUID" 
+                                 value="35e7f267-2cc4-43bb-aefd-8559a7a7e30f"/>
+                            <a:da name="DEFAULT" type="XPath" 
+                                  expr="num:i(count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*) - 1)"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&lt;=65535"/>
+                                <mt:tst expr="&gt;=0"/>
+                              </mt:range>
+                              <mt:xpath>
+                                <mt:tst 
+                                        false="IDs must be zero-based and consecutive. This value is not unique." 
+                                        expr="text:uniq(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*/CanTpTxNSduId, .)"/>
+                                <mt:tst 
+                                        false="IDs must be zero-based and consecutive. The value one less than this value is missing." 
+                                        expr="(. = 0)                                       or (count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*[CanTpTxNSduId = (node:current() - 1)]) &gt; 0)"/>
+                              </mt:xpath>
+                            </a:da>
+                          </v:var>
+                          <v:var name="CanTpTxPaddingActivation" 
+                                 type="ENUMERATION">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;Defines if the transmit frame use padding or not.&lt;/p&gt;
+                                    &lt;p&gt;Definition of Enumeration values:&lt;/p&gt;
+                                    &lt;ul&gt;
+                                     &lt;li&gt;
+                                      CANTP_OFF:
+                                      The transmit N-PDU does not use padding for SF,
+                                      CF and the last CF. (N-PDU length is dynamic)
+                                     &lt;/li&gt;
+                                     &lt;li&gt;
+                                      CANTP_ON:
+                                      Enabled mandatory padding to 8 bytes for CAN 2.0 PDUs only
+                                      (SF, FC and last CF).
+                                     &lt;/li&gt;
+                                     &lt;li&gt;
+                                      CANTP_ON_CAN_CAN_FD:
+                                      Enable mandatory padding to 8 bytes for CAN 2.0 PDUs and 64 bytes for CAN FD PDUs
+                                     &lt;/li&gt;
+                                    &lt;/ul&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="OPTIONAL" value="false"/>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="24cdc628-2389-4380-a546-7f190b5684df"/>
+                            <a:da name="DEFAULT" value="CANTP_ON"/>
+                            <a:da name="RANGE">
+                              <a:v>CANTP_OFF</a:v>
+                              <a:v>CANTP_ON</a:v>
+                              <a:v>CANTP_ON_CAN_CAN_FD</a:v>
+                            </a:da>
+                          </v:var>
+                          <v:var name="CanTpTxTaType" type="ENUMERATION">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;Declares the communication type of this Tx N-SDU.&lt;/p&gt;
+                                    &lt;p&gt;Enumeration values:&lt;/p&gt;
+                                    &lt;ul&gt;
+                                     &lt;li&gt;CANTP_PHYSICAL: Used for 1:1 communication.&lt;/li&gt;
+                                     &lt;li&gt;CANTP_FUNCTIONAL: Used for 1:n communication (SFs only).&lt;/li&gt;
+                                    &lt;/ul&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                            <a:a name="UUID" 
+                                 value="71669e5e-da94-4af6-88b6-e0fe105e706d"/>
+                            <a:da name="DEFAULT" value="CANTP_PHYSICAL"/>
+                            <a:da name="RANGE">
+                              <a:v>CANTP_FUNCTIONAL</a:v>
+                              <a:v>CANTP_PHYSICAL</a:v>
+                            </a:da>
+                          </v:var>
+                          <v:ref name="CanTpTxNSduRef" type="REFERENCE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Reference to a PDU in the COM-Stack.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                            <a:a name="UUID" 
+                                 value="002523f2-7e4e-4853-9843-47c185d26ed3"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst 
+                                     expr="text:uniq(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*/CanTpTxNSduRef, .)" 
+                                     false="Tx N-SDU references must be unique."/>
+                              <a:tst 
+                                     expr="node:refvalid(.) and node:ref(.)/PduLength &gt; 65535" 
+                                     true="The referenced PDU exceeds the maximum allowed length of 65535."/>
+                            </a:da>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                          </v:ref>
+                          <v:ctr name="CanTpNAe" type="IDENTIFIABLE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Contains the parameters needed to configure each Tx N-SDU with
+                                    CanTpTxAddressingFormat set to CANTP_MIXED.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="FRAME" value="NONE"/>
+                            <a:a name="TAB" value="Addressing"/>
+                            <a:a name="UUID" 
+                                 value="dbceb56b-e502-436a-8a8e-4bcf4140821c"/>
+                            <v:var name="CanTpNAe" type="INTEGER">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      If a Tx N-SDU is configured for mixed addressing format, this
+                                      parameter contains the value of the transport protocol address
+                                      extension.
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                              <a:a name="UUID" 
+                                   value="e7b524f6-c0c2-4eb9-95f8-a3da8f5a3fff"/>
+                              <a:da name="ENABLE" type="XPath" 
+                                    expr="../../CanTpTxAddressingFormat = &apos;CANTP_MIXED&apos;"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=255"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath 
+                                          true="The CanTpRxFcNPdu has no unique handle ID. All CanTpNAe using the same CanTpRxFcNPduId must be different." 
+                                          expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*                  [                    node:exists(CanTpRxFcNPdu)                    and (                          CanTpRxFcNPdu/CanTpRxFcNPduId                          = node:current()/../../CanTpRxFcNPdu/CanTpRxFcNPduId                        )                    and (CanTpNAe/CanTpNAe = node:current())                  ]                )         ) &gt; 1                                                   and (node:exists(node:current()/../../CanTpRxFcNPdu))"/>
+                              </a:da>
+                            </v:var>
+                          </v:ctr>
+                          <v:ctr name="CanTpNSa" type="IDENTIFIABLE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Contains the parameters needed to configure each Tx N-SDU with:
+                                    - CanTpTxAddressingFormat set to CANTP_EXTENDED.
+                                    - CanTpTxAddressingFormat set to CANTP_NORMALFIXED and CanTpDynIdSupport
+                                      enabled.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="FRAME" value="NONE"/>
+                            <a:a name="TAB" value="Addressing"/>
+                            <a:a name="UUID" 
+                                 value="ed282375-ec5c-47dd-a196-ed0a0de43712"/>
+                            <v:var name="CanTpNSa" type="INTEGER">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      This parameter contains the value of the transport protocol
+                                      address of the local node (i.e., this ECU), if a Tx N-SDU is
+                                      configured with:
+                                      - extended addressing format
+                                      - normal fixed addressing format and CanTpDynIdSupport is enabled.
+                                      .
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                              <a:a name="UUID" 
+                                   value="5256bc48-f287-4281-baf0-1f1e542f61f1"/>
+                              <a:da name="ENABLE" type="XPath" 
+                                    expr="../../CanTpTxAddressingFormat = &apos;CANTP_EXTENDED&apos; or                                          ../../CanTpTxAddressingFormat = &apos;CANTP_NORMALFIXED&apos;"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=255"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath 
+                                          true="The CanTpRxFcNPdu has no unique handle ID. All CanTpNSa using the same CanTpRxFcNPduId must be different." 
+                                          expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*                  [                    node:exists(CanTpRxFcNPdu)                    and (                          CanTpRxFcNPdu/CanTpRxFcNPduId                          = node:current()/../../CanTpRxFcNPdu/CanTpRxFcNPduId                        )                    and (CanTpNSa/CanTpNSa = node:current())                  ]                )         ) &gt; 1                                                   and (node:exists(node:current()/../../CanTpRxFcNPdu))"/>
+                              </a:da>
+                            </v:var>
+                          </v:ctr>
+                          <v:ctr name="CanTpNTa" type="IDENTIFIABLE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    The following parameters need to be configured for each Tx N-SDU
+                                    with:
+                                    - CanTpTxAddressingFormat set to CANTP_EXTENDED.
+                                    - CanTpTxAddressingFormat set to CANTP_NORMALFIXED,
+                                      CanTpDynIdSupport enabled and CanTpGenericConnectionSupport
+                                      disabled.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="FRAME" value="NONE"/>
+                            <a:a name="TAB" value="Addressing"/>
+                            <a:a name="UUID" 
+                                 value="d7272e1a-274a-4f2b-8624-ae7a7342d975"/>
+                            <v:var name="CanTpNTa" type="INTEGER">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      This parameter contains the value of the transport protocol
+                                      address of the remote node (e.g., the diagnostic tester),
+                                      if Tx N-SDU is configured with:
+                                      - extended addressing format
+                                      - normal fixed addressing format, CanTpDynIdSupport is enabled
+                                        and CanTpGenericConnectionSupport is disabled.
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v class="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                              <a:a name="UUID" 
+                                   value="31f50d1f-4e4c-445a-a636-48d6355e49b2"/>
+                              <a:da name="ENABLE" type="XPath" 
+                                    expr="../../CanTpTxAddressingFormat = &apos;CANTP_EXTENDED&apos; or                                         (../../CanTpTxAddressingFormat = &apos;CANTP_NORMALFIXED&apos; and                                          as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpGenericConnectionSupport = &apos;false&apos;)"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=255"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath/>
+                              </a:da>
+                            </v:var>
+                          </v:ctr>
+                          <v:ctr name="CanTpRxFcNPdu" type="IDENTIFIABLE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Used for grouping of the ID of a PDU and the Reference to a PDU.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="FRAME" value="LINE"/>
+                            <a:a name="TAB" value="N-PDU Linking"/>
+                            <a:a name="UUID" 
+                                 value="a0d338a7-b634-4198-b671-300b468acfd6"/>
+                            <a:da name="ENABLE" type="XPath" 
+                                  expr="../CanTpTxTaType = &apos;CANTP_PHYSICAL&apos;"/>
+                            <v:var name="CanTpRxFcNPduId" type="INTEGER">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      &lt;p&gt;N-PDU identifier attached to the FC N-PDU of this Tx N-SDU
+                                      identified by CanTpTxNSduId.&lt;/p&gt;
+                                      &lt;p&gt;Each Tx N-SDU identifier is linked to one Rx FC N-PDU
+                                      identifier only. However, in the case of extended or mixed
+                                      addressing format, the same FC N-PDU identifier can be used
+                                      for several N-SDU identifiers. The distinction is made by
+                                      means of the N_TA value (extended addressing format) or the
+                                      N_AE value (mixed addressing format). In both cases, this is
+                                      the first data byte of FC frame.&lt;/p&gt;
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                              <a:a name="UUID" 
+                                   value="efef21fb-d75a-48c3-9f75-c3a4086e081d"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=65535"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath>
+                                  <mt:tst 
+                                          false="Value must be greater than or equal to zero." 
+                                          expr=". &gt;= 0"/>
+                                  <mt:tst 
+                                          false="Rx FC N-PDU IDs must be unique for all Rx FC N-PDUs when standard addressing is used." 
+                                          expr="(../../CanTpTxAddressingFormat != &apos;CANTP_STANDARD&apos;) or                                   (text:uniq(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*[node:exists(CanTpRxFcNPdu)]/CanTpRxFcNPdu/CanTpRxFcNPduId, .))"/>
+                                  <mt:tst 
+                                          true="Same CanTpRxNPduId and CanTpRxFcNPduId must use same addressing format (mixed or extended)." 
+                                          expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*                  [                    node:exists(CanTpRxFcNPdu)                    and (CanTpRxFcNPdu/CanTpRxFcNPduId = node:current())                    and (CanTpTxAddressingFormat != node:current()/../../CanTpTxAddressingFormat)                  ]                )           + count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*                    [                      (CanTpRxNPdu/CanTpRxNPduId = node:current())                      and (CanTpRxAddressingFormat != node:current()/../../CanTpTxAddressingFormat)                    ]                  )         ) &gt; 0                "/>
+                                </mt:xpath>
+                              </a:da>
+                            </v:var>
+                            <v:ref name="CanTpRxFcNPduRef" type="REFERENCE">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      Reference to a PDU in the COM-Stack.
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                              <a:a name="UUID" 
+                                   value="72681bb9-43d7-42e3-a245-8e8435c72256"/>
+                              <a:da name="INVALID" type="XPath">
+                                <a:tst 
+                                       expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*                  [node:exists(CanTpRxFcNPdu)]/CanTpRxFcNPdu                  [                    (CanTpRxFcNPduRef = node:current())                    and (CanTpRxFcNPduId != node:current()/../CanTpRxFcNPduId)                  ]                )           + count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*/CanTpRxNPdu                    [                      (CanTpRxNPduRef = node:current())                      and (CanTpRxNPduId != node:current()/../CanTpRxFcNPduId)                    ]                  )          ) &gt; 0                  " 
+                                       true="Rx N-PDUs having the same EcuC reference must use the same N-PDU ID and the addressing format extended or mixed."/>
+                                <a:tst 
+                                       expr="count(as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfRxPduCfg/*[CanIfRxPduRef = node:current()]) = 0" 
+                                       true="No CAN Interface Rx PDU found referencing this N-PDU."/>
+                                <a:tst 
+                                       expr="(count(as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfRxPduCfg/*[CanIfRxPduRef = node:current()]) &gt; 0)                                         and                                         (as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfRxPduCfg/*[CanIfRxPduRef = node:current()][1]/CanIfRxPduUserRxIndicationUL                                          != &apos;CAN_TP&apos;)" 
+                                       true="CanIfRxPduUserRxIndicationUL of this Rx N-PDU shall be set to &apos;CAN_TP&apos; in the CAN Interface configuration."/>
+                              </a:da>
+                              <a:da name="REF" 
+                                    value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                            </v:ref>
+                          </v:ctr>
+                          <v:ctr name="CanTpTxNPdu" type="IDENTIFIABLE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    Used for grouping of the ID of a PDU and the Reference to a PDU.
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="FRAME" value="LINE"/>
+                            <a:a name="TAB" value="N-PDU Linking"/>
+                            <a:a name="UUID" 
+                                 value="b9e7ff6e-e2ad-4c0e-8d4b-cc0b1bb1b7de"/>
+                            <v:var name="CanTpTxNPduConfirmationPduId" 
+                                   type="INTEGER">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      &lt;p&gt;Handle ID to be used by the CanIf to confirm the
+                                      transmission of the CanTpTxNPdu to the CanIf module.&lt;/p&gt;
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                              <a:a name="UUID" 
+                                   value="b48daf97-34ab-4ac2-9de1-5fe6850bb79e"/>
+                              <a:da name="EDITABLE" value="true"/>
+                              <a:da name="INVALID" type="Multi">
+                                <mt:range>
+                                  <mt:tst expr="&lt;=65535"/>
+                                  <mt:tst expr="&gt;=0"/>
+                                </mt:range>
+                                <mt:xpath>
+                                  <mt:tst 
+                                          false="Value must be greater than or equal to zero." 
+                                          expr=". &gt;= 0"/>
+                                  <mt:tst 
+                                          true="Tx N-PDUs having the same IDs must use the same reference." 
+                                          expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*                  [node:exists(CanTpTxFcNPdu)]/CanTpTxFcNPdu                  [                    (CanTpTxFcNPduRef != node:current()/../CanTpTxNPduRef)                    and (CanTpTxFcNPduConfirmationPduId = node:current())                  ]                )           + count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*/CanTpTxNPdu                    [                      (CanTpTxNPduRef != node:current()/../CanTpTxNPduRef)                      and (CanTpTxNPduConfirmationPduId = node:current())                    ]                  )          ) &gt; 0                  "/>
+                                  <mt:tst 
+                                          true="The common set of handle IDs configured as CanTpTxFcNPduConfirmationPduId and CanTpTxNPduConfirmationPduId must be 0-based and dense." 
+                                          expr="                                       ( count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*/                                             CanTpTxNPdu[CanTpTxNPduConfirmationPduId = node:current()])                                       ) &gt; 1                                   "/>
+                                </mt:xpath>
+                              </a:da>
+                            </v:var>
+                            <v:ref name="CanTpTxNPduRef" type="REFERENCE">
+                              <a:a name="DESC">
+                                <a:v>&lt;html&gt;
+                                      Reference to a PDU in the COM-Stack.
+                                    &lt;/html&gt;</a:v>
+                              </a:a>
+                              <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                   type="IMPLEMENTATIONCONFIGCLASS">
+                                <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                              </a:a>
+                              <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                              <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                              <a:a name="UUID" 
+                                   value="1421ddd2-ec6a-45c5-8c5c-e421b0a32954"/>
+                              <a:da name="INVALID" type="XPath">
+                                <a:tst 
+                                       expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpRxNSdu/*                  [node:exists(CanTpTxFcNPdu)]/CanTpTxFcNPdu                  [                    (CanTpTxFcNPduRef = node:current())                    and (CanTpTxFcNPduConfirmationPduId != node:current()/../CanTpTxNPduConfirmationPduId)                  ]                )           + count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*/CanTpTxNPdu                    [                      (CanTpTxNPduRef = node:current())                      and (CanTpTxNPduConfirmationPduId != node:current()/../CanTpTxNPduConfirmationPduId)                    ]                  )          ) &gt; 0                  " 
+                                       true="Tx N-PDUs having the same EcuC reference must use the same N-PDU ID and the addressing format extended or mixed."/>
+                                <a:tst 
+                                       expr="         (           count(as:modconf(&apos;CanTp&apos;)[1]/CanTpConfig/*/CanTpChannel/*/CanTpTxNSdu/*/CanTpTxNPdu                    [      CanTpTxNPduRef = node:current()      ]                  )         ) &gt; 1                " 
+                                       true="Multiple CanTpTxNPduRefs could not use the same EcuC reference."/>
+                                <a:tst expr="node:refvalid(.)" 
+                                       false="A reference to an EcuC PDU is required."/>
+                                <a:tst 
+                                       expr="count(as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()]) = 0" 
+                                       true="No CAN Interface Tx PDU found referencing this N-PDU."/>
+                                <a:tst 
+                                       expr="(count(as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()]) &gt; 0)                                         and                                         (as:modconf(&apos;CanIf&apos;)[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()][1]/CanIfTxPduUserTxConfirmationUL                                          != &apos;CAN_TP&apos;)" 
+                                       true="CanIfTxPduUserTxConfirmationUL of this Tx N-PDU shall be set to &apos;CAN_TP&apos; in the CAN Interface configuration."/>
+                                <a:tst 
+                                       expr="         as:modconf(&apos;CanTp&apos;)[1]/CanTpGeneral/CanTpFlexibleDataRateSupport = &apos;false&apos;         or(             node:refvalid(.)             and(                  node:ref(.)/PduLength = 8                  or node:ref(.)/PduLength = 12                  or node:ref(.)/PduLength = 16                  or node:ref(.)/PduLength = 20                  or node:ref(.)/PduLength = 24                  or node:ref(.)/PduLength = 32                  or node:ref(.)/PduLength = 48                  or node:ref(.)/PduLength = 64                )           )                " 
+                                       false="The length of the referenced PDU (PduLength in EcuC) does not match a valid CAN FD length. Allowed values are 8, 12, 16, 20, 24, 32, 48, 64."/>
+                              </a:da>
+                              <a:da name="REF" 
+                                    value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                            </v:ref>
+                          </v:ctr>
+                        </v:ctr>
+                      </v:lst>
+                    </v:ctr>
+                  </v:lst>
+                </v:ctr>
+              </v:lst>
+              <v:ctr name="CommonPublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Common Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6"/>
+                <v:var name="ArMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1"/>
+                  <a:da name="DEFAULT" value="4"/>
+                </v:var>
+                <v:var name="ArMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="ArPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="SwMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34"/>
+                  <a:da name="DEFAULT" value="6"/>
+                </v:var>
+                <v:var name="SwMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f"/>
+                  <a:da name="DEFAULT" value="8"/>
+                </v:var>
+                <v:var name="SwPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a318d2d9-0e75-49da-ac43-e7e4e682e2f9"/>
+                  <a:da name="DEFAULT" value="42"/>
+                </v:var>
+                <v:var name="ModuleId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Numeric Module ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:78bc8362-080f-4253-b3da-804ab69a7154"/>
+                  <a:da name="DEFAULT" value="35"/>
+                </v:var>
+                <v:var name="VendorId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Vendor ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="Release" type="STRING_LABEL">
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Release Information"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89"/>
+                  <a:da name="DEFAULT" value=""/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="PublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="EB Published Information"/>
+                <a:a name="TAB" value="EB Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07"/>
+                <v:var name="PbcfgMSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Specifies whether or not the CanTp can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="PbcfgM support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+              </v:ctr>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

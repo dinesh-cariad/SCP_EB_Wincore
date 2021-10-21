@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nvm:blocks xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/nvm.blocks_1.xsd"
+    xmlns:nvm="http://www.tresos.de/_project/AutoCore/nvm.blocks_1.xsd">
+
+    <block name="NVM_BLOCK_DCM"
+        base="as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmDsp/DcmDspData/*"
+        suffix="concat( '_', name(.) )">
+        <enable type="XPATH" value="./DcmDspDataUsePort='USE_BLOCK_ID'" />
+        <updateReference value="./DcmDspDataBlockIdRef" />
+        <type value="native" />
+        <length type="XPATH" value="num:i((./DcmDspDataSize+7) div 8)" />
+        <crc value="none" />
+        <calcRamBlockCrc value="false" />
+        <readonly value="false" />
+        <resistantToChangedSw value="false" />
+        <restoreAtStart value="false" />
+        <writeOnlyOnce value="false" />
+        <writingPriority value="0" />
+    </block>
+
+    <block name="NVM_BLOCK_DCM_ROE">
+      <updateReference value="as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmDsp/DcmDspRoe/DcmDspRoeBlockIdRef"/>
+      <enable type="XPATH" value="(node:exists(as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*[. = 'DcmDslResponseOnEvent'])) and (node:exists(as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[DcmDsdSidTabServiceId = '134']))"/>
+      <type value="native" />
+      <length value="16" />
+      <crc value="none" />
+      <calcRamBlockCrc value="false" />
+      <ramBlockDataAddress value="&amp;Dcm_Dsl_RoeServices_Persistent_Data" />
+      <readonly value="false" />
+      <resistantToChangedSw value="false" />
+      <restoreAtStart value="true" />
+      <storeAtShutdown value="true" />
+      <writeOnlyOnce value="false" />
+      <writingPriority value="1" />
+    </block>
+
+    <block name="NVM_BLOCK_DCM_DDDID">
+      <updateReference value="as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmGeneral/DcmDspDDDIDBlockIdRef"/>
+      <enable type="XPATH" value="((node:exists(as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[DcmDsdSidTabServiceId = '44'])) and
+                                   (node:exists(as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmDsd/DcmDsdServiceTable/*/DcmDsdService/*[DcmDsdServiceUsed = 'true'])) and
+                                   (as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmGeneral/DcmDDDIDStorage = 'true'))"/>
+      <type value="native" />
+      <nDataSets type="XPATH"
+            value="num:i(sum(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmDsp/DcmDspDid/*[DcmDspDidUsed = 'true']/DcmDspDidInfoRef)/DcmDspDDDIDMaxElements)" />
+      <length type="XPATH" value="num:i(sum(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*[1]/DcmDsp/DcmDspDid/*[DcmDspDidUsed = 'true']/DcmDspDidInfoRef)/DcmDspDDDIDMaxElements) * 12)"/>
+      <crc value="none" />
+      <calcRamBlockCrc value="false" />
+      <ramBlockDataAddress value="&amp;Dcm_DDDidSrcTable" />
+      <readonly value="false" />
+      <resistantToChangedSw value="false" />
+      <restoreAtStart value="true" />
+      <storeAtShutdown value="true" />
+      <writeOnlyOnce value="false" />
+      <writingPriority value="1" />
+    </block>
+
+</nvm:blocks>

@@ -1,0 +1,67 @@
+<%@ jet package="eb.tresos.someipxf.generated.jet" class="SomeIpXf_Int_Cfg_h" skeleton="File.skeleton"
+        imports="eb.tresos.someipxf.generator.output.entity.DataOutputElement"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final OutModel outmodel = (OutModel)context.gen.getVariable( OutModel.ARG_NAME, OutModel.class, null );
+    final String includeGuardName = getIncludeGuardName( context );
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+
+#include <SomeIpXf_Cfg.h>
+#include <SomeIpXf_S_Api_Stc.h>
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+<%
+  if(outmodel.hasConfigurationArrays())
+  {
+%>
+#define SOMEIPXF_START_SEC_CONST_32
+#include <SomeIpXf_MemMap.h>
+
+<%
+  
+    for (final DataOutputElement element : outmodel.getDataElements())
+    {
+%>
+/* Config struct: <%=element.getTypeName()%> */
+extern CONST(SOMEIPXF_XFRMBUFFERLENGTH_TYPE, SOMEIPXF_CONST) <%=element.getConfigurationArrayName()%>[<%=element.getConfigurationArraySizeMacroName()%>];
+
+<%
+    }
+%>
+
+#define SOMEIPXF_STOP_SEC_CONST_32
+#include <SomeIpXf_MemMap.h>
+
+<%
+  }
+%>
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

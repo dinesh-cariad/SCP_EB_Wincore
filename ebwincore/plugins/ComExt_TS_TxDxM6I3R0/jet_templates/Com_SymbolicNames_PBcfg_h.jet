@@ -1,0 +1,342 @@
+<%@ jet package="dreisoft.tresos.com.generated.jet" class="Com_SymbolicNames_PBcfg_h"
+        imports="dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException
+            dreisoft.tresos.com.generator.Com_ConfigLayoutType
+            dreisoft.tresos.com.generator.ComRxIPduType
+            dreisoft.tresos.com.generator.ComTxIPduType
+            dreisoft.tresos.com.generator.ComRxSignalType
+            dreisoft.tresos.com.generator.ComTxSignalType
+            dreisoft.tresos.com.generator.ComRxSignalGroupType
+            dreisoft.tresos.com.generator.ComTxSignalGroupType
+            dreisoft.tresos.com.generated.operationstatus.GeneratorOperationStatus
+            dreisoft.tresos.com.generator.input.entity.Cache
+            dreisoft.tresos.com.generator.input.entity.com.ComIPduGroupCache
+            dreisoft.tresos.com.tools.FileGeneratorHelper
+            dreisoft.tresos.com.generator.constants.Constants" %>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    // get post-build data model
+    Cache cache = (Cache) context.gen.getVariable("Com.cache", Cache.class, null);
+    Com_ConfigLayoutType comPBCfgDataModel = (Com_ConfigLayoutType) context.gen.getVariable("comPBCfgDataModel", Com_ConfigLayoutType.class, null);
+
+    boolean comGenerationSuccessful = !context.gen.isVerifying();
+    final String includeGuardName = "COM_SYMBOLIC_NAMES_PB_CFG_H";
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+<%
+    for(String variant : cache.PostBuildVariants)
+    {
+%>
+#include <<%= Constants.MODULE_NAME + Constants.GENERATED_FILE_NAME_SEPARATOR + "SymbolicNames" + Constants.GENERATED_FILE_NAME_SEPARATOR + variant + Constants.GENERATED_FILE_NAME_SEPARATOR + Constants.POST_BUILD_FILE_NAME_INFIX + ".h" %>>
+<%
+    }
+%>
+
+/*==================[macros]================================================*/
+
+/* IPDU group ID defines */
+<%
+    if (cache.ComConfig.size() > 0) {
+        for ( ComIPduGroupCache obj : cache.ComConfig.get(0).ComIPduGroup ) {
+            final String name = obj.getName();
+%>
+<%= FileGeneratorHelper.defineMacro( "ComConf_ComIPduGroup_" + name,
+        obj.ComIPduGroupHandleId,
+        NL ) %>
+
+<%
+        }
+    }
+%>
+/* External Rx IPdus defines */
+<%
+    if (comPBCfgDataModel.ComRxIPdu != null) {
+        for ( ComRxIPduType obj : comPBCfgDataModel.ComRxIPdu.get() ) {
+            if(!obj.isDummy() && !obj.isVariant) {
+%>
+<%= FileGeneratorHelper.defineMacro( "ComConf_ComIPdu_" + obj.getIPDUName(),
+        obj.getHandleId(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+/* External Tx IPdu defines */
+<%
+    if (comPBCfgDataModel.ComTxIPdu != null) {
+        for ( ComTxIPduType obj : comPBCfgDataModel.ComTxIPdu.get() ) {
+            if(!obj.isDummy() && !obj.isVariant) {
+%>
+<%= FileGeneratorHelper.defineMacro( "ComConf_ComIPdu_" + obj.getIPDUName(),
+        obj.getHandleId(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+/* External Rx Signal IDs (no group signals) defines */
+<%
+    if (comPBCfgDataModel.ComRxSignal != null) {
+        for ( ComRxSignalType obj : comPBCfgDataModel.ComRxSignal.get() ) {
+            if(!obj.isGroupSignal()) {
+%>
+<%= FileGeneratorHelper.defineMacro( "ComConf_ComSignal_" + obj.getSignalName(),
+        obj.getHandleId(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+/* External Tx Signal IDs (no group signals) defines */
+<%
+    if (comPBCfgDataModel.ComTxSignal != null) {
+        for ( ComTxSignalType obj : comPBCfgDataModel.ComTxSignal.get() ) {
+            if(!obj.isGroupSignal()) {
+%>
+<%= FileGeneratorHelper.defineMacro( "ComConf_ComSignal_" + obj.getSignalName(),
+        obj.getHandleId(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+/* External Rx Group Signal IDs defines */
+<%
+    if (comPBCfgDataModel.ComRxSignal != null) {
+        for ( ComRxSignalType obj : comPBCfgDataModel.ComRxSignal.get() ) {
+            if(obj.isGroupSignal()) {
+%>
+<%= FileGeneratorHelper.defineMacro( "ComConf_ComGroupSignal_" + obj.getSignalName(),
+        obj.getHandleId(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+/* External Tx Group Signal IDs defines */
+<%
+    if (comPBCfgDataModel.ComTxSignal != null) {
+        for ( ComTxSignalType obj : comPBCfgDataModel.ComTxSignal.get() ) {
+            if(obj.isGroupSignal()) {
+%>
+<%= FileGeneratorHelper.defineMacro( "ComConf_ComGroupSignal_" + obj.getSignalName(),
+        obj.getHandleId(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+/* External Rx Signal Group IDs defines */
+<%
+    if (comPBCfgDataModel.ComRxSignalGroup != null) {
+        for ( ComRxSignalGroupType obj : comPBCfgDataModel.ComRxSignalGroup.get() ) {
+%>
+<%= FileGeneratorHelper.defineMacro( "ComConf_ComSignalGroup_" + obj.getSignalGroupName(),
+        obj.getHandleId(),
+        NL ) %>
+
+<%
+        }
+    }
+%>
+/* External Tx Signal Group IDs defines */
+<%
+    if (comPBCfgDataModel.ComTxSignalGroup != null) {
+        for ( ComTxSignalGroupType obj : comPBCfgDataModel.ComTxSignalGroup.get() ) {
+%>
+<%= FileGeneratorHelper.defineMacro( "ComConf_ComSignalGroup_" + obj.getSignalGroupName(),
+        obj.getHandleId(),
+        NL ) %>
+
+<%
+        }
+    }
+%>
+<%
+if(!cache.isVariantHandlingEnabled())
+{
+%>
+
+/*------------------[symbols without prefix for backward compatibility]-----*/
+#if (defined COM_PROVIDE_LEGACY_SYMBOLIC_NAMES)
+
+/* IPDU group ID defines */
+<%
+if (cache.ComConfig.size() > 0) {
+    for ( ComIPduGroupCache obj : cache.ComConfig.get(0).ComIPduGroup ) {
+        final String name = obj.getName();
+%>
+
+<%= FileGeneratorHelper.defineMacro( "Com_" + name,
+        "ComConf_ComIPduGroup_" + name,
+        NL ) %>
+
+<%
+        }
+    }
+%>
+/* External Rx IPdus defines */
+<%
+    if (comPBCfgDataModel.ComRxIPdu != null) {
+        for ( ComRxIPduType rxIPDU : comPBCfgDataModel.ComRxIPdu.get() ) {
+%>
+<%= FileGeneratorHelper.defineMacro( "Com_" + rxIPDU.getIPDUName(),
+        "ComConf_ComIPdu_" + rxIPDU.getIPDUName(),
+        NL ) %>
+
+<%
+        }
+    }
+%>
+/* External Tx IPdu defines */
+<%
+    if (comPBCfgDataModel.ComTxIPdu != null) {
+        for ( ComTxIPduType txIPDU : comPBCfgDataModel.ComTxIPdu.get() ) {
+%>
+<%= FileGeneratorHelper.defineMacro( "Com_" + txIPDU.getIPDUName(),
+        "ComConf_ComIPdu_" + txIPDU.getIPDUName(),
+        NL ) %>
+
+<%
+        }
+    }
+%>
+/* External Rx Signal IDs (no group signals) defines */
+<%
+    if (comPBCfgDataModel.ComRxSignal != null) {
+        for ( ComRxSignalType obj : comPBCfgDataModel.ComRxSignal.get() ) {
+            if(!obj.isGroupSignal()) {
+%>
+<%= FileGeneratorHelper.defineMacro( "Com_" + obj.getSignalName(),
+        "ComConf_ComSignal_" + obj.getSignalName(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+/* External Tx Signal IDs (no group signals) defines */
+<%
+    if (comPBCfgDataModel.ComTxSignal != null) {
+        for ( ComTxSignalType obj : comPBCfgDataModel.ComTxSignal.get() ) {
+            if(!obj.isGroupSignal()) {            
+%>
+<%= FileGeneratorHelper.defineMacro( "Com_" + obj.getSignalName(),
+        "ComConf_ComSignal_" + obj.getSignalName(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+/* External Rx Group Signal IDs defines */
+<%
+    if (comPBCfgDataModel.ComRxSignal != null) {
+        for ( ComRxSignalType obj : comPBCfgDataModel.ComRxSignal.get() ) {
+            if(obj.isGroupSignal()) {
+%>
+<%= FileGeneratorHelper.defineMacro( "Com_" + obj.getSignalName(),
+        "ComConf_ComGroupSignal_" + obj.getSignalName(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+/* External Tx Group Signal IDs defines */
+<%
+    if (comPBCfgDataModel.ComTxSignal != null) {
+        for ( ComTxSignalType obj : comPBCfgDataModel.ComTxSignal.get() ) {
+            if(obj.isGroupSignal()) {
+%>
+<%= FileGeneratorHelper.defineMacro( "Com_" + obj.getSignalName(),
+        "ComConf_ComGroupSignal_" + obj.getSignalName(),
+        NL ) %>
+
+<%
+            }
+        }
+    }
+%>
+/* External Rx Signal Group IDs defines */
+<%
+    if (comPBCfgDataModel.ComRxSignalGroup != null) {
+        for ( ComRxSignalGroupType rxSignalGroup : comPBCfgDataModel.ComRxSignalGroup.get() ) {
+%>
+<%= FileGeneratorHelper.defineMacro( "Com_" + rxSignalGroup.getSignalGroupName(),
+        "ComConf_ComSignalGroup_" + rxSignalGroup.getSignalGroupName(),
+        NL ) %>
+
+<%
+        }
+    }
+%>
+/* External Tx Signal Group IDs defines */
+<%
+    if (comPBCfgDataModel.ComTxSignalGroup != null) {
+        for ( ComTxSignalGroupType txSignalGroup : comPBCfgDataModel.ComTxSignalGroup.get() ) {
+%>
+<%= FileGeneratorHelper.defineMacro( "Com_" + txSignalGroup.getSignalGroupName(),
+        "ComConf_ComSignalGroup_" + txSignalGroup.getSignalGroupName(),
+        NL ) %>
+
+<%
+        }
+    }
+%>
+#endif /* (defined COM_PROVIDE_LEGACY_SYMBOLIC_NAMES) */
+<%
+}
+%>
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>
+<%
+if (comGenerationSuccessful == true)
+{
+    context.gen.addMessage( GeneratorOperationStatus.GENERATED_FILE( "Com_SymbolicNames_PBcfg.h" ) );
+}
+else {
+    return "";
+}
+%>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+   Plug-in with demos for the EB tresos Studio Public API.
+ -->
+
+  <!--***************************************************************
+    System Model Access Demo
+  ***************************************************************-->
+
+  <!--
+    Standard module definition extension point
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+         id="SystemAccessDemo"
+         name="System Model Access Demo">
+
+    <module id="SystemAccessDemo"
+            label="SystemAccessDemo"
+            mandatory="false"
+            allowMultiple="false"
+            description="A dummy module for the System Model Access Demo"
+            copyright="(c) Elektrobit Automotive"
+            swVersionMajor="1"
+            swVersionMinor="2"
+            swVersionPatch="0"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="SystemAccessDemo"
+            categoryLayer="Examples"
+            categoryCategory="Demo"
+            categoryComponent="ECUC">
+       <ecuType target="Demo" derivate="SystemAccess"/>
+    </module>
+   </extension>
+
+
+  <!--
+  Registration of an unattended wizard with a single page GUI.
+  -->
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+      <guidedconfigwizard id="SystemModelAccessDemo">
+         <backend class="dreisoft.tresos.tresosdbapi.demo.SystemModelAccessDemoBackend"/>
+         <gui class="dreisoft.tresos.tresosdbapi.demo.SystemModelAccessDemoPage"/>
+         <resultGui class="dreisoft.tresos.tresosdbapi.demo.SystemModelAccessDemoResultWidget"/>
+      </guidedconfigwizard>
+  </extension>
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.trigger">
+     <trigger>
+        <autoconfigure
+              id="SystemModelAccessDemo"
+              wizardId="SystemModelAccessDemo">
+           <visibility>
+              <with variable="SystemConfigContext">
+                 <equals value="true"/>
+              </with>
+           </visibility>
+           <display
+                 label="Access System Model Demo">
+           </display>
+        </autoconfigure>
+     </trigger>
+  </extension>
+
+</plugin>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     + Copyright (C) Elektrobit
+     + All rights reserved
+     +
+     + NAME: plugin.xml
+     +
+     + $Id$
+     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+	<extension point="dreisoft.tresos.generator.api.plugin.generator"
+	    id="E2EPW_TS_TxDxM2I3R0_GeneratorExt">
+	    <generator id="E2EPW_TS_TxDxM2I3R0_Generator"
+			moduleId="E2EPW_TS_TxDxM2I3R0"
+			class="dreisoft.tresos.e2epw.generator.Generator">
+		</generator>
+	</extension>
+
+    <extension point="dreisoft.tresos.guidedconfig.api.plugin.trigger">
+        <trigger>
+            <autoconfigure
+                id="E2EPWDataMigration_TS_TxDxM2I3R0"
+                wizardId="E2EPWDataMigrationWizard_TS_TxDxM2I3R0">
+                <visibility>
+                    <and>
+                        <with variable="ECUConfigContext">
+                            <equals value="true"/>
+                        </with>
+                        <with variable="ECUConfigContext.moduleId.E2EPW_TS_TxDxM2I3R0">
+                            <equals value="true"/>
+                        </with>
+                    </and>
+                </visibility>
+                <display
+                    label="Update list of configurable E2E Rx properties"
+                    tooltip="Update the list of configurable E2E Rx properties"
+                    icon="resources/icons/E2ERxProperties.bmp">
+                </display>
+            </autoconfigure>
+        </trigger>
+    </extension>
+
+    <extension point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+        <guidedconfigwizard id="E2EPWDataMigrationWizard_TS_TxDxM2I3R0">
+            <backend
+                class="dreisoft.tresos.e2epw.wizard.UpdateE2EWizard">
+            </backend>
+            <gui class="dreisoft.tresos.e2epw.wizard.UpdateE2EPage"/>
+        </guidedconfigwizard>
+    </extension>
+
+    <extension point="dreisoft.tresos.datamodel2.api.plugin.xpathregistration">
+        <xpathfunction>
+            <classregistration
+                class="dreisoft.tresos.e2epw.xpath.XPathFunctions"
+                description="xpath functions for getting E2E specific data"
+                namespace="asc_E2EPW"/>
+        </xpathfunction>
+    </extension>
+
+</plugin>

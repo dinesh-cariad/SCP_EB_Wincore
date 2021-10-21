@@ -1,0 +1,827 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The command <code>GET_ID</code> supports slave device identification only using
+        identification type <emphasis>ASAM-MC2 filename without path and extension</emphasis>.
+        This limitation will prevent the user from identifying the slave by 'ASCII text' or by
+        <emphasis>ASAM-MC2 filename with path and extension</emphasis>, or by
+        <emphasis>ASAM-MC2 URL</emphasis>, or by <emphasis>ASAM-MC2 file to upload</emphasis>.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The time stamp values in STIM DTOs transmitted by master are ignored by slave.
+      </description>
+      <rationale>
+        The stimulation is done with the oldest data sent by Xcp master.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        DTO transmission rate of the master must be equal or less than the cycle time of the
+        Xcp main function. The DTO transmission rate depends on the consistency configuration of
+        event channels.
+        In case of Event consistency, all the DTOs of an event channel to be processed can be sent.
+        In case of DAQ consistency, all the DTOs of a DAQ list to be processed can be sent.
+        In case of ODT consistency, a single DTO of a DAQ list to be processed can be sent.
+      </description>
+      <rationale>
+        Stimulation is done in Xcp main function and only one snapshot of the data is kept.
+        Hence data from the master will get ignored in case the data transmission rate of master
+        exceeds the Xcp main function cycle time.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The Xcp master has to transfer the address parameter of <code>WRITE_DAQ</code> commands in extended/paged
+        addressing(far) format for the 16-bit slave. That is, the address information transmitted through
+        <code>WRITE_DAQ</code> command must contain additional paging information which is needed in accessing
+        a data placed in extended/paged memory of slave.
+      </description>
+      <rationale>
+        The variables to be measured/calibrated might be in the extended/paged memory.
+        So the Xcp slave expects the address information with paging information.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Sampling of data corresponding to an event channel depends on the consistency of the
+        Event Channel.
+        In DAQ and ODT consistency, the sampling of data will get delayed based on the priority of
+        DAQ list.
+        Delayed sampling never occurs for data corresponding to event channels with
+        <emphasis>EVENT consistency</emphasis>, since all the data corresponding to an Event
+        Channel will be sampled in a single main function call.
+      </description>
+      <rationale>
+        In case of DAQ consistency, only the data corresponding to a DAQ list of an event channel
+        will be sampled in a single main function call. Hence, multiple main function calls are
+        needed to sample all the data corresponding to the event channel.
+        In case of ODT consistency, only the data corresponding to an ODT of a DAQ list of an
+        event channel will be sampled in a single main function call. Hence, multiple main function
+        calls are needed to sample all the data corresponding to the event channel.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0006</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Fixed event channels can only be configured for predefined DAQ lists.
+      </description>
+      <rationale>
+        The current implementation only assigns default values for predefined DAQ lists.
+        Setting a fixed event channel for a configurable DAQ list would require
+        a preconfigured event channel assigned.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0007</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Data acquisition and stimulation commands (see ASAM Part 2 - Protocol Layer Specification,
+        chapter 1.4.4 for list) that can modify a DAQ list and the <code>DISCONNECT</code> command
+        are not accepted  during the following pending requests: <code>CLEAR_DAQ_REQ</code>,
+        <code>STORE_DAQ_REQ_RESUME</code>, <code>STORE_DAQ_REQ_NO_RESUME</code>.
+      </description>
+      <rationale>
+        As the NV memory writing of the DAQ lists is made upon the runtime DAQ lists information
+        and not on some shadow buffer, consistency for these DAQ lists must be ensured. Therefore
+        it is not allowed to modify the DAQ lists and their related information during the NV
+        memory write.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0008</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If at least one DAQ list is in running state, the following modes for the
+        <code>SET_REQUEST</code> command will be rejected: <code>CLEAR_DAQ_REQ</code>,
+        <code>STORE_DAQ_REQ_RESUME</code>, <code>STORE_DAQ_REQ_NO_RESUME</code>.
+      </description>
+      <rationale>
+        As the NV memory writing of the DAQ lists is made upon the runtime DAQ lists information
+        and not on some shadow buffer, consistency for these DAQ lists must be ensured. Therefore
+        it is not allowed to perform the writing since the DAQ lists can be altered during the
+        processing of their associated events.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0009</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        <code>GET_SEED</code> only supports mode 0, i.e. it only supports seeds that fit into a
+        single command transfer object (CTO). Therefore seeds are restricted to a maximum length
+        of <code>MAX_CTO</code>-2 bytes, where <code>MAX_CTO</code> is the maximum length of a
+        CTO as defined in the ASAM XCP specification.
+      </description>
+      <rationale>
+        <code>UNLOCK</code> supports only keys that fit into a CTO. Therefore keys are restricted
+        to a maximum length of <code>MAX_CTO</code>-2 bytes as well.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0010</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        As the queue size for the event packets is limited, it might be that the queue fills up and
+        further event packets are silently ignored.
+      </description>
+      <rationale>
+        The queue size is limited and has been chosen taking in consideration the resource
+        consumption of the XCP module.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0011</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Current implementation does not support the address extension feature.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0012</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Current implementation supports only Optimisation Type = <code>OM_DEFAULT</code>.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0013</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The <code>WRITE_DAQ</code> command checks that the size of an ODT entry is less than the
+        maximum between <code>MAX_ODT_ENTRY_SIZE_DAQ</code> and
+        <code>MAX_ODT_ENTRY_SIZE_STIM</code>. The <code>WRITE_DAQ</code> command does not check
+        if it is less than <code>MAX_ODT_ENTRY_SIZE_DAQ</code> if the direction is equal to DAQ
+        or less than <code>MAX_ODT_ENTRY_SIZE_STIM</code> if the direction is equal to STIM.
+      </description>
+      <rationale>
+        <code>WRITE_DAQ</code> command is, most likely, issued before the direction is set by
+        <code>SET_DAQ_LIST_MODE</code> command.  Even if the direction is set, it can be that
+        the direction will be changed afterwards. Therefore it is not known which direction the
+        ODT entry might have in the end, so just a check occurs against the maximum between those
+        two limits.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0014</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+         The Xcp slave will reject further allocation of ODT entries
+         <code>ALLOC_ODT_ENTRY</code>) once their configuration has started
+         (<code>WRITE_DAQ</code>).
+      </description>
+      <rationale>
+        Run-time performance of Xcp slave is increased as, otherwise, the ODT entries must be
+        re-arranged with a full copy process.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0015</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+         The Xcp slave will reject further allocation of ODT entries
+         <code>ALLOC_ODT_ENTRY</code>) once their configuration has started
+         (<code>WRITE_DAQ</code>).
+      </description>
+      <rationale>
+        <code>PROGRAM_START</code> and <code>PROGRAM_CLEAR</code> are not accepted during an
+        active programming of a segment.
+        <code>PROGRAM_START</code> is not accepted when the programming session has been
+        already started.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0016</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Xcp will handle the calls to the programming callout functions synchronously. This
+        means that if programming is made asynchronously by the callout function, the Xcp slave
+        will be unaware of that.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0017</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        When the user requests access to resources he shall check that the requested resource
+        is allowed. If the resource is not supported the callout shall return E_NOT_OK.
+      </description>
+      <rationale>
+        The Xcp slave relies on the callout function to perform requests sanity checks and
+        thus, it is the callout function's job to perform the required sanity checks.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0018</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        From the context of one PDU channel, the Xcp Slave allocates necessary space, to store
+        only one package, until is processed via Xcp_MainFunction(). Hence packages will be
+        lost if the Master transmit rate is higher then the Xcp processing cycle(the cycle of
+        Xcp_MainFunction), on a specific PDU channel.
+      </description>
+      <rationale>
+        The incoming packages are received via Xcp_&lt;If&gt;RxIndication() API, which is
+        called from transport layer context. It makes sense to use that API only to copy data into
+        the allocated internal buffer for the PDU channel, and to process the incoming data from
+        MainFunction context. In this way, the run-time used to process the incoming packages is
+        allocated from the Xcp processing context
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0019</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A (0x33) is not implemented for
+        command GET_SEED.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0020</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A (0x33) is not implemented for
+        commands SET_CAL_PAGE and GET_CAL_PAGE.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0021</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A (0x33) is not implemented for
+        command GET_PAGE_INFO.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0022</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A (0x33) is not implemented for
+        commands SET_SEGMENT_MODE and GET_SEGMENT_MODE.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0023</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A (0x33) is not implemented
+        for command COPY_CAL_PAGE.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0024</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A (0x33) is not implemented
+        for command PROGRAM_CLEAR.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0025</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_RES_TEMP_NOT_A(0x33),
+        ERR_MEMORY_OVERFLOW(0x30), ERR_UNKNOWN(0x20) are not implemented for command PROGRAM_MAX.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0026</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A (0x33) is not implemented for
+        command GET_SECTOR_INFO.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0027</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A (0x33) is not implemented for
+        command GET_COMM_MODE_INFO.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0028</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_RES_TEMP_NOT_A(0x33), ERR_CMD_UNKNOWN(0x20)
+        are not implemented for command GET_ID.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0029</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_CMD_UNKNOWN(0x20) is not implemented for
+        command SET_REQUEST.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0030</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_OUT_OF_RANGE(0x22),
+        ERR_RES_TEMP_NOT_A(0x33) are not implemented for command UNLOCK.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0031</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_OUT_OF_RANGE(0x22),
+        ERR_RES_TEMP_NOT_A(0x33) are not implemented for command SET_MTA.
+        The following error codes ERR_CMD_UNKNOWN(0x20), ERR_OUT_OF_RANGE(0x22) can be reported
+        but only in case read/write memory call-outs return specific error codes.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0032</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_ACCESS_LOCKED(0x25),
+        ERR_RES_TEMP_NOT_A(0x33) are not implemented for command UPLOAD.
+        The following error codes ERR_CMD_UNKNOWN(0x20), ERR_OUT_OF_RANGE(0x22),
+        ERR_ACCESS_DENIED(0x24) can be reported but only in case read/write memory call-outs
+        return specific error codes.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0033</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_ACCESS_LOCKED(0x25),
+        ERR_ACCESS_DENIED(0x24), ERR_RES_TEMP_NOT_A(0x33) are not implemented for command
+        SHORT_UPLOAD.
+        The following error codes ERR_CMD_UNKNOWN(0x20), ERR_ACCESS_DENIED(0x24),
+        ERR_OUT_OF_RANGE(0x22) can be reported but only in case read/write memory call-outs
+        return specific error codes.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0034</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_ACCESS_LOCKED(0x25), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command BUILD_CHECKSUM.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0035</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A(0x33) is not implemented for
+        command TRANSPORT_LAYER_CMD.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0036</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_WRITE_PROTECTED(0x23),
+        ERR_MEMORY_OVERFLOW(0x30), ERR_RES_TEMP_NOT_A(0x33) are not implemented for command
+        DOWNLOAD.
+        The following error codes ERR_CMD_UNKNOWN(0x20), ERR_OUT_OF_RANGE(0x22) can be reported
+        but only in case read/write memory call-outs return specific error codes.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0037</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_WRITE_PROTECTED(0x23),
+        ERR_MEMORY_OVERFLOW(0x30), ERR_RES_TEMP_NOT_A(0x33) are not implemented for command
+        MODIFY_BITS.
+        The following error codes ERR_CMD_UNKNOWN(0x20), ERR_ACCESS_DENIED(0x24),
+        ERR_OUT_OF_RANGE(0x22) can be reported but only in case read/write memory call-outs
+        return specific error codes.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0038</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A(0x33) is not implemented for
+        command GET_PAG_PROCESSOR_INFO.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0039</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_DAQ_ACTIVE(0x11),
+        ERR_RES_TEMP_NOT_A(0x33) are not implemented for command SET_DAQ_PTR.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0040</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_DAQ_CONFIG(0x2A), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command WRITE_DAQ.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0041</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_DAQ_ACTIVE(0x11), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command SET_DAQ_LIST_MODE.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0042</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_MODE_NOT_VALID(0x27), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command START_STOP_DAQ_LIST.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0043</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_MODE_NOT_VALID(0x27), ERR_DAQ_CONFIG(0x2A),
+        ERR_RES_TEMP_NOT_A(0x33) are not implemented for command START_STOP_SYNCH.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0044</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_MODE_NOT_VALID(0x27), ERR_DAQ_CONFIG(0x2A),
+        ERR_RES_TEMP_NOT_A(0x33) are not implemented for command CLEAR_DAQ_LIST.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0045</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x27), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command GET_DAQ_LIST_INFO.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0046</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A(0x33) is not implemented
+        for command GET_DAQ_CLOCK.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0047</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command GET_DAQ_PROCESSOR_INFO.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0048</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command GET_DAQ_RESOLUTION_INFO.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0049</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A(0x33) is not implemented for
+        command GET_DAQ_LIST_MODE.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0050</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command GET_DAQ_EVENT_INFO.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0051</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command FREE_DAQ.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0052</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command ALLOC_DAQ.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0053</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_CMD_UNKNOWN(0x20) is not implemented for
+        command ALLOC_DAQ.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0054</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_CMD_UNKNOWN(0x20) is not implemented for
+        command ALLOC_ODT_ENTRY.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0055</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A(0x33) is not implemented for
+        command PROGRAM_START.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0056</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_MEMORY_OVERFLOW(0x30), ERR_RES_TEMP_NOT_A(0x33)
+        are not implemented for command PROGRAM.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0057</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A(0x33) is not implemented
+        for command PROGRAM.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0058</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error code ERR_RES_TEMP_NOT_A(0x33) is not implemented for
+        command GET_PGM_PROCESSOR_INFO.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0059</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Although specified by ASAM, error codes ERR_CMD_UNKNOWN(0x20), ERR_OUT_OF_RANGE(0x22),
+        ERR_ACCESS_DENIED(0x24), ERR_ACCESS_LOCKED(0x25), ERR_MEMORY_OVERFLOW(0x30),
+        ERR_RES_TEMP_NOT_A(0x33) are not implemented for command PROGRAM_NEXT.
+      </description>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0060</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Only one buffer with CMD packet type and only one buffer with RES_ERR packet type is
+        allowed per connection when Xcp FlexRay buffers are configured.
+      </description>
+      <rationale>
+        This is the common use case which allows a more efficient implementation.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0061</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        An Xcp FlexRay buffer is mapped to an L-PDU which, in turn, is mapped to a FlexRay frame.
+        That FlexRay frame can contain only one PDU.
+      </description>
+      <rationale>
+      Each Xcp FlexRay buffer is also mapped to a connection information to share the Packet Type
+      information. That connection information is mapped to a single PDU, therefore we must keep
+      the 1 to 1 connection also on FlexRay interface side.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0062</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The <function>Xcp_MainFunction()</function> periodicity must be the same as the
+        <package>FlexRay</package> synchronous task periodicity.
+      </description>
+      <rationale>
+        FlexRay interface module does not implicitly initializes the FlexRay buffers which are
+        marked as reconfigurable (<code>FrIfReconfigurable</code> is true). This means that
+        Xcp must initialize explicitly those buffers and, for that,  a <package>FlexRay</package>
+        SYNC state monitor mechanism is implemented. In order for that mechanims to be consistent, 
+        the <function>Xcp_MainFunction()</function> periodicity must be the same as the
+        <package>FlexRay</package> synchronous
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Xcp_0063</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        64 bit platforms are not supported.
+      </description>
+      <rationale>
+        The Xcp protocol uses 4 byte memory addresses.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Bsw_Distribution_1</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The integrator must ensure that no parallel communication is done with the Xcp slave. This includes any attempt
+        to establish a connection while the Xcp slave is already processing a CONNECT command or TP commands.
+      </description>
+      <rationale>
+        This allows for an optimal implementation with respect to cross core data access and protection.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Bsw_Distribution_2</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Resume mode shall not be used if XcpBswDistribution is enabled.
+      </description>
+      <rationale>
+        There is no bsw distribution support for NvM at the moment.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Bsw_Distribution_StoreCall</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Xcp_ApplSetReqStoreCalReq shall be implemented in such a way that it can access NvM APIs.
+      </description>
+      <rationale>
+        There is no bsw distribution support for NvM at the moment.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Bsw_Distribution_Xcp_Init</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If XcpBswDistribution is enabled Xcp_Init shall be called on the Master Partition.
+      </description>
+      <rationale>
+        The Xcp_Init for the other partition will be sent by Master Partition.
+      </rationale>
+    </specobject>
+    <specobject>
+      <id>lim.Xcp.EB_INTREQ_Bsw_Distribution_NvM_Integration</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If XcpBswDistribution is enabled, NvM module shall be integrated on the same partition as the Xcp Master Partition.
+      </description>
+      <rationale>
+        All Nv requests are forwarded to the Master Partition, which call NvM APIs.
+      </rationale>
+    </specobject>
+  </specobjects>
+</specdocument>

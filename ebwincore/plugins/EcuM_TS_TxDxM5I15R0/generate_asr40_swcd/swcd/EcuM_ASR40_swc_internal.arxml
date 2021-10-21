@@ -1,0 +1,926 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+[!/* do not generate this file if RTE is not used */!][!//
+[!SKIPFILE "(EcuMGeneral/EcuMRteUsage = 'false') or not(node:exists(EcuMGeneral/EcuMServiceAPI))"!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and  EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+[!VAR "swComponentTypePackageName" = "'ComponentTypes'"!][!//
+[!VAR "swcImplementationPackageName" = "'Implementations'"!][!//
+[!VAR "swcImplementationDataTypesPackageName" = "'Datatypes'"!][!//
+[!ELSE!][!//
+[!VAR "swComponentTypePackageName" = "'SwComponentTypes'"!][!//
+[!VAR "swcImplementationPackageName" = "'SwcImplementations'"!][!//
+[!VAR "swcImplementationDataTypesPackageName" = "'ImplementationDataTypes'"!][!//
+[!ENDIF!][!//
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_EcuM</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>[!"$swComponentTypePackageName"!]</SHORT-NAME>
+          <ELEMENTS>
+            <SERVICE-SW-COMPONENT-TYPE>
+              <SHORT-NAME>EcuM</SHORT-NAME>
+              <PORTS>
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR32ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 3.2 service -->
+[!VAR "EcuMStateCtr"="0"!][!//
+[!LOOP "EcuMConfiguration/*[1]/EcuMFixedConfiguration/EcuMFixedUserConfig/*"!][!//
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>SR_ASR32_[!"num:i($EcuMStateCtr)"!]</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_StateRequest</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!VAR "EcuMStateCtr"="$EcuMStateCtr + 1.0"!]
+[!ENDLOOP!][!//
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>shutdownTarget_ASR32</SHORT-NAME>
+                  <!-- We do not specify the queue length here and
+                       let the Rte decide on the optimal queue
+                       length depending on the number of connected
+                       clients. -->
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_ShutdownTarget</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>bootTarget_ASR32</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_BootTarget</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!IF "node:exists(EcuMConfiguration/*[1]/EcuMFixedConfiguration)"!][!//
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>currentMode_ASR32</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <MODE-SWITCH-SENDER-COM-SPEC>
+                      <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_CurrentMode/currentMode</MODE-GROUP-REF>
+                      <QUEUE-LENGTH>6</QUEUE-LENGTH>
+                    </MODE-SWITCH-SENDER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_CurrentMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR40ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 4.0 service -->
+[!VAR "EcuMStateCtr"="0"!][!//
+[!LOOP "EcuMConfiguration/*[1]/EcuMFixedConfiguration/EcuMFixedUserConfig/*"!][!//
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>SR_ASR40_[!"num:i($EcuMStateCtr)"!]</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_StateRequest</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!VAR "EcuMStateCtr"="$EcuMStateCtr + 1.0"!]
+[!ENDLOOP!][!//
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>shutdownTarget_ASR40</SHORT-NAME>
+                  <!-- We do not specify the queue length here and
+                       let the Rte decide on the optimal queue
+                       length depending on the number of connected
+                       clients. -->
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_ShutdownTarget</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>bootTarget_ASR40</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_BootTarget</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!IF "node:exists(EcuMConfiguration/*[1]/EcuMFixedConfiguration)"!][!//
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>currentMode_ASR40</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <MODE-SWITCH-SENDER-COM-SPEC>
+                      <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_CurrentMode/currentMode</MODE-GROUP-REF>
+                      <QUEUE-LENGTH>6</QUEUE-LENGTH>
+                    </MODE-SWITCH-SENDER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_CurrentMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI != 'NONE'"!][!//
+<!-- Provide the default service -->
+[!VAR "EcuMStateCtr"="0"!][!//
+[!LOOP "EcuMConfiguration/*[1]/EcuMFixedConfiguration/EcuMFixedUserConfig/*"!][!//
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>SR[!"num:i($EcuMStateCtr)"!]</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_EcuM/PortInterfaces/EcuM_StateRequest</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!VAR "EcuMStateCtr"="$EcuMStateCtr + 1.0"!]
+[!ENDLOOP!][!//
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>shutdownTarget</SHORT-NAME>
+                  <!-- We do not specify the queue length here and
+                       let the Rte decide on the optimal queue
+                       length depending on the number of connected
+                       clients. -->
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_EcuM/PortInterfaces/EcuM_ShutdownTarget</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>bootTarget</SHORT-NAME>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_EcuM/PortInterfaces/EcuM_BootTarget</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!IF "node:exists(EcuMConfiguration/*[1]/EcuMFixedConfiguration)"!][!//
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>currentMode</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <MODE-SWITCH-SENDER-COM-SPEC>
+                      <MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_EcuM/PortInterfaces/EcuM_CurrentMode/currentMode</MODE-GROUP-REF>
+                      <QUEUE-LENGTH>6</QUEUE-LENGTH>
+                    </MODE-SWITCH-SENDER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="MODE-SWITCH-INTERFACE">/AUTOSAR_EcuM/PortInterfaces/EcuM_CurrentMode</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!ENDIF!][!//
+              </PORTS>
+
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>EcuMIntBeh</SHORT-NAME>
+[!IF "node:exists(EcuMConfiguration/*[1]/EcuMFixedConfiguration)"!][!//
+                      <DATA-TYPE-MAPPING-REFS>
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR32ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 3.2 DataTypeMappings -->
+                        <DATA-TYPE-MAPPING-REF DEST="DATA-TYPE-MAPPING-SET">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_CurrentModeMap</DATA-TYPE-MAPPING-REF>
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR40ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 4.0 DataTypeMappings -->
+                        <DATA-TYPE-MAPPING-REF DEST="DATA-TYPE-MAPPING-SET">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_CurrentModeMap</DATA-TYPE-MAPPING-REF>
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI != 'NONE'"!][!//
+<!-- Provide the default DataTypeMappings -->
+                        <DATA-TYPE-MAPPING-REF DEST="DATA-TYPE-MAPPING-SET">/AUTOSAR_EcuM/PortInterfaces/EcuMCurrentModeMap</DATA-TYPE-MAPPING-REF>
+[!ENDIF!][!//
+                      </DATA-TYPE-MAPPING-REFS>
+[!ENDIF!][!//
+                  <EVENTS>
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR32ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 3.2 service -->
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_SelShutdownTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR32_SelectShutdownTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget_ASR32</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_ShutdownTarget/SelectShutdownTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_GetShutdownTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR32_GetShutdownTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget_ASR32</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_ShutdownTarget/GetShutdownTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_GetLastShutdownTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR32_GetLastShutdownTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget_ASR32</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_ShutdownTarget/GetLastShutdownTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_SelBootTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR32_SelectBootTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/bootTarget_ASR32</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_BootTarget/SelectBootTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_GetBootTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR32_GetBootTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/bootTarget_ASR32</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_BootTarget/GetBootTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+[!VAR "EcuMStateCtr"="0"!][!//
+[!LOOP "EcuMConfiguration/*[1]/EcuMFixedConfiguration/EcuMFixedUserConfig/*"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_SR[!"num:i($EcuMStateCtr)"!]_RequestRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR32_RequestRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR_ASR32_[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_StateRequest/RequestRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_SR[!"num:i($EcuMStateCtr)"!]_ReleaseRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR32_ReleaseRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR_ASR32_[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_StateRequest/ReleaseRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_SR[!"num:i($EcuMStateCtr)"!]_RequestPOSTRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR32_RequestPOSTRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR_ASR32_[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_StateRequest/RequestPOSTRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR32_SR[!"num:i($EcuMStateCtr)"!]_ReleasePOSTRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR32_ReleasePOSTRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR_ASR32_[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_StateRequest/ReleasePOSTRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!VAR "EcuMStateCtr"="$EcuMStateCtr + 1.0"!]
+[!ENDLOOP!][!//
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR40ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 4.0 service -->
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_SelShutdownTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_SelectShutdownTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget_ASR40</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_ShutdownTarget/SelectShutdownTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_GetShutdownTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_GetShutdownTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget_ASR40</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_ShutdownTarget/GetShutdownTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_GetLastShutdownTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_GetLastShutdownTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget_ASR40</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_ShutdownTarget/GetLastShutdownTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_GetMostRecentShutdown</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_GetMostRecentShutdown</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget_ASR40</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_ShutdownTarget/GetMostRecentShutdown</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_GetNextRecentShutdown</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_GetNextRecentShutdown</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget_ASR40</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_ShutdownTarget/GetNextRecentShutdown</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_SelectShutdownCause</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_SelectShutdownCause</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget_ASR40</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_ShutdownTarget/SelectShutdownCause</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_GetShutdownCause</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_GetShutdownCause</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget_ASR40</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_ShutdownTarget/GetShutdownCause</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_SelBootTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_SelectBootTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/bootTarget_ASR40</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_BootTarget/SelectBootTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_GetBootTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_GetBootTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/bootTarget_ASR40</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_BootTarget/GetBootTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+[!VAR "EcuMStateCtr"="0"!][!//
+[!LOOP "EcuMConfiguration/*[1]/EcuMFixedConfiguration/EcuMFixedUserConfig/*"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_SR[!"num:i($EcuMStateCtr)"!]_RequestRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_RequestRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR_ASR40_[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_StateRequest/RequestRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_SR[!"num:i($EcuMStateCtr)"!]_ReleaseRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_ReleaseRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR_ASR40_[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_StateRequest/ReleaseRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_SR[!"num:i($EcuMStateCtr)"!]_RequestPOSTRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_RequestPOSTRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR_ASR40_[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_StateRequest/RequestPOSTRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_ASR40_SR[!"num:i($EcuMStateCtr)"!]_ReleasePOSTRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ASR40_ReleasePOSTRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR_ASR40_[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_StateRequest/ReleasePOSTRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!VAR "EcuMStateCtr"="$EcuMStateCtr + 1.0"!]
+[!ENDLOOP!][!//
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI != 'NONE'"!][!//
+<!-- Provide the default service -->
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SelShutdownTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_SelectShutdownTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_ShutdownTarget/SelectShutdownTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetShutdownTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_GetShutdownTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_ShutdownTarget/GetShutdownTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetLastShutdownTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_GetLastShutdownTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_ShutdownTarget/GetLastShutdownTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!IF "EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI = 'AUTOSAR_40'"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetMostRecentShutdown</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_GetMostRecentShutdown</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_ShutdownTarget/GetMostRecentShutdown</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetNextRecentShutdown</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_GetNextRecentShutdown</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_ShutdownTarget/GetNextRecentShutdown</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SelectShutdownCause</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_SelectShutdownCause</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_ShutdownTarget/SelectShutdownCause</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetShutdownCause</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_GetShutdownCause</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/shutdownTarget</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_ShutdownTarget/GetShutdownCause</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SelBootTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_SelectBootTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/bootTarget</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_BootTarget/SelectBootTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetBootTarget</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_GetBootTarget</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/bootTarget</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_BootTarget/GetBootTarget</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!VAR "EcuMStateCtr"="0"!][!//
+[!LOOP "EcuMConfiguration/*[1]/EcuMFixedConfiguration/EcuMFixedUserConfig/*"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SR[!"num:i($EcuMStateCtr)"!]_RequestRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_RequestRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_StateRequest/RequestRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SR[!"num:i($EcuMStateCtr)"!]_ReleaseRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ReleaseRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_StateRequest/ReleaseRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SR[!"num:i($EcuMStateCtr)"!]_RequestPOSTRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_RequestPOSTRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_StateRequest/RequestPOSTRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SR[!"num:i($EcuMStateCtr)"!]_ReleasePOSTRUN</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh/RE_ReleasePOSTRUN</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR[!"num:i($EcuMStateCtr)"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_EcuM/PortInterfaces/EcuM_StateRequest/ReleasePOSTRUN</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!VAR "EcuMStateCtr"="$EcuMStateCtr + 1.0"!]
+[!ENDLOOP!][!//
+[!ENDIF!][!//
+                  </EVENTS>
+
+                  <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+[!IF "node:exists(EcuMConfiguration/*[1]/EcuMFixedConfiguration)"!][!//
+                  <PORT-API-OPTIONS>
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR32ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 3.2 service -->
+[!VAR "EcuMStateCtr"="0"!][!//
+[!LOOP "EcuMConfiguration/*[1]/EcuMFixedConfiguration/EcuMFixedUserConfig/*"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>[!"num:i($EcuMStateCtr)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_EcuM/ASR32/ImplementationDataTypes/EcuM_ASR32_UserType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR_ASR32_[!"num:i($EcuMStateCtr)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!VAR "EcuMStateCtr"="$EcuMStateCtr + 1.0"!]
+[!ENDLOOP!][!//
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR40ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 4.0 service -->
+[!VAR "EcuMStateCtr"="0"!][!//
+[!LOOP "EcuMConfiguration/*[1]/EcuMFixedConfiguration/EcuMFixedUserConfig/*"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>[!"num:i($EcuMStateCtr)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_EcuM/ASR40/ImplementationDataTypes/EcuM_ASR40_UserType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR_ASR40_[!"num:i($EcuMStateCtr)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!VAR "EcuMStateCtr"="$EcuMStateCtr + 1.0"!]
+[!ENDLOOP!][!//
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI != 'NONE'"!][!//
+<!-- Provide the default service -->
+[!VAR "EcuMStateCtr"="0"!][!//
+[!LOOP "EcuMConfiguration/*[1]/EcuMFixedConfiguration/EcuMFixedUserConfig/*"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>[!"num:i($EcuMStateCtr)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_EcuM/[!"$swcImplementationDataTypesPackageName"!]/EcuM_UserType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/SR[!"num:i($EcuMStateCtr)"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!VAR "EcuMStateCtr"="$EcuMStateCtr + 1.0"!]
+[!ENDLOOP!][!//
+[!ENDIF!][!//
+                  </PORT-API-OPTIONS>
+[!ENDIF!][!//
+                  <RUNNABLES>
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR32ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 3.2 service -->
+[!IF "node:exists(EcuMConfiguration/*[1]/EcuMFixedConfiguration)"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_RequestRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR32_Rte_RequestRUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_ReleaseRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR32_Rte_ReleaseRUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_RequestPOSTRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR32_Rte_RequestPOST_RUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_ReleasePOSTRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR32_Rte_ReleasePOST_RUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_SelectShutdownTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR32_Rte_SelectShutdownTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_GetShutdownTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR32_Rte_GetShutdownTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_GetLastShutdownTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR32_Rte_GetLastShutdownTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_SelectBootTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR32_Rte_SelectBootTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR32_GetBootTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR32_Rte_GetBootTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR40ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 4.0 service -->
+[!IF "node:exists(EcuMConfiguration/*[1]/EcuMFixedConfiguration)"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_RequestRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_RequestRUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_ReleaseRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_ReleaseRUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_RequestPOSTRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_RequestPOST_RUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_ReleasePOSTRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_ReleasePOST_RUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_SelectShutdownTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_SelectShutdownTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_GetShutdownTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_GetShutdownTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_GetLastShutdownTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_GetLastShutdownTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_GetMostRecentShutdown</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_GetMostRecentShutdown</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_GetNextRecentShutdown</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_GetNextRecentShutdown</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_SelectShutdownCause</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_SelectShutdownCause</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_GetShutdownCause</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_GetShutdownCause</SYMBOL>
+                    </RUNNABLE-ENTITY>
+
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_SelectBootTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_SelectBootTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ASR40_GetBootTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_ASR40_Rte_GetBootTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI != 'NONE'"!][!//
+<!-- Provide the default service -->
+[!IF "node:exists(EcuMConfiguration/*[1]/EcuMFixedConfiguration)"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_RequestRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_RequestRUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ReleaseRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_ReleaseRUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_RequestPOSTRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_RequestPOST_RUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_ReleasePOSTRUN</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <ARGUMENTS>
+                        <RUNNABLE-ENTITY-ARGUMENT>
+                          <SYMBOL>user</SYMBOL>
+                        </RUNNABLE-ENTITY-ARGUMENT>
+                      </ARGUMENTS>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_ReleasePOST_RUN</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SelectShutdownTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_SelectShutdownTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetShutdownTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_GetShutdownTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetLastShutdownTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_GetLastShutdownTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!IF "EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI = 'AUTOSAR_40'"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetMostRecentShutdown</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_GetMostRecentShutdown</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetNextRecentShutdown</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_GetNextRecentShutdown</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SelectShutdownCause</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_SelectShutdownCause</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetShutdownCause</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_GetShutdownCause</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SelectBootTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_SelectBootTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetBootTarget</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>EcuM_Rte_GetBootTarget</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Main</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+[!IF "node:exists(EcuMConfiguration/*[1]/EcuMFixedConfiguration)"!][!//
+                          <MODE-SWITCH-POINTS>
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR32ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 3.2 service -->
+                             <MODE-SWITCH-POINT>
+                                <SHORT-NAME>msp_ASR32</SHORT-NAME>
+                                <MODE-GROUP-IREF>
+                                   <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/currentMode_ASR32</CONTEXT-P-PORT-REF>
+                                   <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_EcuM/ASR32/PortInterfaces/EcuM_ASR32_CurrentMode/currentMode</TARGET-MODE-GROUP-REF>
+                                </MODE-GROUP-IREF>
+                             </MODE-SWITCH-POINT>
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and (EcuMGeneral/EcuMServiceAPI/EcuMEnableASR40ServiceAPI = 'true')"!][!//
+<!-- Provide AUTOSAR 4.0 service -->
+                             <MODE-SWITCH-POINT>
+                                <SHORT-NAME>msp_ASR40</SHORT-NAME>
+                                <MODE-GROUP-IREF>
+                                   <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/currentMode_ASR40</CONTEXT-P-PORT-REF>
+                                   <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_EcuM/ASR40/PortInterfaces/EcuM_ASR40_CurrentMode/currentMode</TARGET-MODE-GROUP-REF>
+                                </MODE-GROUP-IREF>
+                             </MODE-SWITCH-POINT>
+[!ENDIF!][!//
+[!IF "node:exists(EcuMGeneral/EcuMServiceAPI) and EcuMGeneral/EcuMServiceAPI/EcuMDefaultASRServiceAPI != 'NONE'"!][!//
+<!-- Provide the default service -->
+                             <MODE-SWITCH-POINT>
+                                <SHORT-NAME>msp</SHORT-NAME>
+                                <MODE-GROUP-IREF>
+                                   <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/currentMode</CONTEXT-P-PORT-REF>
+                                   <TARGET-MODE-GROUP-REF DEST="MODE-DECLARATION-GROUP-PROTOTYPE">/AUTOSAR_EcuM/PortInterfaces/EcuM_CurrentMode/currentMode</TARGET-MODE-GROUP-REF>
+                                </MODE-GROUP-IREF>
+                             </MODE-SWITCH-POINT>
+[!ENDIF!][!//
+                          </MODE-SWITCH-POINTS>
+[!ENDIF!][!//
+                      <SYMBOL>EcuM_MainFunction</SYMBOL>
+                    </RUNNABLE-ENTITY>
+
+                  </RUNNABLES>
+                  <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </SERVICE-SW-COMPONENT-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_EcuM</SHORT-NAME>
+         <AR-PACKAGES>
+            <AR-PACKAGE>
+              <SHORT-NAME>[!"$swcImplementationPackageName"!]</SHORT-NAME>
+              <ELEMENTS>
+
+              <!-- description of implementation -->
+
+                <SWC-IMPLEMENTATION>
+                  <SHORT-NAME>EcuMImpl</SHORT-NAME>
+                  <CODE-DESCRIPTORS>
+                    <CODE>
+                      <SHORT-NAME>Code</SHORT-NAME>
+                      <ARTIFACT-DESCRIPTORS>
+                        <AUTOSAR-ENGINEERING-OBJECT>
+                          <SHORT-LABEL>EngObject</SHORT-LABEL>
+                          <CATEGORY>SWSRC</CATEGORY>
+                        </AUTOSAR-ENGINEERING-OBJECT>
+                      </ARTIFACT-DESCRIPTORS>
+                    </CODE>
+                  </CODE-DESCRIPTORS>
+                  <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+                  <RESOURCE-CONSUMPTION>
+                    <SHORT-NAME>Resources</SHORT-NAME>
+                    <MEMORY-SECTIONS>
+                      <MEMORY-SECTION>
+                        <SHORT-NAME>CODE</SHORT-NAME>
+                        <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                      </MEMORY-SECTION>
+                    </MEMORY-SECTIONS>
+                  </RESOURCE-CONSUMPTION>
+                  <SW-VERSION>1.0.0</SW-VERSION>
+                  <VENDOR-ID>1</VENDOR-ID>
+                  <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_EcuM/[!"$swComponentTypePackageName"!]/EcuM/EcuMIntBeh</BEHAVIOR-REF>
+                </SWC-IMPLEMENTATION>
+              </ELEMENTS>
+            </AR-PACKAGE>
+         </AR-PACKAGES>
+     </AR-PACKAGE>
+   </AR-PACKAGES>
+</AUTOSAR>

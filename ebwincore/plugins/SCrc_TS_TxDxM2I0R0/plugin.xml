@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR SCrc_TS_TxDxM2I0R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="SCrc_TS_TxDxM2I0R0_ModuleId"
+             name="SCrc_TS_TxDxM2I0R0 Module">
+    <module id="SCrc_TS_TxDxM2I0R0"
+            label="SCrc"
+            mandatory="false"
+            allowMultiple="false"
+            description="E2E: AUTOSAR CRC Routines"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="11"
+            swVersionSuffix="B439717"
+            specVersionMajor="0"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="SCrc"
+            categoryLayer="Standard Library"
+            categoryCategory="System Services"
+            categoryComponent="ECUC">
+      <cluster name="Safety"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="SCrc_TS_TxDxM2I0R0_ConfigId"
+             name="SCrc_TS_TxDxM2I0R0 Configuration">
+    <configuration moduleId="SCrc_TS_TxDxM2I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/SCrc.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM2I0R0/SCrc"/>
+      </data>
+
+      <editor id="SCrc_TS_TxDxM2I0R0_EditorId"
+              label="Default"
+              tooltip="E2E: AUTOSAR CRC Routines">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM2I0R0/SCrc"/>
+          <parameter name="title" value="SCrc"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="SCrc_TS_TxDxM2I0R0_GeneratorId"
+             name="SCrc_TS_TxDxM2I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="SCrc_TS_TxDxM2I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="SCrc_TS_TxDxM2I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+</plugin>

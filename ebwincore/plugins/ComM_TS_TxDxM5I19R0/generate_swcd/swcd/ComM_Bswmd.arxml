@@ -1,0 +1,1401 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+[!AUTOSPACING!][!//
+<AUTOSAR
+  xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-2-1_STRICT_COMPACT.xsd">
+[!IF "not(node:exists(as:modconf('ComM')[1]/ComMConfigSet/*[1]))"!][!//
+[!ERROR "Configuration not exist!"!][!//
+[!ENDIF!][!//
+[!INCLUDE "ComM_Functions.m"!][!//
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport='true'"!]
+[!CALL "GetMasterCoreId"!][!//
+[!CALL "GetUsedCores"!][!//
+[!ENDIF!]
+[!CALL "GetPnInfoLength"!][!//
+[!ENDIF!]
+[!IF "ComMGeneral/ComMServiceAPI/ComMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+[!VAR "bswModuleEntryPackageName" = "'SwServices'"!][!//
+[!VAR "swComponentTypePackageName" = "'ComponentTypes'"!][!//
+[!ELSE!][!//
+[!VAR "bswModuleEntryPackageName" = "'BswModuleEntrys'"!][!//
+[!VAR "swComponentTypePackageName" = "'SwComponentTypes'"!][!//
+[!ENDIF!][!//
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_ComM</SHORT-NAME>
+      <AR-PACKAGES>
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport = 'true'"!]
+  [!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+        <AR-PACKAGE> <!-- ImplementationDataTypes -->
+          <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+          <ELEMENTS>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>PnInfoArray</SHORT-NAME>
+              <CATEGORY>ARRAY</CATEGORY>
+              <SUB-ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>PnInfoArray</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <ARRAY-SIZE>[!"$PnInfoLength"!]</ARRAY-SIZE>
+                  <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              </SUB-ELEMENTS>
+            </IMPLEMENTATION-DATA-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE> <!-- ImplementationDataTypes -->
+  [!ENDIF!]
+[!ENDIF!]
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleDescriptions</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-DESCRIPTION>
+              <SHORT-NAME>ComM</SHORT-NAME>
+              <MODULE-ID>12</MODULE-ID>
+              <PROVIDED-ENTRYS>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/[!"$bswModuleEntryPackageName"!]/ComM_MainFunction_[!"ComMChannelId"!]</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDLOOP!]
+
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport = 'true'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_BusSM_ModeIndication</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!IF "node:exists(as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup) and (node:value(as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup) = 'true')"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_EcuM_WakeUpIndication</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_EcuM_PNCWakeUpIndication</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!ENDIF!]
+[!IF "(count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_ACTIVE']) > 0) or (count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_PASSIVE']) > 0)"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_BusSM_BusSleepMode</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMDcmUsage = 'true'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_DCM_ActiveDiagnostic</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_DCM_InactiveDiagnostic</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+  [!IF "count(text:split($UsedCores,'_')) > 1 "!]
+    [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='TX']/ComMPncComSignalRef), 'ComHandleId')"!]
+      [!VAR "FoundCore" = "''"!]
+      [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'TX'"!]
+      [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_Slave_[!"num:i($FoundCore)"!]_ReceiveFunction_[!"node:name(.)"!]</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+      [!ENDIF!]
+    [!ENDLOOP!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_PncMainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+    [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='RX']/ComMPncComSignalRef), 'ComHandleId')"!]
+      [!VAR "FoundCore" = "''"!]
+      [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'RX'"!]
+      [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_Master_ReceiveFunction_[!"node:name(.)"!]</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_COMCbk_[!"node:name(.)"!]</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDIF!]
+[!ENDIF!]
+              </PROVIDED-ENTRYS>
+
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport = 'true'"!]
+
+              <PROVIDED-CLIENT-SERVER-ENTRYS>
+[!LOOP "as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMBusType='COMM_BUS_TYPE_CAN' or
+                                                               ComMBusType='COMM_BUS_TYPE_FR' or
+                                                               ComMBusType='COMM_BUS_TYPE_ETH' or
+                                                               ComMBusType='COMM_BUS_TYPE_LIN']"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_ComM_BusSM_ModeIndication_[!"name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_BusSM_ModeIndication</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!]
+[!IF "node:exists(as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup) and (node:value(as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup) = 'true')"!]
+  [!FOR "Idx" = "0" TO "(as:modconf('Os')[1]/OsOS/OsNumberOfCores) - 1"!]
+    [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMChannelRef), 'ComMChannelId')"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_ComM_EcuM_WakeUpIndication_[!"node:name(.)"!]_Core_[!"$Idx"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_EcuM_WakeUpIndication</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+    [!ENDLOOP!]
+  [!ENDFOR!]
+  [!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+    [!FOR "Idx" = "0" TO "(as:modconf('Os')[1]/OsOS/OsNumberOfCores) - 1"!]
+      [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMPNCRef), 'ComMPncId')"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_ComM_EcuM_PNCWakeUpIndication_[!"node:name(.)"!]_Core_[!"$Idx"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_EcuM_PNCWakeUpIndication</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+      [!ENDLOOP!]
+    [!ENDFOR!]
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "(count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_ACTIVE']) > 0) or (count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_PASSIVE']) > 0)"!]
+[!LOOP "as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_ACTIVE' or
+                                                               ComMNetworkManagement/ComMNmVariant = 'SLAVE_PASSIVE']"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_ComM_BusSM_BusSleepMode_[!"name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_BusSM_BusSleepMode</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMDcmUsage = 'true'"!]
+[!LOOP "node:order(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef), 'ComMChannelId')"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_ComM_DCM_ActiveDiagnostic_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_DCM_ActiveDiagnostic</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>ProvidedCSEntry_ComM_DCM_InactiveDiagnostic_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_DCM_InactiveDiagnostic</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!]
+[!ENDIF!]
+              </PROVIDED-CLIENT-SERVER-ENTRYS>
+
+              <REQUIRED-CLIENT-SERVER-ENTRYS>
+[!LOOP "as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMBusType='COMM_BUS_TYPE_CAN' or
+                                                               ComMBusType='COMM_BUS_TYPE_FR' or
+                                                               ComMBusType='COMM_BUS_TYPE_ETH' or
+                                                               ComMBusType='COMM_BUS_TYPE_LIN']"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_BusSM_RequestComMode_[!"name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_MainFunction_[!"ComMChannelId"!]</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!]
+
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMDcmUsage = 'true'"!]
+[!LOOP "node:order(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef), 'ComMChannelId')"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Dcm_ComM_FullComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_MainFunction_[!"ComMChannelId"!]</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!IF "(ComMBusType = 'COMM_BUS_TYPE_CAN' or ComMBusType = 'COMM_BUS_TYPE_ETH') and (ComMNetworkManagement/ComMNmVariant = 'FULL' or ComMNetworkManagement/ComMNmVariant = 'PASSIVE')"!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Dcm_ComM_SilentComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_MainFunction_[!"ComMChannelId"!]</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDIF!]
+                <BSW-MODULE-CLIENT-SERVER-ENTRY>
+                  <SHORT-NAME>RequiredCSEntry_Dcm_ComM_NoComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+                  <ENCAPSULATED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_MainFunction_[!"ComMChannelId"!]</ENCAPSULATED-ENTRY-REF>
+                  <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+                </BSW-MODULE-CLIENT-SERVER-ENTRY>
+[!ENDLOOP!]
+[!ENDIF!]
+
+              </REQUIRED-CLIENT-SERVER-ENTRYS>
+
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+              <PROVIDED-DATAS>
+  [!IF "count(text:split($UsedCores,'_')) > 1 "!]
+    [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='TX']/ComMPncComSignalRef), 'ComHandleId')"!]
+      [!VAR "FoundCore" = "''"!]
+      [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'TX'"!]
+      [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!][!//
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>Master_DataSet_[!"node:name(.)"!]</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/PnInfoArray</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+      [!ENDIF!]
+    [!ENDLOOP!]
+    [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='RX']/ComMPncComSignalRef), 'ComHandleId')"!]
+      [!VAR "FoundCore" = "''"!]
+      [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'RX'"!]
+      [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!][!//
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>Slave_[!"$FoundCore"!]_DataSet_[!"node:name(.)"!]</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/PnInfoArray</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDIF!]
+              </PROVIDED-DATAS>
+[!ENDIF!]
+
+              <REQUIRED-DATAS>
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+  [!IF "count(text:split($UsedCores,'_')) > 1 "!]
+    [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='TX']/ComMPncComSignalRef), 'ComHandleId')"!]
+      [!VAR "FoundCore" = "''"!]
+      [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'TX'"!]
+      [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!]
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>Slave_[!"num:i($FoundCore)"!]_DataGet_[!"node:name(.)"!]</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/PnInfoArray</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+      [!ENDIF!]
+    [!ENDLOOP!]
+    [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='RX']/ComMPncComSignalRef), 'ComHandleId')"!]
+      [!VAR "FoundCore" = "''"!]
+      [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'RX'"!]
+      [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!]
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>Master_DataGet_[!"node:name(.)"!]</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_ComM/ImplementationDataTypes/PnInfoArray</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+      [!ENDIF!]
+    [!ENDLOOP!]
+
+  [!ENDIF!]
+[!ENDIF!]
+              </REQUIRED-DATAS>
+[!ENDIF!]
+              <INTERNAL-BEHAVIORS>
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_0</SHORT-NAME>
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_COMM_EXCLUSIVE_AREA_0</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+                  <ENTITYS>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>ComM_MainFunction_[!"ComMChannelId"!]</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/SCHM_COMM_EXCLUSIVE_AREA_0</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport = 'true'"!]
+                      <CALL-POINTS>
+[!IF "(ComMBusType='COMM_BUS_TYPE_CAN'  or
+       ComMBusType='COMM_BUS_TYPE_FR'   or
+       ComMBusType='COMM_BUS_TYPE_ETH'  or
+       ComMBusType='COMM_BUS_TYPE_LIN')"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_BusSM_RequestComMode_[!"name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/RequiredCSEntry_BusSM_RequestComMode_[!"name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMDcmUsage = 'true'"!]
+[!IF "count(as:modconf('Dcm')[1]/DcmConfigSet/*/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*[node:exists(DcmDslProtocolRxComMChannelRef) and (node:ref(DcmDslProtocolRxComMChannelRef)/ComMChannelId = node:current()/ComMChannelId)]) != 0"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Dcm_ComM_FullComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/RequiredCSEntry_Dcm_ComM_FullComModeEntered_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!IF "(ComMBusType = 'COMM_BUS_TYPE_CAN' or ComMBusType = 'COMM_BUS_TYPE_ETH') and (ComMNetworkManagement/ComMNmVariant = 'FULL' or ComMNetworkManagement/ComMNmVariant = 'PASSIVE')"!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Dcm_ComM_SilentComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/RequiredCSEntry_Dcm_ComM_SilentComModeEntered_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+                        <BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>AsynchCallPoint_Dcm_ComM_NoComModeEntered_[!"node:name(.)"!]</SHORT-NAME>
+                          <CALLED-ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/RequiredCSEntry_Dcm_ComM_NoComModeEntered_[!"node:name(.)"!]</CALLED-ENTRY-REF>
+                        </BSW-ASYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!]
+[!ENDIF!]
+                      </CALL-POINTS>
+[!ENDIF!]
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/[!"$bswModuleEntryPackageName"!]/ComM_MainFunction_[!"ComMChannelId"!]</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+[!ENDLOOP!]
+
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport = 'true'"!]
+  [!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+    [!IF "count(text:split($UsedCores,'_')) > 1 "!]
+      [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='RX']/ComMPncComSignalRef), 'ComHandleId')"!]
+        [!VAR "FoundCore" = "''"!]
+        [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'RX'"!]
+        [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>ComM_Master_ReceiveFunction_[!"node:name(.)"!]</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/SCHM_COMM_EXCLUSIVE_AREA_0</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+                        <!-- Master core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_ComM_Master_DataGet_[!"node:name(.)"!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_ComM/BswModuleDescriptions/ComM/Master_DataGet_[!"node:name(.)"!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-RECEIVE-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/[!"$bswModuleEntryPackageName"!]/ComM_Master_ReceiveFunction_[!"node:name(.)"!]</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+        [!ENDIF!]
+      [!ENDLOOP!]
+    [!ENDIF!]
+  [!ENDIF!]
+[!ENDIF!]
+
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport = 'true'"!]
+  [!LOOP "as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMBusType='COMM_BUS_TYPE_CAN' or
+                                                                 ComMBusType='COMM_BUS_TYPE_FR' or
+                                                                 ComMBusType='COMM_BUS_TYPE_ETH' or
+                                                                 ComMBusType='COMM_BUS_TYPE_LIN']"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ComM_BusSM_ModeIndication_CalledEntity_[!"name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_BusSM_ModeIndication</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+  [!ENDLOOP!]
+  [!IF "node:exists(as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup) and (node:value(as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup) = 'true')"!]
+    [!FOR "Idx" = "0" TO "(as:modconf('Os')[1]/OsOS/OsNumberOfCores) - 1"!]
+      [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMChannelRef), 'ComMChannelId')"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ComM_EcuM_WakeUpIndication_CalledEntity_[!"node:name(.)"!]_Core_[!"$Idx"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_EcuM_WakeUpIndication</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!ENDLOOP!]
+    [!ENDFOR!]
+    [!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+      [!FOR "Idx" = "0" TO "(as:modconf('Os')[1]/OsOS/OsNumberOfCores) - 1"!]
+        [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMPNCRef), 'ComMPncId')"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ComM_EcuM_PNCWakeUpIndication_CalledEntity_[!"node:name(.)"!]_Core_[!"$Idx"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_EcuM_PNCWakeUpIndication</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+        [!ENDLOOP!]
+      [!ENDFOR!]
+    [!ENDIF!]
+  [!ENDIF!]
+  [!IF "(count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_ACTIVE']) > 0) or (count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_PASSIVE']) > 0)"!]
+  [!LOOP "as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_ACTIVE' or
+                                                                 ComMNetworkManagement/ComMNmVariant = 'SLAVE_PASSIVE']"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ComM_BusSM_BusSleepMode_CalledEntity_[!"name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_BusSM_BusSleepMode</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+  [!ENDLOOP!]
+  [!ENDIF!]
+  [!IF "as:modconf('ComM')[1]/ComMGeneral/ComMDcmUsage = 'true'"!]
+  [!LOOP "node:order(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef), 'ComMChannelId')"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ComM_DCM_ActiveDiagnostic_CalledEntity_[!"node:name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_DCM_ActiveDiagnostic</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>ComM_DCM_InactiveDiagnostic_CalledEntity_[!"node:name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_DCM_InactiveDiagnostic</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+  [!ENDLOOP!]
+  [!ENDIF!]
+  [!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+    [!IF "count(text:split($UsedCores,'_')) > 1 "!]
+      [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='TX']/ComMPncComSignalRef), 'ComHandleId')"!]
+        [!VAR "FoundCore" = "''"!]
+        [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'TX'"!]
+        [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>BswCalledEntity_Master_ComM_PncMainFunction_[!"node:name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+                        <!-- Master core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_Master_DataSet_[!"node:name(.)"!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_ComM/BswModuleDescriptions/ComM/Master_DataSet_[!"node:name(.)"!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_PncMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+        [!ENDIF!]
+      [!ENDLOOP!]
+    [!ENDIF!]
+  [!ENDIF!]
+[!ENDIF!]
+                  </ENTITYS>
+                  <EVENTS>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_MainFunction_[!"ComMChannelId"!]</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/ComM_MainFunction_[!"ComMChannelId"!]</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"ComMMainFunctionPeriod"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+[!ENDLOOP!]
+
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport = 'true'"!]
+  [!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+    [!IF "count(text:split($UsedCores,'_')) > 1 "!]
+      [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='RX']/ComMPncComSignalRef), 'ComHandleId')"!]
+        [!VAR "FoundCore" = "''"!]
+        [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'RX'"!]
+        [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!]
+                    <BSW-DATA-RECEIVED-EVENT>
+                        <SHORT-NAME>Master_[!"node:name(.)"!]_ReceivedEvent</SHORT-NAME>
+                        <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/ComM_Master_ReceiveFunction_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+                        <DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_ComM/BswModuleDescriptions/ComM/Master_DataGet_[!"node:name(.)"!]</DATA-REF>
+                    </BSW-DATA-RECEIVED-EVENT>
+        [!ENDIF!]
+      [!ENDLOOP!]
+    [!ENDIF!]
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport = 'true'"!]
+  [!LOOP "as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMBusType='COMM_BUS_TYPE_CAN' or
+                                                                 ComMBusType='COMM_BUS_TYPE_FR' or
+                                                                 ComMBusType='COMM_BUS_TYPE_ETH' or
+                                                                 ComMBusType='COMM_BUS_TYPE_LIN']"!]
+                   <BSW-OPERATION-INVOKED-EVENT>
+                     <SHORT-NAME>OpInokedEv_ComM_BusSM_ModeIndication_[!"name(.)"!]</SHORT-NAME>
+                     <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/ComM_BusSM_ModeIndication_CalledEntity_[!"name(.)"!]</STARTS-ON-EVENT-REF>
+                     <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/ProvidedCSEntry_ComM_BusSM_ModeIndication_[!"name(.)"!]</ENTRY-REF>
+                   </BSW-OPERATION-INVOKED-EVENT>
+  [!ENDLOOP!]
+
+  [!IF "node:exists(as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup) and (node:value(as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup) = 'true')"!]
+    [!FOR "Idx" = "0" TO "(as:modconf('Os')[1]/OsOS/OsNumberOfCores) - 1"!]
+      [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMChannelRef), 'ComMChannelId')"!]
+                   <BSW-OPERATION-INVOKED-EVENT>
+                     <SHORT-NAME>OpInokedEv_ComM_EcuM_WakeUpIndication_[!"node:name(.)"!]_Core_[!"$Idx"!]</SHORT-NAME>
+                     <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/ComM_EcuM_WakeUpIndication_CalledEntity_[!"node:name(.)"!]_Core_[!"$Idx"!]</STARTS-ON-EVENT-REF>
+                     <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/ProvidedCSEntry_ComM_EcuM_WakeUpIndication_[!"node:name(.)"!]_Core_[!"$Idx"!]</ENTRY-REF>
+                   </BSW-OPERATION-INVOKED-EVENT>
+      [!ENDLOOP!]
+    [!ENDFOR!]
+
+    [!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+      [!FOR "Idx" = "0" TO "(as:modconf('Os')[1]/OsOS/OsNumberOfCores) - 1"!]
+        [!LOOP "node:order(node:refs(as:modconf('EcuM')[1]/EcuMConfiguration/*[1]/EcuMCommonConfiguration/EcuMWakeupSource/*/EcuMComMPNCRef), 'ComMPncId')"!]
+                   <BSW-OPERATION-INVOKED-EVENT>
+                     <SHORT-NAME>OpInokedEv_ComM_EcuM_PNCWakeUpIndication_[!"node:name(.)"!]_Core_[!"$Idx"!]</SHORT-NAME>
+                     <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/ComM_EcuM_PNCWakeUpIndication_CalledEntity_[!"node:name(.)"!]_Core_[!"$Idx"!]</STARTS-ON-EVENT-REF>
+                     <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/ProvidedCSEntry_ComM_EcuM_PNCWakeUpIndication_[!"node:name(.)"!]_Core_[!"$Idx"!]</ENTRY-REF>
+                   </BSW-OPERATION-INVOKED-EVENT>
+        [!ENDLOOP!]
+      [!ENDFOR!]
+    [!ENDIF!]
+  [!ENDIF!]
+  [!IF "(count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_ACTIVE']) > 0) or (count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_PASSIVE']) > 0)"!]
+  [!LOOP "as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_ACTIVE' or
+                                                                 ComMNetworkManagement/ComMNmVariant = 'SLAVE_PASSIVE']"!]
+                   <BSW-OPERATION-INVOKED-EVENT>
+                     <SHORT-NAME>OpInokedEv_ComM_BusSM_BusSleepMode_[!"name(.)"!]</SHORT-NAME>
+                     <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/ComM_BusSM_BusSleepMode_CalledEntity_[!"name(.)"!]</STARTS-ON-EVENT-REF>
+                     <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/ProvidedCSEntry_ComM_BusSM_BusSleepMode_[!"name(.)"!]</ENTRY-REF>
+                   </BSW-OPERATION-INVOKED-EVENT>
+  [!ENDLOOP!]
+  [!ENDIF!]
+
+  [!IF "as:modconf('ComM')[1]/ComMGeneral/ComMDcmUsage = 'true'"!]
+  [!LOOP "node:order(node:refs(as:modconf('Dcm')[1]/DcmConfigSet/*/DcmDsl/DcmDslProtocol/DcmDslProtocolRow/*/DcmDslConnection/*/DcmDslProtocolRx/*/DcmDslProtocolRxComMChannelRef), 'ComMChannelId')"!]
+                   <BSW-OPERATION-INVOKED-EVENT>
+                     <SHORT-NAME>OpInokedEv_ComM_DCM_ActiveDiagnostic_[!"node:name(.)"!]</SHORT-NAME>
+                     <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/ComM_DCM_ActiveDiagnostic_CalledEntity_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+                     <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/ProvidedCSEntry_ComM_DCM_ActiveDiagnostic_[!"node:name(.)"!]</ENTRY-REF>
+                   </BSW-OPERATION-INVOKED-EVENT>
+
+                   <BSW-OPERATION-INVOKED-EVENT>
+                     <SHORT-NAME>OpInokedEv_ComM_DCM_InactiveDiagnostic_[!"node:name(.)"!]</SHORT-NAME>
+                     <STARTS-ON-EVENT-REF DEST="BSW-CALLED-ENTITY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/ComM_DCM_InactiveDiagnostic_CalledEntity_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+                     <ENTRY-REF DEST="BSW-MODULE-CLIENT-SERVER-ENTRY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/ProvidedCSEntry_ComM_DCM_InactiveDiagnostic_[!"node:name(.)"!]</ENTRY-REF>
+                   </BSW-OPERATION-INVOKED-EVENT>
+  [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDIF!]
+
+                  </EVENTS>
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport = 'true'"!]
+  [!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+    [!IF "count(text:split($UsedCores,'_')) > 1 "!]
+                  <RECEPTION-POLICYS>
+      [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='RX']/ComMPncComSignalRef), 'ComHandleId')"!]
+        [!VAR "FoundCore" = "''"!]
+        [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'RX'"!]
+        [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!]
+                    <BSW-QUEUED-DATA-RECEPTION-POLICY>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <RECEIVED-DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_ComM/BswModuleDescriptions/ComM/Master_DataGet_[!"node:name(.)"!]</RECEIVED-DATA-REF>
+                      <QUEUE-LENGTH>2</QUEUE-LENGTH>
+                    </BSW-QUEUED-DATA-RECEPTION-POLICY>
+        [!ENDIF!]
+      [!ENDLOOP!]
+                  </RECEPTION-POLICYS>
+    [!ENDIF!]
+  [!ENDIF!]
+[!ENDIF!]
+                </BSW-INTERNAL-BEHAVIOR>
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport='true'"!]
+[!IF "count(text:split($UsedCores,'_')) > 1 "!]
+  [!FOR "Idx" = "1" TO "count(text:split($UsedCores,'_'))"!][!//
+    [!VAR "CurrentCore" = "num:i(string(text:split($UsedCores,'_')[position() = $Idx]))"!]
+    [!IF "num:i($CurrentCore) != num:i($MasterCoreId)"!]
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_Slave_[!"num:i($CurrentCore)"!]</SHORT-NAME>
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_COMM_EXCLUSIVE_AREA_Slave_[!"num:i($CurrentCore)"!]</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+                  <ENTITYS>
+      [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='TX']/ComMPncComSignalRef), 'ComHandleId')"!]
+        [!VAR "FoundCore" = "''"!]
+        [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'TX'"!]
+        [!IF "num:i($FoundCore) = num:i($CurrentCore)"!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>ComM_Slave_[!"num:i($FoundCore)"!]_ReceiveFunction_[!"node:name(.)"!]</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_Slave_[!"num:i($FoundCore)"!]/SCHM_COMM_EXCLUSIVE_AREA_Slave_[!"num:i($CurrentCore)"!]</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+                        <!-- Slave core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_ComM_Slave_[!"num:i($FoundCore)"!]_DataGet_[!"node:name(.)"!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_ComM/BswModuleDescriptions/ComM/Slave_[!"num:i($FoundCore)"!]_DataGet_[!"node:name(.)"!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-RECEIVE-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/[!"$bswModuleEntryPackageName"!]/ComM_Slave_[!"num:i($FoundCore)"!]_ReceiveFunction_[!"node:name(.)"!]</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+        [!ENDIF!]
+      [!ENDLOOP!]
+
+      [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='RX']/ComMPncComSignalRef), 'ComHandleId')"!]
+        [!VAR "FoundCore" = "''"!]
+        [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'RX'"!]
+        [!IF "num:i($FoundCore) = num:i($CurrentCore)"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>BswCalledEntity_Slave_[!"num:i($FoundCore)"!]_ComM_COMCbk_[!"node:name(.)"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+                        <!-- Slave core only -->
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_Slave_[!"num:i($FoundCore)"!]_DataSet_[!"node:name(.)"!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_ComM/BswModuleDescriptions/ComM/Slave_[!"$FoundCore"!]_DataSet_[!"node:name(.)"!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_ComM/BswModuleEntrys/ComM_COMCbk_[!"node:name(.)"!]</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+        [!ENDIF!]
+      [!ENDLOOP!]
+                  </ENTITYS>
+                  <EVENTS>
+      [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='TX']/ComMPncComSignalRef), 'ComHandleId')"!]
+        [!VAR "FoundCore" = "''"!]
+        [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'TX'"!]
+        [!IF "num:i($FoundCore) = num:i($CurrentCore)"!]
+                    <BSW-DATA-RECEIVED-EVENT>
+                        <SHORT-NAME>Slave_[!"num:i($FoundCore)"!]_[!"node:name(.)"!]_ReceivedEvent</SHORT-NAME>
+                        <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_Slave_[!"num:i($FoundCore)"!]/ComM_Slave_[!"num:i($FoundCore)"!]_ReceiveFunction_[!"node:name(.)"!]</STARTS-ON-EVENT-REF>
+                        <DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_ComM/BswModuleDescriptions/ComM/Slave_[!"num:i($FoundCore)"!]_DataGet_[!"node:name(.)"!]</DATA-REF>
+                    </BSW-DATA-RECEIVED-EVENT>
+        [!ENDIF!]
+      [!ENDLOOP!]
+                  </EVENTS>
+                  <RECEPTION-POLICYS>
+      [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='TX']/ComMPncComSignalRef), 'ComHandleId')"!]
+        [!VAR "FoundCore" = "''"!]
+        [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'TX'"!]
+        [!IF "num:i($FoundCore) = num:i($CurrentCore)"!]
+                    <BSW-QUEUED-DATA-RECEPTION-POLICY>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <RECEIVED-DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_ComM/BswModuleDescriptions/ComM/Slave_[!"num:i($FoundCore)"!]_DataGet_[!"node:name(.)"!]</RECEIVED-DATA-REF>
+                      <QUEUE-LENGTH>2</QUEUE-LENGTH>
+                    </BSW-QUEUED-DATA-RECEPTION-POLICY>
+        [!ENDIF!]
+      [!ENDLOOP!]
+                  </RECEPTION-POLICYS>
+                </BSW-INTERNAL-BEHAVIOR>
+    [!ENDIF!][!//
+  [!ENDFOR!][!//
+[!ENDIF!]
+[!ENDIF!]
+[!ENDIF!]
+              </INTERNAL-BEHAVIORS>
+            </BSW-MODULE-DESCRIPTION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>[!"$bswModuleEntryPackageName"!]</SHORT-NAME>
+          <ELEMENTS>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_MainFunction_[!"ComMChannelId"!]</SHORT-NAME>
+              <SERVICE-ID>96</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDLOOP!]
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMMultiCoreSupport = 'true'"!]
+
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_BusSM_ModeIndication</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>51</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>Channel</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>ComMode</SHORT-NAME>
+                  <DIRECTION>INOUT</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!IF "node:exists(as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup) and (node:value(as:modconf('EcuM')[1]/EcuMGeneral/EcuMCrossCoreComMWakeup) = 'true')"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_EcuM_WakeUpIndication</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>42</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>Channel</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_EcuM_PNCWakeUpIndication</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>55</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>PNCid</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+[!IF "(count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_ACTIVE']) > 0) or (count(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMChannel/*[ComMNetworkManagement/ComMNmVariant = 'SLAVE_PASSIVE']) > 0)"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_BusSM_BusSleepMode</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>246</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>Channel</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMDcmUsage = 'true'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_DCM_ActiveDiagnostic</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>31</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>Channel</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_DCM_InactiveDiagnostic</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>32</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+                <SW-SERVICE-ARG>
+                  <SHORT-NAME>Channel</SHORT-NAME>
+                  <DIRECTION>IN</DIRECTION>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </SW-SERVICE-ARG>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+[!IF "as:modconf('ComM')[1]/ComMGeneral/ComMPncSupport = 'true'"!]
+[!IF "count(text:split($UsedCores,'_')) > 1 "!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_PncMainFunction</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+  [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='TX']/ComMPncComSignalRef), 'ComHandleId')"!]
+    [!VAR "FoundCore" = "''"!]
+    [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'TX'"!]
+    [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_Slave_[!"num:i($FoundCore)"!]_ReceiveFunction_[!"node:name(.)"!]</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+    [!ENDIF!]
+  [!ENDLOOP!]
+
+  [!LOOP "node:order(node:refs(as:modconf('ComM')[1]/ComMConfigSet/*[1]/ComMPnc/*/ComMPncComSignal/*[ComMPncComSignalDirection='RX']/ComMPncComSignalRef), 'ComHandleId')"!]
+    [!VAR "FoundCore" = "''"!]
+    [!CALL "GetCore","SignalHandle"="ComHandleId","Direction"="'RX'"!]
+    [!IF "num:i($FoundCore) != num:i($MasterCoreId)"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_Master_ReceiveFunction_[!"node:name(.)"!]</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>ComM_COMCbk_[!"node:name(.)"!]</SHORT-NAME>
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">true</SD>
+                  </SDG>
+                 </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>false</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+    [!ENDIF!]
+  [!ENDLOOP!]
+[!ENDIF!]
+[!ENDIF!]
+[!ENDIF!]
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+
+
+
+[!IF "ComMGeneral/ComMRteUsage = 'true'"!]
+        <AR-PACKAGE>
+          <SHORT-NAME>SwcBswMappings</SHORT-NAME>
+          <ELEMENTS>
+            <SWC-BSW-MAPPING>
+              <SHORT-NAME>SwcBswMapping_0</SHORT-NAME>
+              <BSW-BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0</BSW-BEHAVIOR-REF>
+              <RUNNABLE-MAPPINGS>
+[!LOOP "ComMConfigSet/*[1]/ComMChannel/*"!]
+                <SWC-BSW-RUNNABLE-MAPPING>
+                  <BSW-ENTITY-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0/ComM_MainFunction_[!"ComMChannelId"!]</BSW-ENTITY-REF>
+                  <SWC-RUNNABLE-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/SwcInternalBehavior_0/RE_Main_[!"ComMChannelId"!]</SWC-RUNNABLE-REF>
+                </SWC-BSW-RUNNABLE-MAPPING>
+[!ENDLOOP!]
+              </RUNNABLE-MAPPINGS>
+              <SWC-BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_ComM/[!"$swComponentTypePackageName"!]/ComM/SwcInternalBehavior_0</SWC-BEHAVIOR-REF>
+            </SWC-BSW-MAPPING>
+          </ELEMENTS>
+        </AR-PACKAGE>
+[!ENDIF!]
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_ComM</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Implementations</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_0</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_BSW.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_BSW_Cfg.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_BSW_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_BusSm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Dcm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_EcuMBswM.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Hsm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_HsmCfg.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_HsmComM.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_HsmComMInt.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_HsmComMPnc.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_HsmComMPncInt.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Nm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Trace.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Trace_Internal.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_ASR32_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_ASR40_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_Hsm.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_HsmComMData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_HsmComMFnct.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_HsmComMPncData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_HsmComMPncFnct.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_POWER_ON_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_POWER_ON_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <!-- !LINKSTO ComM280,1 -->
+              <SW-VERSION>5.19.7</SW-VERSION>
+[!IF "ComMGeneral/ComMRteUsage = 'true'"!]
+              <SWC-BSW-MAPPING-REF DEST="SWC-BSW-MAPPING">/AUTOSAR_ComM/SwcBswMappings/SwcBswMapping_0</SWC-BSW-MAPPING-REF>
+[!ENDIF!]
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.1.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_0</BEHAVIOR-REF>
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM5I19R0/ComM</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+[!IF "count(text:split($UsedCores,'_')) > 1 "!]
+  [!FOR "Idx" = "1" TO "count(text:split($UsedCores,'_'))"!][!//
+    [!VAR "CurrentCore" = "num:i(string(text:split($UsedCores,'_')[position() = $Idx]))"!]
+    [!IF "num:i($CurrentCore) != num:i($MasterCoreId)"!]
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_Slave_[!"num:i($CurrentCore)"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_BSW.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_BSW_Cfg.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_BSW_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_BusSm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Dcm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_EcuMBswM.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Hsm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_HsmCfg.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_HsmComM.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_HsmComMInt.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_HsmComMPnc.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_HsmComMPncInt.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Nm.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Trace.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Trace_Internal.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::ComM_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_ASR32_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_ASR40_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_Hsm.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_HsmComMData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_HsmComMFnct.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_HsmComMPncData.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_HsmComMPncFnct.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::ComM_Rte.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_32</SHORT-NAME>
+                    <ALIGNMENT>32</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONFIG_DATA_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONFIG_DATA</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <!-- !LINKSTO ComM280,1 -->
+              <SW-VERSION>5.19.7</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.1.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_ComM/BswModuleDescriptions/ComM/InternalBehavior_Slave_[!"num:i($CurrentCore)"!]</BEHAVIOR-REF>
+              <!-- Only defined for the slave cores -->
+              <VENDOR-API-INFIX>Slave_[!"num:i($CurrentCore)"!]</VENDOR-API-INFIX>
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM5I19R0/ComM</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+    [!ENDIF!]
+  [!ENDFOR!]
+[!ENDIF!]
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

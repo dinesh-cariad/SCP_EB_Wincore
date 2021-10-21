@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR E2EXf_TS_TxDxM1I0R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="E2EXf_TS_TxDxM1I0R0_ModuleId"
+             name="E2EXf_TS_TxDxM1I0R0 Module">
+    <module id="E2EXf_TS_TxDxM1I0R0"
+            label="E2EXf"
+            mandatory="false"
+            allowMultiple="false"
+            description="E2E: AUTOSAR E2EXf module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="0"
+            swVersionPatch="36"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="2"
+            specVersionPatch="1"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="2"
+            relVersionPatch="1"
+            categoryType="E2EXf"
+            categoryLayer="Communication Services"
+            categoryCategory="Com Services"
+            categoryComponent="ECUC">
+      <cluster name="Safety"/>
+<cluster name="Transformers"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="E2EXf_TS_TxDxM1I0R0_ConfigId"
+             name="E2EXf_TS_TxDxM1I0R0 Configuration">
+    <configuration moduleId="E2EXf_TS_TxDxM1I0R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/E2EXf.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/E2EXf_TS_TxDxM1I0R0/Xfrm"/>
+      </data>
+
+      <editor id="E2EXf_TS_TxDxM1I0R0_EditorId"
+              label="Default"
+              tooltip="E2E: AUTOSAR E2EXf module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/E2EXf_TS_TxDxM1I0R0/Xfrm"/>
+          <parameter name="title" value="E2EXf"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="E2EXf_TS_TxDxM1I0R0_GeneratorId"
+             name="E2EXf_TS_TxDxM1I0R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="E2EXf_TS_TxDxM1I0R0_TemplateBasedCodeGeneratorId"
+               moduleId="E2EXf_TS_TxDxM1I0R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+</plugin>

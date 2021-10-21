@@ -1,0 +1,3073 @@
+<?xml version='1.0'?>
+<datamodel version="7.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/16/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/16/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:cd="http://www.tresos.de/_projects/DataModel2/08/customdata.xsd" 
+         xmlns:f="http://www.tresos.de/_projects/DataModel2/14/formulaexpr.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd"  
+         xmlns:variant="http://www.tresos.de/_projects/DataModel2/11/variant.xsd">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_TxDxM2I7R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="SecOC" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="ADMIN-DATA" type="ADMIN-DATA">
+                <ad:ADMIN-DATA>
+                  <ad:LANGUAGE>EN</ad:LANGUAGE>
+                </ad:ADMIN-DATA>
+              </a:a>
+              <a:a name="DESC" 
+                   value="EN: Configuration of the SecOC (Secure Onboard Communication) module."/>
+              <a:a name="LOWER-MULTIPLICITY" value="1"/>
+              <a:a name="POSTBUILDVARIANTSUPPORT" value="true"/>
+              <a:a name="RELEASE" value="asc:4.3"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <a:a name="UUID" value="505e4f69-8af3-4e02-8b8b-4f78165ec8dd"/>
+              <a:da name="INVALID" type="XPath" 
+                    expr="((count(SecOCRxPduProcessing/*) + count(SecOCTxPduProcessing/*)) &gt; 0)" 
+                    false="At least one Rx or Tx Processing Pdu must be configured."/>
+              <v:ctr name="CommonPublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Common Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6"/>
+                <v:var name="ArMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1"/>
+                  <a:da name="DEFAULT" value="4"/>
+                </v:var>
+                <v:var name="ArMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70"/>
+                  <a:da name="DEFAULT" value="3"/>
+                </v:var>
+                <v:var name="ArPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="SwMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34"/>
+                  <a:da name="DEFAULT" value="2"/>
+                </v:var>
+                <v:var name="SwMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f"/>
+                  <a:da name="DEFAULT" value="7"/>
+                </v:var>
+                <v:var name="SwPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a318d2d9-0e75-49da-ac43-e7e4e682e2f9"/>
+                  <a:da name="DEFAULT" value="4"/>
+                </v:var>
+                <v:var name="ModuleId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Numeric Module ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:78bc8362-080f-4253-b3da-804ab69a7154"/>
+                  <a:da name="DEFAULT" value="607"/>
+                </v:var>
+                <v:var name="VendorId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Vendor ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="Release" type="STRING_LABEL">
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Release Information"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89"/>
+                  <a:da name="DEFAULT" value=""/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="PublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="EB Published Information"/>
+                <a:a name="TAB" value="EB Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07"/>
+                <v:var name="PbcfgMSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Specifies whether or not the SecOC can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="PbcfgM support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+              </v:ctr>
+              <v:var name="IMPLEMENTATION_CONFIG_VARIANT" type="ENUMERATION">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          Select the configuration variant.
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                     type="IMPLEMENTATIONCONFIGCLASS">
+                  <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                </a:a>
+                <a:a name="LABEL" value="Config Variant"/>
+                <a:a name="UUID" value="a11623fa-c3fe-4548-809f-007dd3b09dc5"/>
+                <a:da name="DEFAULT" value="VariantPostBuild"/>
+                <a:da name="EDITABLE" value="true"/>
+                <a:da name="ENABLE" value="true"/>
+                <a:da name="RANGE" value="VariantPostBuild"/>
+              </v:var>
+              <v:ctr name="SecOCGeneral" type="IDENTIFIABLE">
+                <v:var name="SecOCMainFunctionPeriodRx" type="FLOAT">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            MainFunctionRx period in seconds.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="MainFunctionRx Period"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:da name="DEFAULT" value="0.01"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&gt;0"/>
+                    <a:tst expr="&lt;=4294967295"/>
+                  </a:da>
+                </v:var>
+                <v:var name="SecOCMainFunctionPeriodTx" type="FLOAT">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            MainFunctionTx period in seconds.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="MainFunctionTx Period"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:da name="DEFAULT" value="0.01"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&gt;0"/>
+                    <a:tst expr="&lt;=4294967295"/>
+                  </a:da>
+                </v:var>
+                <v:var name="SecOCQueryFreshnessValue" type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This parameter specifies how the current freshness value shall be
+                            determined.
+                          &lt;/p&gt;
+
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;RTE&lt;/code&gt;:   SecOC queries the freshness for every PDU to
+                                process using the Rte service port
+                                &lt;code&gt;RxFreshnessManagement_&lt;SecOCFreshnessValueId&gt;&lt;/code&gt;
+                                or &lt;code&gt;TxFreshnessManagement_&lt;SecOCFreshnessValueId&gt;&lt;/code&gt;&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;CFUNC&lt;/code&gt;: SecOC queries the freshness for every PDU to
+                                process using the C function defined by the configuration parameter
+                                &lt;code&gt;SecOCFreshnessValueFuncName&lt;/code&gt;&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;NONE&lt;/code&gt;: SecOC will not use freshness mechanism&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Query Freshness Value"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="CFUNC"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="(node:value(.)=&apos;RTE&apos; and node:value(../SecOCRteUsage) = &apos;false&apos;)" 
+                        true="Enable Rte usage for SecOC to use the Rte interface for querying the freshness value."/>
+                  <a:da name="RANGE">
+                    <a:v>NONE</a:v>
+                    <a:v>CFUNC</a:v>
+                    <a:v>RTE</a:v>
+                  </a:da>
+                </v:var>
+                <v:var name="SecOCVersionInfoApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Enables Version Info API.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Version Info API"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="SecOcIgnoreVerificationResult" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            The result of the authentication  process (e.g. MAC Verify) is ignored
+                            after the first try and the SecOC proceeds like the result was a success.
+                            The calculation of the authenticator is still done, only its result will
+                            be ignored.
+                          &lt;/p&gt;
+
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;TRUE&lt;/code&gt;:  enabled  (verification result is ignored).&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;FALSE&lt;/code&gt;: disabled (verification result is NOT ignored).&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Ignore Verification Result"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="SecOCDevErrorDetect" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            &lt;strong&gt;Currently not supported.&lt;/strong&gt;
+                          &lt;/p&gt;
+
+                          &lt;p&gt;
+                            Switches the Development Error Detection and Notification ON or OFF.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Development Error Detection"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="73c17f28-66b3-412b-ad88-5a7109bca9e7"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="false"/>
+                  <a:da name="ENABLE" value="false"/>
+                </v:var>
+                <v:var name="SecOCEnableForcedPassOverride" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Changes the behaviour of the &lt;code&gt;SecOc_VerifyStatusOverride()&lt;/code&gt;
+                            function to override the &lt;code&gt;VerifyStatus&lt;/code&gt; to &quot;Pass&quot;
+                            and to skip the verification procedure.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Forced Pass Override"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="true"/>
+                </v:var>
+                <v:var name="SecOCMaxAlignScalarType" type="STRING">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            The type with maximal alignment restrictions on the platform.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Type with maximal alignment restrictions"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:da name="EDITABLE" value="false"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="(. != &apos;uint8&apos;) and (. != &apos;uint16&apos;) and (. != &apos;uint32&apos;)" 
+                        true="Only uint8, uint16 and uint32 values are allowed."/>
+                </v:var>
+                <v:lst name="SecOCVerificationStatusCallout">
+                  <a:a name="COLUMNS" value="SecOCVerificationStatusCallout"/>
+                  <a:a name="LABEL" value="VerificationStatus Callout"/>
+                  <a:da name="MAX" value="65535"/>
+                  <a:da name="MIN" value="0"/>
+                  <v:var name="SecOCVerificationStatusCallout" 
+                         type="FUNCTION-NAME">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              Name of a Callout function, which may be invoked on every
+                              authentication verification attempt.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Callout function name"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst expr="text:uniq(../*,.)" 
+                             false="The names of the callout functions are not unique."/>
+                      <a:tst expr="normalize-space(.) = &apos;&apos;" 
+                             true="The name of the callout function is not set."/>
+                    </a:da>
+                  </v:var>
+                </v:lst>
+                <v:lst name="SecOCMacGenerateStatusCallout">
+                  <a:a name="COLUMNS" value="SecOCMacGenerateStatusCallout"/>
+                  <a:a name="LABEL" value="MacGenerateStatus Callout"/>
+                  <a:da name="MAX" value="65535"/>
+                  <a:da name="MIN" value="0"/>
+                  <v:var name="SecOCMacGenerateStatusCallout" 
+                         type="FUNCTION-NAME">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              Name of a Callout function, which may be invoked after
+                              the MAC Generate failed.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Callout function name"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst expr="text:uniq(../*,.)" 
+                             false="The names of the callout functions are not unique."/>
+                      <a:tst expr="normalize-space(.) = &apos;&apos;" 
+                             true="The name of the callout function is not set."/>
+                    </a:da>
+                  </v:var>
+                </v:lst>
+                <v:var name="SecOCASR403" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Specifies whether the Autosar 4.0.3 APIs or the Autosar 4.2.1 APIs shall
+                            be used for &lt;code&gt;PduR&lt;/code&gt; interfaces, e.g.
+                            &lt;code&gt;SecOC_StartOfReception()&lt;/code&gt;.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Autosar 4.0.3 PduR"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="SecOCRteUsage" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Switches SecOC&apos;s Rte interface ON or OFF.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Rte Usage"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="SecOCUseSecuredArea" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Specifies whether the option to configure an area in the Authentic I-Pdu
+                            that will be the input to the Authenticator verification algorithm
+                            is enabled or not.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Use secured area"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="true"/>
+                </v:var>
+                <v:var name="SecOCCryptoBitLength" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                         &lt;p&gt;
+                           Specifies, whether the length of the authenticator can be passed to the
+                           cryptographic routines in bits.
+
+                           &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;TRUE&lt;/code&gt;:  the length of the authenticator is passed to the
+                                cryptographic routines in bits&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;FALSE&lt;/code&gt;: the length of the authenticator is passed to the
+                                cryptographic routines in bytes&lt;/li&gt;
+                           &lt;/ul&gt;
+                         &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Crypto Bit Length"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="SecOCRelocatablePbcfgEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          Enables/disable support for relocatable postbuild configuration.
+                          &lt;ul&gt;
+                            &lt;li&gt;True: Postbuild configuration relocatable in memory.&lt;/li&gt;
+                            &lt;li&gt;False: Postbuild configuration not relocatable in memory.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="DEFAULT" value="true"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(node:contains(node:refs(as:modconf(&apos;PbcfgM&apos;)/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf(&apos;SecOC&apos;)) = &apos;true&apos;)" 
+                        true="false" false="true"/>
+                </v:var>
+                <v:var name="SecOCRxShapeFuncName" type="FUNCTION-NAME">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This parameter specifies the name of the C API function which shall be
+                            called by the SecOC to update a project specific layout of the secured PDU, which deviates from the AUTOSAR standard,
+                            to the layout defined by the AUTOSAR standard
+                            before the verification procedure is started.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Shaping Rx function name"/>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="normalize-space(.) = &apos;&apos;" 
+                        true="Empty value is not allowed"/>
+                </v:var>
+                <v:var name="SecOCTxShapeFuncName" type="FUNCTION-NAME">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This parameter specifies the name of the C API function which shall be
+                            called to modify the layout of the secured PDU before it is send to the lower layer.
+                            So the layout of a secured PDU on the bus can be adapted project specific deviating from the AUTOSAR standard.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Shaping Tx function name"/>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="normalize-space(.) = &apos;&apos;" 
+                        true="Empty value is not allowed"/>
+                </v:var>
+                <v:var name="SecOCDefaultAuthenticatorValue" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This parameter defines the default value for the authenticator.
+                            The configured value will be set for every byte within the authenticator.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            Parameter ENABLE: SecOC shall send secured messages with the default MAC,
+                            if the MAC could not be generated, i.e. Csm_MacGenerate returns something
+                            different than E_OK.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            Parameter DISABLE: SecOC shall not send secured messages,
+                            if the MAC could not be generated.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Default Authenticator Value"/>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&gt;=0"/>
+                    <a:tst expr="&lt;=255"/>
+                  </a:da>
+                </v:var>
+                <v:var name="SecOCPropagateVerificationStatus" 
+                       type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            Specifies whether the option to propagate the verification status,
+                            through RTE services or C functions, is enabled or not.
+                          &lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;NONE&lt;/code&gt;: SecOC will not propagate the verification status&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;AUTOSAR&lt;/code&gt;: SecOC will propagate the verification status via the AUTOSAR defined API(s)&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;EB_CUSTOM&lt;/code&gt;: SecOC will propagate the verification status via the custom API(s)&lt;/li&gt;
+                          &lt;/ul&gt;
+                          &lt;p&gt;
+                            The difference between &lt;code&gt;AUTOSAR&lt;/code&gt; and &lt;code&gt;EB_CUSTOM&lt;/code&gt; is in the type
+                            &lt;code&gt;SecOC_VerificationStatusType&lt;/code&gt; is an additional member &lt;code&gt;verificationStatus&lt;/code&gt;
+                            where the return value of the &quot;mac verification&quot; or &quot;get freshness&quot; operations is being stored.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Propagation of the verification status"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="DEFAULT" value="NONE"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="node:value(.) != &apos;NONE&apos; and num:i(count(../SecOCVerificationStatusCallout/*)) = 0 and node:value(../SecOCRteUsage) = &apos;false&apos;" 
+                        true="To propagate the verification status the RTE usage must be enabled or at least one callout function must be configured in the VerificationStatus Callout container."/>
+                  <a:da name="RANGE">
+                    <a:v>NONE</a:v>
+                    <a:v>AUTOSAR</a:v>
+                    <a:v>EB_CUSTOM</a:v>
+                  </a:da>
+                </v:var>
+                <v:var name="SecOCDataIdLength" type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This parameter defines the length in bits of the PDU Data ID.
+                          &lt;/p&gt;
+
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;UINT8&lt;/code&gt;: PDU Data ID will have 8 bits
+                                &lt;code&gt;&lt;/code&gt;&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;UINT16&lt;/code&gt;: PDU Data ID will have 16 bits
+                                &lt;code&gt;&lt;/code&gt;&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;UINT32&lt;/code&gt;: PDU Data ID will have 32 bits
+                                &lt;code&gt;&lt;/code&gt;&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Data ID Length"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="DEFAULT" value="UINT16"/>
+                  <a:da name="RANGE">
+                    <a:v>UINT8</a:v>
+                    <a:v>UINT16</a:v>
+                    <a:v>UINT32</a:v>
+                  </a:da>
+                </v:var>
+                <v:var name="SecOCMaxPduBufferSize" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This parameter defines the maximum size of the buffer in bytes
+                            where the received and sent PDUs are stored.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Max buffer size for PDUs"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="DEFAULT" type="XPath" 
+                        expr="asc_secoc:getPduBufferSize(.)"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=4294967295"/>
+                      <mt:tst expr="&gt;=0"/>
+                    </mt:range>
+                    <mt:xpath 
+                              true="The set buffer size is too small for this variant, go to all variants and set the maximum required buffer size." 
+                              expr="node:value(.) &lt; asc_secoc:getPduBufferSize(.)"/>
+                  </a:da>
+                </v:var>
+                <v:var name="SecOCMaxIntBufferSize" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This parameter defines the maximum size of the buffer in bytes
+                            that are used during the verification/authentication procedure.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Max buffer size for internal usage"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="DEFAULT" type="XPath" 
+                        expr="asc_secoc:getIntBufferSize(.)"/>
+                  <a:da name="EDITABLE" value="true"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&lt;=4294967295"/>
+                      <mt:tst expr="&gt;=0"/>
+                    </mt:range>
+                    <mt:xpath 
+                              true="The set buffer size is too small for this variant, go to all variants and set the maximum required buffer size." 
+                              expr="node:value(.) &lt; asc_secoc:getIntBufferSize(.)"/>
+                  </a:da>
+                </v:var>
+                <v:ctr name="SecOCBypassAuthenticationRoutine" 
+                       type="IDENTIFIABLE">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This feature provides the ability to bypass the authentication
+                            routine, when enabled, the secured PDU shall be send to the lower
+                            layer with a default value for the authentication information
+                            (authenticator/MAC + truncated freshness value).
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            Furthermore, when this feature is enabled during the runtime by calling
+                            the provided API, the FvM and Csm interface shall not be called.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            Enable support for SecOC_BypassAuthRoutine() API.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            This API can be used to enabled/disable the bypass mechanism during
+                            the runtime.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Bypass Authentication Routine"/>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="num:i(count(../../SecOCTxPduProcessing/*)) = 0" 
+                        true="There must be at least one Tx PDU configured."/>
+                  <v:var name="SecOCDefaultAuthenticationInfoValue" 
+                         type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the default value for the authentication information.
+                              The configured value will be set for every byte within the authentication information.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Default Authentication Info Value"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=255"/>
+                    </a:da>
+                  </v:var>
+                </v:ctr>
+                <v:var name="SecOCCsmJobRefCallout" type="FUNCTION-NAME">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This parameter defines the name of the callout function that
+                            shall be called by the SecOC for every Rx and Tx PDU configured
+                            in SecOCRxPduProcessing and SecOCTxPduProcessing to obtain
+                            the Csm job ID.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            This function shall be called in the context of SecOC_Init() with
+                            Csm job ID extracted from the referenced SecOCRxAuthServiceConfigRef or
+                            SecOCTxAuthServiceConfigRef as the input parameter.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Callout function to obtain the Csm job ID"/>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="TAB" value="EB General"/>
+                  <a:da name="ENABLE" value="false"/>
+                </v:var>
+              </v:ctr>
+              <v:lst name="SecOCSameBufferPduCollection" type="MAP">
+                <a:a name="COLUMNS" value="SecOCBufferLength"/>
+                <a:a name="LABEL" value="Same Buffer Pdu Collection"/>
+                <v:ctr name="SecOCSameBufferPduCollection" type="IDENTIFIABLE">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            The buffer configuration that may be used by a collection of Pdus.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            The buffer can be used either by Rx PDUs or Tx PDUs, it cannot be used/
+                            configured that both Rx and Tx PDUs can use it.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <v:var name="SecOCBufferLength" type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the length in bytes of the buffer, which is
+                              used by the SecOC module.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Buffer Length"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="ENABLE" value="true"/>
+                    <a:da name="RANGE" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=4294967295"/>
+                    </a:da>
+                  </v:var>
+                </v:ctr>
+              </v:lst>
+              <v:lst name="SecOCRxPduProcessing" type="MAP">
+                <a:a name="LABEL" value="Secured RX Pdus"/>
+                <a:da name="MAX" value="65535"/>
+                <a:da name="MIN" value="0"/>
+                <v:ctr name="SecOCRxPduProcessing" type="IDENTIFIABLE">
+                  <a:da name="INVALID" type="XPath" 
+                        expr="count(../*[SecOCFreshnessValueId = node:value(node:current()/SecOCFreshnessValueId)]) = count(../*[(SecOCFreshnessValueId = node:value(node:current()/SecOCFreshnessValueId))                                  and (SecOCFreshnessValueLength = node:value(node:current()/SecOCFreshnessValueLength))])" 
+                        false="The secured RX PDUs with the same freshness value ID must have                                   the same freshness value length."/>
+                  <v:var name="SecOcCsmMode" type="ENUMERATION">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              Specifies whether the Csm job is used
+                              in synchronous or asynchronous mode.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Csm operation mode"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="DEFAULT" value="SYNCHRONOUS"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(node:value(../SecOCRxSecuredPduLayer/SecOCSecuredRxPduVerification) = &apos;false&apos;) and node:value(.) = &apos;ASYNCHRONOUS&apos;" 
+                          true="When the verification of the Secured PDU is disabled (SecOCSecuredRxPduVerification is disabled) the Csm operation mode must be set on SYNCHRONOUS"/>
+                    <a:da name="RANGE">
+                      <a:v>ASYNCHRONOUS</a:v>
+                      <a:v>SYNCHRONOUS</a:v>
+                    </a:da>
+                  </v:var>
+                  <v:ref name="SecOCRxAuthServiceConfigRef" 
+                         type="CHOICE-REFERENCE">
+                    <a:a name="COLUMN_TITLE" value="AuthAlgorithm"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCRxAuthServiceConfigRef"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              &lt;strong&gt;Currently only MAC services are supported.&lt;/strong&gt;
+                            &lt;/p&gt;
+
+                            &lt;p&gt;
+                              This parameter defines the authentication algorithm used for
+                              authentication verification.
+                            &lt;/p&gt;
+
+                            &lt;p&gt;
+                              The value of this parameter must be a valid configuration of a
+                              MacVerify configuration in a Csm module.
+                            &lt;/p&gt;
+
+                            &lt;p&gt;
+                              To be able to set the authentication service reference, the configuration
+                              &lt;a href=&quot;path:../SecOCRxSecuredPduLayer/SecOCSecuredRxPduVerification&quot;&gt;Enable verification&lt;/a&gt;
+                              must be enabled.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="AuthAlgorithm"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="../SecOCRxSecuredPduLayer/SecOCSecuredRxPduVerification = &apos;true&apos;"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst expr="(node:refvalid(.))" 
+                             false="The expression argument reference is not valid."/>
+                      <a:tst 
+                             expr="node:exists(as:ref(as:ref(.)/CsmJobPrimitiveRef)/CsmMacVerify)" 
+                             false="The referenced Csm job needs to be configured to use the MacVerify as primitive."/>
+                      <a:tst 
+                             expr="(node:value(../SecOcCsmMode) = &apos;ASYNCHRONOUS&apos; and node:refvalid(as:ref(.)/CsmJobPrimitiveCallbackRef) = false())" 
+                             true="No callback provided by SecOC."/>
+                      <a:tst 
+                             expr="(node:value(../SecOcCsmMode) = &apos;ASYNCHRONOUS&apos; and node:value(as:ref(as:ref(.)/CsmJobPrimitiveRef)/CsmMacVerify/CsmMacVerifyConfig/CsmMacVerifyProcessing) = &apos;CSM_SYNCHRONOUS&apos;)" 
+                             true="The SecOC module is configured to use Csm asynchronous job processing, but the referenced Csm job is configured to be processed in synchronous mode."/>
+                      <a:tst 
+                             expr="(node:value(../SecOcCsmMode) = &apos;SYNCHRONOUS&apos; and node:value(as:ref(as:ref(.)/CsmJobPrimitiveRef)/CsmMacVerify/CsmMacVerifyConfig/CsmMacVerifyProcessing) = &apos;CSM_ASYNCHRONOUS&apos;)" 
+                             true="The SecOC module is configured to use Csm synchronous job processing, but the referenced Csm job is configured to be processed in asynchronous mode."/>
+                    </a:da>
+                    <a:da name="REF" 
+                          value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/Csm/CsmJobs/CsmJob"/>
+                  </v:ref>
+                  <v:var name="SecOCAuthInfoTxLength" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="AuthInfoTxLength"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCAuthInfoTxLength"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the length in bits of the authentication code,
+                              which is included in the payload of the authenticated Pdu.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="AuthInfoTxLength"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=1"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCDataId" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="Data ID"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCDataId"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines a numerical identifier for the secured PDU.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Data ID"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=4294967295"/>
+                        <mt:tst expr="&gt;=0"/>
+                      </mt:range>
+                      <mt:xpath>
+                        <mt:tst 
+                                true="SecOCDataId must not be lower then 0 or greater than 255" 
+                                expr="((node:value(.) &lt; 0 or node:value(.) &gt; 255) and node:value(../../../SecOCGeneral/SecOCDataIdLength) = &apos;UINT8&apos;)"/>
+                        <mt:tst 
+                                true="SecOCDataId must not be lower then 0 or greater than 65535" 
+                                expr="((node:value(.) &lt; 0 or node:value(.) &gt; 65535) and node:value(../../../SecOCGeneral/SecOCDataIdLength) = &apos;UINT16&apos;)"/>
+                        <mt:tst 
+                                true="SecOCDataId must not be lower then 0 or greater than 4294967295" 
+                                expr="((node:value(.) &lt; 0 or node:value(.) &gt; 4294967295) and node:value(../../../SecOCGeneral/SecOCDataIdLength) = &apos;UINT32&apos;)"/>
+                      </mt:xpath>
+                    </a:da>
+                    <a:da name="WARNING" type="XPath" 
+                          expr="text:uniq(../../../*/*/SecOCDataId,.)" 
+                          false="The DataId for the secured PDU is not unique                                 in the present configuration."/>
+                  </v:var>
+                  <v:var name="SecOCFreshnessValueId" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="FreshnessValueId"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCFreshnessValueId"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the ID of the Freshness value.
+                              The Freshness value might be a normal counter or a time value.
+                              If Freshness counters are used, the FreshnessValueId with the same
+                              value must have the same FreshnessValueLength value.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Freshness Value ID"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCFreshnessValueLength" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="FreshnessValueLength"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCFreshnessValueLength"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the complete length in bits of the Freshness Value.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              As long as the key doesn&apos;t change the counter shall not overflow.
+                              The length of the counter shall be determined based on the expected life
+                              time of the corresponding key and frequency of usage of the Freshness
+                              Value.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Freshness Value Length"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=64"/>
+                        <mt:tst expr="&gt;=0"/>
+                      </mt:range>
+                      <mt:xpath 
+                                true="When SecOCQueryFreshnessValue is set to &apos;NONE&apos; the freshness value length must be set to 0." 
+                                expr="(../../../SecOCGeneral/SecOCQueryFreshnessValue = &apos;NONE&apos;) and (node:value(.) &gt; 0)"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCFreshnessValueTxLength" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="FreshnessValueTxLength"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCFreshnessValueTxLength"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                             This parameter defines the length in bits of the Freshness Value to be
+                             included in the payload of the Secured I-PDU.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                             This length is specific to the least significant bits of the complete
+                             Freshness Value.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                             If the parameter is 0 no Freshness Value is included in the Secured I-PDU.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                             The Truncated Freshness Value Length must not be greater than
+                             the &lt;a href=&quot;path:../SecOCFreshnessValueLength&quot;&gt;Freshness Value Length&lt;/a&gt;
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Truncated Freshness Value Length"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=64"/>
+                        <mt:tst expr="&gt;=0"/>
+                      </mt:range>
+                      <mt:xpath>
+                        <mt:tst 
+                                true="The truncated freshness value length must not be greater than freshness value length." 
+                                expr="(. &gt; ../SecOCFreshnessValueLength )"/>
+                        <mt:tst 
+                                true="When SecOCQueryFreshnessValue is set to &apos;NONE&apos; the truncated freshness value length must be set to 0." 
+                                expr="(../../../SecOCGeneral/SecOCQueryFreshnessValue = &apos;NONE&apos;) and (node:value(.) &gt; 0)"/>
+                      </mt:xpath>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCFreshnessValueFuncName" 
+                         type="FUNCTION-NAME">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter specifies the name of the C API function which shall be
+                              called to query the freshness for the current PDU.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              The called function will have the name as
+                              &lt;function&gt;&lt;SecOCFreshnessValueFuncName&gt;()&lt;function&gt;
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              To be able to configure the name of the C API function the
+                              &lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCQueryFreshnessValue&quot;&gt;Query Freshness Value&lt;/a&gt;
+                              must be set on &lt;code&gt;CFUNC&lt;/code&gt;.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Freshness Value Function Name"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(../../../SecOCGeneral/SecOCQueryFreshnessValue = &apos;CFUNC&apos;)"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(../../../SecOCGeneral/SecOCQueryFreshnessValue = &apos;CFUNC&apos;) and (normalize-space(.) = &apos;&apos;)" 
+                          true="Empty value is not allowed"/>
+                  </v:var>
+                  <v:var name="SecOCAuthenticationBuildAttempts" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" 
+                         value="Authentication Build Attempts"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCAuthenticationBuildAttempts"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the number of authentication build attempts
+                              when a verification failed because the freshness value could not
+                              be obtained or the verification of the authenticator could not be
+                              performed.
+                           &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="AuthenticationBuildAttempts"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCAuthenticationVerifyAttempts" 
+                         type="INTEGER">
+                    <a:a name="COLUMN_TITLE" 
+                         value="Authentication Verify Attempts"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCAuthenticationVerifyAttempts"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter specifies the number of authentication verify attempts
+                              that are to be carried out when the verification of the authentication
+                              information failed for a given Secured I-PDU. If zero is set,
+                              then only one authentication verification attempt is done.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              If the freshness value length is 0 and the MAC verification was executed,
+                              but the result was invalid MAC, no additional verification attempt will be executed.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="AuthenticationVerifyAttempts"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCVerificationStatusPropagationMode" 
+                         type="ENUMERATION">
+                    <a:a name="COLUMN_TITLE" 
+                         value="Verification Status Propagation Mode"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCVerificationStatusPropagationMode"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter is used to describe the propagation of the status of
+                              each verification attempt from the SecOC module to the application.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                             To be able to use this feature
+                             &lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCPropagateVerificationStatus&quot;&gt;SecOCPropagateVerificationStatus&lt;/a&gt;
+                              must be enabled and the
+                             &lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCRteUsage&quot;&gt;RTE&lt;/a&gt;
+                             must be enabled or at least one callout function must be configured in the
+                             &lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCVerificationStatusCallout&quot;&gt;VerificationStatus Callout&lt;/a&gt; container.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="VerificationStatusPropagationMode"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="node:value(.) != &apos;NONE&apos; and node:value(../../../SecOCGeneral/SecOCPropagateVerificationStatus) != &apos;NONE&apos; and                                    num:i(count(../../../SecOCGeneral/SecOCVerificationStatusCallout/*)) = 0 and node:value(../../../SecOCGeneral/SecOCRteUsage) = &apos;false&apos;" 
+                          true="To propagate the verification status SecOCPropagateVerificationStatus must be enabled and                                    the RTE usage must be enabled or at least one callout function must be configured in the VerificationStatus Callout container."/>
+                    <a:da name="RANGE">
+                      <a:v>BOTH</a:v>
+                      <a:v>FAILURE_ONLY</a:v>
+                      <a:v>NONE</a:v>
+                    </a:da>
+                  </v:var>
+                  <v:ref name="SecOCSameBufferPduRef" type="REFERENCE">
+                    <a:a name="COLUMN_TITLE" value="Same Buffer PduRef"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCSameBufferPduRef"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This reference is used to collect Pdus that are using the same
+                              SecOC buffer.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                             The referenced buffer must be used only by Rx PDU(s).
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="SameBufferPduRef"/>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="ENABLE" value="true"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst expr="(node:refvalid(.))" 
+                             false="The expression argument reference is not valid."/>
+                      <a:tst 
+                             expr="(../SecOCRxSecuredPduLayer = &apos;SecOCRxSecuredPduCollection&apos;) and                                    ((node:value(as:ref(../SecOCRxSecuredPduLayer/SecOCRxAuthenticPdu/SecOCRxAuthenticPduRef)/PduLength) + node:value(as:ref(../SecOCRxSecuredPduLayer/SecOCRxCryptographicPdu/SecOCRxCryptographicPduRef)/PduLength))                                     &gt; node:value(as:ref(.)/SecOCBufferLength))" 
+                             true=" The size of the references SecOCSameBufferPduCollection must be                                      at least equal with the combined length of the lower layer Authentic I-PDU                                      and Cryptographic I-PDU."/>
+                      <a:tst 
+                             expr="(../SecOCRxSecuredPduLayer = &apos;SecOCRxSecuredPdu&apos;) and                                    (node:value(as:ref(../SecOCRxSecuredPduLayer/SecOCRxSecuredLayerPduRef)/PduLength) &gt; node:value(as:ref(.)/SecOCBufferLength))" 
+                             true=" The size of the references SecOCSameBufferPduCollection must be                                      at least equal with the length of the Secured I-PDU."/>
+                      <a:tst 
+                             expr="node:containsValue(../../../SecOCTxPduProcessing/*[node:exists(./SecOCSameBufferPduRef) = true()]/SecOCSameBufferPduRef,.)" 
+                             true=" The selected buffer is already being used by the Tx PDUs."/>
+                      <a:tst 
+                             expr="node:value(../SecOCReceptionOverflowStrategy) = &apos;REPLACE&apos;" 
+                             true="Same buffer cannot be used together with SecOCReceptionOverflowStrategy set to REPLACE."/>
+                      <a:tst 
+                             expr="node:value(../SecOCRxAuthenticPduLayer/SecOCPduType) = &apos;SECOC_TPPDU&apos;" 
+                             true="Same buffer cannot be used together with SecOCPduType set to SECOC_TPPDU."/>
+                    </a:da>
+                    <a:da name="REF" 
+                          value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/SecOC/SecOCSameBufferPduCollection"/>
+                  </v:ref>
+                  <v:var name="SecOCUseAuthDataFreshness" type="BOOLEAN">
+                    <a:a name="COLUMN_TITLE" value="UseAuthDataFreshness"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCUseAuthDataFreshness"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter indicates if a part of the authentic data from
+                              the Secured PDU shall be passed on to the SWC that verifies and
+                              generates the Freshness.
+                              If it is set to &lt;code&gt;TRUE&lt;/code&gt;, the values
+                              &lt;code&gt;SecOCAuthDataFreshnessStartPosition&lt;/code&gt; and
+                              &lt;code&gt;SecOCAuthDataFreshnessLen&lt;/code&gt; must be set to specify the
+                              bit start position and length within the Secured PDU.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" 
+                         value="Send authentic data to Freshness SWC"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="ENABLE" value="true"/>
+                  </v:var>
+                  <v:var name="SecOCAuthDataFreshnessLen" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="AuthDataFreshnessLen"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCAuthDataFreshnessLen"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the length in bits the authentic data part
+                              from the Secured PDU that will be passed on to the Freshness SWC.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Authentic data freshness length"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="../SecOCUseAuthDataFreshness = &apos;true&apos;"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=64"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCAuthDataFreshnessStartPosition" 
+                         type="INTEGER">
+                    <a:a name="COLUMN_TITLE" 
+                         value="AuthDataFreshnessStartPosition"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCAuthDataFreshnessStartPosition"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the start position in bits (uint16) of the
+                              authentic data part from the Secured PDU that shall be passed
+                              on to the Freshness SWC.
+                              The bit position starts counting from the MSB of the first byte of
+                              the PDU.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" 
+                         value="Authentic data freshness start position"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="../SecOCUseAuthDataFreshness = &apos;true&apos;"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCReceptionOverflowStrategy" 
+                         type="ENUMERATION">
+                    <a:a name="COLUMN_TITLE" value="ReceptionOverflowStrategy"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCReceptionOverflowStrategy"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter specifies the overflow strategy for receiving PDUs.
+                            &lt;/p&gt;
+
+                            &lt;ul&gt;
+                              &lt;li&gt;&lt;code&gt;QUEUE&lt;/code&gt;:   Subsequent received message will be queued.
+                                &lt;strong&gt;Currently not supported.&lt;/strong&gt;&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;REJECT&lt;/code&gt;:  Subsequent received message will be discarded&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;REPLACE&lt;/code&gt;: Subsequent received message will replace the
+                                  currently processed message&lt;/li&gt;
+                            &lt;/ul&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Reception overflow strategy"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:da name="DEFAULT" value="REJECT"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="ENABLE" value="true"/>
+                    <a:da name="RANGE">
+                      <a:v>REJECT</a:v>
+                      <a:v>REPLACE</a:v>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCReceptionQueueSize" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="ReceptionQueueSize"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCReceptionQueueSize"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              &lt;strong&gt;Currently not supported.&lt;/strong&gt;
+                            &lt;/p&gt;
+
+                            &lt;p&gt;
+                              This parameter defines the queue size in case the overflow strategy
+                              for receiving PDUs is set to QUEUE.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Reception Queue Size"/>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="EDITABLE" value="false"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=1"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCRxUseShapeFunc" type="BOOLEAN">
+                    <a:a name="COLUMN_TITLE" value="RxUseShapeFunc"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCRxUseShapeFunc"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter indicates, whether the layout shaping functionality
+                              its enabled or not for this PDU.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              By enabling this parameter, the layout of the secured PDU can be updated by the SecOC callout function
+                              which name is configured in the
+                              &lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCRxShapeFuncName&quot;&gt;SecOCRxShapeFuncName&lt;/a&gt; parameter.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Fixed secured PDU layout"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst 
+                             expr="node:value(.) = &apos;true&apos; and node:exists(../../../SecOCGeneral/SecOCRxShapeFuncName) = false()" 
+                             true="The callout function to shape the secured PDU layout is enabled but the name of the callout function is not configured."/>
+                      <a:tst 
+                             expr="node:value(.) = &apos;true&apos; and node:value(../SecOCRxAuthenticPduLayer/SecOCPduType) = &apos;SECOC_TPPDU&apos;" 
+                             true="The fix layout of the Rx Secured PDU can be used only with direct transmission (IF)."/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCRxSyncPduProcessing" type="BOOLEAN">
+                    <a:a name="COLUMN_TITLE" value="RxSyncPduProcessing"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCRxSyncPduProcessing"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter indicates whether the Pdu is processed synchronously,
+                              i.e. the Pdu is processed directly without calling the main function.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              Note that manually calling the main function has no effect since the Pdu
+                              processing is done within the PduR calls of SecOC interface (i.e. SecOC_RxIndication).
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              Synchronous Pdu processing cannot be combined with asynchronous Csm Mode.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Enable synchronous Pdu processing"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="../SecOcCsmMode = &apos;SYNCHRONOUS&apos;"/>
+                    <a:da name="WARNING" type="XPath">
+                      <a:tst 
+                             expr="node:value(.) = &apos;true&apos; and node:value(../SecOCAuthenticationBuildAttempts) &gt; 0" 
+                             true="It&apos;s highly recommended to set SecOCAuthenticationBuildAttempts to zero when using synchronous Pdu processing,                          since otherwise calls are blocking for the duration of retries."/>
+                      <a:tst 
+                             expr="node:value(.) = &apos;true&apos; and node:value(../SecOCAuthenticationVerifyAttempts) &gt; 0" 
+                             true="It&apos;s highly recommended to set SecOCAuthenticationVerifyAttempts to zero when using synchronous Pdu processing,                          since otherwise calls are blocking for the duration of retries."/>
+                    </a:da>
+                  </v:var>
+                  <v:chc name="SecOCRxSecuredPduLayer" type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This container specifies the Pdu that is received by the SecOC
+                              module from the PduR.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              There are two available possibilities to receive the data from the lower layer.
+                            &lt;/p&gt;
+                              SecOCRxSecuredPdu - the whole content will be received within an I-PDU (Secured I-PDU)
+                            &lt;p&gt;
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              SecOCRxSecuredPduCollection - the whole content will be received with two
+                              I-PDUs, the Authentic I-PDU (which contains the authentic data) and
+                              the Cryptographic I-PDU (which contains the cryptographic information
+                              like MAC etc)
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="FRAME" value="TITLE"/>
+                    <v:ctr name="SecOCRxSecuredPdu" type="IDENTIFIABLE">
+                      <a:da name="INVALID" type="XPath" 
+                            expr="(node:value(node:ref(../SecOCRxAuthenticPduLayer/SecOCRxAuthenticLayerPduRef)/PduLength) + ceiling((node:value(../SecOCFreshnessValueTxLength) + node:value(../SecOCAuthInfoTxLength)) div 8)) =                                       node:value(node:ref(./SecOCRxSecuredLayerPduRef)/PduLength)" 
+                            false="Rx Secured PDU length must be equal with the combine length of the Authentic PDU, Truncated FreshnessValue and MAC"/>
+                      <v:var name="SecOCRxSecuredLayerPduId" type="INTEGER">
+                        <a:a name="COLUMN_TITLE" value="RxSecuredLayerPduId"/>
+                        <a:a name="COLUMN_TOOLTIP" 
+                             value="SecOCRxSecuredLayerPduId"/>
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  PDU identifier assigned by SecureOnboardCommunication module.
+                                  Used by PduR for &lt;code&gt;SecOC_PduRRxIndication&lt;/code&gt;.
+                                &lt;/p&gt;
+
+                                &lt;p&gt;
+                                  The Handle-Id Wizard can be used to set this value automatically.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Secured RX PDU Handle ID"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&gt;=0"/>
+                            <mt:tst expr="&lt;=65535"/>
+                          </mt:range>
+                        </a:da>
+                      </v:var>
+                      <v:var name="SecOCSecuredRxPduVerification" 
+                             type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  This parameter defines whether the MAC verification shall be
+                                  performed on this Secured I-PDU. If set to false, the SecOC module
+                                  extracts the Authentic I-PDU from the Secured I-PDU without
+                                  verification.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Enable verification"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:da name="DEFAULT" value="true"/>
+                        <a:da name="EDITABLE" value="true"/>
+                      </v:var>
+                      <v:ref name="SecOCRxSecuredLayerPduRef" type="REFERENCE">
+                        <a:a name="COLUMN_TITLE" value="RxSecuredLayerPduRef"/>
+                        <a:a name="COLUMN_TOOLTIP" 
+                             value="SecOCRxSecuredLayerPduRef"/>
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  Reference to the global Pdu holding a secured Pdu, which shall be
+                                  verified by the SecOC module.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Secured RX PDU Reference"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="(node:refvalid(.))" 
+                              false="The expression argument reference is not valid."/>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                      </v:ref>
+                    </v:ctr>
+                    <v:ctr name="SecOCRxSecuredPduCollection" 
+                           type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This container specifies two Pdus that are received by the SecOC module
+                                from the PduR and a message linking between them.
+                              &lt;/p&gt;
+                              &lt;p&gt;
+                                &lt;a href=&quot;path:./SecOCRxAuthenticPdu&quot;&gt;SecOCRxAuthenticPdu&lt;/a&gt; contains the original Authentic I-PDU, i.e. the
+                                secured data, and the &lt;a href=&quot;path:./SecOCRxCryptographicPdu&quot;&gt;SecOCRxCryptographicPdu&lt;/a&gt; contains the
+                                Authenticator, i.e. the actual Authentication Information.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <v:var name="SecOCSecuredRxPduVerification" 
+                             type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  This parameter defines whether the MAC verification shall be
+                                  performed on this Secured I-PDU. If set to false, the SecOC module
+                                  extracts the Authentic I-PDU from the Secured I-PDU without
+                                  verification.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Enable verification"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:da name="DEFAULT" value="true"/>
+                        <a:da name="EDITABLE" value="true"/>
+                      </v:var>
+                      <v:ctr name="SecOCRxAuthenticPdu" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  This container specifies the PDU that is received by the SecOC
+                                  module from the lower layer, which contains the authentic data
+                                  that will form with the corresponding Cryptographic I-PDU
+                                  the Secured I-PDU.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Rx Authentic PDU"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="as:ref(./SecOCRxAuthenticPduRef)/PduLength != as:ref(../../SecOCRxAuthenticPduLayer/SecOCRxAuthenticLayerPduRef)/PduLength" 
+                              true="The length of the Authentic I-PDU received from the lower                                        layer must have the same length with the Authentic I-PDU                                        that needs to be send to the upper layer"/>
+                        <v:var name="SecOCRxAuthenticPduId" type="INTEGER">
+                          <a:a name="COLUMN_TITLE" value="RxAuthenticPduId"/>
+                          <a:a name="COLUMN_TOOLTIP" 
+                               value="SecOCRxAuthenticPduId"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    This parameter defines the PDU identifier of the Authentic I-PDU
+                                    assigned by SecOC module.
+                                    Used by PduR for SecOC_PduRRxIndication.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Authentic PDU ID"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&gt;=0"/>
+                            <a:tst expr="&lt;=65535"/>
+                          </a:da>
+                        </v:var>
+                        <v:ref name="SecOCRxAuthenticPduRef" type="REFERENCE">
+                          <a:a name="COLUMN_TITLE" value="RxAuthenticPduRef"/>
+                          <a:a name="COLUMN_TOOLTIP" 
+                               value="SecOCRxAuthenticPduRef"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Reference to the global Pdu.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Authentic PDU Reference"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                        </v:ref>
+                      </v:ctr>
+                      <v:ctr name="SecOCRxCryptographicPdu" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  This container specifies the Cryptographic Pdu that is received by the
+                                  SecOC module from the PduR.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Rx Cryptographic PDU"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="node:exists(../SecOCUseMessageLink) and                                       (as:ref(./SecOCRxCryptographicPduRef)/PduLength != num:i(ceiling((../../SecOCAuthInfoTxLength + ../../SecOCFreshnessValueTxLength + ../SecOCUseMessageLink/SecOCMessageLinkLen) div 8)))" 
+                                 true="The length of the Cryptographic I-PDU must be equal                                        with the combined length of the truncated                                        freshness value, the truncated authenticator and                                        the message link."/>
+                          <a:tst 
+                                 expr="not(node:exists(../SecOCUseMessageLink)) and                                       (as:ref(./SecOCRxCryptographicPduRef)/PduLength != num:i(ceiling((../../SecOCAuthInfoTxLength + ../../SecOCFreshnessValueTxLength) div 8)))" 
+                                 true="The length of the Cryptographic I-PDU must be equal                                        with the combined length of the truncated                                        freshness value and the truncated authenticator."/>
+                        </a:da>
+                        <v:var name="SecOCRxCryptographicPduId" type="INTEGER">
+                          <a:a name="COLUMN_TITLE" value="RxCryptographicPduId"/>
+                          <a:a name="COLUMN_TOOLTIP" 
+                               value="SecOCRxCryptographicPduId"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    This parameter defines the PDU identifier of the Cryptographic
+                                    I-PDU assigned by SecOC module.
+                                    Used by PduR for &lt;code&gt;SecOC_PduRRxIndication&lt;/code&gt;.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Cryptographic PDU ID"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&gt;=0"/>
+                            <a:tst expr="&lt;=65535"/>
+                          </a:da>
+                        </v:var>
+                        <v:ref name="SecOCRxCryptographicPduRef" 
+                               type="REFERENCE">
+                          <a:a name="COLUMN_TITLE" value="RxCryptographicPduRef"/>
+                          <a:a name="COLUMN_TOOLTIP" 
+                               value="SecOCRxCryptographicPduRef"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Reference to the global Pdu.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Cryptographic PDU Reference"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                        </v:ref>
+                      </v:ctr>
+                      <v:ctr name="SecOCUseMessageLink" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  SecOC links an Authentic I-PDU and Cryptographic I-PDU together by
+                                  repeating a specific part (Message Linker) of the Authentic I-PDU
+                                  in the Cryptographic I-PDU.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="(num:i(ceiling((node:value(./SecOCMessageLinkLen) + node:value(./SecOCMessageLinkPos)) div 8)) &gt; node:value(node:ref(../../SecOCRxAuthenticPduLayer/SecOCRxAuthenticLayerPduRef)/PduLength))" 
+                              true="The sum of configured value of message link length and message link offset (converted in bytes) must be smaller or equal than the Authentic PDU length"/>
+                        <v:var name="SecOCMessageLinkLen" type="INTEGER">
+                          <a:a name="COLUMN_TITLE" value="MessageLinkLen"/>
+                          <a:a name="COLUMN_TOOLTIP" value="SecOCMessageLinkLen"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    This parameter defines the length of the Message Linker inside
+                                    the Authentic I-PDU in bits.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Message Linker length"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&gt;=1"/>
+                            <a:tst expr="&lt;=65535"/>
+                          </a:da>
+                        </v:var>
+                        <v:var name="SecOCMessageLinkPos" type="INTEGER">
+                          <a:a name="COLUMN_TITLE" value="MessageLinkPos"/>
+                          <a:a name="COLUMN_TOOLTIP" value="SecOCMessageLinkPos"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    This parameter defines the position of the Message Linker
+                                    inside the Authentic I-PDU in bits.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Message Linker position"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&gt;=0"/>
+                            <a:tst expr="&lt;=65535"/>
+                          </a:da>
+                        </v:var>
+                      </v:ctr>
+                    </v:ctr>
+                  </v:chc>
+                  <v:ctr name="SecOCRxPduSecuredArea" type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This container specifies an area in the Authentic I-Pdu that will
+                                be the input to the Authenticator verification algorithm. If this
+                                container does not exist in the configuration the complete
+                                Authentic I-Pdu will be the input to the Authenticator
+                                verification algorithm.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="POSTBUILDVARIANTMULTIPLICITY" value="true"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst 
+                             expr="(node:value(./SecOCSecuredRxPduLength) + node:value(./SecOCSecuredRxPduOffset) &gt; node:value(node:ref(../SecOCRxAuthenticPduLayer/SecOCRxAuthenticLayerPduRef)/PduLength))" 
+                             true="The sum of configured value of secured area length and secured area offset must be smaller or equal than the Authentic PDU length"/>
+                      <a:tst 
+                             expr="node:value(../../../SecOCGeneral/SecOCUseSecuredArea) = &apos;false&apos;" 
+                             true="In the General tab the SecOCUseSecuredArea configuration parameter must be enabled"/>
+                    </a:da>
+                    <v:var name="SecOCSecuredRxPduLength" type="INTEGER">
+                      <a:a name="COLUMN_TITLE" value="SecuredAreaLength"/>
+                      <a:a name="COLUMN_TOOLTIP" value="SecOCSecuredRxPduLength"/>
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  This parameter defines the length (in bytes) of the area within
+                                  the Pdu which shall be secured.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="LABEL" value="Rx PDU secured area length"/>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:da name="INVALID" type="Range">
+                        <a:tst expr="&gt;=0"/>
+                        <a:tst expr="&lt;=65535"/>
+                      </a:da>
+                    </v:var>
+                    <v:var name="SecOCSecuredRxPduOffset" type="INTEGER">
+                      <a:a name="COLUMN_TITLE" value="SecuredAreaOffset"/>
+                      <a:a name="COLUMN_TOOLTIP" value="SecOCSecuredRxPduOffset"/>
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  This parameter defines the start position (offset in bytes) of the
+                                  area within the Pdu which shall be secured.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="LABEL" value="Rx PDU secured area Offset"/>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:da name="INVALID" type="Range">
+                        <a:tst expr="&gt;=0"/>
+                        <a:tst expr="&lt;=65535"/>
+                      </a:da>
+                    </v:var>
+                  </v:ctr>
+                  <v:ctr name="SecOCRxAuthenticPduLayer" type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This container specifies the Pdu that is transmitted by the SecOC module
+                              to the PduR after the Mac was verified.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <v:var name="SecOCPduType" type="ENUMERATION">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This parameter defines API Type to use for communication with PduR.
+                              &lt;/p&gt;
+
+                              &lt;ul&gt;
+                                &lt;li&gt;&lt;code&gt;SECOC_IFPDU&lt;/code&gt;: SECOC_IFPDU Interface communication API&lt;/li&gt;
+                                &lt;li&gt;&lt;code&gt;SECOC_TPPDU&lt;/code&gt;: SECOC_TPPDU Transport Protocol communication API&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="LABEL" value="PduR API Type"/>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:da name="DEFAULT" value="SECOC_IFPDU"/>
+                      <a:da name="RANGE">
+                        <a:v>SECOC_IFPDU</a:v>
+                        <a:v>SECOC_TPPDU</a:v>
+                      </a:da>
+                    </v:var>
+                    <v:ref name="SecOCRxAuthenticLayerPduRef" type="REFERENCE">
+                      <a:a name="COLUMN_TITLE" 
+                           value="SecOCRxAuthenticLayerPduRef"/>
+                      <a:a name="COLUMN_TOOLTIP" 
+                           value="SecOCRxAuthenticLayerPduRef"/>
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;Reference to the global Pdu holding an authenticated Pdu.&lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="LABEL" value="Authentic RX PDU Reference"/>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                      <a:da name="INVALID" type="XPath" 
+                            expr="(node:refvalid(.))" 
+                            false="The expression argument reference is not valid."/>
+                      <a:da name="REF" 
+                            value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                    </v:ref>
+                    <v:var name="SecOCUnsupportedPduId" type="INTEGER">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This parameter defines the ID of unsupported Pdu
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="LABEL" value="Dummy Id"/>
+                      <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                      <a:a name="VISIBLE" value="false"/>
+                      <a:da name="DEFAULT" value="255"/>
+                      <a:da name="EDITABLE" value="false"/>
+                    </v:var>
+                  </v:ctr>
+                </v:ctr>
+              </v:lst>
+              <v:lst name="SecOCTxPduProcessing" type="MAP">
+                <a:a name="LABEL" value="Secured TX Pdus"/>
+                <a:da name="MAX" value="65535"/>
+                <a:da name="MIN" value="0"/>
+                <v:ctr name="SecOCTxPduProcessing" type="IDENTIFIABLE">
+                  <a:da name="INVALID" type="XPath" 
+                        expr="count(../*[SecOCFreshnessValueId = node:value(node:current()/SecOCFreshnessValueId)]) = count(../*[(SecOCFreshnessValueId = node:value(node:current()/SecOCFreshnessValueId))                                  and (SecOCFreshnessValueLength = node:value(node:current()/SecOCFreshnessValueLength))])" 
+                        false="The secured TX PDUs with the same freshness value ID must have                                   the same freshness value length."/>
+                  <v:var name="SecOcCsmMode" type="ENUMERATION">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              Specifies whether the Csm job is used
+                              in synchronous or asynchronous mode.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Csm operation mode"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="DEFAULT" value="SYNCHRONOUS"/>
+                    <a:da name="RANGE">
+                      <a:v>ASYNCHRONOUS</a:v>
+                      <a:v>SYNCHRONOUS</a:v>
+                    </a:da>
+                  </v:var>
+                  <v:ref name="SecOCTxAuthServiceConfigRef" 
+                         type="CHOICE-REFERENCE">
+                    <a:a name="COLUMN_TITLE" value="AuthAlgorithm"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCTxAuthServiceConfigRef"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              &lt;strong&gt;Currently only MAC services are supported.&lt;/strong&gt;
+                            &lt;/p&gt;
+
+                            &lt;p&gt;
+                              This parameter defines the authentication algorithm used for
+                              authentication generation.
+                            &lt;/p&gt;
+
+                            &lt;p&gt;
+                              The value of this parameter must be a valid configuration of a
+                              MacGenerate configuration in a Csm module.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Authentication Algorithm"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst expr="(node:refvalid(.))" 
+                             false="The expression argument reference is not valid."/>
+                      <a:tst 
+                             expr="node:exists(as:ref(as:ref(.)/CsmJobPrimitiveRef)/CsmMacGenerate)" 
+                             false="The referenced Csm job needs to be configured to use the MacGenerate as primitive."/>
+                      <a:tst 
+                             expr="(node:value(../SecOcCsmMode) = &apos;ASYNCHRONOUS&apos; and node:refvalid(as:ref(.)/CsmJobPrimitiveCallbackRef) = false())" 
+                             true="No callback provided by SecOC."/>
+                      <a:tst 
+                             expr="(node:value(../SecOcCsmMode) = &apos;ASYNCHRONOUS&apos; and node:value(as:ref(as:ref(.)/CsmJobPrimitiveRef)/CsmMacGenerate/CsmMacGenerateConfig/CsmMacGenerateProcessing) = &apos;CSM_SYNCHRONOUS&apos;)" 
+                             true="The SecOC module is configured to use Csm asynchronous job processing, but the referenced Csm job is configured to be processed in synchronous mode."/>
+                      <a:tst 
+                             expr="(node:value(../SecOcCsmMode) = &apos;SYNCHRONOUS&apos; and node:value(as:ref(as:ref(.)/CsmJobPrimitiveRef)/CsmMacGenerate/CsmMacGenerateConfig/CsmMacGenerateProcessing) = &apos;CSM_ASYNCHRONOUS&apos;)" 
+                             true="The SecOC module is configured to use Csm synchronous job processing, but the referenced Csm job is configured to be processed in asynchronous mode."/>
+                    </a:da>
+                    <a:da name="REF" 
+                          value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/Csm/CsmJobs/CsmJob"/>
+                  </v:ref>
+                  <v:var name="SecOCAuthInfoTxLength" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="AuthInfoTxLength"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCAuthInfoTxLength"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the length in bits of the authentication code,
+                              which is included in the payload of the authenticated Pdu.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="AuthInfoTxLength"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=1"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCDataId" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="Data ID"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCDataId"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines a numerical identifier for the secured PDU.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Data ID"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=4294967295"/>
+                        <mt:tst expr="&gt;=0"/>
+                      </mt:range>
+                      <mt:xpath>
+                        <mt:tst 
+                                true="SecOCDataId must not be lower then 0 or greater than 255" 
+                                expr="((node:value(.) &lt; 0 or node:value(.) &gt; 255) and node:value(../../../SecOCGeneral/SecOCDataIdLength) = &apos;UINT8&apos;)"/>
+                        <mt:tst 
+                                true="SecOCDataId must not be lower then 0 or greater than 65535" 
+                                expr="((node:value(.) &lt; 0 or node:value(.) &gt; 65535) and node:value(../../../SecOCGeneral/SecOCDataIdLength) = &apos;UINT16&apos;)"/>
+                        <mt:tst 
+                                true="SecOCDataId must not be lower then 0 or greater than 4294967295" 
+                                expr="((node:value(.) &lt; 0 or node:value(.) &gt; 4294967295) and node:value(../../../SecOCGeneral/SecOCDataIdLength) = &apos;UINT32&apos;)"/>
+                      </mt:xpath>
+                    </a:da>
+                    <a:da name="WARNING" type="XPath" 
+                          expr="text:uniq(../../../*/*/SecOCDataId,.)" 
+                          false="The DataId for the secured PDU is not unique                                 in the present configuration."/>
+                  </v:var>
+                  <v:var name="SecOCFreshnessValueId" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="FreshnessValueId"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCFreshnessValueId"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the ID of the Freshness value.
+                              The Freshness value might be a normal counter or a time value.
+                              If Freshness counters are used, the FreshnessValueId with the same
+                              value must have the same FreshnessValueLength.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Freshness Value ID"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCFreshnessValueLength" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="FreshnessValueLength"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCFreshnessValueLength"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the complete length in bits of the Freshness Value.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              As long as the key doesn&apos;t change the counter shall not overflow.
+                              The length of the counter shall be determined based on the expected life
+                              time of the corresponding key and frequency of usage of the Freshness
+                              Value.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Freshness Value Length"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=64"/>
+                        <mt:tst expr="&gt;=0"/>
+                      </mt:range>
+                      <mt:xpath 
+                                true="When SecOCQueryFreshnessValue is set to &apos;NONE&apos; the freshness value length must be set to 0." 
+                                expr="(../../../SecOCGeneral/SecOCQueryFreshnessValue = &apos;NONE&apos;) and (node:value(.) &gt; 0)"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCFreshnessValueTxLength" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" value="FreshnessValueTxLength"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCFreshnessValueTxLength"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                             This parameter defines the length in bits of the Freshness Value to be
+                             included in the payload of the Secured I-PDU.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                             This length is specific to the least significant bits of the complete
+                             Freshness Value.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                             If the parameter is 0 no Freshness Value is included in the Secured I-PDU.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                             The Truncated Freshness Value Length must not be greater than
+                             the &lt;a href=&quot;path:../SecOCFreshnessValueLength&quot;&gt;Freshness Value Length&lt;/a&gt;
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Truncated Freshness Value Length"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&lt;=64"/>
+                        <mt:tst expr="&gt;=0"/>
+                      </mt:range>
+                      <mt:xpath>
+                        <mt:tst 
+                                true="The truncated freshness value length must not be greater than freshness value length." 
+                                expr="(. &gt; ../SecOCFreshnessValueLength)"/>
+                        <mt:tst 
+                                true="When SecOCQueryFreshnessValue is set to &apos;NONE&apos; the truncated freshness value length must be set to 0." 
+                                expr="(../../../SecOCGeneral/SecOCQueryFreshnessValue = &apos;NONE&apos;) and (node:value(.) &gt; 0)"/>
+                      </mt:xpath>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCFreshnessValueFuncName" 
+                         type="FUNCTION-NAME">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter specifies the name of the C API function which shall be
+                              called to query the freshness for the current PDU.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              The called function will have the name as
+                              &lt;function&gt;&lt;SecOCFreshnessValueFuncName&gt;()&lt;function&gt;
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              To be able to configure the name of the C API function the
+                              &lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCQueryFreshnessValue&quot;&gt;Query Freshness Value&lt;/a&gt;
+                              must be set on &lt;code&gt;CFUNC&lt;/code&gt;.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Freshness Value Function Name"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(../../../SecOCGeneral/SecOCQueryFreshnessValue = &apos;CFUNC&apos;)"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="(../../../SecOCGeneral/SecOCQueryFreshnessValue = &apos;CFUNC&apos;) and (normalize-space(.) = &apos;&apos;)" 
+                          true="Empty value is not allowed"/>
+                  </v:var>
+                  <v:var name="SecOCSecuredPDUTransmittedFuncName" 
+                         type="FUNCTION-NAME">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                             This parameter specifies the name of the C API function which shall be
+                             called after a Secured I-PDU has been started for transmission.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" 
+                         value="SecuredPDUTransmitted function name"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="(../../../SecOCGeneral/SecOCQueryFreshnessValue = &apos;CFUNC&apos;)"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="normalize-space(.) = &apos;&apos;" 
+                          true="Empty value is not allowed"/>
+                  </v:var>
+                  <v:var name="SecOCAuthenticationBuildAttempts" type="INTEGER">
+                    <a:a name="COLUMN_TITLE" 
+                         value="Authentication Build Attempts"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCAuthenticationBuildAttempts"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter defines the number of authentication build attempts
+                              when an authentication failed because the freshness value could not be
+                              obtained or the generation of the authenticator could not be performed.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="AuthenticationBuildAttempts"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&gt;=0"/>
+                      <a:tst expr="&lt;=65535"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCMacGenerateStatusPropagationMode" 
+                         type="ENUMERATION">
+                    <a:a name="COLUMN_TITLE" 
+                         value="MacGenerateStatusPropagationMode"/>
+                    <a:a name="COLUMN_TOOLTIP" 
+                         value="SecOCMacGenerateStatusPropagationMode"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter is used to describe the propagation of the status
+                              from the SecOC module to the application.
+                            &lt;/p&gt;
+                            &lt;ul&gt;
+                              &lt;li&gt;&lt;code&gt;BOTH&lt;/code&gt;:   SecOC will propagate both negative and posivite status of the MAC Generate service&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;FAILURE_ONLY&lt;/code&gt;: SecOC will propagate the status only when the MAC Generate service failed&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;NONE&lt;/code&gt;: SecOC will not propagate the status of the MAC Generate service&lt;/li&gt;
+                            &lt;/ul&gt;
+                            &lt;p&gt;
+                             To be able to use this feature the
+                             &lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCRteUsage&quot;&gt;RTE&lt;/a&gt;
+                             must be enabled or at least one callout function must be configured in the
+                             &lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCMacGenerateStatusCallout&quot;&gt;MacGenerateStatus Callout&lt;/a&gt; container.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="MacGenerateStatusPropagationMode"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="DEFAULT" value="NONE"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="node:value(.) != &apos;NONE&apos; and num:i(count(../../../SecOCGeneral/SecOCMacGenerateStatusCallout/*)) = 0 and node:value(../../../SecOCGeneral/SecOCRteUsage) = &apos;false&apos;" 
+                          true="To propagate the MAC Generate status the RTE usage must be enabled or at least one callout function must be configured in the MacGenerateStatus Callout container."/>
+                    <a:da name="RANGE">
+                      <a:v>BOTH</a:v>
+                      <a:v>FAILURE_ONLY</a:v>
+                      <a:v>NONE</a:v>
+                    </a:da>
+                  </v:var>
+                  <v:ref name="SecOCSameBufferPduRef" type="REFERENCE">
+                    <a:a name="COLUMN_TITLE" value="Same Buffer Pdu Ref"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCSameBufferPduRef"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                           &lt;p&gt;
+                             This reference is used to collect Pdus that are using the same
+                             SecOC buffer.
+                           &lt;/p&gt;
+                           &lt;p&gt;
+                             The referenced buffer must be used only by Tx PDU(s).
+                           &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="SameBufferPduRef"/>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:da name="EDITABLE" value="true"/>
+                    <a:da name="ENABLE" value="true"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst expr="(node:refvalid(.))" 
+                             false="The expression argument reference is not valid."/>
+                      <a:tst 
+                             expr="(../SecOCTxSecuredPduLayer = &apos;SecOCTxSecuredPduCollection&apos;) and                                    ((node:value(as:ref(../SecOCTxSecuredPduLayer/SecOCTxAuthenticPdu/SecOCTxAuthenticPduRef)/PduLength) + node:value(as:ref(../SecOCTxSecuredPduLayer/SecOCTxCryptographicPdu/SecOCTxCryptographicPduRef)/PduLength))                                     &gt; node:value(as:ref(.)/SecOCBufferLength))" 
+                             true=" The size of the references SecOCSameBufferPduCollection must be                                      at least equal with the combined length of the lower layer Authentic I-PDU                                      and Cryptographic I-PDU."/>
+                      <a:tst 
+                             expr="(../SecOCTxSecuredPduLayer = &apos;SecOCTxSecuredPdu&apos;) and                                    (node:value(as:ref(../SecOCTxSecuredPduLayer/SecOCTxSecuredLayerPduRef)/PduLength) &gt; node:value(as:ref(.)/SecOCBufferLength))" 
+                             true=" The size of the references SecOCSameBufferPduCollection must be                                      at least equal with the length of the Secured I-PDU."/>
+                      <a:tst 
+                             expr="node:containsValue(../../../SecOCRxPduProcessing/*[node:exists(./SecOCSameBufferPduRef) = true()]/SecOCSameBufferPduRef,.)" 
+                             true=" The selected buffer is already being used by the Rx PDUs."/>
+                    </a:da>
+                    <a:da name="REF" 
+                          value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/SecOC/SecOCSameBufferPduCollection"/>
+                  </v:ref>
+                  <v:var name="SecOCProvideTxTruncatedFreshnessValue" 
+                         type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter specifies if the Tx query freshness function provides
+                              the truncated freshness info instead of generating this by SecOC.
+                              In this case, SecOC shall add this data to the Authentic PDU instead
+                              of truncating the freshness value.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Provide Truncated Freshness Value"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="ENABLE" value="true"/>
+                  </v:var>
+                  <v:var name="SecOCUseTxConfirmation" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                           &lt;p&gt;
+                             &lt;strong&gt;
+                              Currently not supported.
+                             &lt;/strong&gt;
+                              The function &lt;code&gt;SecOC_SPduTxConfirmation&lt;/code&gt; will
+                              be enabled by default when the freshness values functions are used
+                              (&lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCQueryFreshnessValue&quot;&gt;Query Freshness Value&lt;/a&gt; != NONE).
+                           &lt;/p&gt;
+
+                            &lt;p&gt;
+                              This parameter indicates indicates if the function
+                              &lt;code&gt;SecOC_SPduTxConfirmation&lt;/code&gt; shall be called for this PDU.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Use TxConfirmation"/>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:da name="DEFAULT" value="true"/>
+                    <a:da name="EDITABLE" value="false"/>
+                    <a:da name="ENABLE" value="false"/>
+                  </v:var>
+                  <v:var name="SecOCTxConfirmationTimeout" type="FLOAT">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              Period in seconds for TxConfirmation timeout.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              If the value is 0, the timeout feature will be disabled.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              If the value is different than 0, the timeout value must be equal or
+                              greater than
+                              &lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCMainFunctionPeriodTx&quot;&gt;Tx main period&lt;/a&gt;.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Timeout period for TxConfirmation"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="INVALID" type="Multi">
+                      <mt:range>
+                        <mt:tst expr="&gt;=0"/>
+                        <mt:tst expr="&lt;=4294967295"/>
+                      </mt:range>
+                      <mt:xpath 
+                                true="The SecOCTxConfirmationTimeout value must be equal or greater than the Tx main function period value." 
+                                expr="(. != 0) and (. &lt; node:value(../../../SecOCGeneral/SecOCMainFunctionPeriodTx))"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="SecOCTxUseShapeFunc" type="BOOLEAN">
+                    <a:a name="COLUMN_TITLE" value="TxUseShapeFunc"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCTxUseShapeFunc"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter indicates, whether the layout shaping functionality
+                              its enabled or not for this PDU.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              By enabling this parameter, the secured PDU layout can be updated
+                              by the SecOC callout function which name is configured in the
+                              &lt;a href=&quot;path:/AUTOSAR/TOP-LEVEL-PACKAGES/SecOC/ELEMENTS/SecOC/SecOCGeneral/SecOCTxShapeFuncName&quot;&gt;SecOCTxShapeFuncName&lt;/a&gt; parameter.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Fixed secured PDU layout"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="INVALID" type="XPath" 
+                          expr="node:value(.) = &apos;true&apos; and node:exists(../../../SecOCGeneral/SecOCTxShapeFuncName) = false()" 
+                          true="The callout function to shape the secured PDU layout is enabled but the name of the callout function is not configured."/>
+                  </v:var>
+                  <v:var name="SecOCTxSyncPduProcessing" type="BOOLEAN">
+                    <a:a name="COLUMN_TITLE" value="TxSyncPduProcessing"/>
+                    <a:a name="COLUMN_TOOLTIP" value="SecOCTxSyncPduProcessing"/>
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This parameter indicates whether the Pdu is processed synchronously,
+                              i.e. the Pdu is processed directly without calling the main function.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              Note that manually calling the main function has no effect since the
+                              Pdu processing is done within the PduR calls of SecOC interface
+                              (i.e. SecOC_Transmit).
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              Synchronous Pdu processing cannot be combined with asynchronous Csm Mode.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="LABEL" value="Enable synchronous Pdu processing"/>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="DEFAULT" value="false"/>
+                    <a:da name="ENABLE" type="XPath" 
+                          expr="../SecOcCsmMode = &apos;SYNCHRONOUS&apos;"/>
+                    <a:da name="WARNING" type="XPath" 
+                          expr="node:value(.) = &apos;true&apos; and node:value(../SecOCAuthenticationBuildAttempts) &gt; 0" 
+                          true="It&apos;s highly recommended to set SecOCAuthenticationBuildAttempts to zero when using synchronous Pdu processing,                          since otherwise calls are blocking for the duration of retries."/>
+                  </v:var>
+                  <v:chc name="SecOCTxSecuredPduLayer" type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This container specifies the Pdu that is transmitted by the SecOC
+                              module to the PduR after the Mac was generated.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              There are two available possibilities to send the data to the lower layer.
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              SecOCTxSecuredPdu - the whole content will be send within an I-PDU
+                              (Secured I-PDU)
+                            &lt;/p&gt;
+                            &lt;p&gt;
+                              SecOCTxSecuredPduCollection - the whole content will be send with two
+                              I-PDUs, the Authentic I-PDU (which contains the authentic data) and
+                              the Cryptographic I-PDU (which contains the cryptographic information
+                              like MAC etc)
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="FRAME" value="TITLE"/>
+                    <v:ctr name="SecOCTxSecuredPdu" type="IDENTIFIABLE">
+                      <a:da name="INVALID" type="XPath" 
+                            expr="(node:value(node:ref(../SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduRef)/PduLength) + ceiling((node:value(../SecOCFreshnessValueTxLength) + node:value(../SecOCAuthInfoTxLength)) div 8)) =                                       node:value(node:ref(./SecOCTxSecuredLayerPduRef)/PduLength)" 
+                            false="Tx Secured PDU length must be equal with the combine length of the Authentic PDU, Truncated FreshnessValue and MAC"/>
+                      <v:var name="SecOCTxSecuredLayerPduId" type="INTEGER">
+                        <a:a name="COLUMN_TITLE" 
+                             value="SecOCTxSecuredLayerPduId"/>
+                        <a:a name="COLUMN_TOOLTIP" 
+                             value="SecOCTxSecuredLayerPduId"/>
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  PDU identifier assigned by SecureOnboardCommunication module.
+                                  Used by PduR for confirmation (SecOC_PduRTxConfirmation) and for
+                                  TriggerTransmit.
+                                &lt;/p&gt;
+
+                                &lt;p&gt;
+                                  The Handle-Id Wizard can be used to set this value automatically.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Secured TX PDU Handle ID"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&gt;=0"/>
+                          <a:tst expr="&lt;=65535"/>
+                        </a:da>
+                      </v:var>
+                      <v:ref name="SecOCTxSecuredLayerPduRef" type="REFERENCE">
+                        <a:a name="COLUMN_TITLE" 
+                             value="SecOCTxSecuredLayerPduRef"/>
+                        <a:a name="COLUMN_TOOLTIP" 
+                             value="SecOCTxSecuredLayerPduRef"/>
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  Reference to the global Pdu, which holds the secured Pdu.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Secured TX PDU Reference"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="(node:refvalid(.))" 
+                              false="The expression argument reference is not valid."/>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                      </v:ref>
+                    </v:ctr>
+                    <v:ctr name="SecOCTxSecuredPduCollection" 
+                           type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This container specifies the Pdu that is transmitted by the SecOC module
+                                to the PduR after the Mac was generated. Two separate Pdus are
+                                transmitted to the PduR:
+                                &lt;a href=&quot;path:./SecOCTxAuthenticPdu&quot;&gt;Authentic I-PDU&lt;/a&gt; and
+                                &lt;a href=&quot;path:./SecOCTxCryptographicPdu&quot;&gt;Cryptographic I-PDU&lt;/a&gt;.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <v:ctr name="SecOCTxAuthenticPdu" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  This container specifies the PDU that is send by the SecOC
+                                  module to the lower layer, which contains the authentic data
+                                  that is forming with the corresponding Cryptographic I-PDU
+                                  the Secured I-PDU.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Tx Authentic PDU"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="as:ref(./SecOCTxAuthenticPduRef)/PduLength != as:ref(../../SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduRef)/PduLength" 
+                              true="The length of the Authentic I-PDU received from the upper                                        layer must have the same length with the Authentic I-PDU                                        that needs to be send to the lower layer"/>
+                        <v:var name="SecOCTxAuthenticPduId" type="INTEGER">
+                          <a:a name="COLUMN_TITLE" value="TxAuthenticPduId"/>
+                          <a:a name="COLUMN_TOOLTIP" 
+                               value="SecOCTxAuthenticPduId"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    This parameter defines the PDU identifier of the Authentic
+                                    I-PDU assigned by SecOC module.
+                                    Used by PduR for confirmation (&lt;code&gt;SecOC_PduRTxConfirmation&lt;/code&gt;)
+                                    and for TriggerTransmit.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Authentic PDU ID"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&gt;=0"/>
+                            <a:tst expr="&lt;=65535"/>
+                          </a:da>
+                        </v:var>
+                        <v:ref name="SecOCTxAuthenticPduRef" type="REFERENCE">
+                          <a:a name="COLUMN_TITLE" value="TxAuthenticPduRef"/>
+                          <a:a name="COLUMN_TOOLTIP" 
+                               value="SecOCTxAuthenticPduRef"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Reference to the global Pdu.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Authentic PDU Reference"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                        </v:ref>
+                      </v:ctr>
+                      <v:ctr name="SecOCTxCryptographicPdu" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  This container specifies the Cryptographic Pdu that is transmitted by the
+                                  SecOC module to the PduR after the Mac was generated.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Tx Cryptographic PDU"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst 
+                                 expr="node:exists(../SecOCUseMessageLink) and                                       (as:ref(./SecOCTxCryptographicPduRef)/PduLength != (ceiling((../../SecOCAuthInfoTxLength + ../../SecOCFreshnessValueTxLength + ../SecOCUseMessageLink/SecOCMessageLinkLen) div 8)))" 
+                                 true="The length of the Cryptographic I-PDU must be equal                                        with the combined length of the truncated                                        freshness value, the truncated authenticator and                                        the message link."/>
+                          <a:tst 
+                                 expr="not(node:exists(../SecOCUseMessageLink)) and                                       (as:ref(./SecOCTxCryptographicPduRef)/PduLength != (ceiling((../../SecOCAuthInfoTxLength + ../../SecOCFreshnessValueTxLength) div 8)))" 
+                                 true="The length of the Cryptographic I-PDU must be equal                                        with the combined length of the truncated                                        freshness value and the truncated authenticator."/>
+                        </a:da>
+                        <v:var name="SecOCTxCryptographicPduId" type="INTEGER">
+                          <a:a name="COLUMN_TITLE" value="TxCryptographicPduId"/>
+                          <a:a name="COLUMN_TOOLTIP" 
+                               value="SecOCTxCryptographicPduId"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    This parameter defines the PDU identifier of the Cryptographic
+                                    I-PDU assigned by SecOC module.
+                                    Used by PduR for confirmation (SecOC_PduRTxConfirmation) and
+                                    for TriggerTransmit.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Cryptographic PDU ID"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&gt;=0"/>
+                            <a:tst expr="&lt;=65535"/>
+                          </a:da>
+                        </v:var>
+                        <v:ref name="SecOCTxCryptographicPduRef" 
+                               type="REFERENCE">
+                          <a:a name="COLUMN_TITLE" value="TxCryptographicPduRef"/>
+                          <a:a name="COLUMN_TOOLTIP" 
+                               value="SecOCTxCryptographicPduRef"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Reference to the global Pdu.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Cryptographic PDU Reference"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                        </v:ref>
+                      </v:ctr>
+                      <v:ctr name="SecOCUseMessageLink" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  SecOC links an Authentic I-PDU and Cryptographic I-PDU together by
+                                  repeating a specific part (Message Linker) of the Authentic I-PDU
+                                  in the Cryptographic I-PDU.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="(num:i(ceiling((node:value(./SecOCMessageLinkLen) + node:value(./SecOCMessageLinkPos)) div 8)) &gt; node:value(node:ref(../../SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduRef)/PduLength))" 
+                              true="The sum of configured value of message link length and message link offset (converted in bytes) must be smaller or equal than the Authentic PDU length"/>
+                        <v:var name="SecOCMessageLinkLen" type="INTEGER">
+                          <a:a name="COLUMN_TITLE" value="MessageLinkLen"/>
+                          <a:a name="COLUMN_TOOLTIP" value="SecOCMessageLinkLen"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    This parameter defines the length of the Message Linker inside
+                                    the Authentic I-PDU in bits.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Message Linker length"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&gt;=1"/>
+                            <a:tst expr="&lt;=65535"/>
+                          </a:da>
+                        </v:var>
+                        <v:var name="SecOCMessageLinkPos" type="INTEGER">
+                          <a:a name="COLUMN_TITLE" value="MessageLinkPos"/>
+                          <a:a name="COLUMN_TOOLTIP" value="SecOCMessageLinkPos"/>
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    This parameter defines the position of the Message Linker
+                                    inside the Authentic I-PDU in bits.
+                                  &lt;/p&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" value="Message Linker position"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:da name="EDITABLE" value="true"/>
+                          <a:da name="INVALID" type="Range">
+                            <a:tst expr="&gt;=0"/>
+                            <a:tst expr="&lt;=65535"/>
+                          </a:da>
+                        </v:var>
+                      </v:ctr>
+                    </v:ctr>
+                  </v:chc>
+                  <v:ctr name="SecOCTxPduSecuredArea" type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This container specifies an area in the Authentic I-Pdu that will
+                                be the input to the Authenticator generation algorithm. If this
+                                container does not exist in the configuration the complete
+                                Authentic I-Pdu will be the input to the Authenticator
+                                generation algorithm.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="OPTIONAL" value="true"/>
+                    <a:a name="POSTBUILDVARIANTMULTIPLICITY" value="true"/>
+                    <a:da name="ENABLE" value="false"/>
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst 
+                             expr="(node:value(./SecOCSecuredTxPduLength) + node:value(./SecOCSecuredTxPduOffset) &gt; node:value(node:ref(../SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduRef)/PduLength))" 
+                             true="The sum of configured value of secured area length and secured area offset must be smaller or equal than the Authentic PDU length"/>
+                      <a:tst 
+                             expr="node:value(../../../SecOCGeneral/SecOCUseSecuredArea) = &apos;false&apos;" 
+                             true="In the General tab the SecOCUseSecuredArea configuration parameter must be enabled"/>
+                    </a:da>
+                    <v:var name="SecOCSecuredTxPduLength" type="INTEGER">
+                      <a:a name="COLUMN_TITLE" value="SecuredAreaLength"/>
+                      <a:a name="COLUMN_TOOLTIP" value="SecOCSecuredTxPduLength"/>
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  This parameter defines the length (in bytes) of the area within
+                                  the Pdu which shall be secured.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="LABEL" value="Tx PDU secured area length"/>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:da name="INVALID" type="Range">
+                        <a:tst expr="&gt;=0"/>
+                        <a:tst expr="&lt;=65535"/>
+                      </a:da>
+                    </v:var>
+                    <v:var name="SecOCSecuredTxPduOffset" type="INTEGER">
+                      <a:a name="COLUMN_TITLE" value="SecuredAreaOffset"/>
+                      <a:a name="COLUMN_TOOLTIP" value="SecOCSecuredTxPduOffset"/>
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                                &lt;p&gt;
+                                  This parameter defines the start position (offset in bytes) of the
+                                  area within the Pdu which shall be secured.
+                                &lt;/p&gt;
+                              &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="LABEL" value="Tx PDU secured area Offset"/>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:da name="INVALID" type="Range">
+                        <a:tst expr="&gt;=0"/>
+                        <a:tst expr="&lt;=65535"/>
+                      </a:da>
+                    </v:var>
+                  </v:ctr>
+                  <v:ctr name="SecOCTxAuthenticPduLayer" type="IDENTIFIABLE">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            &lt;p&gt;
+                              This container specifies the Authetic Pdu that is received by the SecOC
+                              module from the PduR based on this the Secured Pdu is generated.
+                            &lt;/p&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <v:var name="SecOCPduType" type="ENUMERATION">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                This parameter defines API Type to use for communication with PduR.
+                              &lt;/p&gt;
+
+                              &lt;ul&gt;
+                                &lt;li&gt;&lt;code&gt;SECOC_IFPDU&lt;/code&gt;: SECOC_IFPDU Interface communication API&lt;/li&gt;
+                                &lt;li&gt;&lt;code&gt;SECOC_TPPDU&lt;/code&gt;: SECOC_TPPDU Transport Protocol communication API&lt;/li&gt;
+                              &lt;/ul&gt;
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="LABEL" value="PduR API Type"/>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                      <a:da name="DEFAULT" value="SECOC_IFPDU"/>
+                      <a:da name="RANGE">
+                        <a:v>SECOC_IFPDU</a:v>
+                        <a:v>SECOC_TPPDU</a:v>
+                      </a:da>
+                    </v:var>
+                    <v:var name="SecOCTxAuthenticLayerPduId" type="INTEGER">
+                      <a:a name="COLUMN_TITLE" 
+                           value="SecOCTxAuthenticLayerPduId"/>
+                      <a:a name="COLUMN_TOOLTIP" 
+                           value="SecOCTxAuthenticLayerPduId"/>
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                PDU identifier assigned by SecureOnboardCommunication module.
+                                Used by PduR for SecOC_PduRTransmit.
+                              &lt;/p&gt;
+
+                              &lt;p&gt;
+                                The Handle-Id Wizard can be used to set this value automatically.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="LABEL" value="Authentic TX PDU Handle ID"/>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                      <a:da name="INVALID" type="Multi">
+                        <mt:range>
+                          <mt:tst expr="&gt;=0"/>
+                          <mt:tst expr="&lt;=65535"/>
+                        </mt:range>
+                        <mt:xpath>
+                          <mt:tst 
+                                  false="The Authentic Tx PDU ID has to be unique." 
+                                  expr="text:uniq(../../../*/SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduId,.)"/>
+                          <mt:tst 
+                                  true="The Authentic Tx PDU ID has to be zero-based and consecutive." 
+                                  expr=". &gt;= count(../../../*)"/>
+                        </mt:xpath>
+                      </a:da>
+                    </v:var>
+                    <v:ref name="SecOCTxAuthenticLayerPduRef" type="REFERENCE">
+                      <a:a name="COLUMN_TITLE" 
+                           value="SecOCTxAuthenticLayerPduRef"/>
+                      <a:a name="COLUMN_TOOLTIP" 
+                           value="SecOCTxAuthenticLayerPduRef"/>
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              &lt;p&gt;
+                                Reference to the global Pdu holding the authentic Pdu, for which the
+                                SecOC module shall generate an authenticator.
+                              &lt;/p&gt;
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                           type="IMPLEMENTATIONCONFIGCLASS">
+                        <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                      </a:a>
+                      <a:a name="LABEL" value="Authentic TX PDU Reference"/>
+                      <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                      <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                      <a:da name="INVALID" type="XPath">
+                        <a:tst expr="(node:refvalid(.))" 
+                               false="The expression argument reference is not valid."/>
+                        <a:tst 
+                               expr="node:exists((as:modconf(&apos;PduR&apos;)[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef = node:current()])[1]/PduRDestPduHandleId)" 
+                               false="No PDU ID found in upper layer PduR that is assigned to this PDU (PduRDestPduHandleId)."/>
+                      </a:da>
+                      <a:da name="REF" 
+                            value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                    </v:ref>
+                  </v:ctr>
+                </v:ctr>
+              </v:lst>
+              <d:ref type="REFINED_MODULE_DEF" 
+                     value="ASPath:/AUTOSAR/EcucDefs/SecOC"/>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

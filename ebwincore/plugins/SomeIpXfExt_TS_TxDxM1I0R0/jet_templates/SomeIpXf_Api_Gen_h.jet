@@ -1,0 +1,48 @@
+<%@ jet package="eb.tresos.someipxf.generated.jet" class="SomeIpXf_Api_Gen_h" skeleton="File.skeleton"
+    imports="eb.tresos.someipxf.generator.intermediate.GeneratorPartitionHandler"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final OutModel outmodel = (OutModel)context.gen.getVariable( OutModel.ARG_NAME, OutModel.class, null );
+    final String includeGuardName = getIncludeGuardName( context );
+    final GeneratorPartitionHandler partitionHandler = outmodel.getGeneratorPartitionHandler();
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+
+<%
+for (String partition : partitionHandler.getPartitionNames())
+{
+boolean isSafePartition = partitionHandler.isSafePartition(partition); 
+String partitionInfix = partitionHandler.getPartitionInfix(partition); %>
+#include <SomeIpXf<%= isSafePartition ? "_S" : "" %><%= partitionInfix %>_PartitionApi.h>
+<% } %>
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

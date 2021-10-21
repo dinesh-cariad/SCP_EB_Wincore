@@ -1,0 +1,652 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+[!INCLUDE "../../generate_macros/EthIf_PBCfg.m"!]
+
+<?module EthIf?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!CODE!]
+[!AUTOSPACING!]
+
+[!INCLUDE "../../generate_macros/EthIf_Cfg.m"!][!//
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "ETHIF_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "ETHIF_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat('EthIf_Config','_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="string("EthIf_Config")"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+*/!][!VAR "ETHIF_PBCFG_C_VARIANT"="concat('EthIf',$ETHIF_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "ETHIF_PBCFG_H_VARIANT"="concat('EthIf',$ETHIF_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "ETHIF_CONFIG_LAYOUT_VARIANT"="concat('EthIf',$ETHIF_VARIANT_SUFIX,'ConfigLayout')"!]
+[!/* Current Config Type variant based
+*/!][!VAR "ETHIF_CONFIGLAYOUTTYPE_VARIANT"="concat('EthIf',$ETHIF_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "ETHIF_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('EthIf',$ETHIF_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+
+  <!-- This is the configuration of module EthIf -->
+  <module name="EthIf">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+
+      <?artifact directory="include" file="EthIf_Types_ExtGen.h" type="types-h" generate="no"?>
+
+[!INCLUDE "../../generate_macros/EthIf_PreCompileConfig.m"!][!//
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <?artifact directory="include" file="[!"$ETHIF_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$ETHIF_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of EthIf_PBcfg.h and EthIf_Types.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+
+      <!-- !LINKSTO EthIf.EB.EthIf_00005,1 -->
+      <type name="[!"$ETHIF_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="EthIf_ConfigType"/>
+
+          [!IF "$EthIf_TrcvSupportEnable = 'true'"!]
+          <member name="EthIf_EthIfTrcvIdx" type="uint8"
+            count="[!"num:i(count(node:refs(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfController/*/EthIfPhysControllerRef)))"!]">
+          </member>
+          <member name="EthIf_EthIfTrcvEthTrcvIdxMap" type="EthIf_TrcvType"
+            count="[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfTransceiver/*))"!]">
+          </member>
+          <member name="EthIf_EthIfTrcvEthCtrlIdxMap" type="uint8"
+            count="[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfTransceiver/*))"!]">
+          </member>
+          [!ENDIF!]
+
+          <member name="EthIf_EthIfCtrl" type="EthIf_CtrlType"
+            count="[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfController/*))"!]">
+          </member>
+
+          <member name="EthIf_PhysCtrl" type="EthIf_PhysCtrlType"
+            count="[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfPhysController/*))"!]">
+          </member>
+
+          [!IF "num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*)) > 0"!]
+          <member name="EthIf_EthIfSwt" type="uint8"
+            count="[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*))"!]">
+          </member>
+          [!ENDIF!]
+
+          [!IF "($EthIf_PortStateMgmtEnabled = 'true')"!]
+          [!IF "as:modconf('EthIf')[1]/EthIfGeneral/EthIfMaxSwtPorts < count(node:refs(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*/EthIfSwitchRef)/EthSwtPort/*)"!]
+          [!ERROR!]
+Total number of ports must not exceed EthIfMaxSwtPorts.
+          [!ENDERROR!]
+          [!ENDIF!]
+          <member name="EthIf_SwtPort" type="EthIf_SwtPortType"
+            count="[!"num:i(count(node:refs(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*/EthIfSwitchRef)/EthSwtPort/*))"!]">
+          </member>
+          <member name="EthIf_SwtPortGroup" type="EthIf_SwtPortGroupType"
+            count="[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitchPortGroup/*) + count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*))"!]">
+          </member>
+          <member name="EthIf_PortsInPortGroup" type="uint8"
+            count="[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitchPortGroup/*/EthIfPortRef/*) + count(node:refs(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*/EthIfSwitchRef)/EthSwtPort/*))"!]">
+          </member>
+          [!ENDIF!]
+
+          [!IF "(($EthIf_EthSupportApi = 'ASR430') or ($EthIf_EthSupportApi = 'ASR430_EB'))"!]
+          <member name="EthIf_PhysCtrlEthIfCtrlMapData" type="EthIf_PhysCtrlEthIfCtrlMapDataType"
+            count="[!"num:i((count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfPhysController/*)))"!]">
+          </member>
+          <member name="EthIf_MapPhysCtrlEthIfCtrlIdx" type="uint8"
+            count="[!"num:i((count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfController/*)))"!]">
+          </member>
+          <member name="EthIf_EthIfPhysCtrlIngrFifo" type="EthIf_PhysCtrlIngrFifoType"
+            count="[!"num:i($EthIf_EthNumIngressFifoTotal)"!]">
+          </member>
+          [!ENDIF!]
+
+        </struct>
+      </type>
+
+      <type name="[!"$ETHIF_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$ETHIF_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="ETHIF_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+      <!--
+          Type definition and initialisation:
+          Specifies the content of Module_PBcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+
+      <instance type="[!"$ETHIF_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+             name="[!"$ETHIF_CONFIG_LAYOUT_VARIANT"!]">
+        <comment>
+          <![CDATA[Module post build configuration. - Static code accesses this configuration
+          solely via the pointer of type Module_ConfigType passed to
+          Module_Init() as parameter.]]>
+        </comment>
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+        [!IF "not(var:defined('postBuildVariant')) and not(node:name(EthIfConfigSet) = $initPredefinedCfgName)"!]
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"node:name(EthIfConfigSet)"!]</symbolic-value>
+        </parameter>
+        [!ENDIF!]
+
+        <!-- Module_ConfigLayout.RootCfg -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int> <!-- PlatformSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('EthIf')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int> <!-- LcfgSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('EthIf')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int> <!-- CfgSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('EthIf')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('EthIf')[1]/CommonPublishedInformation/Release))"!]</int> <!-- PublicInfoSignature -->
+          </field>
+          [!IF "$EthIf_TrcvSupportEnable = 'true'"!]
+          <field>
+            <ref>
+              <struct-field name="EthIf_EthIfTrcvIdx"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="EthIf_EthIfTrcvEthTrcvIdxMap"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="EthIf_EthIfTrcvEthCtrlIdxMap"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          [!ENDIF!]
+
+          <field>
+            <ref>
+              <struct-field name="EthIf_EthIfCtrl"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+              <struct-field name="EthIf_PhysCtrl"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <ref>
+            [!IF "num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*)) > 0"!]
+              <struct-field name="EthIf_EthIfSwt"/>
+              <array-field index="0" />
+            [!ENDIF!]
+            </ref>
+          </field>
+
+          [!IF "($EthIf_PortStateMgmtEnabled = 'true')"!]
+          <field>
+            <ref>
+              <struct-field name="EthIf_SwtPort"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="EthIf_SwtPortGroup"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="EthIf_PortsInPortGroup"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          [!ENDIF!]
+
+          [!IF "(($EthIf_EthSupportApi = 'ASR430') or ($EthIf_EthSupportApi = 'ASR430_EB'))"!]
+          <field>
+            <ref>
+              <struct-field name="EthIf_PhysCtrlEthIfCtrlMapData"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="EthIf_MapPhysCtrlEthIfCtrlIdx"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="EthIf_EthIfPhysCtrlIngrFifo"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <int>[!"num:i($EthIf_EthNumMappedPrioFifo)"!]</int> <!-- NumMappedPrioIngrFifo -->
+          </field>
+          <field>
+            <int>[!"num:i($EthIf_EthNumIngressFifoTotal)"!]</int> <!-- EthIf_EthNumIngressFifoTotal -->
+          </field>
+          [!ENDIF!]
+
+          <field>
+            <int>[!"num:i(count(node:refs(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfController/*/EthIfPhysControllerRef)))"!]</int> <!-- PhyCtrlMax -->
+          </field>
+          <field>
+            <int>[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfController/*))"!]</int> <!-- EthIfCtrlMax -->
+          </field>
+
+          <field>
+            <int>[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*))"!]</int> <!-- EthIfSwtMax -->
+          </field>
+          <field>
+            <int>[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfTransceiver/*))"!]</int> <!-- EthIfTrcvMax -->
+          </field>
+
+          [!IF "$EthIf_PortStateMgmtEnabled = 'true'"!]
+          <field>
+            <int>[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitchPortGroup/*) + count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*))"!]</int> <!-- /* SwtPortGroupsMax: (user defined + logical) */ -->
+          </field>
+          <field>
+            <int>[!"num:i(count(node:refs(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*/EthIfSwitchRef)/EthSwtPort/*))"!]</int> <!-- SwtPortsMax -->
+          </field>
+          [!ENDIF!]
+
+        </field> <!-- Module_ConfigLayout.RootCfg -->
+
+        [!IF "$EthIf_TrcvSupportEnable = 'true'"!]
+        <!-- Module_ConfigLayout.EthIf_EthIfTrcvIdx -->
+        <field>
+          <comment><![CDATA[ Mapping from EthIfPhysControllerIdx to EthIf_EthIfTrcvIdx.]]></comment>
+          [!VAR "LastPhyEthCtrlIdx" = "255"!] <!--  variable used to create only one entry for Eth controllers that are referenced several times -->
+          [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfController/*,'node:value(node:ref(EthIfPhysControllerRef)/EthIfPhysControllerIdx)')"!]
+            [!IF "$LastPhyEthCtrlIdx != node:value(node:ref(EthIfPhysControllerRef)/EthIfPhysControllerIdx)"!]
+              [!VAR "LastPhyEthCtrlIdx" = "node:value(node:ref(EthIfPhysControllerRef)/EthIfPhysControllerIdx)"!]
+              <!-- EthIfPhysControllerIdx [!"($LastPhyEthCtrlIdx)"!]: -->
+              <field>
+              [!IF "node:refvalid(./EthIfEthTrcvRef)"!]
+                <int>[!"node:value(node:ref(EthIfEthTrcvRef)/EthIfTransceiverIdx)"!]</int> <!-- EthIf_EthIfTrcvIdx -->
+              [!ELSE!]
+                <symbol>ETHIF_INVALID_TRCV_IDX</symbol> <!-- EthIf_EthIfTrcvIdx -->
+              [!ENDIF!]
+              </field>
+            [!ENDIF!]
+          [!ENDLOOP!]
+        </field> <!-- Module_ConfigLayout.EthIf_EthIfTrcvIdx -->
+
+        <!-- Module_ConfigLayout.EthIf_EthIfTrcvEthTrcvIdxMap -->
+        <field>
+          <comment><![CDATA[ EthIf_EthIfTrcvEthTrcvIdxMap - mapping from EthIf.EthIfTransceiverIdx to EthTrcv.EthTrcvIdx.]]></comment>
+          [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfTransceiver/*,'node:value(EthIfTransceiverIdx)')"!]
+          <field>
+            <!-- EthIf_EthIfTransceiver [!"node:value(EthIfTransceiverIdx)"!]: -->
+            <field>
+              <int>[!"node:value(node:ref(EthIfEthTrcvRef)/EthTrcvIdx)"!]</int> <!-- EthTrcv_EthTrcvIdx -->
+            </field>
+            [!IF "$EthIf_TrcvBswRefNr > 1"!]
+            <field>
+            [!FOR "i"="1" TO "$EthIf_TrcvBswRefNr"!]
+              [!IF "text:split(node:value(EthIfEthTrcvRef),'/')[position() = 2] = text:split(node:value(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfEthTrcvType/*[num:i($i)]/EthIfEthTrcvBswmdImplementationRefs),'/')[position() = 2]"!]
+              <int>[!"num:i($i - 1)"!]</int>  <!-- EthTrcvApiIdx -->
+              [!BREAK!]
+              [!ELSEIF "$i = $EthIf_TrcvBswRefNr"!]
+              [!ERROR!]
+  EthTransceiver referenced by EthIfTransceiver/EthIfEthTrcvRef = [!"node:value(EthIfEthTrcvRef)"!] must be listed in EthIfEthTrcvBswmdImplementationRefs container.
+              [!ENDERROR!]
+              [!ELSE!]
+              [!ENDIF!]
+            [!ENDFOR!]
+            </field>
+            [!ENDIF!]
+          </field>
+          [!ENDLOOP!]
+        </field> <!-- Module_ConfigLayout.EthIf_EthIfTrcvEthTrcvIdxMap -->
+
+        <!-- Module_ConfigLayout.EthIf_EthIfTrcvEthCtrlIdxMap -->
+        <field>
+        <comment><![CDATA[ EthIf_EthIfTrcvEthCtrlIdxMap - mapping from EthIf.EthIfTransceiverIdx to Eth.EthCtrlIdx.]]></comment>
+          <!-- variable used to create only one entry for Eth transceivers that are referenced several times -->
+          [!VAR "LastEthTrcvlIdx" = "-1"!]
+          [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfController/*[node:exists(EthIfEthTrcvRef)],'node:value(node:ref(EthIfEthTrcvRef)/EthIfTransceiverIdx)')"!]
+            [!VAR "CurrEthTrcvlIdx" = "node:value(node:ref(EthIfEthTrcvRef)/EthIfTransceiverIdx)"!]
+            [!IF "$LastEthTrcvlIdx != $CurrEthTrcvlIdx"!]
+              [!VAR "LastEthTrcvlIdx" = "$CurrEthTrcvlIdx"!]
+              <!-- EthIfTransceiverIdx [!"($LastEthTrcvlIdx)"!]: -->
+              <field>
+                <int>[!"node:value(node:ref(node:ref(EthIfPhysControllerRef)/EthIfEthCtrlRef)/EthCtrlIdx)"!]</int> <!-- EthCtrlIdx -->
+              </field>
+            [!ENDIF!]
+          [!ENDLOOP!]
+        </field> <!-- Module_ConfigLayout.EthIf_EthIfTrcvEthCtrlIdxMap -->
+        [!ENDIF!]
+
+        <!-- Module_ConfigLayout.EthIf_EthIfCtrl -->
+        <field>
+          [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfController/*,'EthIfCtrlIdx')"!]
+            <field>
+              [!IF "$EthIf_VlanSupportEnable = 'true'"!]
+              <field>
+                [!IF "node:exists(./EthIfVlanId)"!]
+                <int>[!"EthIfVlanId"!]</int> <!-- VID -->
+                [!ELSE!]
+                <symbol>ETHIF_VLAN_VID_UNUSED</symbol> <!-- VID - not used -->
+                [!ENDIF!]
+              </field>
+              [!ENDIF!]
+              <field>
+                <int>[!"node:value(node:ref(EthIfPhysControllerRef)/EthIfPhysControllerIdx)"!]</int> <!-- PhysCtrlIdx -->
+              </field>
+              [!IF "$EthIf_TrcvSupportEnable = 'true'"!]
+                <field>
+                [!IF "node:refvalid(./EthIfEthTrcvRef)"!]
+                  <int>[!"node:value(node:ref(EthIfEthTrcvRef)/EthIfTransceiverIdx)"!]</int> <!-- EthIf_EthIfTrcvIdx -->
+                [!ELSE!]
+                  <symbol>ETHIF_INVALID_TRCV_IDX</symbol>
+                [!ENDIF!]
+                </field>
+                [!IF "$EthIf_MiiApiEnable = 'true'"!]
+                <field>
+                [!IF "node:refvalid(./EthIfEthTrcvRef)"!]
+                  <int>[!"node:value(node:ref(node:ref(EthIfEthTrcvRef)/EthIfEthTrcvRef)/EthTrcvMgmtInterface/EthTrcvMiiIdx)"!]</int> <!-- EthTrcvMiiIdx -->
+                [!ELSE!]
+                  <symbol>ETHIF_INVALID_TRCV_MIIIDX</symbol>
+                [!ENDIF!]
+                </field>
+                [!ENDIF!]
+              [!ENDIF!]
+              <field>
+              [!IF "node:refvalid(./EthIfSwitchRefOrPortGroupRef)"!]
+                [!IF "node:exists(node:ref(./EthIfSwitchRefOrPortGroupRef)/EthIfSwitchIdx)"!]
+                <int>[!"num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitchPortGroup/*) + node:ref(node:ref(./EthIfSwitchRefOrPortGroupRef)/EthIfSwitchRef)/EthSwtIdx)"!]</int> <!-- EthIfPortGroupIdx (switch ->  logical group) -->
+                [!ELSE!]
+                  [!IF "node:exists(node:ref(./EthIfSwitchRefOrPortGroupRef)/EthIfSwitchPortGroupIdx)"!]
+                  <int>[!"num:i(node:ref(./EthIfSwitchRefOrPortGroupRef)/EthIfSwitchPortGroupIdx)"!]</int>  <!-- EthIfPortGroupIdx -->
+                  [!ELSE!]
+                  <symbol>ETHIF_INVALID_PORTGROUP_IDX</symbol> <!-- No port group or switch reference -->
+                  [!ENDIF!]
+                [!ENDIF!]
+              [!ELSE!]
+              <symbol>ETHIF_INVALID_PORTGROUP_IDX</symbol>
+              [!ENDIF!]
+              </field>
+            </field>
+          [!ENDLOOP!]
+        </field> <!-- Module_ConfigLayout.EthIf_EthIfCtrl -->
+
+        <!-- Module_ConfigLayout.EthIf_PhysCtrl -->
+        <field>
+        [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfPhysController/*,'EthIfPhysControllerIdx')"!]
+          <field>
+            <field>
+              <int>[!"node:value(node:ref(EthIfEthCtrlRef)/EthCtrlIdx)"!]</int> <!-- EthCtrlIdx -->
+            </field>
+            [!IF "$EthIf_CtrlBswRefNr > 1"!]
+            <field>
+            [!FOR "i"="1" TO "$EthIf_CtrlBswRefNr"!]
+              [!IF "text:split(node:value(EthIfEthCtrlRef),'/')[position() = 2] = text:split(node:value(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfEthControllerType/*[num:i($i)]/EthIfEthControllerBswmdImplementationRefs),'/')[position() = 2]"!]
+              <int>[!"num:i($i - 1)"!]</int>  <!-- EthCtrlApiIdx -->
+              [!BREAK!]
+              [!ELSEIF "$i = $EthIf_CtrlBswRefNr"!]
+              [!ERROR!]
+  EthController referenced by EthIfPhysController/EthIfEthCtrlRef = [!"node:value(EthIfEthCtrlRef)"!] must be listed in EthIfEthControllerBswmdImplementationRefs container.
+              [!ENDERROR!]
+              [!ELSE!]
+              [!ENDIF!]
+            [!ENDFOR!]
+            </field>
+            [!ENDIF!]
+          </field>
+        [!ENDLOOP!]
+        </field> <!-- Module_ConfigLayout.EthIf_PhysCtrl -->
+
+        <!-- Module_ConfigLayout.EthIf_EthIfSwt -->
+        [!IF "num:i(count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*)) > 0"!]
+        <!-- If at least one EthIfSwitch is configured, map EthIfSwitchIdx to EthSwtIdx -->
+        <field>
+          <!-- mapping from EthIfSwitchIdx to EthSwtIdx -->
+          [!VAR "LastEthIfSwitchIdx" = "255"!]
+          [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*,'node:value(EthIfSwitchIdx)')"!]
+            [!IF "$LastEthIfSwitchIdx != node:value(node:ref(EthIfSwitchRef)/EthSwtIdx)"!]
+              [!VAR "LastEthIfSwitchIdx" = "node:value(node:ref(EthIfSwitchRef)/EthSwtIdx)"!]
+              <field>
+              [!IF "node:refvalid(./EthIfSwitchRef)"!]
+                <int>[!"node:value(node:ref(EthIfSwitchRef)/EthSwtIdx)"!]</int> <!-- EthSwtIdx -->
+              [!ELSE!]
+                <symbol>ETHIF_INVALID_SWT_IDX</symbol> <!-- EthSwtIdx -->
+              [!ENDIF!]
+              </field>
+            [!ENDIF!]
+          [!ENDLOOP!]
+        </field>
+        [!ENDIF!] <!-- Module_ConfigLayout.EthIf_EthIfSwt -->
+
+        [!IF "($EthIf_PortStateMgmtEnabled = 'true')"!]
+        <!-- Module_ConfigLayout.EthIf_SwtPort -->
+        <field>
+        <!-- EthIf_SwtPort[] - list of all switch ports
+             EthSwtIdx, EthSwtPortIdx, [PortRole, EthTrcvIdx] -->
+        [!VAR "PortIdx" = "0"!]
+        [!VAR "LogicalPortGroupIdx" = "count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitchPortGroup/*)"!]
+        [!VAR "LogicalPortIdx" = "count(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitchPortGroup/*/EthIfPortRef/*)"!]
+        [!VAR "LogicalPortGroups" = "''"!]
+        [!VAR "LogicalPortsInPortGroups" = "''"!]
+        [!LOOP "node:order(node:refs(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitch/*/EthIfSwitchRef), 'EthSwtIdx')"!]
+          [!VAR "LogicalPortsInPortGroups" = "concat($LogicalPortsInPortGroups, '/* EthIfSwitchPortGroupIdx(logical): ', string(num:i($LogicalPortGroupIdx)), ' */;')"!]
+          [!VAR "BeginIdx" = "$LogicalPortIdx"!]
+          [!VAR "EthSwtIdx" = "./EthSwtIdx"!]
+          [!LOOP "node:order(./EthSwtPort/*, 'EthSwtPortIdx')"!]
+            <field>
+              <field>
+                <int>[!"$EthSwtIdx"!]</int> <!-- EthSwtIdx -->
+              </field>
+              <field>
+                <int>[!"./EthSwtPortIdx"!]</int> <!-- EthSwtPortIdx -->
+              </field>
+              <!-- EthSwtPortRole -->
+              [!IF "node:exists(./EthSwtPortRole)"!]
+                [!CALL "CalcPortRole", "EthSwtPortRole" = "node:value(./EthSwtPortRole)"!]
+              [!ELSE!]
+              <field>
+                <symbol>ETHIF_PORTROLE_STANDARD</symbol>
+              </field>
+              [!ENDIF!]
+              <field> <!-- EthTrcvIdx -->
+                [!IF "node:refexists(./EthSwtPortTrcvRef)"!]
+                  <int>[!"node:value(node:ref(./EthSwtPortTrcvRef)/EthTrcvIdx)"!]</int>
+                [!ELSE!]
+                  <symbol>ETHIF_INVALID_TRCV_IDX</symbol>
+                [!ENDIF!]
+              </field>
+            </field>
+            [!VAR "LogicalPortsInPortGroups" = "concat($LogicalPortsInPortGroups, string(num:i($PortIdx)), ', ')"!]
+            [!VAR "PortIdx" = "$PortIdx + 1"!]
+            [!VAR "LogicalPortIdx" = "$LogicalPortIdx + 1"!]
+          [!ENDLOOP!]
+          [!VAR "LogicalPortsInPortGroups" = "concat($LogicalPortsInPortGroups, ';')"!]
+          [!VAR "LogicalPortGroups" = "concat($LogicalPortGroups, '{ ', string(num:i($BeginIdx)), 'U, ', string(num:i($LogicalPortIdx - $BeginIdx)), 'U, ', 'ETHIF_REFTYPE_SWITCH    }, /* EthIfSwitchPortGroupIdx(logical): ', string(num:i($LogicalPortGroupIdx)),' */;')"!]
+          [!VAR "LogicalPortGroupIdx" = "$LogicalPortGroupIdx + 1"!]
+        [!ENDLOOP!]
+        </field><!-- Module_ConfigLayout.EthIf_SwtPort -->
+
+        <!-- Module_ConfigLayout.EthIf_SwtPortGroup -->
+        <field>
+         <!-- EthIf_SwtPortGroup[] - List of port groups - logical port groups include all ports of
+              a switch. They are used in case that EthIfCtrl references a switch and not the port group in
+              the parameter EthIfSwitchRefOrPortGroupRef.
+              BeginIdx, NumPorts, RefType
+         -->
+        [!VAR "PortInPortGroupIdx" = "0"!]
+        [!VAR "PortGroupIdx" = "0"!]
+        [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitchPortGroup/*, 'EthIfSwitchPortGroupIdx')"!]
+          <field>
+            <field>
+              <int>[!"num:i($PortInPortGroupIdx)"!]</int>
+            </field>
+            <field>
+              <int>[!"num:i(count(./EthIfPortRef/*))"!]</int>
+            </field>
+            [!IF "node:exists(./EthIfSwitchPortGroupRefSemantics)"!]
+              [!CALL "CalcRefType", "RefSemantics" = "node:value(./EthIfSwitchPortGroupRefSemantics)"!]
+            [!ELSE!]
+            <field>
+              <symbol>ETHIF_REFTYPE_NO_REF</symbol>
+            </field>
+            [!ENDIF!]
+          </field>
+          [!VAR "PortInPortGroupIdx" = "$PortInPortGroupIdx + count(./EthIfPortRef/*)"!]
+          [!VAR "PortGroupIdx" = "$PortGroupIdx + 1"!]
+        [!ENDLOOP!]
+
+        <!-- Calculate logical port groups, i.e. port groups that represent all ports of a switch -->
+        [!CALL "CalcLogicalPortGroups"!]
+
+        </field> <!-- Module_ConfigLayout.EthIf_SwtPortGroup -->
+
+        <!-- Module_ConfigLayout.EthIf_PortsInPortGroup -->
+        <field>
+        <!-- EthIf_PortsInPortGroup[] - List of ports in each of port groups. -->
+        [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfSwitchPortGroup/*, 'EthIfSwitchPortGroupIdx')"!][!//
+          [!VAR "PortsInPortGroup" = "''"!][!//
+          [!VAR "Idx" = "0"!][!//
+          [!LOOP "node:order(node:refs(./EthIfPortRef/*), '1 - string-length(EthSwtPortRole)', 'EthSwtPortIdx')"!][!//
+            [!CALL "GetEthIfPortIdx", "SwtIdx" = "node:value(./../../EthSwtIdx)" , "SwtPortIdx" = "./EthSwtPortIdx"!][!//
+          <field>
+            <int>[!"num:i($PortPos)"!]</int>
+          </field>
+            [!VAR "Idx" = "$Idx + 1"!][!//
+          [!ENDLOOP!][!//
+        [!ENDLOOP!][!//
+
+        <!-- Calculate ports in logical port groups -->
+        [!CALL "CalcPortsLogicalPortGroups"!]
+        </field>
+        [!ENDIF!] <!-- $EthIf_PortStateMgmtEnabled = 'true' -->
+
+        [!IF "(($EthIf_EthSupportApi = 'ASR430') or ($EthIf_EthSupportApi = 'ASR430_EB'))"!]
+        <!-- Module_ConfigLayout.EthIf_PhysCtrlEthIfCtrlMapData -->
+        <field>
+        [!VAR "EthIfCtrlIdOffs" = "0"!]
+        [!VAR "EthIfCtrlIdLst" = "''"!]
+        [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfPhysController/*,'EthIfPhysControllerIdx')"!]
+          [!VAR "PhysCtrl" = "as:path(., true())"!]
+          [!VAR "EthIfCtrlIdNum" = "0"!]
+          [!LOOP "as:modconf('EthIf')[1]/EthIfConfigSet/EthIfController/*"!]
+            [!IF "$PhysCtrl = ./EthIfPhysControllerRef"!]
+              [!VAR "EthIfCtrlIdNum" = "$EthIfCtrlIdNum + 1"!]
+              [!VAR "EthIfCtrlIdLst" = "concat($EthIfCtrlIdLst,',',./EthIfCtrlIdx)"!]
+            [!ENDIF!]
+          [!ENDLOOP!]
+          <field>
+            <field>
+              <int>[!"num:i($EthIfCtrlIdOffs)"!]</int> <!-- EthIfCtrlIdxOffset -->
+            </field>
+            <field>
+              <int>[!"num:i($EthIfCtrlIdNum)"!]</int>  <!-- EthIfCtrlIdxNumber -->
+            </field>
+          </field>
+          [!VAR "EthIfCtrlIdOffs" = "$EthIfCtrlIdOffs + $EthIfCtrlIdNum"!]
+        [!ENDLOOP!]
+        </field> <!-- Module_ConfigLayout.EthIf_PhysCtrlEthIfCtrlMapData -->
+
+        <!-- Module_ConfigLayout.EthIf_MapPhysCtrlEthIfCtrlIdx -->
+        <field>
+        [!LOOP "text:split($EthIfCtrlIdLst,',')"!]
+          <field>
+            <int>[!"."!]</int> <!-- EthIfCtrlIdx -->
+          </field>
+        [!ENDLOOP!]
+        </field> <!-- Module_ConfigLayout.EthIf_MapPhysCtrlEthIfCtrlIdx -->
+
+        <!-- Module_ConfigLayout.EthIf_EthIfPhysCtrlIngrFifo -->
+        <field>
+        [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfPhysController/*,'EthIfPhysControllerIdx')"!]
+          [!LOOP "./EthIfPhysCtrlRxMainFunctionPriorityProcessing/*"!]
+            <field>
+              <field>
+                <int>[!"./EthIfPhysCtrlRxIndicationIterations"!]</int> <!-- EthIfPhysCtrlRxIndicationIterations -->
+              </field>
+              <field>
+                <int>[!"node:value(../../EthIfPhysControllerIdx)"!]</int> <!-- PhysCtrlIdx -->
+              </field>
+              <field>
+                <int>[!"node:ref(./EthIfPhysCtrlRxIngressFifoRef)/EthCtrlConfigIngressFifoIdx"!]</int> <!-- EthFifoIdx -->
+              </field>
+            </field>
+          [!ENDLOOP!]
+        [!ENDLOOP!]
+        [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfPhysController/*,'EthIfPhysControllerIdx')"!]
+          [!VAR "TempPhysCtrlIdx" = "node:value(EthIfPhysControllerIdx)"!]
+          [!LOOP "node:ref(./EthIfEthCtrlRef)/EthCtrlConfigIngress/EthCtrlConfigIngressFifo/*"!]
+            [!VAR "TempRef" = "node:path(.)"!]
+            [!VAR "Found" = "'false'"!]
+            [!LOOP "node:order(as:modconf('EthIf')[1]/EthIfConfigSet/EthIfPhysController/*,'EthIfPhysControllerIdx')"!]
+              [!LOOP "./EthIfPhysCtrlRxMainFunctionPriorityProcessing/*"!]
+              [!VAR "Found" = "'true'"!][!WHEN "$TempRef = node:path(node:ref(./EthIfPhysCtrlRxIngressFifoRef))"!]
+              [!ENDLOOP!]
+            [!ENDLOOP!]
+            [!IF "$Found = 'false'"!]
+            <field>
+              <field>
+                <int>[!"as:modconf('EthIf')[1]/EthIfGeneral/EthIfRxIndicationIterations"!]</int> <!-- EthIfCtrlRxIndicationIterations -->
+              </field>
+              <field>
+                <int>[!"($TempPhysCtrlIdx)"!]</int> <!-- PhysCtrlIdx -->
+              </field>
+              <field>
+                <int>[!"node:ref($TempRef)/EthCtrlConfigIngressFifoIdx"!]</int> <!-- EthFifoIdx -->
+              </field>
+            </field>
+            [!ENDIF!]
+          [!ENDLOOP!]
+        [!ENDLOOP!]
+        </field> <!-- Module_ConfigLayout.EthIf_EthIfPhysCtrlIngrFifo -->
+        [!ENDIF!]
+
+      </instance> <!-- Module_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>
+
+[!ENDCODE!]

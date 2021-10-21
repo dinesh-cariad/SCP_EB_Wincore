@@ -1,0 +1,1566 @@
+<?xml version='1.0'?>
+<datamodel version="7.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/16/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/16/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:cd="http://www.tresos.de/_projects/DataModel2/08/customdata.xsd" 
+         xmlns:f="http://www.tresos.de/_projects/DataModel2/14/formulaexpr.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd"  
+         xmlns:variant="http://www.tresos.de/_projects/DataModel2/11/variant.xsd">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_TxDxM5I3R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="FrSM" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="ADMIN-DATA" type="ADMIN-DATA">
+                <ad:ADMIN-DATA>
+                  <ad:LANGUAGE>EN</ad:LANGUAGE>
+                  <ad:DOC-REVISIONS>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>4.2.0</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>AUTOSAR</ad:ISSUED-BY>
+                      <ad:DATE>2011-11-09T11:36:22Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>5.3.18</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>Elektrobit Automotive GmbH</ad:ISSUED-BY>
+                      <ad:DATE>2021-07-14T23:59:59Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                  </ad:DOC-REVISIONS>
+                </ad:ADMIN-DATA>
+              </a:a>
+              <a:a name="DESC">
+                <a:v>&lt;html&gt;
+                        Configuration of the FlexRay State Manager.
+                      &lt;/html&gt;</a:v>
+              </a:a>
+              <a:a name="LOWER-MULTIPLICITY" value="0"/>
+              <a:a name="POSTBUILDVARIANTSUPPORT" value="true"/>
+              <a:a name="RELEASE" value="asc:4.0"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <a:a name="UUID" value="ECUC:a98879b6-730a-48f4-9008-57f9d3935f4e"/>
+              <a:da name="INVALID" type="XPath" 
+                    expr="(as:modconf(&apos;FrIf&apos;)[1]/FrIfGeneral/FrIfGetWakeupRxStatusSupport = &apos;true&apos;)" 
+                    false="FrIfGetWakeupRxStatusSupport has to be enabled as it is a mandatory interface for ASR 4.0.3 FrSM."/>
+              <a:da name="WARNING" type="XPath">
+                <a:tst 
+                       expr="(count(as:modconf(&apos;Dem&apos;)) = 1)                              or                              (ReportToDem/FrSMClusterStartupReportToDem != &apos;DEM&apos;)" 
+                       false="The FlexRay State Manager module needs the Diagnostic Event Manager module, if production errors are reported to Dem."/>
+                <a:tst 
+                       expr="(count(as:modconf(&apos;BswM&apos;)) = 1)                              or                              (FrSMGeneral/FrSMReportToBswMEnable = &apos;false&apos;)" 
+                       false="The FlexRay State Manager module needs the Basic Software Mode Manager module, unless EB parameter FrSMReportToBswMEnable is false."/>
+                <a:tst 
+                       expr="node:exists(as:modconf(&apos;BswM&apos;)[1]/BswMGeneral/BswMFrSMEnabled)                              and                              (as:modconf(&apos;BswM&apos;)[1]/BswMGeneral/BswMFrSMEnabled = &apos;false&apos;)                              and                              (FrSMGeneral/FrSMReportToBswMEnable = &apos;true&apos;)" 
+                       true="The BswM does not have FrSM support enabled."/>
+                <a:tst 
+                       expr="(count(as:modconf(&apos;FrNm&apos;)) = 1)                              or                              (FrSMGeneral/FrSMFrNmStartupErrorEnable = &apos;false&apos;)" 
+                       false="The FlexRay State Manager module needs the FlexRay Network Management module, unless EB parameter FrSMFrNmStartupErrorEnable is false."/>
+                <a:tst 
+                       expr="(count(as:modconf(&apos;Det&apos;)) = 1)                              or                              (FrSMGeneral/FrSMDevErrorDetect = &apos;false&apos;)" 
+                       false="The FlexRay State Manager module needs the Development Error Tracer module, unless FrSMDevErrorDetect is false."/>
+              </a:da>
+              <v:ctr name="CommonPublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Common Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6"/>
+                <v:var name="ArMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1"/>
+                  <a:da name="DEFAULT" value="2"/>
+                </v:var>
+                <v:var name="ArMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70"/>
+                  <a:da name="DEFAULT" value="2"/>
+                </v:var>
+                <v:var name="ArPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="SwMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34"/>
+                  <a:da name="DEFAULT" value="5"/>
+                </v:var>
+                <v:var name="SwMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f"/>
+                  <a:da name="DEFAULT" value="3"/>
+                </v:var>
+                <v:var name="SwPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a318d2d9-0e75-49da-ac43-e7e4e682e2f9"/>
+                  <a:da name="DEFAULT" value="18"/>
+                </v:var>
+                <v:var name="ModuleId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Numeric Module ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:78bc8362-080f-4253-b3da-804ab69a7154"/>
+                  <a:da name="DEFAULT" value="142"/>
+                </v:var>
+                <v:var name="VendorId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Vendor ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="Release" type="STRING_LABEL">
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Release Information"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89"/>
+                  <a:da name="DEFAULT" value=""/>
+                </v:var>
+              </v:ctr>
+              <d:ref type="REFINED_MODULE_DEF" 
+                     value="ASPath:/AUTOSAR/EcucDefs/FrSM"/>
+              <v:var name="IMPLEMENTATION_CONFIG_VARIANT" type="ENUMERATION">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                        Configuration variant. Only post-build configuration is supported.
+                      &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Configuration Variant"/>
+                <a:da name="DEFAULT" value="VariantPostBuild"/>
+                <a:da name="EDITABLE" value="false"/>
+                <a:da name="RANGE" value="VariantPostBuild"/>
+              </v:var>
+              <v:ctr name="FrSMDefensiveProgramming" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                &lt;p&gt;Parameters for defensive programming&lt;/p&gt;
+                &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Defensive Programming Options"/>
+                <v:var name="FrSMDefProgEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                    &lt;p&gt;Enables or disables the defensive
+                    programming feature for the module FrSM.&lt;/p&gt;
+                    &lt;p&gt;Note: This feature is dependent on the use of the development error detection module.
+                    To use the defensive programming feature, proceed as follows:
+                    &lt;ol&gt;
+                    &lt;li&gt;Enable development error detection&lt;/li&gt;
+                    &lt;li&gt;Enable defensive programming&lt;/li&gt;
+                    &lt;li&gt;Enable assertions as required&lt;/li&gt;
+                    &lt;/ol&gt;
+                    &lt;/p&gt;
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Defensive Programming"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../../FrSMGeneral/FrSMDevErrorDetect = &apos;true&apos;" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="FrSMPrecondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of precondition assertion checks reported from
+                  the module FrSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;FrSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;FrSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Precondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../FrSMGeneral/FrSMDevErrorDetect = &apos;true&apos;) and (../FrSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="FrSMPostcondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of postcondition assertion checks reported from
+                  the module FrSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;FrSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;FrSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Postcondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../FrSMGeneral/FrSMDevErrorDetect = &apos;true&apos;) and (../FrSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="FrSMStaticAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of static assertion checks reported from
+                  the module FrSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;FrSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;FrSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Static Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../FrSMGeneral/FrSMDevErrorDetect = &apos;true&apos;) and (../FrSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="FrSMUnreachAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of unreachable code assertion checks
+                  reported from the module FrSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;FrSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;FrSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Unreachable Code Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../FrSMGeneral/FrSMDevErrorDetect = &apos;true&apos;) and (../FrSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="FrSMInvariantAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of invariant assertion checks
+                  reported from functions of the module FrSM.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;FrSMDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;FrSMDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Invariant Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../FrSMGeneral/FrSMDevErrorDetect = &apos;true&apos;) and (../FrSMDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+              </v:ctr>
+              <v:lst name="FrSMConfig" type="MULTIPLE-CONFIGURATION-CONTAINER">
+                <a:a name="LABEL" value="Configuration Set List"/>
+                <a:a name="TAB" value="Configuration Set"/>
+                <a:da name="MAX" value="1"/>
+                <a:da name="MIN" value="1"/>
+                <v:ctr name="FrSMConfig" 
+                       type="MULTIPLE-CONFIGURATION-CONTAINER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        This container comprises the cluster specific configuration of the FlexRay State Manager.
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="UUID" 
+                       value="ECUC:88a6c179-1037-456f-b051-ba1e0e60df4e"/>
+                  <v:lst name="FrSMCluster" type="MAP">
+                    <a:a name="COLUMNS">
+                      <a:v>FrSMIsWakeupEcu</a:v>
+                      <a:v>FrSMIsColdstartEcu</a:v>
+                      <a:v>FrSMFrIfClusterRef</a:v>
+                    </a:a>
+                    <a:a name="LABEL" value="FlexRay Cluster List"/>
+                    <a:da name="MIN" value="1"/>
+                    <v:ctr name="FrSMCluster" type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          This container specifies a FlexRay cluster and all related data.
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="POSTBUILDCHANGEABLE" value="true"/>
+                      <a:a name="UUID" 
+                           value="ECUC:06ffd925-d47c-4e72-ac9f-f4c5493e0f74"/>
+                      <v:var name="FrSMCheckWakeupReason" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;Enables wakeup reason check in order to skip the wakeup in case of wakeup by bus.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;true&lt;/code&gt;:  the FrSM will check the wakeup reason in order to
+                          skip the wakeup in case of wakeup by bus.&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;false&lt;/code&gt;:  the FrSM will always try to perform a wakeup.&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Enable Wakeup Reason Check"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:44f793fc-177a-4598-b96a-a0cd92f520e2"/>
+                        <a:da name="DEFAULT" value="false"/>
+                      </v:var>
+                      <v:var name="FrSMDelayStartupWithoutWakeup" 
+                             type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          This parameter enables the start of timer t1 instead of
+                          the immediate call of &lt;code&gt;FrIf_AllowColdstart()&lt;/code&gt;
+                          in case of a startup without wakeup.
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" 
+                             value="Enable Delay Of Startup Without Wakeup"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:6cec37d5-45df-413b-a43e-039bc6eb3805"/>
+                        <a:da name="DEFAULT" value="false"/>
+                      </v:var>
+                      <v:var name="FrSMDurationT1" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          The duration of timer t1 in seconds.
+                          The timer models the delay of clearing the coldstart inhibit mode (i.e.
+                          the delay until calling &lt;code&gt;FrIf_AllowColdstart()&lt;/code&gt;).
+                          If the parameter is set to 0, there is no delay.
+                        &lt;/p&gt;
+                        &lt;p&gt;Range:&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;0&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;FrSMMainFunctionCycleTime&lt;/code&gt; .. &lt;code&gt;FrSMMainFunctionCycleTime * 65535&lt;/code&gt;&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Timer t1 Duration [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:d062fcc7-b32d-4669-ab94-f0cbfa827199"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65535"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="&quot;FrSMDurationT1&quot; must not exceed FrSMMainFunctionCycleTime * 65535." 
+                                    expr=". &gt; (../FrSMMainFunctionCycleTime * 65535)"/>
+                            <mt:tst 
+                                    false="&quot;FrSMDurationT1&quot; must be either 0 or greater than or equal to &quot;FrSMMainFunctionCycleTime&quot;." 
+                                    expr="(. = 0) or (. &gt;= ../FrSMMainFunctionCycleTime)"/>
+                          </mt:xpath>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="num:i((. * 1000000) mod (../FrSMMainFunctionCycleTime * 1000000)) = 0" 
+                              false="&quot;FrSMDurationT1&quot; is not a multiple of the main function cycle time. The number of ticks for the timeout will be round up."/>
+                      </v:var>
+                      <v:var name="FrSMDurationT2" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          The duration of timer t2 in seconds.
+                          The timer models the time difference after which the FrSM will repeat the startup of the FlexRay cluster.
+                          If the parameter is set to 0, the FrSM will not repeat the startup.
+                        &lt;/p&gt;
+                        &lt;p&gt;Range:&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;0 (interpreted as infinite)&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;FrSMMainFunctionCycleTime&lt;/code&gt; .. &lt;code&gt;FrSMMainFunctionCycleTime * 65535&lt;/code&gt;&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Timer t2 Duration [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:df901f89-f193-4d1e-8ea0-387ca7ff1fd5"/>
+                        <a:da name="DEFAULT" value="0.5"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65535"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="&quot;FrSMDurationT2&quot; must not exceed FrSMMainFunctionCycleTime * 65535." 
+                                    expr=". &gt; (../FrSMMainFunctionCycleTime * 65535)"/>
+                            <mt:tst 
+                                    false="&quot;FrSMDurationT2&quot; must be either 0 or greater than or equal to &quot;FrSMMainFunctionCycleTime&quot;." 
+                                    expr="(. = 0) or (. &gt;= ../FrSMMainFunctionCycleTime)"/>
+                            <mt:tst 
+                                    false="&quot;FrSMDurationT2&quot; shall be larger than FrSMDurationT1 (or FrSMDurationT2 shall be 0)." 
+                                    expr="(. = 0) or (. &gt; ../FrSMDurationT1)"/>
+                          </mt:xpath>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="num:i((. * 1000000) mod (../FrSMMainFunctionCycleTime * 1000000)) = 0" 
+                              false="&quot;FrSMDurationT2&quot; is not a multiple of the main function cycle time. The number of ticks for the timeout will be round up."/>
+                      </v:var>
+                      <v:var name="FrSMDurationT3" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          The duration of timer t3 in seconds.
+                          The timer supervises the transition to communication mode
+                          &lt;code&gt;COMM_FULL_COMMUNICATION&lt;/code&gt;.
+                          If the parameter is set to 0, the transition is not supervised, i.e. the
+                          duration of timer t3 is infinite.
+                        &lt;/p&gt;
+                        &lt;p&gt;Range:&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;0 (interpreted as infinite)&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;FrSMMainFunctionCycleTime&lt;/code&gt; .. &lt;code&gt;FrSMMainFunctionCycleTime * 65535&lt;/code&gt;&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Timer t3 Duration [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:d68c5e6b-b23e-4437-8cc3-bb9444d5069d"/>
+                        <a:da name="DEFAULT" value="2"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65535"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    true="&quot;FrSMDurationT3&quot; must not exceed FrSMMainFunctionCycleTime * 65535." 
+                                    expr=". &gt; (../FrSMMainFunctionCycleTime * 65535)"/>
+                            <mt:tst 
+                                    false="&quot;FrSMDurationT3&quot; must be either 0 or greater than or equal to &quot;FrSMMainFunctionCycleTime&quot;." 
+                                    expr="(. = 0) or ((. &gt;= ../FrSMMainFunctionCycleTime))"/>
+                            <mt:tst 
+                                    false="&quot;FrSMDurationT3&quot; shall be larger than FrSMDurationT1 (or FrSMDurationT3 shall be 0)." 
+                                    expr="(. = 0) or (. &gt; ../FrSMDurationT1)"/>
+                          </mt:xpath>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="num:i((. * 1000000) mod (../FrSMMainFunctionCycleTime * 1000000)) = 0" 
+                              false="&quot;FrSMDurationT3&quot; is not a multiple of the main function cycle time. The number of ticks for the timeout will be round up."/>
+                      </v:var>
+                      <v:var name="FrSMIsColdstartEcu" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: The ECU is a coldstart node for this FlexRay cluster.&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: The ECU is no coldstart node for this FlexRay cluster.&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Is Coldstart ECU"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:d006fe48-3419-4c48-9b4f-0c79d70b17a5"/>
+                        <a:da name="DEFAULT" value="true"/>
+                      </v:var>
+                      <v:var name="FrSMIsWakeupEcu" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: FrSM shall perform a wakeup for this cluster.&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: FrSM shall never perform a wakeup for this FlexRay cluster.&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Is Wakeup ECU"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:775480ae-171e-4527-8024-c8c94e5b7844"/>
+                        <a:da name="DEFAULT" value="true"/>
+                      </v:var>
+                      <v:var name="FrSMMainFunctionCycleTime" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          This parameter defines the cycle time of the periodic calling of the FrSM main
+                          function in seconds.
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                          Range: 0.00025 ..
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="Link">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Main Function Cycle Time [s]"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:db31e4f1-2f37-495e-ab4d-465746a7d5a3"/>
+                        <a:da name="DEFAULT" value="0.005"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=1"/>
+                          <a:tst expr="&gt;=0.00025"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrSMMinNumberOfColdstarter" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          This parameter defines the number of coldstarter that should not be
+                          underrun. If this parameter is not configured the mainfunction shall
+                          not check the number of startup frames.
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                          Range: 0..255
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                          &lt;strong&gt;This feature is currently not supported.&lt;/strong&gt;
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" 
+                             value="Minimum Number of Cold Starters"/>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:db31e4f1-2f37-495e-ab4d-465746a7d5a3"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="EDITABLE" value="false"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrSMNumWakeupPatterns" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                         Maximum number of Wakeup Patterns the node may send before going to
+                         &lt;code&gt;FRSM_STARTUP&lt;/code&gt;.
+                        &lt;/p&gt;
+                        &lt;p&gt;Range: 1 .. 255&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" 
+                             value="Maximum Number Of Wakeup Patterns"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:4cd61d2c-be6c-46ff-a7b8-764e9ab3dd1b"/>
+                        <a:da name="DEFAULT" value="1"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=1"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrSMStartupRepetitions" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          The number of times an ECU may repeat the startup procedure for a FlexRay
+                          cluster.
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                          If this parameter is disabled, the number of repetitions is unlimited.
+                        &lt;/p&gt;
+                        &lt;p&gt;Range:&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;Parameter enabled : 0 .. 65534&lt;/li&gt;
+                          &lt;li&gt;Parameter disabled : Infinite&lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;Dependency on parameter:&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;FrSMStartupRepetitionsWithWakeup&lt;/code&gt; must be smaller than or
+                          equal to this parameter.&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="Startup Repetitions"/>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:d56fbbc1-2025-4426-89b4-b830a9025719"/>
+                        <a:da name="DEFAULT" value="100"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65534"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath 
+                                    false="&quot;FrSMStartupRepetitions&quot; must not be smaller than &quot;FrSMStartupRepetitionsWithWakeup&quot;." 
+                                    expr="node:exists(../FrSMStartupRepetitionsWithWakeup) and (node:value(.) &gt;= node:value(../FrSMStartupRepetitionsWithWakeup))"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrSMStartupRepetitionsWithWakeup" 
+                             type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          The number of times an ECU may repeat the startup procedure including a
+                          wakeup for a FlexRay cluster.
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                          If this parameter is disabled, the number of repetitions is unlimited.
+                        &lt;/p&gt;
+                        &lt;p&gt;Range:&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;Parameter enabled : 0 .. 65534&lt;/li&gt;
+                          &lt;li&gt;Parameter disabled : Infinite&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" 
+                             value="Startup Repetitions With Wakeup"/>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:254df245-0739-438d-9785-f139d395c9df"/>
+                        <a:da name="DEFAULT" value="10"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65534"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:ref name="FrSMComMNetworkHandleRef" 
+                             type="SYMBOLIC-NAME-REFERENCE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;Reference to the unique handle to identify one certain FlexRay
+                        network.&lt;/p&gt;
+                        &lt;p&gt;Note: The reference corresponds to one of the network handles of the ComM configuration.&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" value="ComM Network Handle Reference"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="UUID" 
+                             value="ECUC:e2b79c8a-5548-4ed9-af29-350b61ae85df"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst expr="node:refvalid(.)" 
+                                 false="FrSMComMNetworkHandleRef contains an invalid reference - please insert a correct reference."/>
+                          <a:tst 
+                                 expr="node:refvalid(.) and node:exists(as:ref(.)/ComMBusType) and (as:ref(.)/ComMBusType != &apos;COMM_BUS_TYPE_FR&apos;)" 
+                                 true="The FrSM can only be used for FlexRay networks. The channel referenced is not a FlexRay channel."/>
+                          <a:tst 
+                                 expr="node:refvalid(.) and (not(text:uniq(../../*/FrSMComMNetworkHandleRef, .)))" 
+                                 true="A 1:1 relation betwen ComM channels and FrSM networks is required. This channel is referenced more than once."/>
+                        </a:da>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/ComM/ComMConfigSet/ComMChannel"/>
+                      </v:ref>
+                      <v:ref name="FrSMFrIfClusterRef" 
+                             type="SYMBOLIC-NAME-REFERENCE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          References the cluster configuration in the FlexRay Interface configuration.
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                          Note: The assigned controllers and transceivers are defined in the FrIf configuration and can be accessed via this reference.
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="Link">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="LABEL" 
+                             value="FrIf Cluster Configuration Reference"/>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                        <a:a name="UUID" 
+                             value="ECUC:dd461cfe-0a31-43a8-8446-3d8f2358423f"/>
+                        <a:da name="INVALID" type="XPath">
+                          <a:tst expr="node:refvalid(.)" 
+                                 false="No valid FrIf cluster is referenced."/>
+                          <a:tst 
+                                 expr="node:refvalid(.) and (not(text:uniq(../../*/FrSMFrIfClusterRef, .)))" 
+                                 true="A FrIf cluster may be referred to by at most one FrSM network. This FrIf cluster is referenced more than once."/>
+                          <a:tst 
+                                 expr="node:refvalid(.) and (count(as:ref(.)/FrIfController/*) &gt; 1)" 
+                                 true="FrSM only supports a single communication controller per FlexRay cluster, but the referenced FlexRay cluster contains multiple controllers."/>
+                        </a:da>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/FrIf/FrIfConfig/FrIfCluster"/>
+                      </v:ref>
+                      <v:ctr name="FrSMClusterDemEventParameterRefs" 
+                             type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          Container for the references to &lt;code&gt;DemEventParameter&lt;/code&gt; elements which shall be
+                          invoked using the API &lt;code&gt;Dem_ReportErrorStatus()&lt;/code&gt; in case the corresponding error occurs.
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                          The EventId is taken from the referenced
+                          &lt;code&gt;DemEventParameter&lt;/code&gt;&apos;s &lt;code&gt;DemEventId&lt;/code&gt; value.
+                          The standardized errors are provided in this container and may be extended by vendor specific error references.
+                        &lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="LABEL" 
+                             value="Container For DemEventParameter References"/>
+                        <a:a name="UUID" 
+                             value="ECUC:9f8654da-17b0-427d-8b3f-bdb04c809a83"/>
+                        <v:ref name="FRSM_E_CLUSTER_STARTUP" 
+                               type="SYMBOLIC-NAME-REFERENCE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Reference to the &lt;code&gt;DemEventParameter&lt;/code&gt; that shall be issued when the error
+                                    &lt;code&gt;FRSM_E_CLUSTER_STARTUP&lt;/code&gt; occurs.
+                                  &lt;/p&gt;
+                                  &lt;p&gt;Dependency on parameter(s):&lt;/p&gt;
+                                  &lt;ul&gt;
+                                  &lt;li&gt;&lt;code&gt;FrSMClusterStartupReportToDem&lt;/code&gt;: Select DEM to enable the reporting of &lt;code&gt;FRSM_E_CLUSTER_STARTUP&lt;/code&gt;.&lt;/li&gt;
+                                  &lt;/ul&gt;
+                                  &lt;p&gt;Further notes:&lt;/p&gt;
+                                  &lt;ul&gt;
+                                    &lt;li&gt;Activation: This error is reported if the start-up is not performed within time T3.&lt;/li&gt;
+                                    &lt;li&gt;Healing: This error is healed as soon as a start-up is successfully performed.&lt;/li&gt;
+                                    &lt;li&gt;Trigger debounce: None. The error is reported on first occurrence.&lt;/li&gt;
+                                    &lt;li&gt;Rate of diagnostic checks: Checked on every Flexray start-up.&lt;/li&gt;
+                                  &lt;/ul&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="Link">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" 
+                               value="Reference to FRSM_E_CLUSTER_STARTUP"/>
+                          <a:a name="OPTIONAL" value="true"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="UUID" 
+                               value="ECUC:637b2fa5-031c-4c62-8b02-eb0313e3b92d"/>
+                          <a:da name="ENABLE" value="false"/>
+                          <a:da name="INVALID" type="XPath" 
+                                expr="node:refvalid(.)" 
+                                false="The FRSM_E_CLUSTER_STARTUP reference is invalid."/>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/Dem/DemConfigSet/DemEventParameter"/>
+                        </v:ref>
+                        <v:ref name="FRSM_E_CLUSTER_SYNC_LOSS" 
+                               type="SYMBOLIC-NAME-REFERENCE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                                  &lt;p&gt;
+                                    Reference to the &lt;code&gt;DemEventParameter&lt;/code&gt; that shall be issued when the error
+                                    &lt;code&gt;FRSM_E_CLUSTER_SYNC_LOSS&lt;/code&gt; occurs.
+                                  &lt;/p&gt;
+                                  &lt;p&gt;Dependency on parameter(s):&lt;/p&gt;
+                                  &lt;ul&gt;
+                                  &lt;li&gt;&lt;code&gt;FrSMClusterSyncLossReportToDem&lt;/code&gt;: Select DEM to enable the reporting of &lt;code&gt;FRSM_E_CLUSTER_SYNC_LOSS&lt;/code&gt;.&lt;/li&gt;
+                                  &lt;/ul&gt;
+                                  &lt;p&gt;Further notes:&lt;/p&gt;
+                                  &lt;ul&gt;
+                                    &lt;li&gt;Activation: This error is reported if the FlexRay controller moves from FlexRay POC state normal-active to any other FlexRay POC state without user request.&lt;/li&gt;
+                                    &lt;li&gt;Healing: This error is healed as soon as a start-up is successfully performed and FlexRay POC state normal-active is reached.&lt;/li&gt;
+                                    &lt;li&gt;Trigger debounce: None. The error is reported on first occurrence.&lt;/li&gt;
+                                    &lt;li&gt;Rate of diagnostic checks: Checked on every FrSM_Mainfunction() call.&lt;/li&gt;
+                                  &lt;/ul&gt;
+                                &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="Link">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="LABEL" 
+                               value="Reference to FRSM_E_CLUSTER_SYNC_LOSS"/>
+                          <a:a name="OPTIONAL" value="true"/>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="UUID" 
+                               value="ECUC:637b2fa5-031c-4c62-8b02-eb0313e3b92d"/>
+                          <a:da name="ENABLE" value="false"/>
+                          <a:da name="INVALID" type="XPath" 
+                                expr="node:refvalid(.)" 
+                                false="The FRSM_E_CLUSTER_SYNC_LOSS reference is invalid."/>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/Dem/DemConfigSet/DemEventParameter"/>
+                        </v:ref>
+                      </v:ctr>
+                    </v:ctr>
+                  </v:lst>
+                </v:ctr>
+              </v:lst>
+              <v:ctr name="ReportToDem" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                                    Production error handling
+                                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Production Error Handling"/>
+                <a:a name="TAB" value="Optimization"/>
+                <a:da name="TITLE" value="Production error handling"/>
+                <v:var name="FrSMClusterStartupReportToDem" type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                      &lt;p&gt;Selects the handling of the production error:
+                                        &lt;em&gt;FlexRay startup could not reach the state normal active within the configured time&lt;/em&gt;
+                                      &lt;/p&gt;
+                                      &lt;ul&gt;
+                                        &lt;li&gt;&lt;code&gt;DEM&lt;/code&gt;: All errors are reported to the Diagnostics Event Manager (Dem).&lt;/li&gt;
+                                        &lt;li&gt;&lt;code&gt;DET&lt;/code&gt;: All errors are reported to the Development Error Tracer (Det) if enabled.&lt;/li&gt;
+                                        &lt;li&gt;&lt;code&gt;DISABLE&lt;/code&gt;: Production errors are not reported at all.&lt;/li&gt;
+                                      &lt;/ul&gt;
+                                      &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                      &lt;ul&gt;
+                                        &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                          &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                          Setting this parameter to a value of DISABLE reduces the ROM consumption of the module code.
+                                        &lt;/li&gt;
+                                        &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                          &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                          Setting this parameter to a value of DISABLE reduces the execution time of the module code.
+                                        &lt;/li&gt;
+                                      &lt;/ul&gt;
+                                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="FlexRay Startup Error Handling"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Optimization"/>
+                  <a:da name="DEFAULT" value="DEM"/>
+                  <a:da name="RANGE">
+                    <a:v>DEM</a:v>
+                    <a:v>DET</a:v>
+                    <a:v>DISABLE</a:v>
+                  </a:da>
+                  <a:da name="WARNING" type="XPath" 
+                        expr="(. = &apos;DET&apos;) and (../../FrSMGeneral/FrSMDevErrorDetect = &apos;false&apos;)" 
+                        true="FrSMDevErrorDetect is set to false which means that production errors cannot be reported to the development error tracer (Det)."/>
+                </v:var>
+                <v:var name="FrSMClusterStartupReportToDemDetErrorId" 
+                       type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                      &lt;p&gt;
+                                        If a production error is reported towards the Det, this parameter defines the
+                                        error id which is reported towards the Det.
+                                      &lt;/p&gt;
+                                      &lt;p&gt;
+                                        The Det instance id is the ComM channel ID (parameter ComMChannelId of the ComM
+                                        channel referenced by parameter FrSMComMNetworkHandleRef).
+                                      &lt;/p&gt;
+                                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="FlexRay Startup Det Error ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Optimization"/>
+                  <a:da name="DEFAULT" value="129"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="../FrSMClusterStartupReportToDem = &apos;DET&apos;"/>
+                  <a:da name="INVALID" type="Range" expr="&lt;=255"/>
+                  <a:da name="WARNING" type="XPath">
+                    <a:tst expr=". &gt;= 4" 
+                           false="The configured Det error ID is already used by a Det error ID defined by the AUTOSAR SWS or by an EB specific development error."/>
+                    <a:tst 
+                           expr="(../FrSMClusterSyncLossReportToDem = &apos;DET&apos;) and (../FrSMClusterSyncLossReportToDemDetErrorId = .)" 
+                           true="The configured Det error ID is already used by the parameter OtherEventDetErrorId and thus not unique!"/>
+                  </a:da>
+                </v:var>
+                <v:var name="FrSMClusterSyncLossReportToDem" type="ENUMERATION">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                      &lt;p&gt;Selects the handling of the production error:
+                                        &lt;em&gt;The FlexRay cluster has lost its synchronization&lt;/em&gt;
+                                      &lt;/p&gt;
+                                      &lt;ul&gt;
+                                        &lt;li&gt;&lt;code&gt;DEM&lt;/code&gt;: All errors are reported to the Diagnostics Event Manager (Dem).&lt;/li&gt;
+                                        &lt;li&gt;&lt;code&gt;DET&lt;/code&gt;: All errors are reported to the Development Error Tracer (Det) if enabled.&lt;/li&gt;
+                                        &lt;li&gt;&lt;code&gt;DISABLE&lt;/code&gt;: Production errors are not reported at all.&lt;/li&gt;
+                                      &lt;/ul&gt;
+                                      &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                      &lt;ul&gt;
+                                        &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                          &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                          Setting this parameter to a value of DISABLE reduces the ROM consumption of the module code.
+                                        &lt;/li&gt;
+                                        &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                          &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                          Setting this parameter to a value of DISABLE reduces the execution time of the module code.
+                                        &lt;/li&gt;
+                                      &lt;/ul&gt;
+                                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="FlexRay Sync Loss Error Handling"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Optimization"/>
+                  <a:da name="DEFAULT" value="DEM"/>
+                  <a:da name="RANGE">
+                    <a:v>DEM</a:v>
+                    <a:v>DET</a:v>
+                    <a:v>DISABLE</a:v>
+                  </a:da>
+                  <a:da name="WARNING" type="XPath" 
+                        expr="(. = &apos;DET&apos;) and (../../FrSMGeneral/FrSMDevErrorDetect = &apos;false&apos;)" 
+                        true="FrSMDevErrorDetect is set to false which means that production errors cannot be reported to the development error tracer (Det)."/>
+                </v:var>
+                <v:var name="FrSMClusterSyncLossReportToDemDetErrorId" 
+                       type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                      &lt;p&gt;
+                                        If a production error is reported towards the Det, this parameter defines the
+                                        error id which is reported towards the Det.
+                                      &lt;/p&gt;
+                                      &lt;p&gt;
+                                        The Det instance id is the ComM channel ID (parameter ComMChannelId of the ComM
+                                        channel referenced by parameter FrSMComMNetworkHandleRef).
+                                      &lt;/p&gt;
+                                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="FlexRay Sync Loss Det Error ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Optimization"/>
+                  <a:da name="DEFAULT" value="130"/>
+                  <a:da name="ENABLE" type="XPath" 
+                        expr="../FrSMClusterSyncLossReportToDem = &apos;DET&apos;"/>
+                  <a:da name="INVALID" type="Range" expr="&lt;=255"/>
+                  <a:da name="WARNING" type="XPath">
+                    <a:tst expr=". &gt;= 4" 
+                           false="The configured Det error ID is already used by a Det error ID defined by the AUTOSAR SWS or by an EB specific development error."/>
+                    <a:tst 
+                           expr="(../FrSMClusterStartupReportToDem = &apos;DET&apos;) and (../FrSMClusterStartupReportToDemDetErrorId = .)" 
+                           true="The configured Det error ID is already used by the parameter OtherEventDetErrorId and thus not unique!"/>
+                  </a:da>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="FrSMGeneral" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                        This container contains the general configuration parameters of the FlexRay
+                        State Manager.
+                      &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="General Configuration"/>
+                <a:a name="UUID" 
+                     value="ECUC:c7bab0a0-434a-4b1b-9cbc-a4fa164375e0"/>
+                <v:var name="FrSMDevErrorDetect" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                        Enables and disables the development error detection and notification mechanism.
+                        &lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: Development error detection and development error reporting is enabled.&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: Development error detection and development error reporting is disabled.&lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                            &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                            Disabling this parameter reduces the ROM consumption of the module code.
+                          &lt;/li&gt;
+                          &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                            &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                            Disabling this parameter reduces the execution time of the module code.
+                          &lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Development Error Detection"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:876430b3-a273-44c7-b9cb-2a55ab4c5382"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="FrSMSyncLossErrorIndicationName" 
+                       type="FUNCTION-NAME">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                         Name of &lt;Cdd&gt;_SyncLossErrorIndication function that shall be called on
+                         loss of synchronization. If this parameter is omitted no indication
+                         shall take place.
+                       &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="SyncLoss Error Indication function"/>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:876430b3-a273-44c7-b9cb-2a55ab4c5382"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="XPath">
+                    <a:tst 
+                           expr="(. != &apos;&apos;) and text:match(., &apos;^[a-zA-Z_][a-zA-Z0-9_\-]*[a-zA-Z0-9_]$&apos;)" 
+                           false="Invalid name. (no prefixed C function name)"/>
+                    <a:tst 
+                           expr="node:exists(../FrSMSyncLossErrorIndicationHeaderName)" 
+                           false="&lt;Cdd&gt;_SyncLossErrorIndication function enabled, but no header file defined (refer to FrSMSyncLossErrorIndicationHeaderName)."/>
+                  </a:da>
+                </v:var>
+                <v:var name="FrSMVersionInfoApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;
+                          Enables and disables the version info API.
+                        &lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: &lt;code&gt;FrSM_GetVersionInfo()&lt;/code&gt; is available.&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: &lt;code&gt;FrSM_GetVersionInfo()&lt;/code&gt; is not available.&lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                            &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                            Disabling this parameter reduces the ROM consumption of the module configuration.
+                          &lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Version Info API"/>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:687f878a-ab78-487e-afd6-9cea1d16e990"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="FrSMFrTrcvControlEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                          &lt;p&gt;
+                                            Allows the FlexRay state manager to control the FlexRay transceiver module according to the specification.
+                                          &lt;/p&gt;
+                                          &lt;ul&gt;
+                                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: The FlexRay State Manager controls the FlexRay transceiver module according to the specification.&lt;/li&gt;
+                                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: The FlexRay State Manager does not control the FlexRay transceiver module.&lt;/li&gt;
+                                          &lt;/ul&gt;
+                                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                          &lt;ul&gt;
+                                           &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                             &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                             Disabling this parameter reduces the execution time of the module code.
+                                           &lt;/li&gt;
+                                          &lt;/ul&gt;
+                                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Enable Control Of FlexRay Transceiver"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Extended Configuration"/>
+                  <a:a name="UUID" value="cb2e1943-af7d-4876-a737-04c31c0a76c1"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="FrSMComMIndicationEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                          &lt;p&gt;
+                                            Switches the call of the API service &lt;code&gt;ComM_ComModeIndication()&lt;/code&gt; on or off.
+                                          &lt;/p&gt;
+                                          &lt;ul&gt;
+                                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: API service &lt;code&gt;ComM_ComModeIndication()&lt;/code&gt; is called according to the specification.&lt;/li&gt;
+                                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: API service &lt;code&gt;ComM_ComModeIndication()&lt;/code&gt; is not called.&lt;/li&gt;
+                                          &lt;/ul&gt;
+                                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                          &lt;ul&gt;
+                                           &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                             &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                             Disabling this parameter reduces the execution time of the module code.
+                                           &lt;/li&gt;
+                                          &lt;/ul&gt;
+                                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="Enable Call Of ComM_ComModeIndication()"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Extended Configuration"/>
+                  <a:a name="UUID" value="cb2e1943-af7d-4876-a737-04c31c0a76c1"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="FrSMSingleClstOptEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                          &lt;p&gt;
+                                            Optimization for a configuration consisting of a single FlexRay cluster.
+                                          &lt;/p&gt;
+                                          &lt;ul&gt;
+                                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: Enables optimization but limits the configuration to a single FlexRay cluster.&lt;/li&gt;
+                                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: Disables optimization but allows to configure more than one FlexRay cluster.&lt;/li&gt;
+                                          &lt;/ul&gt;
+                                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                          &lt;ul&gt;
+                                            &lt;li class=&quot;optimization.config.rom.reduction&quot;&gt;
+                                              &lt;strong&gt;ROM reduction (config):&lt;/strong&gt;
+                                              Enabling this parameter reduces the ROM consumption of the module configuration.
+                                            &lt;/li&gt;
+                                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                              Enabling this parameter reduces the ROM consumption of the module code.
+                                            &lt;/li&gt;
+                                            &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                              &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                              Enabling this parameter reduces the execution time of the module code.
+                                            &lt;/li&gt;
+                                          &lt;/ul&gt;
+                                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Single Cluster Optimization"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Optimization"/>
+                  <a:a name="UUID" value="cb2e1943-af7d-4876-a737-04c31c0a76c1"/>
+                  <a:da name="DEFAULT" value="true"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="not((count(../../FrSMConfig/*[1]/FrSMCluster/*) &gt; 1) and (node:value(.) = &apos;true&apos;))" 
+                        false="Configure either a single cluster only or disable this optimization"/>
+                </v:var>
+                <v:var name="FrSMReportToBswMEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                          &lt;p&gt;
+                                            Switches the report of transitions  of the FrSM state machine to the
+                                            Basic Software Mode Manager via &lt;code&gt;BswM_FrSM_CurrentState()&lt;/code&gt;
+                                            on or off.
+                                          &lt;/p&gt;
+                                          &lt;ul&gt;
+                                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: State machine transitions are reported to
+                                              Basic Software Mode Manager as specified in the AUTOSAR SWS.&lt;/li&gt;
+                                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: State machine transitions are not reported to
+                                              Basic Software Mode Manager.&lt;/li&gt;
+                                          &lt;/ul&gt;
+                                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                          &lt;ul&gt;
+                                           &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                             &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                             Disabling this parameter decreases the execution time of the module code.
+                                           &lt;/li&gt;
+                                          &lt;/ul&gt;
+                                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Report To BswM"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Extended Configuration"/>
+                  <a:a name="UUID" value="cb2e1943-af7d-4876-a737-04c31c0a76c1"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="FrSMSetEcuPassiveEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                          &lt;p&gt;
+                                            Switches the API service &lt;code&gt;FrSM_SetEcuPassive()&lt;/code&gt; on or off.
+                                          &lt;/p&gt;
+                                          &lt;ul&gt;
+                                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: &lt;code&gt;FrSM_SetEcuPassive()&lt;/code&gt; is available.&lt;/li&gt;
+                                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: &lt;code&gt;FrSM_SetEcuPassive()&lt;/code&gt; is not available.&lt;/li&gt;
+                                          &lt;/ul&gt;
+                                          &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                          &lt;ul&gt;
+                                            &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                              &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                              Disabling this parameter reduces the ROM consumption of the module code.
+                                            &lt;/li&gt;
+                                          &lt;/ul&gt;
+
+                                        &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Provide API FrSM_SetEcuPassive()"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="TAB" value="Extended Configuration"/>
+                  <a:a name="UUID" value="cb2e1943-af7d-4876-a737-04c31c0a76c1"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="not((node:value(../FrSMFrTrcvControlEnable) = &apos;false&apos;) and (node:value(.) = &apos;true&apos;))" 
+                        false="Enabling FrSM_SetEcuPassive requires &quot;FrSMFrTrcvControlEnable&quot; to be set to true."/>
+                </v:var>
+                <v:var name="FrSMFrNmStartupErrorEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                            &lt;p&gt;
+                                              Switches the call of API service &lt;code&gt;FrNm_StartupError()&lt;/code&gt; on or off.
+                                            &lt;/p&gt;
+                                            &lt;ul&gt;
+                                              &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: &lt;code&gt;FrNm_StartupError()&lt;/code&gt; is called according to the specification.&lt;/li&gt;
+                                              &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: &lt;code&gt;FrNm_StartupError()&lt;/code&gt; is not called.&lt;/li&gt;
+                                            &lt;/ul&gt;
+                                            &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                            &lt;ul&gt;
+                                             &lt;li class=&quot;optimization.code.exetime.reduction&quot;&gt;
+                                               &lt;strong&gt;Execution time reduction (code):&lt;/strong&gt;
+                                               Disabling this parameter reduces the execution time of the module code.
+                                             &lt;/li&gt;
+                                            &lt;/ul&gt;
+                                          &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Call Of FrNm_StartupError"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Extended Configuration"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="FrSMKeySlotOnlyModeEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                              &lt;p&gt;
+                                                Enables/disables support for single slot (key slot) mode.
+                                              &lt;/p&gt;
+                                              &lt;ul&gt;
+                                                &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: single slot mode is supported and API service &lt;code&gt;FrSM_AllSlots()&lt;/code&gt; is provided.&lt;/li&gt;
+                                                &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: single slot mode is not supported and API service &lt;code&gt;FrSM_AllSlots()&lt;/code&gt; is not provided.&lt;/li&gt;
+                                              &lt;/ul&gt;
+                                              &lt;p&gt;&lt;strong&gt;Optimization Effect:&lt;/strong&gt;&lt;/p&gt;
+                                              &lt;ul&gt;
+                                               &lt;li class=&quot;optimization.code.rom.reduction&quot;&gt;
+                                                 &lt;strong&gt;ROM reduction (code):&lt;/strong&gt;
+                                                 Disabling this parameter reduces the ROM consumption of the module code.
+                                               &lt;/li&gt;
+                                              &lt;/ul&gt;
+                                            &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Single Slot Mode Support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Extended Configuration"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="(. = &apos;true&apos;) and (as:modconf(&apos;FrIf&apos;)[1]/FrIfGeneral/FrIfAllSlotsSupport = &apos;false&apos;)" 
+                        true="Single slot mode support is enabled in FrSM, but is disabled in FrIf (configuration parameter FrIfAllSlotsSupport)."/>
+                  <a:da name="WARNING" type="XPath" 
+                        expr="(. = &apos;false&apos;) and (as:modconf(&apos;FrIf&apos;)[1]/FrIfGeneral/FrIfAllSlotsSupport = &apos;true&apos;)" 
+                        true="Single slot mode support is enabled in FrIf (configuration parameter FrIfAllSlotsSupport), but is disabled in FrSM."/>
+                </v:var>
+                <v:var name="FrSMSyncLossErrorIndicationHeaderName" 
+                       type="FUNCTION-NAME">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                              Name of header file which contains the declaration of the
+                                              &lt;Cdd&gt;_SyncLossErrorIndication function.
+                                              Must be in format: AnyValidFileName.h
+                                            &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v class="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" 
+                       value="SyncLoss Error Indication function header"/>
+                  <a:a name="OPTIONAL" value="true"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Extended Configuration"/>
+                  <a:da name="ENABLE" value="false"/>
+                  <a:da name="INVALID" type="XPath" 
+                        expr="(. != &apos;&apos;) and text:match(., &apos;^[a-zA-Z_][a-zA-Z0-9_\-]*[a-zA-Z0-9_]\.h$&apos;)" 
+                        false="Invalid name. (no C header file name)"/>
+                  <a:da name="WARNING" type="XPath" 
+                        expr="node:exists(../FrSMSyncLossErrorIndicationName)" 
+                        false="Header file for function &lt;Cdd&gt;_SyncLossErrorIndication enabled, but no function name defined (refer to FrSMSyncLossErrorIndicationName)."/>
+                </v:var>
+                <v:var name="FrSMMultiCoreSupportEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                                              &lt;p&gt;
+                                                Enables/disables support for multicore mode.
+                                              &lt;/p&gt;
+                                              &lt;ul&gt;
+                                                &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: Multi core mode is supported and API service &lt;code&gt;Schm_Call()&lt;/code&gt; is used.&lt;/li&gt;
+                                                &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: Multi core mode is not supported and API service &lt;code&gt;ComM_BusSM_ModeIndication()&lt;/code&gt; is used.&lt;/li&gt;
+                                              &lt;/ul&gt;
+                                            &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable multicore support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="TAB" value="Extended Configuration"/>
+                  <a:a name="UUID" value="14624fc4-2bda-4343-8490-fc2d220879a7"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="PublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="EB Published Information"/>
+                <a:a name="TAB" value="EB Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07"/>
+                <v:var name="PbcfgMSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Specifies whether or not the FrSM can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="PbcfgM support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+              </v:ctr>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

@@ -1,0 +1,2380 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+[!INCLUDE "../../generate_macros/Xcp_Vars.m"!][!//
+
+[!IF "($XcpDaqStimMemoryAccessAreas = 'true') or ($RAMCalloutProxyEnabled = 'true')"!]
+  [!VAR "XcpMemoryProxyResponseUsed" = "true()"!]
+[!ELSE!]
+  [!VAR "XcpMemoryProxyResponseUsed" = "false()"!]
+[!ENDIF!]
+
+[!AUTOSPACING!][!//
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-2-1_STRICT_COMPACT.xsd">
+  <AR-PACKAGES>
+[!IF "(XcpGeneral/XcpDefaultXcpModuleState = 'true') or (XcpGeneral/XcpEnableXcpControlApi = 'true')"!]
+    <AR-PACKAGE>
+    <SHORT-NAME>AUTOSAR_Xcp</SHORT-NAME>
+      <AR-PACKAGES>
+[!IF "$XcpBswDistributionEnabled"!]
+        <AR-PACKAGE>
+          <SHORT-NAME>ImplementationDataTypes</SHORT-NAME>
+          <ELEMENTS>
+[!IF "(count(text:split($XcpRemoteDestinations,' ')) > 0)"!]
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Xcp_RemoteDispatchType</SHORT-NAME>
+              <CATEGORY>STRUCTURE</CATEGORY>
+              <SUB-ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>type</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>p8</SHORT-NAME>
+                  <CATEGORY>ARRAY</CATEGORY>
+                  <SUB-ELEMENTS>
+                    <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                      <SHORT-NAME>p8</SHORT-NAME>
+                      <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                      <ARRAY-SIZE>2</ARRAY-SIZE>
+                      <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                            <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                    </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  </SUB-ELEMENTS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>p16</SHORT-NAME>
+                  <CATEGORY>ARRAY</CATEGORY>
+                  <SUB-ELEMENTS>
+                    <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                      <SHORT-NAME>p16</SHORT-NAME>
+                      <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                      <ARRAY-SIZE>1</ARRAY-SIZE>
+                      <ARRAY-SIZE-SEMANTICS>FIXED-SIZE</ARRAY-SIZE-SEMANTICS>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                            <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                    </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  </SUB-ELEMENTS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              </SUB-ELEMENTS>
+              <TYPE-EMITTER>RTE</TYPE-EMITTER>
+            </IMPLEMENTATION-DATA-TYPE>
+[!ENDIF!]
+[!IF "$XcpMemoryAccessAreas"!]
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Xcp_Uint8Ptr</SHORT-NAME>
+              <CATEGORY>DATA_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <SW-POINTER-TARGET-PROPS>
+                      <TARGET-CATEGORY>TYPE_REFERENCE</TARGET-CATEGORY>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                            <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                            <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                    </SW-POINTER-TARGET-PROPS>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              <TYPE-EMITTER>RTE</TYPE-EMITTER>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Xcp_Uint16Ptr</SHORT-NAME>
+              <CATEGORY>DATA_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <SW-POINTER-TARGET-PROPS>
+                      <TARGET-CATEGORY>TYPE_REFERENCE</TARGET-CATEGORY>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                            <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                            <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                    </SW-POINTER-TARGET-PROPS>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              <TYPE-EMITTER>RTE</TYPE-EMITTER>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE>
+            <SHORT-NAME>Xcp_RequestToMemProxyType</SHORT-NAME>
+            <CATEGORY>STRUCTURE</CATEGORY>
+            <SUB-ELEMENTS>
+              <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <SHORT-NAME>address1</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Xcp/ImplementationDataTypes/Xcp_Uint8Ptr</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <SHORT-NAME>address2</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Xcp/ImplementationDataTypes/Xcp_Uint8Ptr</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <SHORT-NAME>size</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <SHORT-NAME>bitMask</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              <SHORT-NAME>type</SHORT-NAME>
+              <CATEGORY>TYPE_REFERENCE</CATEGORY>
+              <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <SHORT-NAME>appId</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              </SUB-ELEMENTS>
+              <TYPE-EMITTER>RTE</TYPE-EMITTER>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE>
+              <SHORT-NAME>Xcp_RequestToMemProxyTypePtr</SHORT-NAME>
+              <CATEGORY>DATA_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                <SW-DATA-DEF-PROPS-VARIANTS>
+                  <SW-DATA-DEF-PROPS-CONDITIONAL>
+                    <SW-POINTER-TARGET-PROPS>
+                      <TARGET-CATEGORY>TYPE_REFERENCE</TARGET-CATEGORY>
+                      <SW-DATA-DEF-PROPS>
+                        <SW-DATA-DEF-PROPS-VARIANTS>
+                          <SW-DATA-DEF-PROPS-CONDITIONAL>
+                            <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Xcp/ImplementationDataTypes/Xcp_RequestToMemProxyType</IMPLEMENTATION-DATA-TYPE-REF>
+                            <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+                          </SW-DATA-DEF-PROPS-CONDITIONAL>
+                        </SW-DATA-DEF-PROPS-VARIANTS>
+                      </SW-DATA-DEF-PROPS>
+                    </SW-POINTER-TARGET-PROPS>
+                  </SW-DATA-DEF-PROPS-CONDITIONAL>
+                </SW-DATA-DEF-PROPS-VARIANTS>
+              </SW-DATA-DEF-PROPS>
+              <TYPE-EMITTER>RTE</TYPE-EMITTER>
+            </IMPLEMENTATION-DATA-TYPE>
+            <IMPLEMENTATION-DATA-TYPE>
+              <!-- !LINKSTO Xcp.BswDistribution.Bswmd.MemProxyStructure,1 -->
+              <SHORT-NAME>Xcp_MemoryProxyDataType</SHORT-NAME>
+              <CATEGORY>STRUCTURE</CATEGORY>
+              <SUB-ELEMENTS>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>address</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Xcp/ImplementationDataTypes/Xcp_Uint8Ptr</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>size</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <SHORT-NAME>type</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+  [!IF "$RAMCalloutProxyEnabled"!]
+              <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <SHORT-NAME>MemoryAreaIdx</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+  [!ENDIF!]
+              <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <SHORT-NAME>EventId</SHORT-NAME>
+                <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                <SW-DATA-DEF-PROPS>
+                  <SW-DATA-DEF-PROPS-VARIANTS>
+                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                      <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                  </SW-DATA-DEF-PROPS-VARIANTS>
+                </SW-DATA-DEF-PROPS>
+              </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>RequestBuffer</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Xcp/ImplementationDataTypes/Xcp_RequestToMemProxyTypePtr</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                <IMPLEMENTATION-DATA-TYPE-ELEMENT>
+                  <SHORT-NAME>IdxRequestBuffer</SHORT-NAME>
+                  <CATEGORY>TYPE_REFERENCE</CATEGORY>
+                  <SW-DATA-DEF-PROPS>
+                    <SW-DATA-DEF-PROPS-VARIANTS>
+                      <SW-DATA-DEF-PROPS-CONDITIONAL>
+                        <IMPLEMENTATION-DATA-TYPE-REF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</IMPLEMENTATION-DATA-TYPE-REF>
+                      </SW-DATA-DEF-PROPS-CONDITIONAL>
+                    </SW-DATA-DEF-PROPS-VARIANTS>
+                  </SW-DATA-DEF-PROPS>
+                </IMPLEMENTATION-DATA-TYPE-ELEMENT>
+              </SUB-ELEMENTS>
+              <TYPE-EMITTER>RTE</TYPE-EMITTER>
+            </IMPLEMENTATION-DATA-TYPE>
+[!ENDIF!]
+          </ELEMENTS>
+        </AR-PACKAGE>
+[!ENDIF!]
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleDescriptions</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-DESCRIPTION>
+              <SHORT-NAME>Xcp</SHORT-NAME>
+              <MODULE-ID>212</MODULE-ID>
+              <PROVIDED-ENTRYS>
+[!IF "XcpGeneral/XcpEnableXcpControlApi = 'true' and $XcpBswDistributionEnabled = 'true'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Control</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!IF "XcpGeneral/XcpSuppressTxSupport = 'true' and $XcpBswDistributionEnabled = 'true'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_SetTransmissionMode</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!IF "$XcpBswDistributionEnabled = 'true'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Init</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!IF "(node:exists(XcpGeneral/XcpCalPagStoreSupported) = 'true') and (text:tolower(XcpGeneral/XcpCalPagStoreSupported) = 'true')"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_SetReqStoreCalReqCbk</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_SetEvent</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!IF "$XcpBswDistributionEnabled"!]
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_RemoteDispatch_[!"."!]</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDLOOP!]
+[!IF "text:tolower($StoreDaq) = 'true'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_NvMRequestHandler</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!ENDIF!]
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_MainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ELSE!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_MainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+[!ENDIF!]
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpEventTriggerMainFunc = 'true'"!]
+  [!IF "(node:exists(as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel)) and
+        (num:i(count(as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel/*)) > 0)"!]
+    [!LOOP "as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel/*"!]
+      [!IF "XcpEventChannelTimeCycle > 0"!]
+        [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+              <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_MainFunction_[!"@name"!]</BSW-MODULE-ENTRY-REF>
+              </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+        [!ELSE!]
+              <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_MainFunction_[!"@name"!]</BSW-MODULE-ENTRY-REF>
+              </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+        [!ENDIF!]
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpBuildChecksumMainFunctionSupport = 'true'"!]
+  [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_CrcMainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+  [!ELSE!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_CrcMainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "node:exists(as:modconf('Xcp')[1]/XcpGeneral/XcpSupportComMainFunctions) = 'true'"!]
+  [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_RxMainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_TxMainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+  [!ELSE!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_RxMainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_TxMainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "$XcpMemoryAccessAreas"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_MemoryProxyHandler</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+  [!IF "$XcpMemoryProxyResponseUsed"!]
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_MemoryProxyResponseHandler</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+  [!ENDIF!]
+[!ENDIF!]
+              </PROVIDED-ENTRYS>
+
+[!IF "$XcpMemoryAccessAreas = 'true' or (count(text:split($XcpRemoteDestinations,' ')) > 0)"!]
+             <!-- Skip adding variable if connection between same partition is made (i.e.: Partition0 (ConnectionCfg) to Partition0(MemProxy)
+            (IF "not(contains($XcpSendingApplication,$XcpReceivingApplication))")-->
+             <PROVIDED-DATAS>
+    [!VAR "XcpSendingApplicationList" = "''"!]
+    [!LOOP "(XcpConfig/*[1]/XcpConnectionCfg/*)"!]
+    [!VAR "XcpSendingApplication" = "name(as:ref(./XcpConnectionApplicationRef))"!]
+    [!IF "not(contains($XcpSendingApplicationList,concat(' ',$XcpSendingApplication,' ')))"!]
+      [!VAR "XcpReceivingApplicationList" = "''"!]
+      [!LOOP "(../../XcpMemoryAccessArea/XcpMemoryAccessArea/*)"!]
+      [!VAR "XcpReceivingApplication" = "name(as:ref(./XcpMemoryAccessAreaApplicationRef))"!]
+      [!IF "not(contains($XcpReceivingApplicationList,concat(' ',$XcpReceivingApplication,' ')))"!]
+        [!IF "not(contains($XcpSendingApplication,$XcpReceivingApplication))"!]
+                <!-- !LINKSTO Xcp.BswDistribution.Bswmd.VDP.ProvidedData,1 -->
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>MemoryProxyData_[!"$XcpSendingApplication"!]_To_[!"$XcpReceivingApplication"!]</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Xcp/ImplementationDataTypes/Xcp_MemoryProxyDataType</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+          [!VAR "XcpReceivingApplicationList" = "concat($XcpReceivingApplicationList,' ',$XcpReceivingApplication,' ')"!]
+        [!ENDIF!]
+      [!ENDIF!]
+      [!ENDLOOP!]
+      [!VAR "XcpSendingApplicationList" = "concat($XcpSendingApplicationList,' ',$XcpSendingApplication,' ')"!]
+    [!ENDIF!]
+    [!ENDLOOP!]
+    [!IF "$XcpMemoryProxyResponseUsed"!]
+    [!VAR "XcpSendingApplicationList" = "''"!]
+    [!LOOP "(XcpConfig/*[1]/XcpMemoryAccessArea/XcpMemoryAccessArea/*)"!]
+    [!VAR "XcpSendingApplication" = "name(as:ref(./XcpMemoryAccessAreaApplicationRef))"!]
+    [!IF "not(contains($XcpSendingApplicationList,concat(' ',$XcpSendingApplication,' ')))"!]
+      [!VAR "XcpReceivingApplicationList" = "''"!]
+      [!LOOP "(../../../XcpConnectionCfg/*)"!]
+      [!VAR "XcpReceivingApplication" = "name(as:ref(./XcpConnectionApplicationRef))"!]
+      [!IF "not(contains($XcpReceivingApplicationList,concat(' ',$XcpReceivingApplication,' ')))"!]
+        [!IF "not(contains($XcpSendingApplication,$XcpReceivingApplication))"!]
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>EventId_[!"$XcpSendingApplication"!]_To_[!"$XcpReceivingApplication"!]</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+          [!VAR "XcpReceivingApplicationList" = "concat($XcpReceivingApplicationList,' ',$XcpReceivingApplication,' ')"!]
+        [!ENDIF!]
+      [!ENDIF!]
+      [!ENDLOOP!]
+      [!VAR "XcpSendingApplicationList" = "concat($XcpSendingApplicationList,' ',$XcpSendingApplication,' ')"!]
+    [!ENDIF!]
+    [!ENDLOOP!]
+    [!ENDIF!]
+[!IF "$XcpBswDistributionEnabled"!]
+  [!IF "(count(text:split($XcpRemoteDestinations,' ')) > 0)"!]
+    [!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Xcp/ImplementationDataTypes/Xcp_RemoteDispatchType</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+      [!IF "text:tolower($StoreDaq) = 'true'"!]
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>NvMRequest_[!"."!]_To_Master</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDIF!]
+              </PROVIDED-DATAS>
+
+              <REQUIRED-DATAS>
+    [!VAR "XcpSendingApplicationList" = "''"!]
+    [!LOOP "(XcpConfig/*[1]/XcpConnectionCfg/*)"!]
+    [!VAR "XcpSendingApplication" = "name(as:ref(./XcpConnectionApplicationRef))"!]
+    [!IF "not(contains($XcpSendingApplicationList,concat(' ',$XcpSendingApplication,' ')))"!]
+      [!VAR "XcpReceivingApplicationList" = "''"!]
+      [!LOOP "(../../XcpMemoryAccessArea/XcpMemoryAccessArea/*)"!]
+      [!VAR "XcpReceivingApplication" = "name(as:ref(./XcpMemoryAccessAreaApplicationRef))"!]
+      [!IF "not(contains($XcpReceivingApplicationList,concat(' ',$XcpReceivingApplication,' ')))"!]
+        [!IF "not(contains($XcpSendingApplication,$XcpReceivingApplication))"!]
+                <!-- !LINKSTO Xcp.BswDistribution.Bswmd.VDP.RequiredData,1 -->
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>MemoryProxyData_[!"$XcpReceivingApplication"!]_From_[!"$XcpSendingApplication"!]</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Xcp/ImplementationDataTypes/Xcp_MemoryProxyDataType</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+          [!VAR "XcpReceivingApplicationList" = "concat($XcpReceivingApplicationList,' ',$XcpReceivingApplication,' ')"!]
+        [!ENDIF!] 
+      [!ENDIF!] 
+      [!ENDLOOP!]
+      [!VAR "XcpSendingApplicationList" = "concat($XcpSendingApplicationList,' ',$XcpSendingApplication,' ')"!]
+    [!ENDIF!]
+    [!ENDLOOP!]
+    [!IF "$XcpMemoryProxyResponseUsed"!]
+      [!VAR "XcpSendingApplicationList" = "''"!]
+      [!LOOP "(XcpConfig/*[1]/XcpMemoryAccessArea/XcpMemoryAccessArea/*)"!]
+      [!VAR "XcpSendingApplication" = "name(as:ref(./XcpMemoryAccessAreaApplicationRef))"!]
+      [!IF "not(contains($XcpSendingApplicationList,concat(' ',$XcpSendingApplication,' ')))"!]
+        [!VAR "XcpReceivingApplicationList" = "''"!]
+        [!LOOP "(../../../XcpConnectionCfg/*)"!]
+        [!VAR "XcpReceivingApplication" = "name(as:ref(./XcpConnectionApplicationRef))"!]
+        [!IF "not(contains($XcpReceivingApplicationList,concat(' ',$XcpReceivingApplication,' ')))"!]
+          [!IF "not(contains($XcpSendingApplication,$XcpReceivingApplication))"!]
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>EventId_[!"$XcpReceivingApplication"!]_From_[!"$XcpSendingApplication"!]</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint16</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+            [!VAR "XcpReceivingApplicationList" = "concat($XcpReceivingApplicationList,' ',$XcpReceivingApplication,' ')"!]
+          [!ENDIF!] 
+        [!ENDIF!] 
+        [!ENDLOOP!]
+        [!VAR "XcpSendingApplicationList" = "concat($XcpSendingApplicationList,' ',$XcpSendingApplication,' ')"!]
+      [!ENDIF!]
+      [!ENDLOOP!]
+    [!ENDIF!]
+[!IF "$XcpBswDistributionEnabled"!]
+[!IF "(count(text:split($XcpRemoteDestinations,' ')) > 0)"!]
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>RemoteDispatch_[!"."!]_From_Master</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Xcp/ImplementationDataTypes/Xcp_RemoteDispatchType</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+[!IF "text:tolower($StoreDaq) = 'true'"!]
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>NvMRequest_Master_From_[!"."!]</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint8</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+[!ENDIF!]
+[!ENDLOOP!]
+[!ENDIF!]
+[!ENDIF!]
+              </REQUIRED-DATAS>
+[!ENDIF!]
+
+              <INTERNAL-BEHAVIORS>
+[!VAR "XcpConnectionOsAppRefNameList" = "''"!]
+[!LOOP "(XcpConfig/*[1]/XcpConnectionCfg/*)"!]
+  [!IF "$XcpBswDistributionEnabled"!]
+    [!VAR "XcpConnectionOsAppRefName"="name(as:ref(./XcpConnectionApplicationRef))"!]
+    [!VAR "XcpSendingApplication" = "name(as:ref(./XcpConnectionApplicationRef))"!]
+  [!ELSE!]
+    [!VAR "XcpConnectionOsAppRefName"="num:i(0)"!]
+  [!ENDIF!]
+  [!IF "not(contains($XcpConnectionOsAppRefNameList,concat(' ',$XcpConnectionOsAppRefName,' ')))"!]
+                <!-- !LINKSTO Xcp.BswDistribution.Bswmd.InternalBeh.BswImplementation,1 -->
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_[!"$XcpConnectionOsAppRefName"!]</SHORT-NAME>
+[!VAR "generateExclusiveArea" = "false()"!]
+[!LOOP "text:split($CorePartitionMap,' ')"!]
+[!IF "text:split(.,':')[2] = $XcpConnectionOsAppRefName"!]
+[!VAR "generateExclusiveArea" = "true()"!]
+[!ENDIF!]
+[!ENDLOOP!]
+[!VAR "coreOfCurrentApp"="'0'"!]
+[!VAR "usedExclusiveArea"="''"!]
+[!LOOP "as:modconf('Os')[1]/OsApplication/*"!]
+[!IF "node:name(.) = $XcpConnectionOsAppRefName"!]
+[!IF "node:exists(OsApplicationCoreAssignment)"!]
+[!VAR "coreOfCurrentApp"="OsApplicationCoreAssignment"!]
+[!ENDIF!]
+[!ENDIF!]
+[!ENDLOOP!]
+[!LOOP "text:split($CorePartitionMap,' ')"!]
+[!IF "text:split(.,':')[1] = $coreOfCurrentApp"!]
+[!VAR "usedExclusiveArea"="text:split(.,':')[2]"!]
+[!ENDIF!]
+[!ENDLOOP!]
+[!IF "$XcpBswDistributionEnabled = 'false'"!]
+[!VAR "generateExclusiveArea" = "true()"!]
+[!VAR "usedExclusiveArea"="'0'"!]
+[!ENDIF!]
+
+[!IF "$generateExclusiveArea = 'true'"!]
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+[!ENDIF!]
+                  <ENTITYS>
+[!IF "$XcpBswDistributionEnabled = 'true'"!]
+  [!IF "(count(text:split($XcpRemoteDestinations,' ')) > 0)"!]
+    [!IF "$XcpConnectionOsAppRefName=$XcpMasterApplication"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CE_SetEvent</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$usedExclusiveArea"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_Master_To_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+[!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_SetEvent</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!IF "../../../../XcpGeneral/XcpSuppressTxSupport = 'true'"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CE_SetTransmissionMode</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$usedExclusiveArea"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_Master_To_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+[!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_SetTransmissionMode</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!ENDIF!]
+      [!IF "../../../../XcpGeneral/XcpEnableXcpControlApi = 'true'"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CE_Control</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$usedExclusiveArea"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_Master_To_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+[!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Control</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!ENDIF!]
+      [!IF "num:i($NoOfConnections) = 1"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CE_Init</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$usedExclusiveArea"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_Master_To_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+[!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Init</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!ENDIF!]
+      [!IF "(node:exists(../../../../XcpGeneral/XcpCalPagStoreSupported) = 'true') and (text:tolower(../../../../XcpGeneral/XcpCalPagStoreSupported) = 'true')"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CE_SetReqStoreCalReqCbk</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$usedExclusiveArea"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_Master_To_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+[!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_SetReqStoreCalReqCbk</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!ENDIF!]
+
+      [!IF "text:tolower($StoreDaq) = 'true'"!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>SE_NvMRequest</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$usedExclusiveArea"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+        [!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_NvMRequest_Master_From_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/NvMRequest_Master_From_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+        [!ENDLOOP!]
+                      </DATA-RECEIVE-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_NvMRequestHandler</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+      [!ENDIF!]
+    [!ELSE!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>SE_RemoteDispatch</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$usedExclusiveArea"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_[!"$XcpConnectionOsAppRefName"!]_From_Master</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_[!"$XcpConnectionOsAppRefName"!]_From_Master</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-RECEIVE-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_RemoteDispatch_[!"$XcpConnectionOsAppRefName"!]</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+    [!ENDIF!]
+  [!ENDIF!]
+[!ENDIF!]
+                    <!-- !LINKSTO Xcp.Disable.Wrapper.SchedulableEntity,1 -->
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_MainFunction</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$usedExclusiveArea"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+    [!IF "$XcpMemoryAccessAreas or (text:tolower($StoreDaq) = 'true')"!]
+      [!VAR "XcpReceivingApplicationList" = "''"!]
+                      <DATA-SEND-POINTS>
+      [!IF "text:tolower($StoreDaq) = 'true'"!]
+        [!IF "$XcpConnectionOsAppRefName != $XcpMasterApplication"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_Xcp_NvMRequest_[!"$XcpConnectionOsAppRefName"!]_To_Master</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/NvMRequest_[!"$XcpConnectionOsAppRefName"!]_To_Master</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+        [!ENDIF!]
+      [!ENDIF!]
+      [!IF "$XcpMemoryAccessAreas"!]
+                      [!LOOP "(../../XcpMemoryAccessArea/XcpMemoryAccessArea/*)"!]
+                      [!VAR "XcpReceivingApplication" = "name(as:ref(./XcpMemoryAccessAreaApplicationRef))"!]
+                      [!IF "not(contains($XcpReceivingApplicationList,concat(' ',$XcpReceivingApplication,' ')))"!]
+                        [!IF "not(contains($XcpSendingApplication,$XcpReceivingApplication))"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_Xcp_MemoryProxyData_[!"$XcpSendingApplication"!]_To_[!"$XcpReceivingApplication"!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/MemoryProxyData_[!"$XcpSendingApplication"!]_To_[!"$XcpReceivingApplication"!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                          [!VAR "XcpReceivingApplicationList" = "concat($XcpReceivingApplicationList,' ',$XcpReceivingApplication,' ')"!]
+                        [!ENDIF!]
+                      [!ENDIF!]
+                      [!ENDLOOP!]
+      [!ENDIF!]
+                      </DATA-SEND-POINTS>
+    [!ENDIF!]
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_MainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+[!ELSE!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_Wrapper_MainFunction</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$usedExclusiveArea"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+    [!IF "$XcpMemoryAccessAreas"!]
+      [!VAR "XcpReceivingApplicationList" = "''"!]
+                      <!-- !LINKSTO Xcp.BswDistribution.Bswmd.DataSendPoints,1 -->
+                      <DATA-SEND-POINTS>
+                      [!LOOP "(../../XcpMemoryAccessArea/XcpMemoryAccessArea/*)"!]
+                      [!VAR "XcpReceivingApplication" = "name(as:ref(./XcpMemoryAccessAreaApplicationRef))"!]
+                      [!IF "not(contains($XcpReceivingApplicationList,concat(' ',$XcpReceivingApplication,' ')))"!]
+                        [!IF "not(contains($XcpSendingApplication,$XcpReceivingApplication))"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_Xcp_MemoryProxyData_[!"$XcpSendingApplication"!]_To_[!"$XcpReceivingApplication"!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/MemoryProxyData_[!"$XcpSendingApplication"!]_To_[!"$XcpReceivingApplication"!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                          [!VAR "XcpReceivingApplicationList" = "concat($XcpReceivingApplicationList,' ',$XcpReceivingApplication,' ')"!]
+                        [!ENDIF!]
+                      [!ENDIF!]
+                      [!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+    [!ENDIF!]
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_MainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+[!ENDIF!]
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpEventTriggerMainFunc = 'true'"!]
+  [!IF "(node:exists(as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel)) and
+        (num:i(count(as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel/*)) > 0)"!]
+    [!LOOP "as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel/*"!]
+      [!IF "XcpEventChannelTimeCycle > 0"!]
+        [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                  <BSW-SCHEDULABLE-ENTITY>
+                    <SHORT-NAME>Xcp_MainFunction_[!"@name"!]</SHORT-NAME>
+                    <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                    <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_MainFunction_[!"@name"!]</IMPLEMENTED-ENTRY-REF>
+                  </BSW-SCHEDULABLE-ENTITY>
+        [!ELSE!]
+                  <BSW-SCHEDULABLE-ENTITY>
+                    <SHORT-NAME>Xcp_Wrapper_MainFunction_[!"@name"!]</SHORT-NAME>
+                    <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                    <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_MainFunction_[!"@name"!]</IMPLEMENTED-ENTRY-REF>
+                  </BSW-SCHEDULABLE-ENTITY>
+        [!ENDIF!]
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "node:exists(as:modconf('Xcp')[1]/XcpGeneral/XcpSupportComMainFunctions) = 'true'"!]
+  [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_RxMainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_RxMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_TxMainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_TxMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+  [!ELSE!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_Wrapper_RxMainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_RxMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_Wrapper_TxMainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_TxMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+  [!ENDIF!]
+[!ENDIF!]
+                  </ENTITYS>
+                  <EVENTS>
+[!IF "$XcpBswDistributionEnabled = 'true'"!]
+  [!IF "(count(text:split($XcpRemoteDestinations,' ')) > 0)"!]
+    [!IF "not($XcpConnectionOsAppRefName=$XcpMasterApplication)"!]
+                     <!-- !LINKSTO Xcp.dsn.BSWDistribution.MemProxy.SchMSenderReceiver,1 -->
+                    <BSW-DATA-RECEIVED-EVENT>
+                        <SHORT-NAME>DRE_RemoteDispatch_[!"$XcpConnectionOsAppRefName"!]_From_Master</SHORT-NAME>
+                        <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/SE_RemoteDispatch</STARTS-ON-EVENT-REF>
+                        <DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_[!"$XcpConnectionOsAppRefName"!]_From_Master</DATA-REF>
+                    </BSW-DATA-RECEIVED-EVENT>
+
+    [!ELSE!]
+      [!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+        [!IF "text:tolower($StoreDaq) = 'true'"!]
+                    <!-- !LINKSTO Xcp.dsn.BSWDistribution.MemProxy.SchMSenderReceiver,1 -->
+                    <BSW-DATA-RECEIVED-EVENT>
+                        <SHORT-NAME>DRE_NvMRequest_Master_From_[!"."!]</SHORT-NAME>
+                        <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/SE_NvMRequest</STARTS-ON-EVENT-REF>
+                        <DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/NvMRequest_Master_From_[!"."!]</DATA-REF>
+                    </BSW-DATA-RECEIVED-EVENT>
+        [!ENDIF!]
+      [!ENDLOOP!]
+    [!ENDIF!]
+  [!ENDIF!]
+[!ENDIF!]
+
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_MainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/Xcp_MainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"as:modconf('Xcp')[1]/XcpGeneral/XcpMainFunctionPeriod"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+[!ELSE!]
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_MainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/Xcp_Wrapper_MainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"as:modconf('Xcp')[1]/XcpGeneral/XcpMainFunctionPeriod"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+[!ENDIF!]
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpEventTriggerMainFunc = 'true'"!]
+  [!IF "(node:exists(as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel)) and
+        (num:i(count(as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel/*)) > 0)"!]
+    [!LOOP "as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel/*"!]
+      [!IF "XcpEventChannelTimeCycle > 0"!]
+        [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_MainFunction_[!"@name"!]</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/Xcp_MainFunction_[!"@name"!]</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!CALL "EVENT_CHANNEL_PERIOD","time_unit" = "XcpEventChannelTimeUnit"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+        [!ELSE!]
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_MainFunction_[!"@name"!]</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/Xcp_Wrapper_MainFunction_[!"@name"!]</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!CALL "EVENT_CHANNEL_PERIOD","time_unit" = "XcpEventChannelTimeUnit"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+        [!ENDIF!]
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "node:exists(as:modconf('Xcp')[1]/XcpGeneral/XcpSupportComMainFunctions) = 'true'"!]
+  [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_RxMainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/Xcp_RxMainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"as:modconf('Xcp')[1]/XcpGeneral/XcpSupportComMainFunctions"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_TxMainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/Xcp_TxMainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"as:modconf('Xcp')[1]/XcpGeneral/XcpSupportComMainFunctions"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+  [!ELSE!]
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_RxMainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/Xcp_Wrapper_RxMainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"as:modconf('Xcp')[1]/XcpGeneral/XcpSupportComMainFunctions"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_TxMainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/Xcp_Wrapper_TxMainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"as:modconf('Xcp')[1]/XcpGeneral/XcpSupportComMainFunctions"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+  [!ENDIF!]
+[!ENDIF!]
+                  </EVENTS>
+
+                </BSW-INTERNAL-BEHAVIOR>
+    [!VAR "XcpConnectionOsAppRefNameList" = "concat($XcpConnectionOsAppRefNameList,' ',$XcpConnectionOsAppRefName,' ')"!]
+  [!ENDIF!]
+[!ENDLOOP!]
+
+[!IF "$XcpBswDistributionEnabled = 'true'"!]
+[!IF "not(contains($XcpConnectionOsAppRefNameList,concat(' ',$XcpMasterApplication,' ')))"!]
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_[!"$XcpMasterApplication"!]</SHORT-NAME>
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+                  <ENTITYS>
+  [!IF "(count(text:split($XcpRemoteDestinations,' ')) > 0)"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CE_SetEvent</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpMasterApplication"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_Master_To_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+[!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_SetEvent</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!IF "../../../../XcpGeneral/XcpSuppressTxSupport = 'true'"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CE_SetTransmissionMode</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpMasterApplication"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_Master_To_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+[!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_SetTransmissionMode</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!ENDIF!]
+      [!IF "../../../../XcpGeneral/XcpEnableXcpControlApi = 'true'"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CE_Control</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpMasterApplication"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_Master_To_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+[!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Control</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!ENDIF!]
+      [!IF "num:i($NoOfConnections) = 1"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CE_Init</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpMasterApplication"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_Master_To_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+[!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Init</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!ENDIF!]
+      [!IF "(node:exists(../../../../XcpGeneral/XcpCalPagStoreSupported) = 'true') and (text:tolower(../../../../XcpGeneral/XcpCalPagStoreSupported) = 'true')"!]
+                    <BSW-CALLED-ENTITY>
+                      <SHORT-NAME>CE_SetReqStoreCalReqCbk</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpMasterApplication"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-SEND-POINTS>
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_RemoteDispatch_Master_To_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/RemoteDispatch_Master_To_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+[!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_SetReqStoreCalReqCbk</IMPLEMENTED-ENTRY-REF>
+                    </BSW-CALLED-ENTITY>
+      [!ENDIF!]
+      [!IF "text:tolower($StoreDaq) = 'true'"!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>SE_NvMRequest</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpMasterApplication"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+        [!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+          [!IF ". != $XcpMasterApplication"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>VA_NvMRequest_Master_From_[!"."!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/NvMRequest_Master_From_[!"."!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+          [!ENDIF!]
+        [!ENDLOOP!]
+                      </DATA-RECEIVE-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_NvMRequestHandler</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+      [!ENDIF!]
+    [!ENDIF!]
+                  </ENTITYS>
+                  <EVENTS>
+    [!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+      [!IF "text:tolower($StoreDaq) = 'true'"!]
+                    <BSW-DATA-RECEIVED-EVENT>
+                        <SHORT-NAME>DRE_NvMRequest_Master_From_[!"."!]</SHORT-NAME>
+                        <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpMasterApplication"!]/SE_NvMRequest</STARTS-ON-EVENT-REF>
+                        <DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/NvMRequest_Master_From_[!"."!]</DATA-REF>
+                    </BSW-DATA-RECEIVED-EVENT>
+      [!ENDIF!]
+    [!ENDLOOP!]
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+[!ENDIF!]
+[!ENDIF!]
+
+[!IF "$XcpMemoryAccessAreas"!]
+
+[!VAR "XcpSendingApplicationIteratorList" = "''"!]
+[!VAR "XcpMemProxyOsAppRefNameList" = "''"!]
+[!LOOP "(XcpConfig/*[1]/XcpConnectionCfg/*)"!]
+  [!VAR "XcpSendingApplicationIterator" = "name(as:ref(./XcpConnectionApplicationRef))"!]
+  [!IF "not(contains($XcpSendingApplicationIteratorList,concat(' ',$XcpSendingApplicationIterator,' ')))"!]
+    [!LOOP "(../../XcpMemoryAccessArea/XcpMemoryAccessArea/*)"!]
+      [!VAR "XcpMemProxyOsAppRefName"="name(as:ref(./XcpMemoryAccessAreaApplicationRef))"!]
+      [!IF "not(contains($XcpMemProxyOsAppRefNameList,concat(' ',$XcpMemProxyOsAppRefName,' ')))"!]
+        [!IF "not(contains($XcpSendingApplicationIterator,$XcpMemProxyOsAppRefName))"!]
+          [!VAR "XcpReceivingApplication" = "name(as:ref(./XcpMemoryAccessAreaApplicationRef))"!]
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_MemoryProxy_[!"$XcpMemProxyOsAppRefName"!]</SHORT-NAME>
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+                  <ENTITYS>
+                    <!-- !LINKSTO Xcp.BswDistribution.Bswmd.MemProxyHandlerBSWSchedulable,1 -->
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>BswSchedulableEntity_Xcp_MemoryProxyHandler</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_MemoryProxy_[!"$XcpMemProxyOsAppRefName"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <!-- !LINKSTO Xcp.BswDistribution.Bswmd.DataReceivePoints,1 -->
+                      <DATA-RECEIVE-POINTS>
+        [!VAR "XcpSendingApplicationList" = "''"!]
+        [!LOOP "(../../../XcpConnectionCfg/*)"!]
+          [!VAR "XcpSendingApplication" = "name(as:ref(./XcpConnectionApplicationRef))"!]
+          [!IF "not(contains($XcpSendingApplicationList,concat(' ',$XcpSendingApplication,' ')))"!]
+            [!IF "not(contains($XcpSendingApplication,$XcpReceivingApplication))"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_Xcp_MemoryProxyData_[!"$XcpReceivingApplication"!]_From_[!"$XcpSendingApplication"!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/MemoryProxyData_[!"$XcpReceivingApplication"!]_From_[!"$XcpSendingApplication"!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+              [!VAR "XcpSendingApplicationList" = "concat($XcpSendingApplicationList,' ',$XcpSendingApplication,' ')"!]
+            [!ENDIF!]
+          [!ENDIF!]
+        [!ENDLOOP!]
+                      </DATA-RECEIVE-POINTS>
+        [!IF "$XcpMemoryProxyResponseUsed"!]
+                      <DATA-SEND-POINTS>
+          [!VAR "XcpSendingApplicationList" = "''"!]
+          [!LOOP "(../../../XcpConnectionCfg/*)"!]
+            [!VAR "XcpSendingApplication" = "name(as:ref(./XcpConnectionApplicationRef))"!]
+            [!IF "not(contains($XcpSendingApplicationList,concat(' ',$XcpSendingApplication,' ')))"!]
+              [!IF "not(contains($XcpSendingApplication,$XcpReceivingApplication))"!]
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_Xcp_EventId_[!"$XcpMemProxyOsAppRefName"!]_To_[!"$XcpSendingApplication"!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/EventId_[!"$XcpMemProxyOsAppRefName"!]_To_[!"$XcpSendingApplication"!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                [!VAR "XcpSendingApplicationList" = "concat($XcpSendingApplicationList,' ',$XcpSendingApplication,' ')"!]
+              [!ENDIF!]
+            [!ENDIF!]
+          [!ENDLOOP!]
+                      </DATA-SEND-POINTS>
+        [!ENDIF!]
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_MemoryProxyHandler</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+        [!VAR "XcpSendingApplicationList" = "''"!]
+        [!LOOP "(../../../XcpConnectionCfg/*)"!]
+          [!VAR "XcpSendingApplication" = "name(as:ref(./XcpConnectionApplicationRef))"!]
+          [!IF "not(contains($XcpSendingApplicationList,concat(' ',$XcpSendingApplication,' ')))"!]
+            [!IF "not(contains($XcpSendingApplication,$XcpReceivingApplication))"!]
+                     <!-- !LINKSTO Xcp.BswDistribution.Bswmd.DataReceivedEvent,1 -->
+                     <!-- !LINKSTO Xcp.dsn.BSWDistribution.MemProxy.SchMSenderReceiver,1 -->
+                    <BSW-DATA-RECEIVED-EVENT>
+                        <SHORT-NAME>DataReceivedEvent_Xcp_MemoryProxyHandler_[!"$XcpReceivingApplication"!]_From_[!"$XcpSendingApplication"!]</SHORT-NAME>
+                        <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_MemoryProxy_[!"$XcpMemProxyOsAppRefName"!]/BswSchedulableEntity_Xcp_MemoryProxyHandler</STARTS-ON-EVENT-REF>
+                        <DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/MemoryProxyData_[!"$XcpReceivingApplication"!]_From_[!"$XcpSendingApplication"!]</DATA-REF>
+                    </BSW-DATA-RECEIVED-EVENT> 
+              [!VAR "XcpSendingApplicationList" = "concat($XcpSendingApplicationList,' ',$XcpSendingApplication,' ')"!]
+            [!ENDIF!]
+          [!ENDIF!]
+        [!ENDLOOP!]
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+
+        [!VAR "XcpMemProxyOsAppRefNameList" = "concat($XcpMemProxyOsAppRefNameList,' ',$XcpMemProxyOsAppRefName,' ')"!]
+
+        [!ENDIF!]
+      [!ENDIF!]
+    [!ENDLOOP!]
+
+    [!VAR "XcpSendingApplicationIteratorList" = "concat($XcpSendingApplicationIteratorList,' ',$XcpSendingApplicationIterator,' ')"!]
+  [!ENDIF!]
+[!ENDLOOP!][!//
+
+[!IF "$XcpMemoryProxyResponseUsed"!][!//
+  [!LOOP "text:split($XcpConnectionOsAppRefNameList, ' ')"!][!//
+    [!VAR "CurrentConnectionPartition" = "."!][!//
+    [!LOOP "text:split($XcpMemProxyOsAppRefNameList, ' ')"!][!//
+      [!VAR "CurrentMemProxyPartition" = "."!][!// 
+      [!IF "not(contains($CurrentConnectionPartition,$CurrentMemProxyPartition))"!]
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_MemoryProxyResponse_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]</SHORT-NAME>
+                  <EXCLUSIVE-AREAS>
+                    <EXCLUSIVE-AREA>
+                      <SHORT-NAME>SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</SHORT-NAME>
+                    </EXCLUSIVE-AREA>
+                  </EXCLUSIVE-AREAS>
+                  <ENTITYS>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>BswSchedulableEntity_Xcp_MemoryProxyResponseHandler</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_MemoryProxyResponse_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <DATA-RECEIVE-POINTS>
+                        <BSW-VARIABLE-ACCESS>
+                          <SHORT-NAME>BswVariableAccess_EventId_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/EventId_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]</ACCESSED-VARIABLE-REF>
+                        </BSW-VARIABLE-ACCESS>
+                      </DATA-RECEIVE-POINTS>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_MemoryProxyResponseHandler</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <!-- !LINKSTO Xcp.dsn.BSWDistribution.MemProxy.SchMSenderReceiver,1 -->
+                    <BSW-DATA-RECEIVED-EVENT>
+                        <SHORT-NAME>DataReceivedEvent_Xcp_MemoryProxyResponseHandler_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]</SHORT-NAME>
+                        <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_MemoryProxyResponse_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]/BswSchedulableEntity_Xcp_MemoryProxyResponseHandler</STARTS-ON-EVENT-REF>
+                        <DATA-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/EventId_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]</DATA-REF>
+                    </BSW-DATA-RECEIVED-EVENT>
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDLOOP!]
+[!ENDIF!]
+
+[!ENDIF!]
+
+[!IF "$XcpBswDistributionEnabled"!]
+                <BSW-INTERNAL-BEHAVIOR>
+                  <!-- !LINKSTO Xcp.BswDistribution.Bswmd.GenericInternalBeh.GenericBswImplementation.,1 -->
+                  <SHORT-NAME>GenericInternalBehavior</SHORT-NAME>
+                  <ENTITYS>
+                  <!-- In the Multi-Core scenario, provide the generic schedulable entities so the Rte will generate the function
+prototype. However, the timing events will not be provided "generic" since the schedulables are intended to be called from each partition (xcp connection).
+(exception from this is the Xcp_CrcMainFunction() which will be generated globally, not per core. -->
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_MainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_MainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+[!ELSE!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_Wrapper_MainFunction</SHORT-NAME>
+                      <CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                        <CAN-ENTER-EXCLUSIVE-AREA-REF DEST="EXCLUSIVE-AREA">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/GenericInternalBehavior/SCHM_XCP_EXCLUSIVE_AREA_XCP_INTERNALS</CAN-ENTER-EXCLUSIVE-AREA-REF>
+                      </CAN-ENTER-EXCLUSIVE-AREA-REFS>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_MainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+[!ENDIF!]
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpEventTriggerMainFunc = 'true'"!]
+  [!IF "(node:exists(as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel)) and
+        (num:i(count(as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel/*)) > 0)"!]
+    [!LOOP "as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel/*"!]
+      [!IF "XcpEventChannelTimeCycle > 0"!]
+        [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                  <BSW-SCHEDULABLE-ENTITY>
+                    <SHORT-NAME>Xcp_MainFunction_[!"@name"!]</SHORT-NAME>
+                    <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                    <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_MainFunction_[!"@name"!]</IMPLEMENTED-ENTRY-REF>
+                  </BSW-SCHEDULABLE-ENTITY>
+        [!ELSE!]
+                  <BSW-SCHEDULABLE-ENTITY>
+                    <SHORT-NAME>Xcp_Wrapper_MainFunction_[!"@name"!]</SHORT-NAME>
+                    <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                    <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_MainFunction_[!"@name"!]</IMPLEMENTED-ENTRY-REF>
+                  </BSW-SCHEDULABLE-ENTITY>
+        [!ENDIF!]
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpBuildChecksumMainFunctionSupport = 'true'"!]
+  [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_CrcMainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_CrcMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+  [!ELSE!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_Wrapper_CrcMainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_CrcMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "node:exists(as:modconf('Xcp')[1]/XcpGeneral/XcpSupportComMainFunctions) = 'true'"!]
+  [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_RxMainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_RxMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_TxMainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_TxMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+  [!ELSE!]
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_Wrapper_RxMainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_RxMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Xcp_Wrapper_TxMainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Xcp/BswModuleEntrys/Xcp_Wrapper_TxMainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+  [!ENDIF!]
+[!ENDIF!]
+                  </ENTITYS>
+                  <EVENTS>
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpBuildChecksumMainFunctionSupport = 'true'"!]
+  [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_CrcMainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/Xcp_CrcMainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"as:modconf('Xcp')[1]/XcpGeneral/XcpCRCMainFunctionPeriod"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+  [!ELSE!]
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_CrcMainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]/Xcp_Wrapper_CrcMainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"as:modconf('Xcp')[1]/XcpGeneral/XcpCRCMainFunctionPeriod"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+  [!ENDIF!]
+[!ENDIF!]
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+[!ENDIF!]
+              </INTERNAL-BEHAVIORS>
+            </BSW-MODULE-DESCRIPTION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleEntrys</SHORT-NAME>
+          <ELEMENTS>
+[!IF "XcpGeneral/XcpEnableXcpControlApi = 'true' and $XcpBswDistributionEnabled = 'true'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_Control</SHORT-NAME>
+              <SERVICE-ID>0</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+[!IF "XcpGeneral/XcpSuppressTxSupport = 'true' and $XcpBswDistributionEnabled = 'true'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_SetTransmissionMode</SHORT-NAME>
+              <SERVICE-ID>5</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+[!IF "(node:exists(XcpGeneral/XcpCalPagStoreSupported) = 'true') and (text:tolower(XcpGeneral/XcpCalPagStoreSupported) = 'true') and $XcpBswDistributionEnabled = 'true'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_SetReqStoreCalReqCbk</SHORT-NAME>
+              <SERVICE-ID>6</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_SetEvent</SHORT-NAME>
+              <SERVICE-ID>128</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!IF "$XcpBswDistributionEnabled"!]
+  [!IF "num:i($NoOfConnections) = 1"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_Init</SHORT-NAME>
+              <SERVICE-ID>7</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>REGULAR</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+  [!ENDIF!]
+[!IF "(count(text:split($XcpRemoteDestinations,' ')) > 0)"!]
+[!LOOP "text:split($XcpRemoteDestinations, ' ')"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_RemoteDispatch_[!"."!]</SHORT-NAME>
+              <SERVICE-ID>0</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDLOOP!]
+[!ENDIF!]
+[!IF "text:tolower($StoreDaq) = 'true'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_NvMRequestHandler</SHORT-NAME>
+              <SERVICE-ID>252</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+[!ENDIF!]
+
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_MainFunction</SHORT-NAME>
+              <SERVICE-ID>4</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ELSE!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_Wrapper_MainFunction</SHORT-NAME>
+              <SERVICE-ID>4</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+[!ENDIF!]
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpEventTriggerMainFunc = 'true'"!]
+  [!IF "(node:exists(as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel)) and 
+        (num:i(count(as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel/*)) > 0)"!]
+    [!LOOP "as:modconf('Xcp')[1]/XcpConfig/*[1]/XcpEventChannel/*"!]
+      [!IF "XcpEventChannelTimeCycle > 0"!]
+        [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+          <BSW-MODULE-ENTRY>
+            <SHORT-NAME>Xcp_MainFunction_[!"@name"!]</SHORT-NAME>
+            <SERVICE-ID>255</SERVICE-ID>
+            <IS-REENTRANT>false</IS-REENTRANT>
+            <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+            <CALL-TYPE>SCHEDULED</CALL-TYPE>
+            <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+            <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+          </BSW-MODULE-ENTRY>
+        [!ELSE!]
+          <BSW-MODULE-ENTRY>
+            <SHORT-NAME>Xcp_Wrapper_MainFunction_[!"@name"!]</SHORT-NAME>
+            <SERVICE-ID>255</SERVICE-ID>
+            <IS-REENTRANT>false</IS-REENTRANT>
+            <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+            <CALL-TYPE>SCHEDULED</CALL-TYPE>
+            <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+            <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+          </BSW-MODULE-ENTRY>
+        [!ENDIF!]
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpBuildChecksumMainFunctionSupport = 'true'"!]
+  [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_CrcMainFunction</SHORT-NAME>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+  [!ELSE!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_Wrapper_CrcMainFunction</SHORT-NAME>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "node:exists(as:modconf('Xcp')[1]/XcpGeneral/XcpSupportComMainFunctions) = 'true'"!]
+  [!IF "as:modconf('Xcp')[1]/XcpGeneral/XcpServiceWrapper = 'false'"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_RxMainFunction</SHORT-NAME>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_TxMainFunction</SHORT-NAME>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+  [!ELSE!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_Wrapper_RxMainFunction</SHORT-NAME>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_Wrapper_TxMainFunction</SHORT-NAME>
+              <SERVICE-ID>255</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+            </BSW-MODULE-ENTRY>
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "$XcpMemoryAccessAreas"!]
+            <BSW-MODULE-ENTRY>
+              <!-- !LINKSTO Xcp.BswDistribution.Bswmd.MemProxyBSWEntry,1 -->
+              <SHORT-NAME>Xcp_MemoryProxyHandler</SHORT-NAME>
+              <SERVICE-ID>254</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+  [!IF "$XcpMemoryProxyResponseUsed"!]
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Xcp_MemoryProxyResponseHandler</SHORT-NAME>
+              <SERVICE-ID>253</SERVICE-ID>
+              <IS-REENTRANT>true</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+  [!ENDIF!]
+[!ENDIF!]
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_Xcp</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Implementations</SHORT-NAME>
+          <ELEMENTS>
+[!VAR "XcpConnectionOsAppRefNameList" = "''"!]
+[!LOOP "(XcpConfig/*[1]/XcpConnectionCfg/*)"!]
+  [!IF "$XcpBswDistributionEnabled"!]
+    [!VAR "XcpConnectionOsAppRefName"="name(as:ref(./XcpConnectionApplicationRef))"!]
+  [!ELSE!]
+    [!VAR "XcpConnectionOsAppRefName"="num:i(0)"!]
+  [!ENDIF!]
+  [!IF "not(contains($XcpConnectionOsAppRefNameList,concat(' ',$XcpConnectionOsAppRefName,' ')))"!]
+            <!-- !LINKSTO Xcp.BswDistribution.Bswmd.InternalBeh.BswImplementation,1 -->
+            <BSW-IMPLEMENTATION>
+              <!-- !LINKSTO Xcp.BswDistribution.Bswmd.XcpConnectionInstance,1 -->
+              <SHORT-NAME>BswImplementation_[!"$XcpConnectionOsAppRefName"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnCan_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnCdd_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnEth_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnFr_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Int_Stc.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_MemoryProxy.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_CommandProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_EventProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_EventReceiver.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_MemoryProxy.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_ReceiveProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_StimProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_TransmitProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Xcp_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Xcp_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>APPL_CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_SAVED_ZONE_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_POWER_ON_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_SAVED_ZONE_UNSPECIFIED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_POWER_ON_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>WRAPPER_CODE</SHORT-NAME>
+                    <PREFIX-REF DEST="SECTION-NAME-PREFIX">/EB_Xcp/Implementations/BswImplementation_[!"$XcpConnectionOsAppRefName"!]/ResourceConsumption/XCP_WRAPPER</PREFIX-REF>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+                <SECTION-NAME-PREFIXS>
+                  <SECTION-NAME-PREFIX>
+                    <SHORT-NAME>XCP_WRAPPER</SHORT-NAME>
+                    <SYMBOL>XCP_WRAPPER</SYMBOL>
+                  </SECTION-NAME-PREFIX>
+                </SECTION-NAME-PREFIXS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>2.11.6</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpConnectionOsAppRefName"!]</BEHAVIOR-REF>
+    [!IF "$XcpBswDistributionEnabled"!]
+              <VENDOR-API-INFIX>[!"$XcpConnectionOsAppRefName"!]</VENDOR-API-INFIX>
+    [!ENDIF!]
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM2I12R0/Xcp</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+    [!VAR "XcpConnectionOsAppRefNameList" = "concat($XcpConnectionOsAppRefNameList,' ',$XcpConnectionOsAppRefName,' ')"!]
+  [!ENDIF!]
+[!ENDLOOP!]
+
+[!IF "$XcpBswDistributionEnabled"!]
+  [!IF "not(contains($XcpConnectionOsAppRefNameList,concat(' ',$XcpMasterApplication,' ')))"!]
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_[!"$XcpMasterApplication"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnCan_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnCdd_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnEth_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnFr_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Int_Stc.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_MemoryProxy.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_CommandProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_EventProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_EventReceiver.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_MemoryProxy.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_ReceiveProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_StimProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_TransmitProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Xcp_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Xcp_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>APPL_CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_SAVED_ZONE_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_POWER_ON_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_SAVED_ZONE_UNSPECIFIED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_POWER_ON_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>WRAPPER_CODE</SHORT-NAME>
+                    <PREFIX-REF DEST="SECTION-NAME-PREFIX">/EB_Xcp/Implementations/BswImplementation_[!"$XcpMasterApplication"!]/ResourceConsumption/XCP_WRAPPER</PREFIX-REF>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+                <SECTION-NAME-PREFIXS>
+                  <SECTION-NAME-PREFIX>
+                    <SHORT-NAME>XCP_WRAPPER</SHORT-NAME>
+                    <SYMBOL>XCP_WRAPPER</SYMBOL>
+                  </SECTION-NAME-PREFIX>
+                </SECTION-NAME-PREFIXS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>2.11.6</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_[!"$XcpMasterApplication"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>[!"$XcpMasterApplication"!]</VENDOR-API-INFIX>
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM2I12R0/Xcp</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+  [!ENDIF!]
+[!ENDIF!]
+  
+[!IF "$XcpMemoryAccessAreas"!]
+  [!VAR "ListOfPartitions" = "''"!]
+  [!LOOP "text:split($XcpMemProxyOsAppRefNameList, ' ')"!][!//
+    [!VAR "CurrentMemProxyPartition" = "."!][!// 
+    [!LOOP "text:split($XcpConnectionOsAppRefNameList, ' ')"!][!//
+      [!VAR "CurrentConnectionPartition" = "."!][!//
+        [!IF "not(contains($CurrentConnectionPartition,$CurrentMemProxyPartition))"!]
+          [!IF "not(contains($ListOfPartitions,concat(' ',$CurrentMemProxyPartition,' ')))"!]
+            <BSW-IMPLEMENTATION>
+              <!-- !LINKSTO Xcp.BswDistribution.Bswmd.MemoryProxyInstance,1 -->
+              <SHORT-NAME>BswImplementation_MemoryProxy_[!"$CurrentMemProxyPartition"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_MemoryProxy.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_MemoryProxy.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Xcp_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Xcp_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_NO_INIT_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_NO_INIT_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_NO_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>APPL_CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_SAVED_ZONE_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>WRAPPER_CODE</SHORT-NAME>
+                    <PREFIX-REF DEST="SECTION-NAME-PREFIX">/EB_Xcp/Implementations/BswImplementation_MemoryProxy_[!"$CurrentMemProxyPartition"!]/ResourceConsumption/XCP_WRAPPER</PREFIX-REF>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+                <SECTION-NAME-PREFIXS>
+                  <SECTION-NAME-PREFIX>
+                    <SHORT-NAME>XCP_WRAPPER</SHORT-NAME>
+                    <SYMBOL>XCP_WRAPPER</SYMBOL>
+                  </SECTION-NAME-PREFIX>
+                </SECTION-NAME-PREFIXS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>2.12.0</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_MemoryProxy_[!"$CurrentMemProxyPartition"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>XcpMemoryProxy_[!"$CurrentMemProxyPartition"!]</VENDOR-API-INFIX>
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM2I12R0/Xcp</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+          [!VAR "ListOfPartitions" = "concat($ListOfPartitions,' ',$CurrentMemProxyPartition,' ')"!]
+        [!ENDIF!]
+      [!ENDIF!]
+    [!ENDLOOP!]
+  [!ENDLOOP!]
+
+  [!IF "$XcpMemoryProxyResponseUsed"!]
+    [!LOOP "text:split($XcpConnectionOsAppRefNameList, ' ')"!][!//
+      [!VAR "CurrentConnectionPartition" = "."!][!//
+      [!LOOP "text:split($XcpMemProxyOsAppRefNameList, ' ')"!][!//
+        [!VAR "CurrentMemProxyPartition" = "."!][!// 
+        [!IF "not(contains($CurrentConnectionPartition,$CurrentMemProxyPartition))"!]
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_MemoryProxyResponse_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_MemoryProxy.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_MemoryProxy.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Xcp_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Xcp_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_NO_INIT_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_NO_INIT_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_NO_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>APPL_CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_SAVED_ZONE_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>WRAPPER_CODE</SHORT-NAME>
+                    <PREFIX-REF DEST="SECTION-NAME-PREFIX">/EB_Xcp/Implementations/BswImplementation_MemoryProxyResponse_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]/ResourceConsumption/XCP_WRAPPER</PREFIX-REF>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+                <SECTION-NAME-PREFIXS>
+                  <SECTION-NAME-PREFIX>
+                    <SHORT-NAME>XCP_WRAPPER</SHORT-NAME>
+                    <SYMBOL>XCP_WRAPPER</SYMBOL>
+                  </SECTION-NAME-PREFIX>
+                </SECTION-NAME-PREFIXS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>2.12.0</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/InternalBehavior_MemoryProxyResponse_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]</BEHAVIOR-REF>
+              <VENDOR-API-INFIX>XcpMemoryProxyResponse_[!"$CurrentConnectionPartition"!]_From_[!"$CurrentMemProxyPartition"!]</VENDOR-API-INFIX>
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM2I12R0/Xcp</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+        [!ENDIF!]
+      [!ENDLOOP!]
+    [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDIF!]
+
+[!IF "$XcpBswDistributionEnabled"!]
+            <BSW-IMPLEMENTATION>
+              <!-- !LINKSTO Xcp.BswDistribution.Bswmd.GenericInternalBeh.GenericBswImplementation.,1 -->
+              <SHORT-NAME>GenericBswImplementation</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnCan_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnCdd_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnEth_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::XcpOnFr_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Cbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Int_Stc.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_MemoryProxy.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Xcp_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_CommandProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_EventProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_EventReceiver.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_MemoryProxy.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_ReceiveProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_StimProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Xcp_TransmitProcessor.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Xcp_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Xcp_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>ResourceConsumption</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CONST_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CONST</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_NO_INIT_16</SHORT-NAME>
+                    <ALIGNMENT>16</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_NO_INIT_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_NO_INIT_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>APPL_CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_SAVED_ZONE_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_NOINIT</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>WRAPPER_CODE</SHORT-NAME>
+                    <PREFIX-REF DEST="SECTION-NAME-PREFIX">/EB_Xcp/Implementations/GenericBswImplementation/ResourceConsumption/XCP_WRAPPER</PREFIX-REF>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_UNSPECIFIED</SHORT-NAME>
+                    <ALIGNMENT>UNSPECIFIED</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_CLEARED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>VAR_SAVED_ZONE_UNSPECIFIED_8</SHORT-NAME>
+                    <ALIGNMENT>8</ALIGNMENT>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/VAR_POWER_ON_CLEARED</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+                <SECTION-NAME-PREFIXS>
+                  <SECTION-NAME-PREFIX>
+                    <SHORT-NAME>XCP_WRAPPER</SHORT-NAME>
+                    <SYMBOL>XCP_WRAPPER</SYMBOL>
+                  </SECTION-NAME-PREFIX>
+                </SECTION-NAME-PREFIXS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>2.12.0</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-RELEASE-VERSION>4.0.3</AR-RELEASE-VERSION>
+              <BEHAVIOR-REF DEST="BSW-INTERNAL-BEHAVIOR">/AUTOSAR_Xcp/BswModuleDescriptions/Xcp/GenericInternalBehavior</BEHAVIOR-REF>
+              <VENDOR-SPECIFIC-MODULE-DEF-REFS>
+                <VENDOR-SPECIFIC-MODULE-DEF-REF DEST="ECUC-MODULE-DEF">/TS_TxDxM2I12R0/Xcp</VENDOR-SPECIFIC-MODULE-DEF-REF>
+              </VENDOR-SPECIFIC-MODULE-DEF-REFS>
+            </BSW-IMPLEMENTATION>
+[!ENDIF!]
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+[!ENDIF!]
+  </AR-PACKAGES>
+</AUTOSAR>

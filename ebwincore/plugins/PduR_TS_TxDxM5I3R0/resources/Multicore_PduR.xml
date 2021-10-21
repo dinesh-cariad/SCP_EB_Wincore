@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Script xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Scriptor.xsd">
+  <Name>Multicore PduR connection</Name>
+  <Decription>Multicore PduR connection</Decription>
+  <Expression>as:modconf('Rte')[1]</Expression>
+  <Operations>
+
+    <Operation Type="ForEach">
+      <Expression>as:modconf('Rte')[1]/RteBswModuleInstance/*[contains(RteBswImplementationRef, "IfULClient")]/RteBswRequiredClientServerConnection</Expression>
+      <Operations>
+        <Operation Type="Condition">
+          <Expression>count(*[contains(RteBswRequiredClientServerEntryRef, "ProxyIfTxConfirmation")]) = 0</Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_ProxyIfTxConfirmation'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyIfTxConfirmation/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyIfTxConfirmation")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyIfTxConfirmation/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyIfTxConfirmation")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyIfTxConfirmation/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        <Operation Type="Condition">
+          <Expression>count(*[contains(RteBswRequiredClientServerEntryRef, "ProxyTriggerTransmit")]) = 0</Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_ProxyTriggerTransmit'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyTriggerTransmit/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyTriggerTransmit")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyTriggerTransmit/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyTriggerTransmit")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyTriggerTransmit/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        <Operation Type="Condition">
+          <Expression>count(*[contains(RteBswRequiredClientServerEntryRef, "SkeletonIfRxIndication")]) = 0</Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_SkeletonIfRxIndication'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonIfRxIndication/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonIfRxIndication")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonIfRxIndication/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonIfRxIndication")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonIfRxIndication/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+      </Operations>
+    </Operation>
+
+
+    <Operation Type="ForEach">
+      <Expression>as:modconf('Rte')[1]/RteBswModuleInstance/*[contains(RteBswImplementationRef, "IfLLClient")]/RteBswRequiredClientServerConnection</Expression>
+      <Operations>
+        <Operation Type="Condition">
+          <Expression>count(*[contains(RteBswRequiredClientServerEntryRef, "SkeletonIfTransmit")]) = 0</Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_SkeletonIfTransmit'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonIfTransmit/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonIfTransmit")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonIfTransmit/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonIfTransmit")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonIfTransmit/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+      </Operations>
+    </Operation>
+    
+
+    <Operation Type="ForEach">
+      <Expression>as:modconf('Rte')[1]/RteBswModuleInstance/*[contains(RteBswImplementationRef, "TpLLClient")]/RteBswRequiredClientServerConnection</Expression>
+      <Operations>
+        <Operation Type="Condition">
+          <Expression>count(*[contains(RteBswRequiredClientServerEntryRef, "SkeletonTpTransmit")]) = 0</Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_SkeletonTpTransmit'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpTransmit/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonTpTransmit")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpTransmit/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonTpTransmit")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpTransmit/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        
+        <Operation Type="Condition">
+          <Expression>
+              count(*[contains(RteBswRequiredClientServerEntryRef, "SkeletonTpCancelTransmit")]) = 0 and 
+              node:exists(concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonTpCancelTransmit"))
+          </Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_SkeletonTpCancelTransmit'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpCancelTransmit/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonTpCancelTransmit")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpCancelTransmit/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonTpCancelTransmit")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpCancelTransmit/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        
+        <Operation Type="Condition">
+          <Expression>
+              count(*[contains(RteBswRequiredClientServerEntryRef, "SkeletonTpChangeParameter")]) = 0 and 
+              node:exists(concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonTpChangeParameter"))
+          </Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_SkeletonTpChangeParameter'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpChangeParameter/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonTpChangeParameter")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpChangeParameter/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonTpChangeParameter")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpChangeParameter/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        
+        <Operation Type="Condition">
+          <Expression>
+              count(*[contains(RteBswRequiredClientServerEntryRef, "ProxyTpCancelReceive")]) = 0 and 
+              node:exists(concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyTpCancelReceive"))
+          </Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_ProxyTpCancelReceive'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyTpCancelReceive/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyTpCancelReceive")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyTpCancelReceive/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyTpCancelReceive")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyTpCancelReceive/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        
+      </Operations>
+    </Operation>
+    
+
+    <Operation Type="ForEach">
+      <Expression>as:modconf('Rte')[1]/RteBswModuleInstance/*[contains(RteBswImplementationRef, "TpULClient")]/RteBswRequiredClientServerConnection</Expression>
+      <Operations>
+      
+        <Operation Type="Condition">
+          <Expression>count(*[contains(RteBswRequiredClientServerEntryRef, "ProxyCopyTxData")]) = 0</Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_ProxyCopyTxData'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyCopyTxData/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyCopyTxData")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyCopyTxData/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyCopyTxData")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyCopyTxData/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        
+      
+        <Operation Type="Condition">
+          <Expression>count(*[contains(RteBswRequiredClientServerEntryRef, "ProxyTpTxConfirmation")]) = 0</Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_ProxyTpTxConfirmation'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyTpTxConfirmation/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyTpTxConfirmation")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyTpTxConfirmation/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "ProxyTpTxConfirmation")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_ProxyTpTxConfirmation/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        
+      
+        <Operation Type="Condition">
+          <Expression>count(*[contains(RteBswRequiredClientServerEntryRef, "SkeletonCopyRxData")]) = 0</Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_SkeletonCopyRxData'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonCopyRxData/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonCopyRxData")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonCopyRxData/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonCopyRxData")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonCopyRxData/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        
+      
+        <Operation Type="Condition">
+          <Expression>count(*[contains(RteBswRequiredClientServerEntryRef, "SkeletonStartOfReception")]) = 0</Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_SkeletonStartOfReception'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonStartOfReception/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonStartOfReception")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonStartOfReception/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonStartOfReception")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonStartOfReception/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        
+      
+        <Operation Type="Condition">
+          <Expression>count(*[contains(RteBswRequiredClientServerEntryRef, "SkeletonTpRxIndication")]) = 0</Expression>
+          <Operations>
+            <Operation Type="Add">
+              <Expression>'AutoConnection_SkeletonTpRxIndication'</Expression>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpRxIndication/RteBswProvidedClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/pcse", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonTpRxIndication")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpRxIndication/RteBswRequiredClientServerEntryRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:/AUTOSAR_PduR/BswModuleDescriptions/PduR/", text:replace(name(../../..), "BSW_PduR_1_(\w+)_.*", "$1"), "SkeletonTpRxIndication")</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+            <Operation Type="ForEach">
+              <Expression>AutoConnection_SkeletonTpRxIndication/RteBswProvidedClientServerEntryModInstRef</Expression>
+              <Operations>
+                <Operation Type="SetValue">
+                  <Expression>concat("ASPath:", text:replace(as:path(../../..), "Client", "Server"))</Expression>
+                </Operation>
+              </Operations>
+            </Operation>
+          </Operations>
+        </Operation>
+        
+      </Operations>
+    </Operation>
+    
+    
+  </Operations>
+</Script>

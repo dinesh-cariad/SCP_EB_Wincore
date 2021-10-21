@@ -1,0 +1,1111 @@
+<?xml version='1.0'?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>TS_TxDxM5I0R0</SHORT-NAME>
+      <ELEMENTS>
+        <ECUC-MODULE-DEF>
+          <SHORT-NAME>Base</SHORT-NAME>
+          <DESC>
+            <L-2 L="FOR-ALL">Configuration of the Base module.</L-2>
+          </DESC>
+          <ADMIN-DATA>
+            <LANGUAGE>EN</LANGUAGE>
+            <DOC-REVISIONS>
+              <DOC-REVISION>
+                <REVISION-LABEL>4.2.0</REVISION-LABEL>
+                <ISSUED-BY>AUTOSAR</ISSUED-BY>
+                <DATE>2011-11-09T11:36:22Z</DATE>
+              </DOC-REVISION>
+              <DOC-REVISION>
+                <REVISION-LABEL>5.0.31</REVISION-LABEL>
+                <ISSUED-BY>Elektrobit Automotive GmbH</ISSUED-BY>
+                <DATE>2021-07-14T23:59:59Z</DATE>
+              </DOC-REVISION>
+            </DOC-REVISIONS>
+          </ADMIN-DATA>
+          <SUPPORTED-CONFIG-VARIANTS>
+            <SUPPORTED-CONFIG-VARIANT>VARIANT-PRE-COMPILE</SUPPORTED-CONFIG-VARIANT>
+          </SUPPORTED-CONFIG-VARIANTS>
+          <CONTAINERS>
+            <ECUC-PARAM-CONF-CONTAINER-DEF>
+              <SHORT-NAME>BaseDbg</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                      &lt;p&gt;This container holds configuration information for the debug base types.&lt;/p&gt;
+                    &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseDbgHeaderFile</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                        &lt;p&gt;Header file for implementation of debug hooks.&lt;/p&gt;
+                        &lt;p&gt;
+                          The identifier provided by this header
+                          file is included from
+                          &lt;code&gt;&amp;lt;Mod&amp;gt;_Trace.h&lt;/code&gt;.
+                        &lt;/p&gt;
+                        &lt;p&gt;
+                          Note that the implementation of debug hooks
+                          may change the behaviour of the basic software.
+                        &lt;/p&gt;
+                      &lt;/html&gt;</L-2>
+                  </DESC>
+                  <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                  <UPPER-MULTIPLICITY>1</UPPER-MULTIPLICITY>
+                </ECUC-STRING-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF>
+              <SHORT-NAME>PostBuildSelectable</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                      &lt;p&gt;This container holds configuration information for either
+                        a &lt;em&gt;post-build-selectable master project&lt;/em&gt; or
+                        a &lt;em&gt;Post-Build-selectable slave project&lt;/em&gt;
+                      &lt;/p&gt;
+                    &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-ENUMERATION-PARAM-DEF>
+                  <SHORT-NAME>ProjectType</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                        &lt;p&gt;Type of post-build-selectable project.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;strong&gt;None :&lt;/strong&gt; This project is not intended to be used as a post-build-selectable project.&lt;/li&gt;
+                          &lt;li&gt;&lt;strong&gt;Master :&lt;/strong&gt; This project is a &lt;em&gt;post-build-selectable master project&lt;/em&gt;. For a master project the &lt;strong&gt;Variant List&lt;/strong&gt; has to be configured.&lt;/li&gt;
+                          &lt;li&gt;&lt;strong&gt;Slave :&lt;/strong&gt; This project is a &lt;em&gt;post-build-selectable slave project&lt;/em&gt;. For a slave project the &lt;strong&gt;Variant Name&lt;/strong&gt; has to be configured.&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</L-2>
+                  </DESC>
+                  <DEFAULT-VALUE>None</DEFAULT-VALUE>
+                  <LITERALS>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>None</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>Master</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>Slave</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                  </LITERALS>
+                </ECUC-ENUMERATION-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>VariantNameList</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;List of names of variants of all &lt;em&gt;post-build-selectable slave projects&lt;/em&gt;&lt;/p&gt;.
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <LOWER-MULTIPLICITY>0</LOWER-MULTIPLICITY>
+                  <UPPER-MULTIPLICITY-INFINITE>1</UPPER-MULTIPLICITY-INFINITE>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>VariantName</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                        &lt;p&gt;Name of the variant of this &lt;em&gt;post-build-selectable slave project&lt;/em&gt;&lt;/p&gt;.
+                      &lt;/html&gt;</L-2>
+                  </DESC>
+                </ECUC-STRING-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF>
+              <SHORT-NAME>CustomOverrides</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                      &lt;p&gt;This container holds configuration information for custom overrides of default implementations.&lt;/p&gt;
+                    &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CustomOverride_MemCpy</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Enable or disable the usage of a custom memory copy function. To override the default memory copy function&lt;ul&gt;
+                            &lt;li&gt;define and implement a copy function with signature &lt;code&gt;void custom_memcpy(void* const destination, void const* const source, const usize length)&lt;/code&gt; where&lt;ul&gt;
+                              &lt;li&gt;&lt;code&gt;destination&lt;/code&gt; is the pointer to where the memory is copied to&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;source&lt;/code&gt; is the pointer to where the memory is copied from&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;length&lt;/code&gt; is number of bytes to be copied from &lt;code&gt;source&lt;/code&gt; to &lt;code&gt;destination&lt;/code&gt;&lt;/li&gt;
+                            &lt;/ul&gt;The memory copy function is expected to copy &lt;code&gt;length&lt;/code&gt; bytes from &lt;code&gt;source&lt;/code&gt; to &lt;code&gt;destination&lt;/code&gt;.&lt;/li&gt;
+                            &lt;li&gt;define the macro &lt;code&gt;TS_MemCpy(dst,src,len)&lt;/code&gt; that just maps to the custom memory copy function in a custom standard header file&lt;/li&gt;
+                            &lt;li&gt;add the custom standard header file to Base configuration parameter &lt;em&gt;CustomStdIncludeFiles&lt;/em&gt;&lt;/li&gt;
+                          &lt;/ul&gt;&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CustomOverride_MemSet</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Enable or disable the usage of a custom memory set function. To override the default memory set function&lt;ul&gt;
+                            &lt;li&gt;define and implement a set function with signature &lt;code&gt;void custom_memset(void* const destination, const value, const usize length)&lt;/code&gt; where&lt;ul&gt;
+                              &lt;li&gt;&lt;code&gt;destination&lt;/code&gt; is the pointer to where the memory is set&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;value&lt;/code&gt; is the value to be set&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;length&lt;/code&gt; is the number of bytes to be set to specified value&lt;/li&gt;
+                            &lt;/ul&gt;The memory set function is expected to set &lt;code&gt;length&lt;/code&gt; bytes to &lt;code&gt;value&lt;/code&gt; starting from &lt;code&gt;destination&lt;/code&gt;.&lt;/li&gt;
+                            &lt;li&gt;define the macro &lt;code&gt;TS_MemSet(dst,val,len)&lt;/code&gt; that just maps to the custom memory set function in a custom standard header file&lt;/li&gt;
+                            &lt;li&gt;add the custom standard header file to Base configuration parameter &lt;em&gt;CustomStdIncludeFiles&lt;/em&gt;&lt;/li&gt;
+                          &lt;/ul&gt;&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CustomOverride_MemCmp</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Enable or disable the usage of a custom memory compare function. To override the default memory compare function&lt;ul&gt;
+                            &lt;li&gt;define and implement a compare function with signature &lt;code&gt;void custom_memcmp(void const * const str1, void const * const str2, const usize length)&lt;/code&gt; where&lt;ul&gt;
+                              &lt;li&gt;&lt;code&gt;str1&lt;/code&gt; is the pointer to one block of memory&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;str2&lt;/code&gt; is the pointer to another block of memory&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;length&lt;/code&gt; is the number of bytes to be compared&lt;/li&gt;
+                            &lt;/ul&gt;The memory compare function is expected to compare &lt;code&gt;length&lt;/code&gt; bytes from &lt;code&gt;str1&lt;/code&gt; to &lt;code&gt;str2&lt;/code&gt; and return 0 if they&apos;re equal, smaller than 0 if &lt;code&gt;str1&lt;/code&gt; is smaller than &lt;code&gt;str2&lt;/code&gt;, greater than 0 if &lt;code&gt;str1&lt;/code&gt; is greater than &lt;code&gt;str2&lt;/code&gt;.&lt;/li&gt;
+                            &lt;li&gt;define the macro &lt;code&gt;TS_MemCmp(str1,str2,len)&lt;/code&gt; that just maps to the custom memory compare function in a custom standard header file&lt;/li&gt;
+                            &lt;li&gt;add the custom standard header file to Base configuration parameter &lt;em&gt;CustomStdIncludeFiles&lt;/em&gt;&lt;/li&gt;
+                          &lt;/ul&gt;&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>CustomOverride_MemBZero</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Enable or disable the usage of a custom memory zeroing function. To override the default memory zeroing function&lt;ul&gt;
+                            &lt;li&gt;define and implement a zeroing function with signature &lt;code&gt;void custom_membzero(void* const destination, const usize length)&lt;/code&gt; where&lt;ul&gt;
+                              &lt;li&gt;&lt;code&gt;destination&lt;/code&gt; is the pointer to where the memory is zeroed&lt;/li&gt;
+                              &lt;li&gt;&lt;code&gt;length&lt;/code&gt; is the number of bytes to be zeroed&lt;/li&gt;
+                            &lt;/ul&gt;The memory zeroing function is expected to zero &lt;code&gt;length&lt;/code&gt; bytes from &lt;code&gt;destination&lt;/code&gt;.&lt;/li&gt;
+                            &lt;li&gt;define the macro &lt;code&gt;TS_MemBZero(dst,len)&lt;/code&gt; that just maps to the custom memory zeroing function in a custom standard header file&lt;/li&gt;
+                            &lt;li&gt;add the custom standard header file to Base configuration parameter &lt;em&gt;CustomStdIncludeFiles&lt;/em&gt;&lt;/li&gt;
+                          &lt;/ul&gt;&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF>
+              <SHORT-NAME>BaseTypes</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                      &lt;p&gt;This container holds configuration information for the AUTOSAR base types.&lt;/p&gt;
+                    &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_boolean</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;boolean&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_boolean: DEFAULT(XPath: ecu:get(&apos;Basetypes.boolean.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_uint8</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;uint8&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_uint8: DEFAULT(XPath: ecu:get(&apos;Basetypes.uint8.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_sint8</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;sint8&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_sint8: DEFAULT(XPath: ecu:get(&apos;Basetypes.sint8.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_uint16</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;uint16&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_uint16: DEFAULT(XPath: ecu:get(&apos;Basetypes.uint16.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_sint16</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;sint16&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_sint16: DEFAULT(XPath: ecu:get(&apos;Basetypes.sint16.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_uint32</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;uint32&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_uint32: DEFAULT(XPath: ecu:get(&apos;Basetypes.uint32.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_sint32</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;sint32&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_sint32: DEFAULT(XPath: ecu:get(&apos;Basetypes.sint32.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_uint8_least</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;uint8_least&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_uint8_least: DEFAULT(XPath: ecu:get(&apos;Basetypes.uint8_least.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_sint8_least</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;sint8_least&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_sint8_least: DEFAULT(XPath: ecu:get(&apos;Basetypes.sint8_least.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_uint16_least</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;uint16_least&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_uint16_least: DEFAULT(XPath: ecu:get(&apos;Basetypes.uint16_least.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_sint16_least</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;sint16_least&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_sint16_least: DEFAULT(XPath: ecu:get(&apos;Basetypes.sint16_least.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_uint32_least</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;uint32_least&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_uint32_least: DEFAULT(XPath: ecu:get(&apos;Basetypes.uint32_least.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_sint32_least</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;sint32_least&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_sint32_least: DEFAULT(XPath: ecu:get(&apos;Basetypes.sint32_least.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_uint64</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;uint64&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_uint64: DEFAULT(XPath: ecu:get(&apos;Basetypes.uint64.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_sint64</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;sint64&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_sint64: DEFAULT(XPath: ecu:get(&apos;Basetypes.sint64.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_float32</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;float32&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_float32: DEFAULT(XPath: ecu:get(&apos;Basetypes.float32.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>BaseType_float64</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the AUTOSAR base type &apos;float64&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_float64: DEFAULT(XPath: ecu:get(&apos;Basetypes.float64.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>DerivedType_TS_MaxAlignedType</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the mapping from the derived type &apos;TS_MaxAlignedType&apos; to the corresponding C data type.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/DerivedType_TS_MaxAlignedType: DEFAULT(XPath: ecu:get(&apos;Derivedtypes.TS_MaxAlignedType.Mapping&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Size_char</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the size of the C data type &apos;signed/unsigned char&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Size_char: DEFAULT(XPath: ecu:get(&apos;Basetypes.char.Size&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Alignment_char</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of the C data type &apos;signed/unsigned char&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Alignment_char: DEFAULT(XPath: ecu:get(&apos;Basetypes.char.Alignment&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>BaseType_AtomicAccess_char</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Switch to define if atomic access is possible to the C data type &apos;char&apos;.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: atomic access is possible.&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: atomic access is not possible.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_AtomicAccess_char: DEFAULT(XPath: ecu:get(&apos;Basetypes.char.AtomicAccess&apos;) = &apos;true&apos;)-->
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Size_short</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the size of the C data type &apos;signed/unsigned short&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Size_short: DEFAULT(XPath: ecu:get(&apos;Basetypes.short.Size&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Alignment_short</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of the C data type &apos;signed/unsigned short&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Alignment_short: DEFAULT(XPath: ecu:get(&apos;Basetypes.short.Alignment&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>BaseType_AtomicAccess_short</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Switch to define if atomic access is possible to the C data type &apos;short&apos;.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: atomic access is possible.&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: atomic access is not possible.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_AtomicAccess_short: DEFAULT(XPath: ecu:get(&apos;Basetypes.short.AtomicAccess&apos;) = &apos;true&apos;)-->
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Size_int</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the size of the C data type &apos;signed/unsigned int&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Size_int: DEFAULT(XPath: ecu:get(&apos;Basetypes.int.Size&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Alignment_int</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of the C data type &apos;signed/unsigned int&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Alignment_int: DEFAULT(XPath: ecu:get(&apos;Basetypes.int.Alignment&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>BaseType_AtomicAccess_int</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Switch to define if atomic access is possible to the C data type &apos;int&apos;.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: atomic access is possible.&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: atomic access is not possible.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_AtomicAccess_int: DEFAULT(XPath: ecu:get(&apos;Basetypes.int.AtomicAccess&apos;) = &apos;true&apos;)-->
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Size_long</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the size of the C data type &apos;signed/unsigned long&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Size_long: DEFAULT(XPath: ecu:get(&apos;Basetypes.long.Size&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Alignment_long</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of the C data type &apos;signed/unsigned long&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Alignment_long: DEFAULT(XPath: ecu:get(&apos;Basetypes.long.Alignment&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>BaseType_AtomicAccess_long</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Switch to define if atomic access is possible to the C data type &apos;long&apos;.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: atomic access is possible.&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: atomic access is not possible.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_AtomicAccess_long: DEFAULT(XPath: ecu:get(&apos;Basetypes.long.AtomicAccess&apos;) = &apos;true&apos;)-->
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Size_longlong</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the size of the C data type &apos;signed/unsigned long long&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Size_longlong: DEFAULT(XPath: ecu:get(&apos;Basetypes.long long.Size&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Alignment_longlong</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of the C data type &apos;signed/unsigned long long&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Alignment_longlong: DEFAULT(XPath: ecu:get(&apos;Basetypes.long long.Alignment&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>BaseType_AtomicAccess_longlong</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Switch to define if atomic access is possible to the C data type &apos;long long&apos;.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: atomic access is possible.&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: atomic access is not possible.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_AtomicAccess_longlong: DEFAULT(XPath: ecu:get(&apos;Basetypes.long long.AtomicAccess&apos;) = &apos;true&apos;)-->
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Size_float</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the size of the C data type &apos;float&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Size_float: DEFAULT(XPath: ecu:get(&apos;Basetypes.float.Size&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Alignment_float</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of the C data type &apos;float&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Alignment_float: DEFAULT(XPath: ecu:get(&apos;Basetypes.float.Alignment&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>BaseType_AtomicAccess_float</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Switch to define if atomic access is possible to the C data type &apos;float&apos;.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: atomic access is possible.&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: atomic access is not possible.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_AtomicAccess_float: DEFAULT(XPath: ecu:get(&apos;Basetypes.float.AtomicAccess&apos;) = &apos;true&apos;)-->
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Size_double</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the size of the C data type &apos;double&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Size_double: DEFAULT(XPath: ecu:get(&apos;Basetypes.double.Size&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Alignment_double</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of the C data type &apos;double&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Alignment_double: DEFAULT(XPath: ecu:get(&apos;Basetypes.double.Alignment&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>BaseType_AtomicAccess_double</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Switch to define if atomic access is possible to the C data type &apos;double&apos;.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: atomic access is possible.&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: atomic access is not possible.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_AtomicAccess_double: DEFAULT(XPath: ecu:get(&apos;Basetypes.double.AtomicAccess&apos;) = &apos;true&apos;)-->
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Alignment_nearpointer</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of the C data type &apos;nearpointer&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Alignment_nearpointer: DEFAULT(XPath: ecu:get(&apos;Basetypes.nearpointer.Alignment&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Size_nearpointer</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the size of the C data type &apos;nearpointer&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Size_nearpointer: DEFAULT(XPath: ecu:get(&apos;Basetypes.nearpointer.Size&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Size_farpointer</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the size of the C data type &apos;farpointer&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Size_farpointer: DEFAULT(XPath: ecu:get(&apos;Basetypes.farpointer.Size&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseType_Alignment_farpointer</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of the C data type &apos;farpointer&apos; as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseType_Alignment_farpointer: DEFAULT(XPath: ecu:get(&apos;Basetypes.farpointer.Alignment&apos;))-->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>ComplexType_Alignment_struct</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of complex &apos;struct&apos; types as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/ComplexType_Alignment_struct: DEFAULT(XPath: ecu:get(&apos;Complextypes.struct.Alignment&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF>
+                  <SHORT-NAME>ComplexType_Alignment_array</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the alignment of complex &apos;array&apos; types as number of bytes.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/ComplexType_Alignment_array: DEFAULT(XPath: ecu:get(&apos;Complextypes.array.Alignment&apos;))-->
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>BaseTypes64bit</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Switch to enable/disable the generation of the AUTOSAR 64bit base types
+                          (&lt;code&gt;sint64&lt;/code&gt;, &lt;code&gt;uint64&lt;/code&gt;).
+                          Disabled base types are not provided by typedefs.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: generation of 64bit base types enabled.&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: generation of 64bit base types disabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseTypes/BaseTypes64bit: DEFAULT(XPath: ecu:get(&apos;Cpu.Type&apos;) = &apos;64&apos; or ../../BaseCpuConfig/BaseCpuConfig_type = &apos;64&apos;)-->
+                </ECUC-BOOLEAN-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF>
+              <SHORT-NAME>BaseCpuConfig</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                      &lt;p&gt;This container holds configuration information for the CPU.&lt;/p&gt;
+                    &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-INTEGER-PARAM-DEF>
+                  <SHORT-NAME>BaseCpuConfig_type</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the type resp. data unit size of the CPU; allowed values are 64, 32, 16, 8.&lt;/p&gt;
+                      &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseCpuConfig/BaseCpuConfig_type: DEFAULT(XPath: ecu:get(&apos;Cpu.Type&apos;))-->
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseCpuConfig/BaseCpuConfig_type: INVALID(XPath: (.=64 or .=32 or .=16 or .=8))-->
+                  <MAX>9223372036854775807</MAX>
+                  <MIN>-9223372036854775808</MIN>
+                  <!-- @CalculatedEnd -->
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-ENUMERATION-PARAM-DEF>
+                  <SHORT-NAME>BaseCpuConfig_byteorder</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the byte order of the CPU, big endian (BE) or little endian (LE).&lt;/p&gt;
+                      &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseCpuConfig/BaseCpuConfig_byteorder: DEFAULT(XPath: ecu:get(&apos;Cpu.Byteorder&apos;))-->
+                  <LITERALS>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>BE</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>LE</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                  </LITERALS>
+                </ECUC-ENUMERATION-PARAM-DEF>
+                <ECUC-ENUMERATION-PARAM-DEF>
+                  <SHORT-NAME>BaseCpuConfig_bitorder</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Define the bit order of the CPU, big endian (BE) or little endian (LE).&lt;/p&gt;
+                      &lt;/html&gt;</L-2>
+                  </DESC>
+                  <!-- @Calculated /TS_TxDxM5I0R0/Base/BaseCpuConfig/BaseCpuConfig_bitorder: DEFAULT(XPath: ecu:get(&apos;Cpu.Bitorder&apos;))-->
+                  <LITERALS>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>BE</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>LE</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                  </LITERALS>
+                </ECUC-ENUMERATION-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF>
+              <SHORT-NAME>GeneralTypes</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                      &lt;p&gt;This container holds configuration information for the AUTOSAR types part of the &lt;code&gt;&amp;lt;Bus&amp;gt;_GeneralTypes&lt;/code&gt;.&lt;/p&gt;
+                    &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>GeneralTypes_Can_ControllerStateType</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Switch to enable/disable the generation of the AUTOSAR type
+                          &lt;code&gt;Can_ControllerStateType&lt;/code&gt;.
+                          Disabled types are not provided by typedefs.&lt;/p&gt;
+                          &lt;ul&gt;
+                            &lt;li&gt;&lt;code&gt;true&lt;/code&gt;: generation of type Can_ControllerStateType enabled.&lt;/li&gt;
+                            &lt;li&gt;&lt;code&gt;false&lt;/code&gt;: generation of type Can_ControllerStateType disabled.&lt;/li&gt;
+                          &lt;/ul&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <DEFAULT-VALUE>true</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF>
+              <SHORT-NAME>BaseEcuConfig</SHORT-NAME>
+              <DESC>
+                <L-2 L="FOR-ALL">&lt;html&gt;
+                        &lt;p&gt;
+                          This container holds parameters for the generation of ARXML with ECU parameter configuration.
+                          The ARXML files are placed in the folder &lt;code&gt;&lt;project output path &gt;/ecuconfig_arxml&lt;/code&gt;.
+                          For each module in the project a separate file is created.
+                        &lt;/p&gt;
+                      &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-BOOLEAN-PARAM-DEF>
+                  <SHORT-NAME>BaseEcuConfigAlwaysExport</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;
+                            Always create ARXML files during code generation.
+                            &lt;ul&gt;
+                              &lt;li&gt;&lt;strong&gt;Enabled:&lt;/strong&gt; ARXML files are created in all generator modes&lt;/li&gt;
+                              &lt;li&gt;&lt;strong&gt;Disabled:&lt;/strong&gt; ARXML files are only created in the generator mode &lt;strong&gt;export_asr_config&lt;/strong&gt; (Default)&lt;/li&gt;
+                            &lt;/ul&gt;
+                          &lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+                <ECUC-ENUMERATION-PARAM-DEF>
+                  <SHORT-NAME>BaseEcuConfigAsrVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="FOR-ALL">&lt;html&gt;
+                          &lt;p&gt;Choose the AUTOSAR version for the file format for the ECU configuration.&lt;/p&gt;
+                        &lt;/html&gt;</L-2>
+                  </DESC>
+                  <DEFAULT-VALUE>r4_0_3</DEFAULT-VALUE>
+                  <LITERALS>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r2_0</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r2_1</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r3_0</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r3_1</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r3_2</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r4_0_2</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r4_0_3</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r4_1_3</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r4_2_1</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r4_2_2</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                    <ECUC-ENUMERATION-LITERAL-DEF>
+                      <SHORT-NAME>r4_3_0</SHORT-NAME>
+                      <ORIGIN>unknown</ORIGIN>
+                    </ECUC-ENUMERATION-LITERAL-DEF>
+                  </LITERALS>
+                </ECUC-ENUMERATION-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF UUID="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6">
+              <SHORT-NAME>CommonPublishedInformation</SHORT-NAME>
+              <DESC>
+                <L-2 L="EN">
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1">
+                  <SHORT-NAME>ArMajorVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>4</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70">
+                  <SHORT-NAME>ArMinorVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>3</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e">
+                  <SHORT-NAME>ArPatchVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34">
+                  <SHORT-NAME>SwMajorVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>5</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f">
+                  <SHORT-NAME>SwMinorVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="a318d2d9-0e75-49da-ac43-e7e4e682e2f9">
+                  <SHORT-NAME>SwPatchVersion</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>31</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:78bc8362-080f-4253-b3da-804ab69a7154">
+                  <SHORT-NAME>ModuleId</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>0</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-INTEGER-PARAM-DEF UUID="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449">
+                  <SHORT-NAME>VendorId</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>1</DEFAULT-VALUE>
+                </ECUC-INTEGER-PARAM-DEF>
+                <ECUC-STRING-PARAM-DEF UUID="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89">
+                  <SHORT-NAME>Release</SHORT-NAME>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <ECUC-STRING-PARAM-DEF-VARIANTS>
+                    <ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                      <DEFAULT-VALUE></DEFAULT-VALUE>
+                    </ECUC-STRING-PARAM-DEF-CONDITIONAL>
+                  </ECUC-STRING-PARAM-DEF-VARIANTS>
+                </ECUC-STRING-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+            <ECUC-PARAM-CONF-CONTAINER-DEF UUID="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07">
+              <SHORT-NAME>PublishedInformation</SHORT-NAME>
+              <DESC>
+                <L-2 L="EN">
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</L-2>
+              </DESC>
+              <PARAMETERS>
+                <ECUC-BOOLEAN-PARAM-DEF UUID="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee">
+                  <SHORT-NAME>PbcfgMSupport</SHORT-NAME>
+                  <DESC>
+                    <L-2 L="EN">
+                      &lt;html&gt;
+                        Specifies whether or not the Base can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</L-2>
+                  </DESC>
+                  <IMPLEMENTATION-CONFIG-CLASSES>
+                    <ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                      <CONFIG-CLASS>PUBLISHED-INFORMATION</CONFIG-CLASS>
+                      <CONFIG-VARIANT>VARIANT-PRE-COMPILE</CONFIG-VARIANT>
+                    </ECUC-IMPLEMENTATION-CONFIGURATION-CLASS>
+                  </IMPLEMENTATION-CONFIG-CLASSES>
+                  <ORIGIN>Elektrobit Automotive GmbH</ORIGIN>
+                  <SYMBOLIC-NAME-VALUE>false</SYMBOLIC-NAME-VALUE>
+                  <DEFAULT-VALUE>false</DEFAULT-VALUE>
+                </ECUC-BOOLEAN-PARAM-DEF>
+              </PARAMETERS>
+            </ECUC-PARAM-CONF-CONTAINER-DEF>
+          </CONTAINERS>
+        </ECUC-MODULE-DEF>
+      </ELEMENTS>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+
+    <mainFunction name="LinIf_MainFunction" >
+        <header value="LinIf.h" />
+        <cycleTime type="XPATH" value="as:modconf( 'LinIf' )[1]/LinIfGlobalConfig/*[1]/LinIfTimeBase" />
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150" />
+        <callBefore>
+            <mainFunction>Com_MainFunctionRx</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>Com_MainFunctionTx</mainFunction>
+            <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+            <mainFunction>Dcm_MainFunction</mainFunction>
+        </callAfter>
+    </mainFunction>
+
+</schm:mainFunctions>

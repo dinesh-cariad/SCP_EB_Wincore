@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+   Plug-in with demos for the EB tresos Studio Public API.
+ -->
+
+  <!-- *********************************************************
+    DEMO 9
+    Standalone editor with guided configuration widgets on 
+    external view and editor
+  ***************************************************************-->
+  
+  <!--
+    Standard module definition extension point
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+         id="GCDemo9_TS_T00D0M0I0R0"
+         name="Guided Config Demo9 Module Extension">
+
+    <module id="GCDemo9_TS_T00D0M0I0R0"
+            label="GCDemo9_TS_T00D0M0I0R0"
+            mandatory="false"
+            allowMultiple="false"
+            description="Description here"
+            copyright="(c) Elektrobit Automotive"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            relVersionMajor="2"
+            relVersionMinor="1"
+            relVersionPatch="0"
+            categoryType="GCDemo9"
+            categoryLayer="Examples"
+            categoryCategory="Demo"
+            categoryComponent="ECUC">
+       <ecuType target="Demo" derivate="GuidedConfig"/>
+    </module>
+   </extension>
+
+   <!--
+    extension point defining the schema and data structure of the module
+   -->
+   <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+              id="GCDemo9_TS_T00D0M0I0R0ConfExt"
+              name="GCDemo9_TS_T00D0M0I0R0 Config Extension">
+       <configuration moduleId="GCDemo9_TS_T00D0M0I0R0">
+
+         <!-- schema definition -->
+           <schema>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+               <resource value="config/GCDemo9_TS_T00D0M0I0R0.xdm"
+                         type="xdm"/>
+           </schema>
+
+           <!-- data definition -->
+           <data>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+               <schemaNode path="ASPath:/TS_T00D0M0I0R0/GCDemo9"/>
+           </data>
+
+           <!-- generic editor definition -->
+           <editor id="GCDemo9_TS_T00D0M0I0R0Editor"
+                   label="GCDemo9_TS_T00D0M0I0R0"
+                   tooltip="Editor for the GCDemo9_TS_T00D0M0I0R0Editor module">
+               <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+                 <parameter name="schema" value="ASPath:/TS_T00D0M0I0R0/GCDemo9"/>
+                 <parameter name="title" value="GCDemo9_TS_T00D0M0I0R0Editor editor"/>
+               </class>
+           </editor>
+       </configuration>
+   </extension>
+  
+  <extension
+         point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+      <guidedconfigwizard id="guidedDemo9">
+          <gui class="dreisoft.tresos.guidedconfig.demo9.Demo9Page"/>
+          <backend class="dreisoft.tresos.guidedconfig.demo9.Demo9Backend" />
+      </guidedconfigwizard>
+  </extension>
+  
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.trigger">
+     <trigger>
+       <sidebar
+              categoryId="Demos"
+              id="guidedDemo9"
+              wizardId="guidedDemo9"
+              wizardType="editor">
+              <!-- restrict visibility:
+                  wizard is only visible if a loaded project with target="Demo" is selected AND
+                  an enabled module of type="GCDemo9" is added to the project.
+               -->
+           <visibility>
+              <and>
+                 <with variable="ECUConfigContext.target">
+                    <equals value="Demo"/>
+                 </with>
+                 <with variable="ECUConfigContext.moduleType.GCDemo9">
+                    <equals value="true"/>
+                 </with>
+              </and>
+           </visibility>
+           <display
+                 label="Demo9 Standalone Editor"
+                 tooltip="Demo9 Standalone Editor">
+           </display>
+        </sidebar>
+     </trigger>
+  </extension>
+
+
+<!-- properties view which shows sub-items of the tree widget on the guided configuration page--> 
+  <extension
+          id="TreePropertiesView"
+          name="TreePropertiesView"
+          point="org.eclipse.ui.views">
+    <view
+    	  id="dreisoft.tresos.guidedconfig.demo9.TreePropertiesView"
+          allowMultiple="false"
+          category="dreisoft.tresos"
+          class="dreisoft.tresos.guidedconfig.demo9.TreePropertiesView"
+          name="TreePropertiesView"/>
+  </extension>
+</plugin>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+
+    <mainFunction name="EthSM_MainFunction">
+        <header value="EthSM.h" />
+      <cycleTime type="XPATH" value="as:modconf('EthSM')[1]/EthSMGeneral/EthSMMainFunctionPeriod"/>
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150"/>
+        <callBefore>
+          <mainFunction>EthIf_MainFunctionRx</mainFunction>
+          <mainFunction>TcpIp_MainFunction</mainFunction>
+        </callBefore>
+        <callAfter></callAfter>
+    </mainFunction>
+</schm:mainFunctions>

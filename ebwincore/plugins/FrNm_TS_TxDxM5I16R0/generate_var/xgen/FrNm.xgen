@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module FrNm?>
+
+<!-- !LINKSTO FrNm.Format.VCC-62,1 -->
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!AUTOSPACING!]
+[!VAR "FRNM_PDU_SCHEDULE_VARIANT_1"="1"!]
+[!VAR "FRNM_PDU_SCHEDULE_VARIANT_2"="2"!]
+[!VAR "FRNM_PDU_SCHEDULE_VARIANT_3"="3"!]
+[!VAR "FRNM_PDU_SCHEDULE_VARIANT_4"="4"!]
+[!VAR "FRNM_PDU_SCHEDULE_VARIANT_5"="5"!]
+[!VAR "FRNM_PDU_SCHEDULE_VARIANT_6"="6"!]
+[!VAR "FRNM_PDU_SCHEDULE_VARIANT_7"="7"!]
+[!VAR "FRNM_CONTROL_BIT_VECTOR"="num:hextoint('0x08')"!]
+[!VAR "FRNM_REPEAT_MESSAGE_BIT"="num:hextoint('0x10')"!]
+[!VAR "FRNM_SYNCH_POINT_ENABLED"="num:hextoint('0x20')"!]
+[!VAR "FRNM_VOTE_INHIBITION_ENABLED"="num:hextoint('0x40')"!]
+[!VAR "FRNM_NM_DATA_ENABLED"="num:hextoint('0x80')"!]
+
+[!INCLUDE "../../generate_macros/FrNm_Checks.m"!][!//
+[!MACRO "FrNm_GetFrIfTxPduId", "TxPduRef"!][!"num:i(as:modconf('FrIf')[1]/FrIfConfig/*/FrIfPdu/*/FrIfPduDirection[FrIfTxPduRef = $TxPduRef]/FrIfTxPduId)"!][!ENDMACRO!]
+[!VAR "FrNmNumberOfRxPdus"="num:i(count(FrNmChannelConfig/*/FrNmChannel/*/FrNmChannelIdentifiers/FrNmRxPdu/*))"!]
+[!VAR "FrNmNumberOfTxPdus"="num:i(count(FrNmChannelConfig/*/FrNmChannel/*/FrNmChannelIdentifiers/FrNmTxPdu/*))"!]
+[!VAR "FrNmChannelCount"="num:i(count(FrNmChannelConfig/*[1]/FrNmChannel/*))"!]
+[!IF "FrNmGeneral/FrNmPnSupported = 'true'"!]
+  [!VAR "FrNmPnInfoLength"="num:i(FrNmGlobalConfig/FrNmGlobalFeatures/FrNmPnInfo/FrNmPnInfoLength)"!]
+  [!VAR "FrNmPnEIRATimerSize"="num:i($FrNmPnInfoLength * 8)"!]
+[!ENDIF!]
+
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "FRNM_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "FRNM_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat(name(as:modconf('FrNm')[1]/FrNmChannelConfig/*[1]),'_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="name(as:modconf('FrNm')[1]/FrNmChannelConfig/*[1])"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+<!-- !LINKSTO FrNm.EB.PBSelectable.FileName,1 -->
+*/!][!VAR "FRNM_PBCFG_C_VARIANT"="concat('FrNm',$FRNM_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "FRNM_PBCFG_H_VARIANT"="concat('FrNm',$FRNM_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "FRNM_CONFIG_LAYOUT_VARIANT"="concat('FrNm',$FRNM_VARIANT_SUFIX,'ConfigLayout')"!]
+<!-- !LINKSTO FrNm.EB.PBSelectable.TypeName,1 -->
+[!/* Current Config Type variant based
+*/!][!VAR "FRNM_CONFIGLAYOUTTYPE_VARIANT"="concat('FrNm',$FRNM_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "FRNM_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('FrNm',$FRNM_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+
+
+[!CODE!]
+
+  <!-- This is the configuration of module FrNm -->
+  <module name="FrNm" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+[!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+      <?artifact directory="include" file="FrNm_Types.h" type="types-h" generate="yes"?>
+[!ELSE!]
+      <?artifact directory="include" file="FrNm_Types.h" type="types-h" generate="no"?>
+[!ENDIF!]
+<!-- !LINKSTO FrNm.Impl.Relocatable,1 -->
+[!VAR "relocatable" = "'false'"!]
+[!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('FrNm')) = 'true'"!]
+  [!IF "(node:exists(as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable)) and (as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true')"!]
+    [!VAR "relocatable" = "'true'"!]
+  [!ENDIF!]
+[!ELSE!]
+    [!IF "FrNmGeneral/FrNmRelocatablePbcfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+    [!ENDIF!]
+[!ENDIF!]
+
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <!-- This is the type definition of the root structure -->
+      <type name="FrNm_ConfigType">
+        <struct>
+          <!-- !LINKSTO FrNm.Impl.Hash,1 -->
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform"/>
+          <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration"/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration"/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate Public information"/>
+          <member name="FrNm_ChannelData" type="FrNm_ChannelDataType" count="[!"$FrNmChannelCount"!]" comment="FrNm_ChannelData"/>
+          <member name="BufferOffsets" type="uint32" count="[!"$FrNmChannelCount"!]" comment="Array BufferOffsets holds the offsets of the start for each RX buffer"/>
+[!IF "as:modconf('FrNm')[1]/FrNmGlobalConfig/FrNmGlobalFeatures/FrNmPassiveModeEnabled = 'false'"!]
+          <member name="TxBufferOffset" type="uint32" comment="Constant TxBufferOffset holds the offset where the TX buffers start"/>
+[!ENDIF!]
+          <member name="PbRequiredCfgRamSize" type="uint32" comment="Buffer size needed by TX and RX pdus"/>
+          <member name="RxPduMap" type="FrNm_PduType" count="[!"$FrNmNumberOfRxPdus"!]" comment="Mapping between RxPdus to PduType and Cluster"/>
+[!IF "num:i(count(FrNmChannelConfig/*/FrNmChannel/*/FrNmChannelIdentifiers/FrNmTxPdu/*)) !=0"!]
+          <member name="TxPduMap" type="FrNm_TxPduType" count="[!"$FrNmNumberOfTxPdus"!]" comment="Mapping between TxPdus to PduType and Cluster"/>
+[!ENDIF!]
+[!IF "FrNmGeneral/FrNmPnSupported = 'true'"!]
+          <member name="PnFilterMask" type="uint8" count="[!"$FrNmPnInfoLength"!]" comment="PnFilterMask"/>
+[!IF "(FrNmGlobalConfig/FrNmGlobalFeatures/FrNmPnEiraCalcEnabled = 'true') or ((count(as:modconf('FrNm')[1]/FrNmChannelConfig/*/FrNmChannel/*[FrNmChannelIdentifiers/FrNmPnEraCalcEnabled = 'true']))>0)"!]
+          <member name="EiraTimerMap" type="uint8" count="[!"$FrNmPnEIRATimerSize"!]" comment="Mapping between PN Index and EIRA timer array"/>
+[!ENDIF!]
+[!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="FrNm_TxPduType">
+        <struct>
+          <member name="PduLength" type="PduLengthType" comment="PDU length defined by EcuC"/>
+          <member name="TxPduId" type="PduIdType" comment="PDU ID defined by FrIf"/>
+          <member name="TxConfPduId" type="PduIdType" comment="Tx Confirmation PduId"/>
+          <member name="PduType" type="uint8" comment="Type of PDU (vote or data or mixed)"/>
+          <member name="ChannelHandle" type="uint8" comment="Cluster ID for this PDU "/>
+        </struct>
+      </type>
+
+      <type name="FrNm_PduType">
+        <struct>
+          <member name="PduType" type="uint8" comment="Type of PDU (vote or data)"/>
+          <member name="ChannelHandle" type="uint8" comment="Cluster ID for this PDU"/>
+        </struct>
+      </type>
+
+      <type name="FrNm_ChannelDataType">
+        <struct>
+[!IF "FrNmGlobalConfig/FrNmGlobalFeatures/FrNmComUserDataSupport = 'true'"!]
+          <member name="UserDataPduLength" type="PduLengthType" comment="Length of FrNm data PDU in units of bytes"/>
+[!ENDIF!]
+          <member name="PduLength" type="PduLengthType" comment="Length of FrNm data PDU in units of bytes"/>
+          <member name="MsgTimeoutTime" type="uint16" comment="Timeout for the transmission of an FrNm PDU in units of communication cycles"/>
+          <member name="TxVotePduId" type="PduIdType" count="4" comment="Array of TX PDU for Nm vote (with or without Nm data) for a cluster"/>
+          <member name="TxDataPduId" type="PduIdType" count="4" comment="Array of TX PDU for Nm data which doesn't contain vote"/>
+[!IF "FrNmGlobalConfig/FrNmGlobalFeatures/FrNmComUserDataSupport = 'true'"!]
+          <member name="ComUserTxConfPduId" type="PduIdType" comment="Tx Confirmation PduId for Com user data defined by EcuC"/>
+          <member name="ComUserRxPduId" type="PduIdType" comment="Reference to the NM User Data I-PDU in the global PDU collection"/>
+[!ENDIF!]
+[!IF "count(as:modconf('FrNm')[1]/FrNmChannelConfig/*/FrNmChannel/*[FrNmChannelIdentifiers/FrNmSourceNodeIdentifierEnabled = 'true']) > 0"!]
+          <member name="NodeId" type="uint8" comment="NM node identifier"/>
+[!ENDIF!]
+          <member name="NoOfTxVotePdus" type="uint8" comment="Number of vote with or without data TX N-PDUs"/>
+          <member name="NoOfTxDataPdus" type="uint8" comment="Number of data TX N-PDUs"/>
+          <member name="ChannelProperty" type="uint8" comment="ScheduleVariant(0-2), Cbv(3), ReptMessageBit(4), SynchEnabled(5), VoteInhibition(6), Nm Data(7)"/>
+          <member name="CtrlIdx" type="uint8" comment="Index of the first controller for the cluster referenced by this channel"/>
+[!IF "FrNmGeneral/FrNmPnSupported = 'true'"!]
+          <member name="PnEnabled" type="boolean" comment="PnEnabled configuration for each channel"/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <!-- !LINKSTO FRNM064_Refine,1, FrNm.Format.C,1 -->
+      <?artifact directory="include" file="[!"$FRNM_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$FRNM_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of FrNm_Pbcfg.h and FrNm_Types.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+      <type name="[!"$FRNM_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="FrNm_ConfigType"/>
+        </struct>
+      </type>
+
+      <type name="[!"$FRNM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$FRNM_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="FRNM_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialisation:
+          Specifies the content of FrNm_Pbcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="[!"$FRNM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+                name="[!"$FRNM_CONFIG_LAYOUT_VARIANT"!]">
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+
+        <!-- FrNm_ConfigType -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('FrNm')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('FrNm')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('FrNm')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('FrNm')[1]/CommonPublishedInformation/Release))"!]</int>
+          </field>
+          <field>
+[!SELECT "FrNmChannelConfig/*[1]"!]
+[!LOOP "node:order(FrNmChannel/*, 'node:value(node:ref(FrNmChannelIdentifiers/FrNmChannelHandle)/FrIfClstIdx)')"!]
+            <field>
+[!IF "as:modconf('FrNm')[1]/FrNmGlobalConfig/FrNmGlobalFeatures/FrNmComUserDataSupport = 'true'"!]
+              <field>
+                <int>[!//
+[!IF "node:exists(FrNmChannelIdentifiers/FrNmUserDataTxPdu)"!][!//
+ [!"num:i(as:ref(FrNmChannelIdentifiers/FrNmUserDataTxPdu/FrNmTxUserDataPduRef)/PduLength)"!][!//
+[!ELSE!][!//
+ 0[!//
+[!ENDIF!][!//
+                </int>
+              </field> <!-- UserDataPduLength -->
+[!ENDIF!]
+              <field>
+[!SELECT "FrNmChannelIdentifiers"!]
+                <int>[!//
+[!VAR "RxPduLength" = "num:max(node:refs(FrNmRxPdu/*/FrNmRxPduRef)/PduLength)"!]
+[!VAR "TxPduLength" = "0"!]
+[!IF "num:i(count(FrNmTxPdu/*)) !=0"!]
+[!VAR "TxPduLength" = "num:max(node:refs(FrNmTxPdu/*/FrNmTxPduRef)/PduLength)"!]
+[!ENDIF!]
+[!IF "$RxPduLength > $TxPduLength"!][!//
+[!"num:i($RxPduLength)"!][!//
+[!ELSE!][!//
+[!"num:i($TxPduLength)"!][!//
+[!ENDIF!]</int>
+[!ENDSELECT!]
+              </field> <!-- PduLength -->
+              <field>
+                <int>[!"num:i((FrNmChannelTiming/FrNmMsgTimeoutTime * 1000) div (FrNmChannelTiming/FrNmMainFunctionPeriod * 1000))"!]</int>
+              </field> <!-- MsgTimeoutTime -->
+              <field>
+[!// Loop through all Tx Pdu's that contain votes
+[!LOOP "FrNmChannelIdentifiers/FrNmTxPdu/*"!][!//
+[!IF "FrNmTxPduContainsVote = 'true'"!][!//
+                <field><int>[!CALL "FrNm_GetFrIfTxPduId","TxPduRef" = "FrNmTxPduRef"!]</int></field>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!// Insert invalid id's for the rest of Tx Pdu's that are not configured for vote or do not exist
+[!VAR "VoteTxPduCount"="num:i(count(FrNmChannelIdentifiers/FrNmTxPdu/*[FrNmTxPduContainsVote = 'true']))"!]
+[!FOR "i" = "1" TO "4 - $VoteTxPduCount"!][!//
+                <field><int>255</int></field>
+[!ENDFOR!][!//
+              </field> <!-- TxVotePduId -->
+              <field>
+[!// Loop through all Tx Pdu's that contain data but not votes
+[!LOOP "FrNmChannelIdentifiers/FrNmTxPdu/*"!][!//
+[!IF "(FrNmTxPduContainsData = 'true') and (FrNmTxPduContainsVote = 'false')"!][!//
+                <field><int>[!CALL "FrNm_GetFrIfTxPduId","TxPduRef" = "FrNmTxPduRef"!]</int></field>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+[!VAR "DataTxPduCount"="num:i(count(FrNmChannelIdentifiers/FrNmTxPdu/*[(FrNmTxPduContainsData = 'true') and (FrNmTxPduContainsVote='false')]))"!]
+[!FOR "i" = "1" TO "4 - $DataTxPduCount"!][!//
+                <field><int>255</int></field>
+[!ENDFOR!][!//
+              </field> <!-- TxDataPduId -->
+[!IF "as:modconf('FrNm')[1]/FrNmGlobalConfig/FrNmGlobalFeatures/FrNmComUserDataSupport = 'true'"!]
+              <field>
+                <int>[!//
+[!IF "node:exists(FrNmChannelIdentifiers/FrNmUserDataTxPdu)"!][!/*
+  */!][!"num:i(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef=node:current()/FrNmChannelIdentifiers/FrNmUserDataTxPdu/FrNmTxUserDataPduRef]/PduRDestPduHandleId)"!][!//
+[!ELSE!][!/*
+  */!]0[!//
+[!ENDIF!]</int>
+              </field> <!-- ComUserTxConfPduId -->
+              <field>
+                <int>[!//
+[!IF "node:exists(FrNmChannelIdentifiers/FrNmRxUserDataPduRef)"!][!/*
+  */!][!"num:i(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRSrcPdu[PduRSrcPduRef=node:current()/FrNmChannelIdentifiers/FrNmUserDataRxPdu/FrNmRxUserDataPduRef]/PduRSourcePduHandleId"!][!//
+[!ELSE!][!/*
+  */!]0[!//
+[!ENDIF!]</int>
+              </field> <!-- ComUserRxPduId -->
+[!ENDIF!][!// as:modconf('FrNm')[1]/FrNmGlobalConfig/FrNmGlobalFeatures/FrNmComUserDataSupport = 'true'
+[!IF "count(as:modconf('FrNm')[1]/FrNmChannelConfig/*/FrNmChannel/*[FrNmChannelIdentifiers/FrNmSourceNodeIdentifierEnabled = 'true']) > 0"!]
+[!IF "FrNmChannelIdentifiers/FrNmSourceNodeIdentifierEnabled = 'true'"!]
+              <field>
+                <int>[!"num:i(FrNmChannelIdentifiers/FrNmNodeId)"!]</int>
+              </field> <!-- NodeId -->
+[!ELSE!]
+              <field>
+                <int>255</int>
+              </field> <!-- NodeId -->
+[!ENDIF!]
+[!ENDIF!] [!//
+              <field>
+                <int>[!"$VoteTxPduCount"!]</int>
+              </field> <!-- NoOfTxVotePdus -->
+              <field>
+                <int>[!"$DataTxPduCount"!]</int>
+              </field> <!-- NoOfTxDataPdus -->
+              <field>
+[!SELECT "FrNmChannelIdentifiers"!]
+[!VAR "CHANNEL_PROPERTY"="num:i(0)"!]
+[!IF "FrNmPduScheduleVariant = 'FRNM_PDU_SCHEDULE_VARIANT_1'"!]
+[!VAR "CHANNEL_PROPERTY"="num:i($FRNM_PDU_SCHEDULE_VARIANT_1)"!]
+[!ENDIF!]
+[!IF "FrNmPduScheduleVariant = 'FRNM_PDU_SCHEDULE_VARIANT_2'"!]
+[!VAR "CHANNEL_PROPERTY"="num:i($FRNM_PDU_SCHEDULE_VARIANT_2)"!]
+[!ENDIF!]
+<!-- Schedule variant 3 is not allowed-->
+[!IF "FrNmPduScheduleVariant = 'FRNM_PDU_SCHEDULE_VARIANT_4'"!]
+[!VAR "CHANNEL_PROPERTY"="num:i($FRNM_PDU_SCHEDULE_VARIANT_4)"!]
+[!ENDIF!]
+<!-- Schedule variant 5 is not allowed-->
+[!IF "FrNmPduScheduleVariant = 'FRNM_PDU_SCHEDULE_VARIANT_6'"!]
+[!VAR "CHANNEL_PROPERTY"="num:i($FRNM_PDU_SCHEDULE_VARIANT_6)"!]
+[!ENDIF!]
+[!IF "FrNmPduScheduleVariant = 'FRNM_PDU_SCHEDULE_VARIANT_7'"!]
+[!VAR "CHANNEL_PROPERTY"="num:i($FRNM_PDU_SCHEDULE_VARIANT_7)"!]
+[!ENDIF!]
+[!IF "FrNmControlBitVectorActive = 'true'"!]
+[!VAR "CHANNEL_PROPERTY"="num:i($CHANNEL_PROPERTY + $FRNM_CONTROL_BIT_VECTOR)"!]
+[!ENDIF!]
+[!IF "FrNmRepeatMessageBitActive = 'true'"!]
+[!VAR "CHANNEL_PROPERTY"="num:i($CHANNEL_PROPERTY + $FRNM_REPEAT_MESSAGE_BIT)"!]
+[!ENDIF!]
+[!IF "FrNmSynchronizationPointEnabled = 'true'"!]
+[!VAR "CHANNEL_PROPERTY"="num:i($CHANNEL_PROPERTY + $FRNM_SYNCH_POINT_ENABLED)"!]
+[!ENDIF!]
+[!IF "../FrNmChannelTiming/FrNmVoteInhibitionEnabled = 'true'"!]
+[!VAR "CHANNEL_PROPERTY"="num:i($CHANNEL_PROPERTY + $FRNM_VOTE_INHIBITION_ENABLED)"!]
+[!ENDIF!]
+[!IF "num:i(count(FrNmTxPdu/*[FrNmTxPduContainsData = 'true'])) != 0"!]
+[!VAR "CHANNEL_PROPERTY"="num:i($CHANNEL_PROPERTY + $FRNM_NM_DATA_ENABLED)"!]
+[!ENDIF!]
+[!ENDSELECT!]
+                <int>[!"$CHANNEL_PROPERTY"!]</int>
+              </field> <!-- ChannelProperty -->
+              <field>
+                <int>[!"num:i(node:value(node:ref(FrNmChannelIdentifiers/FrNmChannelHandle)/FrIfController/*[1]/FrIfCtrlIdx))"!]</int>
+              </field> <!-- CtrlIdx -->
+[!IF "as:modconf('FrNm')[1]/FrNmGeneral/FrNmPnSupported = 'true'"!]
+              <field>
+                <int>[!//
+[!IF "FrNmChannelIdentifiers/FrNmPnEnabled = 'true'"!][!/*
+  */!]1[!//
+[!ELSE!][!/*
+  */!]0[!//
+[!ENDIF!]</int>
+              </field> <!-- PnEnabled -->
+[!ENDIF!][!// as:modconf('FrNm')[1]/FrNmGeneral/FrNmPnSupported = 'true'
+            </field>
+[!ENDLOOP!]
+[!ENDSELECT!]
+          </field> <!-- FrNm_ChannelData -->
+[!VAR "Offset" = "0"!][!//
+          <field>
+[!LOOP "node:order(as:modconf('FrNm')[1]/FrNmChannelConfig/*/FrNmChannel/*, 'node:value(node:ref(FrNmChannelIdentifiers/FrNmChannelHandle)/FrIfClstIdx)')"!]
+            <field>
+              <int>[!"num:i($Offset)"!]</int>
+  [!VAR "FrNmMaxPduLength" = "0"!]
+  [!LOOP "FrNmChannelIdentifiers/FrNmRxPdu/*"!]
+    [!IF "node:ref(FrNmRxPduRef)/PduLength > FrNmMaxPduLength"!]
+       [!VAR "FrNmMaxPduLength" = "node:ref(FrNmRxPduRef)/PduLength"!]
+    [!ENDIF!]
+  [!ENDLOOP!]
+  [!VAR "Offset" = "$Offset + $FrNmMaxPduLength"!]
+            </field>
+[!ENDLOOP!]
+          </field> <!-- BufferOffsets -->
+[!IF "as:modconf('FrNm')[1]/FrNmGlobalConfig/FrNmGlobalFeatures/FrNmPassiveModeEnabled = 'false'"!]
+          <field>
+            <int>[!"num:i($Offset)"!]</int>
+          </field>  <!-- TxBufferOffset -->
+[!ENDIF!]
+[!VAR "CalculatedPbRamSize" = "0"!][!//
+[!LOOP "node:order(as:modconf('FrNm')[1]/FrNmChannelConfig/*/FrNmChannel/*, 'node:value(node:ref(FrNmChannelIdentifiers/FrNmChannelHandle)/FrIfClstIdx)')"!]
+  [!VAR "FrNmMaxPduLength" = "0"!]
+  [!LOOP "FrNmChannelIdentifiers/FrNmRxPdu/*"!]
+    [!IF "node:ref(FrNmRxPduRef)/PduLength > FrNmMaxPduLength"!]
+       [!VAR "FrNmMaxPduLength" = "node:ref(FrNmRxPduRef)/PduLength"!]
+    [!ENDIF!]
+  [!ENDLOOP!]
+  [!VAR "CalculatedPbRamSize" = "$CalculatedPbRamSize + $FrNmMaxPduLength"!]
+[!ENDLOOP!]
+[!IF "as:modconf('FrNm')[1]/FrNmGlobalConfig/FrNmGlobalFeatures/FrNmPassiveModeEnabled = 'false'"!]
+  [!VAR "CalculatedPbRamSize" = "$CalculatedPbRamSize * 2"!]
+[!ENDIF!]
+          <field>
+            <int>[!"num:i($CalculatedPbRamSize)"!]</int>
+          </field>  <!-- PbRequiredCfgRamSize-->
+          <field>
+[!LOOP "node:order(FrNmChannelConfig/*/FrNmChannel/*/FrNmChannelIdentifiers/FrNmRxPdu/*, 'FrNmRxPduId')"!][!//
+            <field>
+              <field><int>[!//
+[!IF "FrNmRxPduContainsData = 'true'"!][!//
+[!IF "FrNmRxPduContainsVote = 'true'"!][!//
+2</int></field>[!// FRNM_MIXED
+[!ELSE!][!//
+1</int></field>[!// FRNM_DATA
+[!ENDIF!][!// FrNmRxPduContainsVote = 'true'
+[!ELSE!][!//
+0</int></field>[!// FRNM_VOTE
+[!ENDIF!][!// FrNmRxPduContainsData = 'true'
+              <field><int>[!"num:i(as:ref(../../FrNmChannelHandle)/FrIfClstIdx)"!]</int></field>
+            </field>
+[!ENDLOOP!]
+          </field> <!-- RxPduMap -->
+[!IF "num:i(count(FrNmChannelConfig/*/FrNmChannel/*/FrNmChannelIdentifiers/FrNmTxPdu/*)) !=0"!]
+          <field>
+[!LOOP "node:order(FrNmChannelConfig/*/FrNmChannel/*/FrNmChannelIdentifiers/FrNmTxPdu/*, 'FrNmTxConfirmationPduId')"!]
+            <field>
+              <field><int>[!"num:i(as:ref(FrNmTxPduRef)/PduLength)"!]</int></field>
+              <field><int>[!CALL "FrNm_GetFrIfTxPduId","TxPduRef" = "FrNmTxPduRef"!]</int></field>
+              <field><int>[!"FrNmTxConfirmationPduId"!]</int></field>
+              <field><int>[!//
+[!IF "FrNmTxPduContainsData = 'true'"!][!//
+[!IF "FrNmTxPduContainsVote = 'true'"!][!//
+2</int></field>[!// FRNM_MIXED
+[!ELSE!][!//
+1</int></field>[!// FRNM_DATA
+[!ENDIF!][!// FrNmTxPduContainsData = 'true'
+[!ELSE!][!//
+0</int></field>[!// FRNM_VOTE
+[!ENDIF!][!// FrNmTxPduContainsVote = 'true'
+              <field><int>[!"num:i(as:ref(../../FrNmChannelHandle)/FrIfClstIdx)"!]</int></field>
+            </field>
+[!ENDLOOP!]
+          </field> <!-- TxPduMap -->
+[!ENDIF!][!// num:i(count(FrNmChannelConfig/*/FrNmChannel/*/FrNmChannelIdentifiers/FrNmTxPdu/*)) !=0
+[!IF "FrNmGeneral/FrNmPnSupported = 'true'"!]
+          <field>
+[!SELECT "FrNmGlobalConfig/FrNmGlobalFeatures/FrNmPnInfo"!]
+  [!FOR "bytePos"="0" TO "FrNmPnInfoLength - 1"!]
+            <field>
+              <int>[!"num:i(FrNmPnFilterMaskByte/*[FrNmPnFilterMaskByteIndex = $bytePos]/FrNmPnFilterMaskByteValue)"!]</int>
+            </field>
+  [!ENDFOR!]
+[!ENDSELECT!]
+          </field> <!-- PnFilterMask -->
+[!IF "(FrNmGlobalConfig/FrNmGlobalFeatures/FrNmPnEiraCalcEnabled = 'true') or ((count(as:modconf('FrNm')[1]/FrNmChannelConfig/*/FrNmChannel/*[FrNmChannelIdentifiers/FrNmPnEraCalcEnabled = 'true']))>0)"!]
+          <field>
+[!VAR "Index" = "0"!]
+[!LOOP "FrNmGlobalConfig/FrNmGlobalFeatures/FrNmPnInfo/FrNmPnFilterMaskByte/*"!]
+  [!FOR "BitPos" = "0" TO "7"!]
+            <field>
+              <int>[!//
+[!IF "bit:getbit(node:value(./FrNmPnFilterMaskByteValue), $BitPos) = 'true' "!][!//
+[!"num:i($Index)"!][!//
+[!VAR "Index" = "$Index + 1"!][!//
+[!ELSE!][!//
+255[!//
+[!ENDIF!]</int>
+            </field>
+  [!ENDFOR!]
+[!ENDLOOP!]
+          </field> <!-- EiraTimerMap -->
+[!ENDIF!]
+[!ENDIF!]
+        </field> <!-- FrNm_ConfigType -->
+
+      </instance> <!-- FrNm_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <!-- The xpointer atribute should rather be something like "xpointer(//module[name='...'])",
+       but unfortunately our XML parser does not support the XPointer xpointer() Scheme.
+       This is also the reason why all these xincludes must be at the end of the file rather
+       than at the beginning, because that way the other xgen files that include this one can
+       be sure that "element(/1/1)" is the FrNm module element.
+  -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>
+
+[!ENDCODE!]

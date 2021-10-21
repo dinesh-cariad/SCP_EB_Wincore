@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>dev.Ea.IntegrationRestrictions</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      Integration restriction and recommendation.
+
+      The EB memory stack modules NvM, Ea and Fee make only limited
+      use of the callback calls from their underlying modules.
+      During the integration make sure that the NvM, Ea,
+      and Fee main functions are only called from the same task
+      context so that they cannot preempt each other.
+
+      The configuration parameter <code>EaPollingMode</code> is only used for
+      controlling the availability of callback functions. The
+      module operates as if polling mode is always selected. The
+      callback functions <code>Ea_JobEndNotification()</code> and
+      <code>Ea_JobErrorNotification()</code> can be called but will
+      have no effect.
+      </description>
+      <rationale> 
+      This approach enables a simple and lock-free implementation
+      resulting in smaller code.
+      </rationale>
+      
+    </specobject>
+  </specobjects>
+</specdocument>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+[!AUTOSPACING!][!//
+<AUTOSAR xmlns="http://autosar.org/3.2.2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/3.2.2 AUTOSAR_STRICT_COMPACT.xsd">
+[!IF "WdgMGeneral/WdgMServiceAPI/WdgMDefaultASRServiceAPI = 'AUTOSAR_32'"!][!//
+[!VAR "bswModuleEntryPackageName" = "'SwServices'"!][!//
+[!ELSE!][!//
+[!VAR "bswModuleEntryPackageName" = "'BswModuleEntrys'"!][!//
+[!ENDIF!][!//
+  <TOP-LEVEL-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_WdgM</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleDescriptions</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-DESCRIPTION>
+              <SHORT-NAME>WdgM</SHORT-NAME>
+              <MODULE-ID>13</MODULE-ID>
+              <PROVIDED-ENTRY-REFS>
+                <PROVIDED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_WdgM/[!"$bswModuleEntryPackageName"!]/WdgM_MainFunction</PROVIDED-ENTRY-REF>
+              </PROVIDED-ENTRY-REFS>
+            </BSW-MODULE-DESCRIPTION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>InternalBehaviors</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-BEHAVIOR>
+              <SHORT-NAME>InternalBehavior_0</SHORT-NAME>
+              <ENTITYS>
+[!// <!-- !LINKSTO WDGM.EB.BSWMDGeneration_2,1 -->
+                <BSW-SCHEDULABLE-ENTITY>
+                  <SHORT-NAME>WdgM_MainFunction</SHORT-NAME>
+                  <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_WdgM/[!"$bswModuleEntryPackageName"!]/WdgM_MainFunction</IMPLEMENTED-ENTRY-REF>
+                </BSW-SCHEDULABLE-ENTITY>
+              </ENTITYS>
+              <EVENTS>
+                <BSW-CYCLIC-EVENT>
+                  <SHORT-NAME>TimingEvent_MainFunction</SHORT-NAME>
+                  <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_WdgM/InternalBehaviors/InternalBehavior_0/WdgM_MainFunction</STARTS-ON-EVENT-REF>
+                  <CYCLE-TIME>[!"num:f(WdgMConfigSet/*[1]/WdgMMode/*[1]/WdgMSupervisionCycle)"!]</CYCLE-TIME>
+                </BSW-CYCLIC-EVENT>
+              </EVENTS>
+              <MODULE-REF DEST="BSW-MODULE-DESCRIPTION">/AUTOSAR_WdgM/BswModuleDescriptions/WdgM</MODULE-REF>
+            </BSW-BEHAVIOR>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>[!"$bswModuleEntryPackageName"!]</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>WdgM_MainFunction</SHORT-NAME>
+              <SW-SERVICE-PROPS>
+                <SW-IMPL-POLICY>STANDARD</SW-IMPL-POLICY>
+              </SW-SERVICE-PROPS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <SERVICE-ID>8</SERVICE-ID>
+            </BSW-MODULE-ENTRY>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_WdgM</SHORT-NAME>
+      <SUB-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Implementations</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_0</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>WdgMHeaderFiles</SHORT-NAME>
+                  <TYPE>SRC</TYPE>
+                  <XFILES>
+                    <XFILE>
+                      <SHORT-NAME>Autosar_include_WdgM_h</SHORT-NAME>
+                      <URL>Autosar/include/WdgM.h</URL>
+                    </XFILE>
+                    <XFILE>
+                      <SHORT-NAME>Autosar_include_WdgM_BSW_Lcfg_h</SHORT-NAME>
+                      <URL>Autosar/include/WdgM_BSW_Lcfg.h</URL>
+                    </XFILE>
+                    <XFILE>
+                      <SHORT-NAME>Autosar_include_WdgM_Int_h</SHORT-NAME>
+                      <URL>Autosar/include/WdgM_Int.h</URL>
+                    </XFILE>
+                    <XFILE>
+                      <SHORT-NAME>Autosar_include_WdgM_Trace_Stc_h</SHORT-NAME>
+                      <URL>Autosar/include/WdgM_Trace_Stc.h</URL>
+                    </XFILE>
+                    <XFILE>
+                      <SHORT-NAME>Autosar_include_WdgM_Version_h</SHORT-NAME>
+                      <URL>Autosar/include/WdgM_Version.h</URL>
+                    </XFILE>
+                  </XFILES>
+                </CODE>
+                <CODE>
+                  <SHORT-NAME>WdgMSourceFiles</SHORT-NAME>
+                  <TYPE>SRC</TYPE>
+                  <XFILES>
+                    <XFILE>
+                      <SHORT-NAME>Autosar_src_WdgM_c</SHORT-NAME>
+                      <URL>Autosar/src/WdgM.c</URL>
+                    </XFILE>
+                  </XFILES>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>Resources</SHORT-NAME>
+                <OBJECT-FILE-SECTIONS>
+                  <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <ALIGNMENT>1</ALIGNMENT>
+                    <SECTION-NAME>CODE</SECTION-NAME>
+                    <SECTION-TYPE>CODE</SECTION-TYPE>
+                    <SIZE>0</SIZE>
+                    <SW-ADDR-METHOD-REFS>
+                      <SW-ADDR-METHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDR-METHOD-REF>
+                    </SW-ADDR-METHOD-REFS>
+                  </MEMORY-SECTION>
+                </OBJECT-FILE-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-MAJOR-VERSION>6</SW-MAJOR-VERSION>
+              <SW-MINOR-VERSION>1</SW-MINOR-VERSION>
+              <SW-PATCH-VERSION>39</SW-PATCH-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <AR-MAJOR-VERSION>4</AR-MAJOR-VERSION>
+              <AR-MINOR-VERSION>0</AR-MINOR-VERSION>
+              <AR-PATCH-VERSION>3</AR-PATCH-VERSION>
+              <BEHAVIOR-REF DEST="BSW-BEHAVIOR">/AUTOSAR_WdgM/InternalBehaviors/InternalBehavior_0</BEHAVIOR-REF>
+              <VENDOR-API-INFIX></VENDOR-API-INFIX>
+            </BSW-IMPLEMENTATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </SUB-PACKAGES>
+    </AR-PACKAGE>
+  </TOP-LEVEL-PACKAGES>
+</AUTOSAR>

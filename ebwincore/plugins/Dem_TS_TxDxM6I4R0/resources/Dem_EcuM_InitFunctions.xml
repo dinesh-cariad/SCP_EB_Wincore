@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ecum:initFunctions
+    xmlns:ecum="http://www.tresos.de/_project/AutoCore/ecum.initFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/ecum.initFunctions_1.xsd">
+
+    <initFunction name="Dem_PreInit">
+        <moduleId value="Dem" />
+        <service value="PreInit" />
+
+        <!-- Dem_PreInit() now has a config pointer as parameter, thus it must
+            be initialized in init list 1 instead of 0 -->
+        <initList value="1" />
+
+        <moduleConfigurationRef type="XPATH"
+            value="as:modconf( 'Dem' )[1]/DemConfigSet/*[1]" />
+
+        <initializeBefore>
+            <moduleId>Mcu</moduleId>
+            <moduleId>Port</moduleId>
+            <moduleId>Gpt</moduleId>
+            <moduleId>Wdg</moduleId>
+            <moduleId>WdgM</moduleId>
+            <moduleId>Adc</moduleId>
+            <moduleId>Icu</moduleId>
+            <moduleId>Pwm</moduleId>
+        </initializeBefore>
+    </initFunction>
+
+</ecum:initFunctions>

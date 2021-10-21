@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR MemIf_TS_TxDxM5I11R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="MemIf_TS_TxDxM5I11R0_ModuleId"
+             name="MemIf_TS_TxDxM5I11R0 Module">
+    <module id="MemIf_TS_TxDxM5I11R0"
+            label="MemIf"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-MemoryStack: AUTOSAR Memory Abstraction Interface"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="5"
+            swVersionMinor="11"
+            swVersionPatch="11"
+            swVersionSuffix="B439717"
+            specVersionMajor="1"
+            specVersionMinor="4"
+            specVersionPatch="0"
+            specVersionSuffix="3"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="MemIf"
+            categoryLayer="Memory Hardware Abstraction"
+            categoryCategory="Memory"
+            categoryComponent="ECUC">
+      <cluster name="Memory Stack"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="MemIf_TS_TxDxM5I11R0_ConfigId"
+             name="MemIf_TS_TxDxM5I11R0 Configuration">
+    <configuration moduleId="MemIf_TS_TxDxM5I11R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/MemIf.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM5I11R0/MemIf"/>
+      </data>
+
+      <editor id="MemIf_TS_TxDxM5I11R0_EditorId"
+              label="Default"
+              tooltip="ACG-MemoryStack: AUTOSAR Memory Abstraction Interface">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM5I11R0/MemIf"/>
+          <parameter name="title" value="MemIf"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="MemIf_TS_TxDxM5I11R0_GeneratorId"
+             name="MemIf_TS_TxDxM5I11R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="MemIf_TS_TxDxM5I11R0_TemplateBasedCodeGeneratorId"
+               moduleId="MemIf_TS_TxDxM5I11R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+</plugin>

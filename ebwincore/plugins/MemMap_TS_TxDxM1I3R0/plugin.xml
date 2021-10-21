@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="MemMap_TS_TxDxM1I3R0_ModuleId"
+             name="MemMap_TS_TxDxM1I3R0 Module">
+    <module id="MemMap_TS_TxDxM1I3R0"
+            label="MemMap"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-Base: AUTOSAR memory mapping"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="3"
+            swVersionPatch="9"
+            swVersionSuffix="B439717"
+            specVersionMajor="1"
+            specVersionMinor="4"
+            specVersionPatch="0"
+            specVersionSuffix="0"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="MemMap"
+            categoryLayer="Basic Services"
+            categoryCategory="General"
+            categoryComponent="ECUC">
+      <cluster name="Basic Services"/>
+    </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="MemMap_TS_TxDxM1I3R0_ConfigId"
+             name="MemMap_TS_TxDxM1I3R0 Configuration">
+    <configuration moduleId="MemMap_TS_TxDxM1I3R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/MemMap.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM1I3R0/MemMap"/>
+      </data>
+
+      <editor id="MemMap_TS_TxDxM1I3R0_EditorId"
+              label="Default"
+              tooltip="ACG-Base: AUTOSAR memory mapping">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM1I3R0/MemMap"/>
+          <parameter name="title" value="MemMap"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+</plugin>

@@ -1,0 +1,1052 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module DoIP?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!CODE!]
+[!AUTOSPACING!]
+
+[!/* Entity ID size (is 6 bytes)
+*/!][!VAR "DOIP_ENTITY_ID_SIZE"="num:i(6)"!]
+[!/* Group ID size (is 6 bytes)
+*/!][!VAR "DOIP_GROUP_ID_SIZE"="num:i(6)"!]
+[!/* Logical address size (is 2 bytes)
+*/!][!VAR "DOIP_LOGICAL_ADDR_SIZE"="num:i(2)"!]
+
+[!/* Byte pattern set for DoIPGIDInvalidityPattern (0 or 255)
+*/!][!VAR "DoIP_GIDInvPattern"="as:modconf('DoIP')[1]/DoIPGeneral/DoIPGIDInvalidityPattern"!]
+[!/* Number of configured UDP connections
+*/!][!VAR "DoIP_UdpConMax"="count(DoIPConfigSet/*[1]/DoIPConnections/DoIPUdpConnection/*)"!]
+[!/* Number of configured UDP announcement connections
+*/!][!VAR "DoIP_UdpAnnConMax"="count(DoIPConfigSet/*[1]/DoIPConnections/DoIPUdpVehicleAnnouncement/*)"!]
+[!/* Number of configured UDP connections and UDP announcement connections
+*/!][!VAR "DoIP_UdpMaxIdx"="$DoIP_UdpConMax + $DoIP_UdpAnnConMax"!]
+[!/* Number of configured TCP connections
+*/!][!VAR "DoIP_TcpConMax"="count(DoIPConfigSet/*[1]/DoIPConnections/DoIPTcpConnection/*)"!]
+[!/* Maximum number of TCP connections
+*/!][!VAR "DoIPMaxTesterConnections"="as:modconf('DoIP')[1]/DoIPGeneral/DoIPMaxTesterConnections"!]
+[!/* Number of configured tester
+*/!][!VAR "DoIP_TesterMax"="count(DoIPConfigSet/*[1]/DoIPTester/*)"!]
+[!/* Number of configured PduR Rx PDUs
+*/!][!VAR "DoIP_PduRRxPduMax"="count(DoIPConfigSet/*[1]/DoIPChannel/*/DoIPPduRRxPdu) + count(DoIPConfigSet/*[1]/DoIPCustomChannel/*/DoIPPduRRxPdu)"!]
+[!/* Number of configured PduR Tx PDUs
+*/!][!VAR "DoIP_PduRTxPduMax"="count(DoIPConfigSet/*[1]/DoIPChannel/*) + count(DoIPConfigSet/*[1]/DoIPCustomChannel/*)"!]
+[!/* Number of configured PduR Tx PDUs in Std Channels
+*/!][!VAR "DoIP_PduRTxPduStd"="count(DoIPConfigSet/*[1]/DoIPChannel/*/DoIPPduRTxPdu)"!]
+[!/* Number of configured Routes (combination of source, target and activation ID)
+*/!][!VAR "DoIP_RouteMax" = "0"!][!// Reset routes counter
+[!/* Switch if custom payload type feature is enabled
+*/!][!VAR "DoIP_CustomPayloadTypeEnabled" = "as:modconf('DoIP')[1]/DoIPGeneral/DoIPCustomPayloadTypeEnabled"!]
+[!/* Number of configured standard channels
+*/!][!VAR "DoIP_StdChannelMax" = "count(DoIPConfigSet/*[1]/DoIPChannel/*)"!]
+[!/* Number of configured custom channels
+*/!][!VAR "DoIP_CustomChannelMax" = "count(DoIPConfigSet/*[1]/DoIPCustomChannel/*)"!]
+[!/* +1 for "deny" connection
+[!/* Each Tcp connection requires a buffer for segmented header reception and storing a part of diagnostic message payload used for ACK/NACK generation
+*/!][!IF "as:modconf('DoIP')[1]/DoIPGeneral/DoIPMaxNumByteDiagAckNack < 11"!]
+[!VAR "DoIP_DefaultBufferSize" = "11"!]
+[!ELSE!]
+[!VAR "DoIP_DefaultBufferSize" = "as:modconf('DoIP')[1]/DoIPGeneral/DoIPMaxNumByteDiagAckNack"!]
+[!ENDIF!]
+[!/* Number of configured Routes (combination of source, target and activation ID)
+*/!][!LOOP "node:order(DoIPConfigSet/*[1]/DoIPTester/*,'node:value(DoIPTesterSA)')"!]
+[!VAR "DoIP_TesterSource" = "node:value(DoIPTesterSA)"!]
+[!LOOP "node:refs(DoIPRoutingActivationRef/*)"!]
+[!VAR "DoIP_ActivationNumber" = "node:value(DoIPRoutingActivationNumber)"!]
+[!LOOP "node:refs(DoIPTargetAddressRef/*)"!]
+[!VAR "DoIP_TesterTarget" = "node:value(DoIPTargetAddressValue)"!]
+[!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPChannel/*"!]
+[!VAR "DoIP_ChannelSource" = "node:value(node:ref(DoIPChannelSARef)/DoIPTesterSA)"!]
+[!VAR "DoIP_ChannelTarget" = "node:value(node:ref(DoIPChannelTARef)/DoIPTargetAddressValue)"!]
+[!IF "($DoIP_ChannelSource = $DoIP_TesterSource) and ($DoIP_ChannelTarget = $DoIP_TesterTarget) and (./DoIPRoutingActivationType = "DOIP_ROUTING_ACTIVATION_MSG")"!]
+[!VAR "DoIP_RouteMax" = "$DoIP_RouteMax + 1"!]
+[!ENDIF!]
+[!ENDLOOP!][!// LOOP over DoIPChannel
+[!ENDLOOP!][!// LOOP over DoIPTargetAddressRef
+[!ENDLOOP!][!// LOOP over DoIPRoutingActivationRef
+[!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPChannel/*"!][!// Count channels with automatic routing activation
+[!VAR "DoIP_ChannelSource" = "node:value(node:ref(DoIPChannelSARef)/DoIPTesterSA)"!]
+[!IF "($DoIP_ChannelSource = $DoIP_TesterSource) and (./DoIPRoutingActivationType = "DOIP_ROUTING_ACTIVATION_AUTOMATIC")"!]
+[!VAR "DoIP_RouteMax" = "$DoIP_RouteMax + 1"!]
+[!ENDIF!]
+[!ENDLOOP!][!// LOOP over DoIPChannel
+[!ENDLOOP!][!// LOOP over DoIPTester
+[!/* Number of configured PduR Rx PDUs
+*/!][!VAR "DoIP_TargetMax"="count(DoIPConfigSet/*[1]/DoIPChannel/*/DoIPChannelTARef)"!]
+[!/* Number of configured routing activation
+*/!][!VAR "DoIP_RoutingActivationMax"="count(DoIPConfigSet/*[1]/DoIPRoutingActivation/*)"!]
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "DOIP_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "DOIP_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat('DoIP_Config','_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="string("DoIP_Config")"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+*/!][!VAR "DOIP_PBCFG_C_VARIANT"="concat('DoIP',$DOIP_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "DOIP_PBCFG_H_VARIANT"="concat('DoIP',$DOIP_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "DOIP_CONFIG_LAYOUT_VARIANT"="concat('DoIP',$DOIP_VARIANT_SUFIX,'ConfigLayout')"!]
+[!/* Current Config Type variant based
+*/!][!VAR "DOIP_CONFIGLAYOUTTYPE_VARIANT"="concat('DoIP',$DOIP_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "DOIP_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('DoIP',$DOIP_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+
+    <!-- This is the configuration of module DoIP -->
+    <module name="DoIP" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+
+      [!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+        <?artifact directory="include" file="DoIP_Types_Int.h" type="types-h" generate="yes" ?>
+      [!ELSE!]
+        <?artifact directory="include" file="DoIP_Types_Int.h" type="types-h" generate="no" ?>
+      [!ENDIF!]
+
+      [!VAR "relocatable" = "'false'"!][!//
+      [!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('DoIP')) = 'true'"!][!//
+      [!IF "as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true'"!][!//
+      [!VAR "relocatable" = "'true'"!][!//
+      [!ENDIF!][!//
+      [!ELSE!][!//
+      [!IF "as:modconf('DoIP')[1]/DoIPGeneral/DoIPRelocatablePbcfgEnable = 'true'"!][!//
+      [!VAR "relocatable" = "'true'"!][!//
+      [!ENDIF!][!//
+      [!ENDIF!][!//
+
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <!-- This is the type definition of the root structure -->
+      <type name="DoIP_ConfigType">
+        <struct>
+          <!-- Pointers to post build data structures -->
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform."/>
+          <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration."/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration."/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate Public information."/>
+          <member name="TcpConRef" type="DoIP_TcpConnType">
+            <comment><![CDATA[This pointer contains the address to TCP connection data.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="UdpAnnConRef" type="DoIP_UdpConnType">
+            <comment><![CDATA[This pointer contains the address to UDP announcement connection data.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="UdpConRef" type="DoIP_UdpConnType">
+            <comment><![CDATA[This pointer contains the address to UDP connection data.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="TesterRef" type="DoIP_TesterType">
+            <comment>
+              <![CDATA[This pointer contains the address to the tester configuration.]]>
+            </comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="RouteRef" type="DoIP_RouteType">
+            <comment>
+              <![CDATA[This pointer contains the address to all possible routes of all targets.]]>
+            </comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="RoutingActivationRef" type="DoIP_RoutingActType">
+            <comment>
+              <![CDATA[This pointer contains the address to all routing activations.]]>
+            </comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!IF "$DoIP_CustomChannelMax > 0"!]
+          <member name="CustomChannelRef" type="DoIP_CustChannelType">
+            <comment>
+              <![CDATA[This pointer contains the address to all custom channels.]]>
+            </comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          [!ENDIF!]
+          <member name="LOT_TargetRef" type="uint16">
+            <comment><![CDATA[This pointer contains the address to all targets.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="LOT_PduRTxPduIdRef" type="PduIdType">
+            <comment><![CDATA[This pointer contains the address to PduR Tx handle IDs.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="LOT_PduRRxPduIdRef" type="PduIdType">
+            <comment><![CDATA[This pointer contains the address to PduR Rx handle IDs.]]></comment>
+            <compiler-abstraction>
+              <ref2cfg />
+            </compiler-abstraction>
+          </member>
+          <member name="RouteMax" type="uint16">
+            <comment>
+              <![CDATA[Number of configured routes between source and target and activation
+              number.]]>
+            </comment>
+          </member>
+          <member name="PduRRxPduMax" type="uint16">
+            <comment>
+              <![CDATA[Number of configured PduR Rx PDUs in the channels.]]>
+            </comment>
+          </member>
+          <member name="PduRTxPduMax" type="uint16">
+            <comment>
+              <![CDATA[Number of configured PduR Tx PDUs in the channels.]]>
+            </comment>
+          </member>
+          <member name="RoutingActivationMax" type="uint8">
+            <comment>
+              <![CDATA[Number of configured routing activations.]]>
+            </comment>
+          </member>
+          <member name="TcpConMax" type="uint8">
+            <comment>
+              <![CDATA[Number of configured TCP connections.]]>
+            </comment>
+          </member>
+          <member name="UdpAnnConMax" type="uint8">
+            <comment>
+              <![CDATA[Number of configured UDP announcement connections.]]>
+            </comment>
+          </member>
+          <member name="UdpConMax" type="uint8">
+            <comment>
+              <![CDATA[Number of configured UDP connections.]]>
+            </comment>
+          </member>
+          <member name="UdpMaxIdx" type="PduIdType">
+            <comment>
+              <![CDATA[Number of configured UDP and UDP announcement connections.]]>
+            </comment>
+          </member>
+          <member name="TesterMax" type="uint8">
+            <comment>
+              <![CDATA[Number of configured tester.]]>
+            </comment>
+          </member>
+          <member name="PduRTxPduStd" type="uint8">
+            <comment>
+              <![CDATA[Number of Std Channels with enabled DoIPPduRTxPdu.]]>
+            </comment>
+          </member>
+          [!IF "$DoIP_CustomPayloadTypeEnabled = 'true'"!]
+          <member name="StdChannelMax" type="uint16">
+            <comment>
+              <![CDATA[Number of configured standard channels.]]>
+            </comment>
+          </member>
+          <member name="CustomChannelMax" type="uint8">
+            <comment>
+              <![CDATA[Number of configured custom channels.]]>
+            </comment>
+          </member>
+          [!ENDIF!]
+          <member name="EntityId" type="uint8" count="[!"$DOIP_ENTITY_ID_SIZE"!]">
+            <comment><![CDATA[Configured entity ID.]]></comment>
+          </member>
+          <member name="GroupId" type="uint8" count="[!"$DOIP_GROUP_ID_SIZE"!]">
+            <comment><![CDATA[Configured group ID.]]></comment>
+          </member>
+          <member name="LogicalAddr" type="uint8" count="[!"$DOIP_LOGICAL_ADDR_SIZE"!]">
+            <comment><![CDATA[Configured logical address.]]></comment>
+          </member>
+          <member name="FurtherActionReq" type="uint8">
+            <comment>
+              <![CDATA[Indicator if routing activation number 0xE0 is configured and further action
+              is required]]>
+            </comment>
+          </member>
+        </struct>
+      </type>
+
+      <!-- This is the type definition for TcpConIdx -->
+      [!IF "($DoIPMaxTesterConnections < 255)"!][!//
+      <type name="DoIP_TcpConIdxType">
+        <reference type="uint8" />
+      </type>
+      [!ELSE!][!//
+      <type name="DoIP_TcpConIdxType">
+        <reference type="uint16" />
+      </type>
+      [!ENDIF!][!//
+
+      <!-- This is the type definition of the TCP connection configuration structure -->
+      <type name="DoIP_TcpConnType">
+        <struct>
+          <member name="SoAdTxPduId" type="PduIdType">
+            <comment><![CDATA[Tx handle ID for SoAd API calls.]]></comment>
+          </member>
+          <member name="SoAdRxPduId" type="PduIdType">
+            <comment><![CDATA[Rx handle ID for SoAd API calls.]]></comment>
+          </member>
+          <member name="IpAddrAssignReq" type="boolean">
+            <comment><![CDATA[Determines if IP address assignment should be requested from SoAd.]]></comment>
+          </member>
+          <member name="UpdateHostName" type="boolean">
+            <comment><![CDATA[Determines if DHCP host name will be updated.]]></comment>
+          </member>
+          <member name="TcpConnectionSecurityRequired" type="boolean">
+            <comment><![CDATA[Configured DoIPTcpConnectionSecurityRequired for this TCP connection.]]></comment>
+          </member>
+        </struct>
+      </type>
+      <type name="DoIP_UdpConnType">
+        <struct>
+          <member name="SoAdTxPduId" type="PduIdType">
+            <comment><![CDATA[Tx handle ID for SoAd API calls.]]></comment>
+          </member>
+          <member name="IpAddrAssignReq" type="boolean">
+            <comment><![CDATA[Determines if IP address assignment should be requested from SoAd.]]></comment>
+          </member>
+          <member name="UpdateHostName" type="boolean">
+            <comment><![CDATA[Determines if DHCP host name will be updated.]]></comment>
+          </member>
+        </struct>
+      </type>
+      <!-- This is the type definition of the tester configuration structure -->
+      <type name="DoIP_TesterType">
+        <struct>
+          <member name="Source" type="uint16">
+            <comment><![CDATA[Source (tester) address.]]></comment>
+          </member>
+          <member name="RouteIdx" type="uint16">
+            <comment>
+              <![CDATA[Index to the first entry for this source in the Route[] array.]]>
+            </comment>
+          </member>
+          <member name="NumBytesDiagNAck" type="uint16">
+            <comment>
+              <![CDATA[Configured number of bytes of a diagnostic message which shall be sent back
+              with NACK message.]]>
+            </comment>
+          </member>
+          <member name="NumberOfRoutesPerSource" type="uint16">
+            <comment>
+              <![CDATA[Configured number of target activation combinations for this source.
+              It defines the amount of entries in the Route[] array.]]>
+            </comment>
+          </member>
+        </struct>
+      </type>
+
+      <!-- This is the type definition of the route configuration structure -->
+      <type name="DoIP_RouteType">
+        <struct>
+          <member name="DoIPPduRPduId" type="PduIdType">
+            <comment><![CDATA[Rx\TX handle ID for PduR API calls.]]></comment>
+          </member>
+          <member name="RoutingActivationIdx" type="uint16">
+            <comment>
+              <![CDATA[Index to routing activation structure for this source target combination.]]>
+            </comment>
+          </member>
+        </struct>
+      </type>
+
+      <!-- This is the type definition of the routing activation structure -->
+      <type name="DoIP_RoutingActType">
+        <struct>
+          <member name="ActivationNumber" type="uint8">
+            <comment>
+              <![CDATA[Configured activation number for this routing activation.]]>
+            </comment>
+          </member>
+          <member name="AuthReqLength" type="uint8">
+            <comment>
+              <![CDATA[Configured DoIPRoutingActivationAuthenticationReqLength for this routing activation.]]>
+            </comment>
+          </member>
+          <member name="AuthResLength" type="uint8">
+            <comment>
+              <![CDATA[Configured DoIPRoutingActivationAuthenticationResLength for this routing activation.]]>
+            </comment>
+          </member>
+          <member name="ConfReqLength" type="uint8">
+            <comment>
+              <![CDATA[Configured DoIPRoutingActivationConfirmationReqLength for this routing activation.]]>
+            </comment>
+          </member>
+          <member name="ConfResLength" type="uint8">
+            <comment>
+              <![CDATA[Configured DoIPRoutingActivationConfirmationResLength for this routing activation.]]>
+            </comment>
+          </member>
+          <member name="RoutingActivationSecurityRequired" type="boolean">
+            <comment>
+              <![CDATA[Configured DoIPRoutingActivationSecurityRequired for this routing activation.]]>
+            </comment>
+          </member>
+        </struct>
+      </type>
+
+      <!-- This is the type definition of the custom channel structure -->
+      <type name="DoIP_CustChannelType">
+        <struct>
+          <member name="DoIPPduRRxPduId" type="PduIdType">
+            <comment>
+              <![CDATA[Configured DoIPPduRRxPduId for this custom channel.]]>
+            </comment>
+          </member>
+          <member name="ECUC_RxPduId" type="PduIdType">
+            <comment>
+              <![CDATA[PduId required for meta data handling on Rx side.]]>
+            </comment>
+          </member>
+          <member name="DoIPPduRTxPduId" type="PduIdType">
+            <comment>
+              <![CDATA[Configured DoIPPduRTxPduId for this custom channel.]]>
+            </comment>
+          </member>
+          <member name="ECUC_TxPduId" type="PduIdType">
+            <comment>
+              <![CDATA[PduId required for meta data handling on Tx side.]]>
+            </comment>
+          </member>
+          <member name="DoIPSoAdPduId" type="uint8">
+            <comment>
+              <![CDATA[DoIPSoAdPduId of the referenced Tcp connection.]]>
+            </comment>
+          </member>
+        </struct>
+      </type>
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <?artifact directory="include" file="[!"$DOIP_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$DOIP_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of DoIP_PBcfg.h and DoIP_Types.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+      <type name="[!"$DOIP_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="DoIP_ConfigType"/>
+          <member name="DoIP_TcpCon" type="DoIP_TcpConnType"
+            count="[!"num:i($DoIP_TcpConMax)"!]">
+            <comment><![CDATA[This array contains TCP connection data for SoAd API calls.]]></comment>
+          </member>
+          <member name="DoIP_UdpAnnCon" type="DoIP_UdpConnType"
+            count="[!"num:i($DoIP_UdpAnnConMax)"!]">
+            <comment><![CDATA[This array contains UDP Announcement connection data for SoAd API calls.]]></comment>
+          </member>
+          <member name="DoIP_UdpCon" type="DoIP_UdpConnType"
+            count="[!"num:i($DoIP_UdpConMax)"!]">
+            <comment><![CDATA[This array contains UDP connection data for SoAd API calls.]]></comment>
+          </member>
+          <member name="DoIP_Tester" type="DoIP_TesterType"
+            count="[!"num:i($DoIP_TesterMax)"!]">
+            <comment>
+              <![CDATA[This array contains configuration information for each tester.]]>
+            </comment>
+          </member>
+          <member name="DoIP_Route" type="DoIP_RouteType" count="[!"num:i($DoIP_RouteMax)"!]">
+            <comment>
+              <![CDATA[This array contains all possible route configuration between source
+              and target]]>
+            </comment>
+          </member>
+          <member name="DoIP_RoutingActivation" type="DoIP_RoutingActType" count="[!"num:i($DoIP_RoutingActivationMax)"!]">
+            <comment>
+              <![CDATA[This array contains all configured routing activations]]>
+            </comment>
+          </member>
+          [!IF "$DoIP_CustomChannelMax > 0"!]
+          <member name="DoIP_CustomChannel" type="DoIP_CustChannelType" count="[!"num:i($DoIP_CustomChannelMax)"!]">
+            <comment>
+              <![CDATA[This array contains all configured custom channels]]>
+            </comment>
+          </member>
+          [!ENDIF!]
+          <member name="DoIP_LOT_Target" type="uint16" count="[!"num:i($DoIP_TargetMax)"!]">
+            <comment>
+              <![CDATA[This array is a look up table to translate DoIPPduRPduId into target
+              address.]]>
+            </comment>
+          </member>
+
+          [!IF "$DoIP_PduRTxPduMax > 0"!]
+          <member name="DoIP_LOT_PduRTxPduId" type="PduIdType"
+            count="[!"num:i($DoIP_PduRTxPduMax)"!]">
+            <comment>
+              <![CDATA[This array is a look up table to translate DoIPPduRPduId into PduR handle IDs
+              required for PduR API calls.]]>
+            </comment>
+          </member>
+          [!ELSE!]
+          <member name="DoIP_LOT_PduRTxPduId" type="PduIdType" count="1">
+            <comment>
+              <![CDATA[This array is a dummy look up table since no Tx PduR PDUs are configured.]]>
+            </comment>
+          </member>
+          [!ENDIF!]
+          <member name="DoIP_LOT_PduRRxPduId" type="PduIdType"
+            count="[!"num:i($DoIP_PduRRxPduMax)"!]">
+            <comment>
+              <![CDATA[This array is a look up table to translate DoIPPduRPduId into PduR handle IDs
+              required for PduR API calls.]]>
+            </comment>
+          </member>
+        </struct>
+      </type>
+
+      <type name="[!"$DOIP_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$DOIP_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="DOIP_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialisation:
+          Specifies the content of Module_PBcfg.c
+      -->
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+
+      <instance type="[!"$DOIP_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+             name="[!"$DOIP_CONFIG_LAYOUT_VARIANT"!]">
+
+        <comment>
+          <![CDATA[Module post build configuration. - Static code accesses this configuration
+          solely via the pointer of type Module_ConfigType passed to
+          Module_Init() as parameter.]]>
+        </comment>
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+        [!IF "not(var:defined('postBuildVariant')) and not(node:name(DoIPConfigSet) = $initPredefinedCfgName)"!]
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"node:name(DoIPConfigSet)"!]</symbolic-value>
+        </parameter>
+        [!ENDIF!]
+
+        <!-- Module_ConfigLayout.RootCfg -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int> <!-- PlatformSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('DoIP')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int> <!-- LcfgSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('DoIP')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int> <!-- CfgSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('DoIP')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('DoIP')[1]/CommonPublishedInformation/Release))"!]</int> <!-- PublicInfoSignature -->
+          </field>
+          <field>
+            <ref>
+              <struct-field name="DoIP_TcpCon"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="DoIP_UdpAnnCon"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="DoIP_UdpCon"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="DoIP_Tester"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="DoIP_Route"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="DoIP_RoutingActivation"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          [!IF "$DoIP_CustomChannelMax > 0"!]
+          <field>
+            <ref>
+              <struct-field name="DoIP_CustomChannel"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          [!ENDIF!]
+          <field>
+            <ref>
+              <struct-field name="DoIP_LOT_Target"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="DoIP_LOT_PduRTxPduId"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <ref>
+              <struct-field name="DoIP_LOT_PduRRxPduId"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_RouteMax)"!]</int> <!-- DoIP_RouteMax -->
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_PduRRxPduMax)"!]</int> <!-- DoIP_PduRRxPduMax -->
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_PduRTxPduMax)"!]</int> <!-- DoIP_PduRTxPduMax -->
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_RoutingActivationMax)"!]</int> <!-- DoIP_RoutingActivationMax -->
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_TcpConMax)"!]</int> <!-- DoIP_TcpConMax -->
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_UdpAnnConMax)"!]</int> <!-- DoIP_UdpAnnConMax -->
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_UdpConMax)"!]</int> <!-- DoIP_UdpConMax -->
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_UdpMaxIdx)"!]</int> <!-- UdpMaxIdx -->
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_TesterMax)"!]</int> <!-- DoIP_TesterMax -->
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_PduRTxPduStd)"!]</int> <!-- DoIP_PduRTxPduStd -->
+          </field>
+          [!IF "$DoIP_CustomPayloadTypeEnabled = 'true'"!]
+          <field>
+            <int>[!"num:i($DoIP_StdChannelMax)"!]</int> <!-- DoIP_StdChannelMax -->
+          </field>
+          <field>
+            <int>[!"num:i($DoIP_CustomChannelMax)"!]</int> <!-- DoIP_CustomChannelMax -->
+          </field>
+          [!ENDIF!]
+          <field>
+            [!IF "node:exists(DoIPConfigSet/*[1]/DoIPEid)"!]
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPEid, 40), 255)"!]</int> <!-- EntityId[5] -->
+            </field>
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPEid, 32), 255)"!]</int> <!-- EntityId[4] -->
+            </field>
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPEid, 24), 255)"!]</int> <!-- EntityId[3] -->
+            </field>
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPEid, 16), 255)"!]</int> <!-- EntityId[2] -->
+            </field>
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPEid, 8), 255)"!]</int> <!-- EntityId[1] -->
+            </field>
+            <field>
+              <int>[!"bit:and(DoIPConfigSet/*[1]/DoIPEid, 255)"!]</int> <!-- EntityId[0] -->
+            </field>
+            [!ELSE!]
+            [!FOR "I"="1" TO "6"!]
+            <field>
+              <int>[!"num:i($DoIP_GIDInvPattern)"!]</int> <!-- value set in DoIPGIDInvalidityPattern config param -->
+            </field>
+            [!ENDFOR!]
+            [!ENDIF!]
+          </field>
+          <field>
+            [!IF "node:exists(DoIPConfigSet/*[1]/DoIPGid)"!]
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPGid, 40), 255)"!]</int> <!-- GroupId[5] -->
+            </field>
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPGid, 32), 255)"!]</int> <!-- GroupId[4] -->
+            </field>
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPGid, 24), 255)"!]</int> <!-- GroupId[3] -->
+            </field>
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPGid, 16), 255)"!]</int> <!-- GroupId[2] -->
+            </field>
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPGid, 8), 255)"!]</int> <!-- GroupId[1] -->
+            </field>
+            <field>
+              <int>[!"bit:and(DoIPConfigSet/*[1]/DoIPGid, 255)"!]</int> <!-- GroupId[0] -->
+            </field>
+            [!ELSE!]
+            [!FOR "I"="1"  TO "6"!]
+            <field>
+              <int>[!"num:i($DoIP_GIDInvPattern)"!]</int> <!-- DoIPGIDInvalidityPattern -->
+            </field>
+            [!ENDFOR!]
+            [!ENDIF!]
+          </field>
+          <field>
+            <field>
+              <int>[!"bit:and(DoIPConfigSet/*[1]/DoIPLogicalAddress, 255)"!]</int> <!-- LogicalAddr[0] -->
+            </field>
+            <field>
+              <int>[!"bit:and(bit:shr(DoIPConfigSet/*[1]/DoIPLogicalAddress, 8), 255)"!]</int> <!-- LogicalAddr[1] -->
+            </field>
+          </field>
+          <field>
+            [!IF "count(DoIPConfigSet/*[1]/DoIPRoutingActivation/*[DoIPRoutingActivationNumber = 224]) > 0"!]
+            <int>1</int> <!-- FurtherActionReq -->
+            [!ELSE!]
+            <int>0</int> <!-- FurtherActionReq -->
+            [!ENDIF!]
+          </field>
+        </field> <!-- Module_ConfigLayout.RootCfg -->
+
+        <!-- Module_ConfigLayout.DoIP_TcpCon -->
+        <field>
+          [!LOOP "node:order(DoIPConfigSet/*[1]/DoIPConnections/DoIPTcpConnection/*,'node:value(DoIPSoAdRxPdu/DoIPSoAdRxPduId)')"!]
+          <field>
+            <field>
+              <int>[!"asc:getPduId('SoAd','ForUpperLayer','TP','Tx',asc:getPdus('SoAd','ForUpperLayer','TP','Tx',1,node:current()/DoIPSoAdTxPdu/DoIPSoAdTxPduRef)[1])"!]</int> <!-- SoAdTxPduId -->
+            </field>
+            <field>
+              <int>[!"asc:getPduId('SoAd','ForUpperLayer','TP','Rx',asc:getPdus('SoAd','ForUpperLayer','TP','Rx',1,node:current()/DoIPSoAdRxPdu/DoIPSoAdRxPduRef)[1])"!]</int> <!-- SoAdRxPduId -->
+            </field>
+            <field>
+              [!IF "node:value(./DoIPRequestAddressAssignment)='true'"!][!/*
+                */!]<int>1</int>[!// <!-- IpAddrAssignReq -->
+              [!ELSE!][!/*
+                */!]<int>0</int>[!//
+              [!ENDIF!]
+            </field>
+            <field>
+              [!IF "node:value(./DoIPUpdateDhcpHostNameOption)='true'"!][!/*
+                */!]<int>1</int>[!// <!-- UpdateHostName -->
+              [!ELSE!][!/*
+                */!]<int>0</int>[!//
+              [!ENDIF!]
+            </field>
+            <field>
+              [!IF "node:value(./DoIPTcpConnectionSecurityRequired)='true'"!][!/*
+                */!]<int>1</int>[!// <!-- TcpConnectionSecurityRequired -->
+              [!ELSE!][!/*
+                */!]<int>0</int>[!//
+              [!ENDIF!]
+            </field>
+          </field>
+          [!ENDLOOP!]
+        </field> <!-- Module_ConfigLayout.DoIP_TcpCon -->
+
+        <!-- Module_ConfigLayout.DoIP_UdpAnnCon -->
+        <field>
+          [!LOOP "node:order(DoIPConfigSet/*[1]/DoIPConnections/DoIPUdpVehicleAnnouncement/*,'node:value(DoIPSoAdTxPdu/DoIPSoAdTxPduId)')"!][!//
+          <field>
+            <field>
+              <int>[!"asc:getPduId('SoAd','ForUpperLayer','If','Tx',asc:getPdus('SoAd','ForUpperLayer','If','Tx',1,node:current()/DoIPSoAdTxPdu/DoIPSoAdTxPduRef)[1])"!]</int>
+            </field>
+            <field>
+              [!IF "node:value(./DoIPRequestAddressAssignment)='true'"!][!//
+              <int>1</int> <!-- IpAddrAssignReq -->
+              [!ELSE!][!//
+              <int>0</int> <!-- IpAddrAssignReq -->
+              [!ENDIF!][!//
+            </field>
+            <field>
+              [!IF "node:value(./DoIPUpdateDhcpHostNameOption)='true'"!][!//
+              <int>1</int> <!-- UpdateHostName -->
+              [!ELSE!][!//
+              <int>0</int> <!-- UpdateHostName -->
+              [!ENDIF!][!//
+            </field>
+          </field>
+          [!ENDLOOP!][!//
+        </field> <!-- Module_ConfigLayout.DoIP_UdpAnnCon -->
+
+        <!-- Module_ConfigLayout.DoIP_UdpCon -->
+        <field>
+          [!LOOP "node:order(DoIPConfigSet/*[1]/DoIPConnections/DoIPUdpConnection/*,'node:value(DoIPSoAdRxPdu/DoIPSoAdRxPduId)')"!][!//
+          <field>
+            <field>
+              <int>[!"asc:getPduId('SoAd','ForUpperLayer','If','Tx',asc:getPdus('SoAd','ForUpperLayer','If','Tx',1,node:current()/DoIPSoAdTxPdu/DoIPSoAdTxPduRef)[1])"!]</int> <!-- SoAdTxPduId -->
+            </field>
+            <field>
+              [!IF "node:value(./DoIPRequestAddressAssignment)='true'"!][!//
+              <int>1</int> <!-- IpAddrAssignReq -->
+              [!ELSE!][!//
+              <int>0</int> <!-- IpAddrAssignReq -->
+              [!ENDIF!][!//
+            </field>
+            <field>
+              [!IF "node:value(./DoIPUpdateDhcpHostNameOption)='true'"!][!//
+              <int>1</int> <!-- UpdateHostName -->
+              [!ELSE!][!//
+              <int>0</int> <!-- UpdateHostName -->
+              [!ENDIF!][!//
+            </field>
+          </field>
+          [!ENDLOOP!][!//
+        </field> <!-- Module_ConfigLayout.DoIP_UdpCon -->
+
+        <!-- Module_ConfigLayout.DoIP_Tester -->
+        <field>
+          [!VAR "DoIP_RouteIdx" = "0"!]
+          [!VAR "DoIP_NumberOfRoutesPerSource" = "0"!]
+          [!LOOP "node:order(as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPTester/*,'node:value(DoIPTesterSA)')"!]
+          [!VAR "DoIP_TesterSource" = "node:value(DoIPTesterSA)"!]
+          <field>
+            <field>
+              <int>[!"num:i($DoIP_TesterSource)"!]</int> <!-- Source -->
+            </field>
+            <field>
+              [!VAR "DoIP_RouteIdx" = "$DoIP_RouteIdx + $DoIP_NumberOfRoutesPerSource"!][!//
+              <int>[!"num:i($DoIP_RouteIdx)"!]</int> <!-- RouteIdx -->
+            </field>
+            <field>
+              [!IF "DoIPNumByteDiagAckNack <= as:modconf('DoIP')[1]/DoIPGeneral/DoIPMaxNumByteDiagAckNack"!]
+              <int>[!"num:i(DoIPNumByteDiagAckNack)"!]</int> <!-- NumByteDiagNAck -->
+              [!ELSE!]
+              <int>[!"num:i(as:modconf('DoIP')[1]/DoIPGeneral/DoIPMaxNumByteDiagAckNack)"!]</int> <!-- NumByteDiagNAck -->
+              [!ENDIF!]
+            </field>
+            <field>
+              [!VAR "DoIP_NumberOfRoutesPerSource" = "0"!][!// Reset routes count for this source.
+              [!LOOP "node:refs(DoIPRoutingActivationRef/*)"!]
+              [!LOOP "node:refs(DoIPTargetAddressRef/*)"!]
+              [!VAR "DoIP_TesterTarget" = "node:value(DoIPTargetAddressValue)"!]
+              [!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPChannel/*"!]
+              [!VAR "DoIP_ChannelSource" = "node:value(node:ref(DoIPChannelSARef)/DoIPTesterSA)"!]
+              [!VAR "DoIP_ChannelTarget" = "node:value(node:ref(DoIPChannelTARef)/DoIPTargetAddressValue)"!]
+              [!IF "($DoIP_ChannelSource = $DoIP_TesterSource) and ($DoIP_ChannelTarget = $DoIP_TesterTarget) and (./DoIPRoutingActivationType = "DOIP_ROUTING_ACTIVATION_MSG")"!]
+              [!VAR "DoIP_NumberOfRoutesPerSource" = "$DoIP_NumberOfRoutesPerSource + 1"!]
+              [!ENDIF!]
+              [!ENDLOOP!][!// LOOP over DoIPChannel
+              [!ENDLOOP!][!// LOOP over DoIPTargetAddressRef
+              [!ENDLOOP!][!// LOOP over DoIPRoutingActivationRef
+              [!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPChannel/*"!][!// Find channels with automatic routing activation
+              [!VAR "DoIP_ChannelSource" = "node:value(node:ref(DoIPChannelSARef)/DoIPTesterSA)"!]
+              [!IF "($DoIP_ChannelSource = $DoIP_TesterSource) and (./DoIPRoutingActivationType = "DOIP_ROUTING_ACTIVATION_AUTOMATIC")"!]
+              [!VAR "DoIP_NumberOfRoutesPerSource" = "$DoIP_NumberOfRoutesPerSource + 1"!]
+              [!ENDIF!]
+              [!ENDLOOP!][!// LOOP over DoIPChannel
+              <int>[!"num:i($DoIP_NumberOfRoutesPerSource)"!]</int> <!-- NumberOfRoutesPerSource -->
+            </field>
+          </field>
+          [!ENDLOOP!][!//
+        </field> <!-- Module_ConfigLayout.DoIP_Tester -->
+
+        <!-- Module_ConfigLayout.DoIP_Route -->
+        <field>
+          [!LOOP "node:order(as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPTester/*,'node:value(DoIPTesterSA)')"!]
+          [!VAR "DoIP_TesterSource" = "node:value(DoIPTesterSA)"!]
+          [!LOOP "node:refs(DoIPRoutingActivationRef/*)"!]
+          [!VAR "DoIP_RoutingActivationIdx" = "node:pos(.)"!]
+          [!LOOP "node:refs(DoIPTargetAddressRef/*)"!]
+          [!VAR "DoIP_TesterTarget" = "node:value(DoIPTargetAddressValue)"!]
+          [!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPChannel/*"!]
+          [!VAR "DoIP_ChannelSource" = "node:value(node:ref(DoIPChannelSARef)/DoIPTesterSA)"!]
+          [!VAR "DoIP_ChannelTarget" = "node:value(node:ref(DoIPChannelTARef)/DoIPTargetAddressValue)"!]
+          [!IF "($DoIP_ChannelSource = $DoIP_TesterSource) and ($DoIP_ChannelTarget = $DoIP_TesterTarget) and (./DoIPRoutingActivationType = "DOIP_ROUTING_ACTIVATION_MSG")"!]
+          <field>
+            <field>
+              <int>[!"num:i(DoIPPduRRxPdu/DoIPPduRRxPduId)"!]</int> <!-- DoIPPduRPduId -->
+            </field>
+            <field>
+              <int>[!"num:i($DoIP_RoutingActivationIdx)"!]</int> <!-- RoutingActivationIdx -->
+            </field>
+          </field>
+          [!ENDIF!]
+          [!ENDLOOP!][!// LOOP over DoIPChannel
+          [!ENDLOOP!][!// LOOP over DoIPTargetAddressRef
+          [!ENDLOOP!][!// LOOP over DoIPRoutingActivationRef
+          [!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPChannel/*"!][!// Find channels with automatic routing activation
+          [!VAR "DoIP_ChannelSource" = "node:value(node:ref(DoIPChannelSARef)/DoIPTesterSA)"!]
+          [!IF "($DoIP_ChannelSource = $DoIP_TesterSource) and (./DoIPRoutingActivationType = "DOIP_ROUTING_ACTIVATION_AUTOMATIC")"!]
+          <field>
+            <field>
+              <int>[!"num:i(DoIPPduRRxPdu/DoIPPduRRxPduId)"!]</int> <!-- DoIPPduRPduId -->
+            </field>
+            <field>
+              <int>65535</int> <!-- RoutingActivationIdx -->
+            </field>
+          </field>
+          [!ENDIF!]
+          [!ENDLOOP!][!// LOOP over DoIPChannel
+          [!ENDLOOP!][!// LOOP over DoIPTester
+        </field> <!-- Module_ConfigLayout.DoIP_Route -->
+        <!-- Module_ConfigLayout.DoIP_RoutingActivation -->
+        <field>
+          [!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPRoutingActivation/*"!]
+          <field>
+            <field>
+              <int>[!"num:i(DoIPRoutingActivationNumber )"!]</int> <!-- ActivationNumber -->
+            </field>
+            [!IF "(node:exists(./DoIPRoutingActivationAuthenticationCallback) and as:modconf('DoIP')[1]/DoIPGeneral/DoIPRteUsage = 'true') or not(node:empty(./DoIPRoutingActivationAuthenticationCallback/DoIPRoutingActivationAuthenticationFunc))"!][!//
+            <field>
+              <int>[!"num:i(DoIPRoutingActivationAuthenticationCallback/DoIPRoutingActivationAuthenticationReqLength)"!]</int> <!-- AuthReqLength -->
+            </field>
+            <field>
+              <int>[!"num:i(DoIPRoutingActivationAuthenticationCallback/DoIPRoutingActivationAuthenticationResLength)"!]</int> <!-- AuthResLength -->
+            </field>
+            [!ELSE!]
+            <field><int>0</int></field> <!-- AuthReqLength -->
+            <field><int>0</int></field> <!-- AuthResLength -->
+            [!ENDIF!]
+            [!IF "(node:exists(./DoIPRoutingActivationConfirmationCallback) and as:modconf('DoIP')[1]/DoIPGeneral/DoIPRteUsage = 'true') or not(node:empty(./DoIPRoutingActivationConfirmationCallback/DoIPRoutingActivationConfirmationFunc))"!][!//
+            <field>
+              <int>[!"num:i(DoIPRoutingActivationConfirmationCallback/DoIPRoutingActivationConfirmationReqLength)"!]</int> <!-- ConfReqLength -->
+            </field>
+            <field>
+              <int>[!"num:i(DoIPRoutingActivationConfirmationCallback/DoIPRoutingActivationConfirmationResLength)"!]</int> <!-- ConfResLength -->
+            </field>
+            [!ELSE!]
+            <field><int>0</int></field> <!-- ConfReqLength -->
+            <field><int>0</int></field> <!-- ConfResLength -->
+            [!ENDIF!]
+            <field>
+              [!IF "node:value(./DoIPRoutingActivationSecurityRequired)='true'"!][!/*
+                */!]<int>1</int>[!// <!-- RoutingActivationSecurityRequired -->
+              [!ELSE!][!/*
+                */!]<int>0</int>[!//
+              [!ENDIF!]
+            </field>
+          </field>
+          [!ENDLOOP!][!// LOOP over DoIPRoutingActivation
+        </field> <!-- Module_ConfigLayout.DoIP_RoutingActivation -->
+
+        [!IF "$DoIP_CustomChannelMax > 0"!]
+        <!-- Module_ConfigLayout.DoIP_CustomChannel -->
+        <field>
+          [!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPCustomChannel/*"!]
+          <field>
+            <field>
+              <int>[!"num:i(DoIPPduRRxPdu/DoIPPduRRxPduId)"!]</int> <!-- DoIPPduRRxPduId  -->
+            </field>
+            <field>
+              <int>[!"node:value(node:refs(DoIPPduRRxPdu/DoIPPduRRxPduRef)/PduId)"!]</int> <!-- ECUC_RxPduId  -->
+            </field>
+            <field>
+              <int>[!"num:i(DoIPPduRTxPdu/DoIPPduRTxPduId)"!]</int> <!-- DoIPPduRTxPduId  -->
+            </field>
+            <field>
+              <int>[!"node:value(node:refs(DoIPPduRTxPdu/DoIPPduRTxPduRef)/PduId)"!]</int> <!-- ECUC_TxPduId  -->
+            </field>
+            <field>
+              <int>[!"node:value(node:refs(DoIPTcpConnectionRef)/DoIPSoAdRxPdu/DoIPSoAdRxPduId)"!]</int> <!-- DoIPSoAdPduId -->
+            </field>
+          </field>
+          [!ENDLOOP!][!// LOOP over DoIP_CustomChannelMax
+        </field> <!-- Module_ConfigLayout.DoIP_CustomChannel -->
+        [!ENDIF!]
+
+        <!-- Module_ConfigLayout.DoIP_LOT_Target -->
+        <field>
+          [!LOOP "node:order(DoIPConfigSet/*[1]/DoIPChannel/*,'node:value(DoIPPduRRxPdu/DoIPPduRRxPduId)')"!]
+          <field>
+            <int>[!"num:i(node:ref(DoIPChannelTARef)/DoIPTargetAddressValue)"!]</int> <!-- Target -->
+          </field>
+          [!ENDLOOP!]
+        </field> <!-- Module_ConfigLayout.DoIP_LOT_Target -->
+
+        <!-- Module_ConfigLayout.DoIP_LOT_PduRTxPduId -->
+        <field>
+          [!IF "$DoIP_PduRTxPduMax > 0"!]
+          [!LOOP "node:order(DoIPConfigSet/*[1]/DoIPChannel/*[node:exists(DoIPPduRTxPdu)]/DoIPPduRTxPdu,'node:value(DoIPPduRTxPduId)')"!]
+          <field>
+            <int>[!"as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef = node:current()/DoIPPduRTxPduRef][1]/PduRDestPduHandleId"!]</int> <!-- PduRTxPduId -->
+          </field>
+          [!ENDLOOP!]
+          [!LOOP "as:modconf('DoIP')[1]/DoIPConfigSet/*[1]/DoIPChannel/*"!]
+          [!IF "node:exists(./DoIPPduRTxPdu)"!]
+          [!ELSE!]
+          <field>
+            <int>65535</int> <!-- Invalid PduRTxPduId -->
+          </field>
+          [!ENDIF!]
+          [!ENDLOOP!]
+          [!LOOP "node:order(DoIPConfigSet/*[1]/DoIPCustomChannel/*[node:exists(DoIPPduRTxPdu)]/DoIPPduRTxPdu,'node:value(DoIPPduRTxPduId)')"!]
+          <field>
+            <int>[!"as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef = node:current()/DoIPPduRTxPduRef][1]/PduRDestPduHandleId"!]</int> <!-- PduRTxPduId -->
+          </field>
+          [!ENDLOOP!]
+          [!ELSE!]
+          <field>
+            <int>65535</int> <!-- PduRTxPduId dummy entry -->
+          </field>
+          [!ENDIF!]
+        </field> <!-- Module_ConfigLayout.DoIP_LOT_PduRTxPduId -->
+
+        <!-- Module_ConfigLayout.DoIP_LOT_PduRRxPduId -->
+        <field>
+          [!IF "$DoIP_PduRRxPduMax > 0"!]
+          [!LOOP "node:order(DoIPConfigSet/*[1]/DoIPChannel/*/DoIPPduRRxPdu,'node:value(DoIPPduRRxPduId)')"!]
+          <field>
+            <int>[!"as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[PduRSrcPdu/PduRSrcPduRef = node:current()/DoIPPduRRxPduRef][1]/PduRSrcPdu/PduRSourcePduHandleId"!]</int> <!-- PduRRxPduId -->
+          </field>
+          [!ENDLOOP!]
+          [!LOOP "DoIPConfigSet/*[1]/DoIPCustomChannel/*[node:exists(DoIPPduRRxPdu)]/DoIPPduRRxPdu"!]
+          <field>
+            <int>[!"as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*[PduRSrcPdu/PduRSrcPduRef = node:current()/DoIPPduRRxPduRef][1]/PduRSrcPdu/PduRSourcePduHandleId"!]</int> <!-- PduRRxPduId -->
+          </field>
+          [!ENDLOOP!]
+          [!ELSE!]
+          <field>
+            <int>65535</int> <!-- PduRRxPduId dummy entry -->
+          </field>
+          [!ENDIF!]
+        </field> <!-- Module_ConfigLayout.DoIP_LOT_PduRRxPduId -->
+
+      </instance> <!-- Module_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>
+
+[!ENDCODE!]

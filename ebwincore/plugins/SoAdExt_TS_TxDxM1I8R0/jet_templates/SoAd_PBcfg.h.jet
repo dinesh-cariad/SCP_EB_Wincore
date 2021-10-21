@@ -1,0 +1,126 @@
+<%@ jet package="dreisoft.tresos.soad.generated.jet" class="SoAd_PBcfg_h" skeleton="File.skeleton"
+        imports="dreisoft.tresos.soad.generator.output.postbuild.PostBuildData
+            dreisoft.tresos.generator.ng.api.ant.JavaGenContext
+            java.io.IOException
+            dreisoft.tresos.generator.ng.api.cds.CDSGenFile"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+
+    final PostBuildData data = (PostBuildData)context.gen.getVariable( PostBuildData.ARG_NAME,
+                                                                       PostBuildData.class,
+                                                                       null );
+    final String includeGuardName = getIncludeGuardName( context );
+
+    CDSGenFile cdsFile;
+    try {
+        cdsFile = context.cds.startFile(context.getWriter(), data.getBackend() );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        throw new IllegalStateException( "Exception occurred: " + e.getLocalizedMessage() );
+    }
+
+%>
+<%@ include file="head.h.inc" %>
+
+/*
+ * Misra-C:2012 Deviations:
+ *
+ * MISRA-1) Deviated Rule: 20.5 (required)
+ * "#undef shall not be used"
+ *
+ * Reason:
+ * The macros TS_RELOCATABLE_CFG_ENABLE and TS_PB_CFG_PTR_CLASS
+ * might be used by more modules than the SoAd module.
+ * To avoid that these macros are used by other modules accidentally,
+ * an undef is used here.
+ */
+
+/*==================[includes]==============================================*/
+
+#include <TSAutosar.h>         /* EB AUTOSAR standard types */
+#include <ComStack_Types.h>    /* Com-stack types */
+#include <SoAd_Cfg.h>          /* module pre-compile config */
+#include <SoAd_Types.h>        /* types of configuration elements */
+#include <SoAd_Lcfg.h>         /* module link-time config */
+
+#define TS_RELOCATABLE_CFG_ENABLE SOAD_RELOCATABLE_CFG_ENABLE
+#define TS_PB_CFG_PTR_CLASS SOAD_APPL_DATA
+#include <TSPBConfig_Types.h>
+
+/*==================[macros]================================================*/
+
+#if (defined <%= PostBuildData.GLOBAL_POSTBUILD_LAYOUT_NAME %>) /* To prevent double definition */
+#error <%= PostBuildData.GLOBAL_POSTBUILD_LAYOUT_NAME %> already defined!
+#endif /* (defined <%= PostBuildData.GLOBAL_POSTBUILD_LAYOUT_NAME %>) */
+
+/*
+ * Global Macros
+ */
+#define <%= PostBuildData.GLOBAL_POSTBUILD_LAYOUT_NAME %> SoAd_Configuration
+
+
+#if (defined <%= data.getConfigName() %>) /* To prevent double definition */
+#error <%= data.getConfigName() %> already defined!
+#endif /* (defined <%= data.getConfigName() %>) */
+
+/*
+ * Name of configuration structure that has to be passed to SoAd_Init()
+ */
+#define <%= data.getConfigName() %> (<%= PostBuildData.GLOBAL_POSTBUILD_LAYOUT_NAME %>.RootCfg)
+
+
+/*==================[type definitions]======================================*/
+
+<%
+cdsFile.type( data.getLayout(), false );
+
+cdsFile.type( data.getConstLayout(), false );
+%>
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/* start data section declaration */
+#define SOAD_START_SEC_CONFIG_DATA_UNSPECIFIED
+#include <SoAd_MemMap.h>
+
+/**
+ * SoAd post build configuration. - Static code accesses this configuration
+ * solely via this pointer which is passed to SoAd_Init().
+ */
+extern SoAd_ConstConfigLayoutType SoAd_ConfigLayout;
+
+/* stop data section declaration */
+#define SOAD_STOP_SEC_CONFIG_DATA_UNSPECIFIED
+#include <SoAd_MemMap.h>
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+/* Deviation MISRA-1 */
+#undef TS_RELOCATABLE_CFG_ENABLE
+/* Deviation MISRA-1 */
+#undef TS_PB_CFG_PTR_CLASS
+
+<%
+context.cds.endFile( cdsFile );
+%>
+<%@ include file="foot.h.inc" %>

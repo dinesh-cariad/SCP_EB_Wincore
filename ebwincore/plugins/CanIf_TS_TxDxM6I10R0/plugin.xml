@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+    ** \brief AUTOSAR CanIf_TS_TxDxM6I10R0 plugin
+    ** \project AUTOSAR Standard Core
+    ** \file plugin.xdm
+    **
+    ** Copyright 2010 by Elektrobit Automotive GmbH
+    ** All rights exclusively reserved for Elektrobit Automotive GmbH,
+    ** unless expressly agreed to otherwise.
+  -->
+
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="CanIf_TS_TxDxM6I10R0_ModuleId"
+             name="CanIf_TS_TxDxM6I10R0 Module">
+    <module id="CanIf_TS_TxDxM6I10R0"
+            label="CanIf"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-CANStack: AUTOSAR CanIf module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="6"
+            swVersionMinor="10"
+            swVersionPatch="15"
+            swVersionSuffix="B439717"
+            specVersionMajor="5"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="CanIf"
+            categoryLayer="Communication HW Abstraction"
+            categoryCategory="CAN"
+            categoryComponent="ECUC">
+      <cluster name="Can Stack"/>
+    </module>
+  </extension>
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="CanIf_TS_TxDxM6I10R0_ConfigId"
+             name="CanIf_TS_TxDxM6I10R0 Configuration">
+    <configuration moduleId="CanIf_TS_TxDxM6I10R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/CanIf.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the recommended configuration CanIfRecConfigurationDflt -->
+        <resource value="config_ext/CanIfRecConfigurationDflt.xdm" type="xdm" id="res_CanIfRecConfigurationDflt"/>
+        <recconfig
+          name="CanIfRecConfigurationDflt"
+          default="true"
+          description="Adds CanNm, CanTp, CanTSyn, J1939Nm, J1939Tp and PduR as upper layer modules"
+          resourceId="res_CanIfRecConfigurationDflt"
+          path="ASPath:/TS_TxDxM6I10R0/CanIfRecConfigurationDflt"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM6I10R0/CanIf"/>
+      </data>
+
+      <editor id="CanIf_TS_TxDxM6I10R0_EditorId"
+              label="Default"
+              tooltip="ACG-CANStack: AUTOSAR CanIf module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM6I10R0/CanIf"/>
+          <parameter name="title" value="CanIf"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+    <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_CanIf_TS_TxDxM6I10R0"
+           moduleId="CanIf_TS_TxDxM6I10R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.CanIfTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+    <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="CanIf_TS_TxDxM6I10R0_GeneratorId"
+             name="CanIf_TS_TxDxM6I10R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="CanIf_TS_TxDxM6I10R0_TemplateBasedCodeGeneratorId"
+               moduleId="CanIf_TS_TxDxM6I10R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate,generate_macros"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_CanIf_TS_TxDxM6I10R0"
+        name="CanIf service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="CanIf" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.CanIf_TS_TxDxM6I10R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+
+
+    <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="CanIf_TS_TxDxM6I10R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+
+
+
+<!-- register common ComStack modules for Can Stack cluster -->
+  <extension point="dreisoft.tresos.launcher2.api.plugin.modulecluster">
+    <modulecluster>
+      <default>
+        <cluster name="Can Stack"/>
+        <module type="Com"/>
+        <module type="EcuC"/>
+        <module type="PduR"/>
+        <module type="IpduM"/>
+        <module type="IPduMplex"/>
+      </default>
+    </modulecluster>
+  </extension>
+
+<!-- handle id calculator for CanIfCtrlId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="CanIfCtrlId_CanIf_TS_TxDxM6I10R0"
+    name="CanIf/CanIfCtrlId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="CanIf_TS_TxDxM6I10R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM6I10R0/ELEMENTS/CanIf/CanIfCtrlDrvCfg/CanIfCtrlDrvCfg/CanIfCtrlCfg/"/>
+            <parameter name="idPath" value="CanIfCtrlId"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.CanIf_TS_TxDxM6I10R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+          <equals value="4.0"/>
+          </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+<!-- handle id calculator for CanIfRxPduId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="CanIfCanRxPduId_CanIf_TS_TxDxM6I10R0"
+    name="CanIf/CanIfCanRxPduId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="CanIf_TS_TxDxM6I10R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM6I10R0/ELEMENTS/CanIf/CanIfInitCfg/CanIfInitCfg/CanIfRxPduCfg/"/>
+            <parameter name="idPath" value="CanIfRxPduId"/>
+            <parameter name="zbcGroups" value="true"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.CanIf_TS_TxDxM6I10R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+          <equals value="4.0"/>
+          </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+<!-- handle id calculator for CanIfTxPduId -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="CanIfTxPduId_CanIf_TS_TxDxM6I10R0"
+    name="CanIf/CanIfTxPduId"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="CanIf_TS_TxDxM6I10R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM6I10R0/ELEMENTS/CanIf/CanIfInitCfg/CanIfInitCfg/CanIfTxPduCfg/"/>
+            <parameter name="idPath" value="CanIfTxPduId"/>
+            <parameter name="groupBy" value="CanIfTxPduType"/>
+            <parameter name="sortOrder" value="STATIC,DYNAMIC"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.CanIf_TS_TxDxM6I10R0">
+                   <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+          <equals value="4.0"/>
+          </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- Generator used to generate all code-templates within a directory the code-templates do all have access to the
+       name of the generated variant but the name of the generated file cannot be influenced directly - if required,
+       renaming a file can e.g. be done by a script run as post-generator
+    -->
+  <!--  !LINKSTO CanIf.EB.RemoveTemplateStructure,1  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+              id="CanIf_TS_TxDxM6I10R0_Gen_Template">
+    <generator moduleId="CanIf_TS_TxDxM6I10R0"
+               id="CanIf_TS_TxDxM6I10R0_Gen_TemplateId"
+               modes="generate,Template_withPostRename,verify"
+               class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator">
+      <parameter name="mode_type" mode="Template_withPostRename" value="generate"/>
+
+      <!-- common template path parameters -->
+      <parameter name="templates" mode="generate,verify" value="generate_var,generate_macros"/>
+
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+
+    </generator>
+  </extension>
+
+  <!-- NGGenerator which calls a common ant-script within the ant-script it is also possible to call tresos Studio
+       generators in the example-script, a single code-template file is generated with a custom file-name (depending
+       on the variants name)
+    -->
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+    id="CanIf_TS_TxDxM6I10R0_Gen_NG">
+  <generator class="dreisoft.tresos.generator.ng.api.NGGenerator"
+    id="CanIf_TS_TxDxM6I10R0_Gen_NGId"
+    moduleId="CanIf_TS_TxDxM6I10R0"
+    modes="generate,NG_PostfixAndMove"
+    step="post">
+
+    <!-- Specify the ant build script as parameter to the NGGenerator. -->
+    <parameter name="buildfile" value="resources/generator.xml"/>
+
+    <!-- only having this parameter set to true, a generator is called once for each variant! -->
+    <parameter name="variantAware" value="true"/>
+  </generator>
+  </extension>
+
+</plugin>

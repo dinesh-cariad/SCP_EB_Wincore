@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR EthIf_TS_TxDxM1I9R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="EthIf_TS_TxDxM1I9R0_ModuleId"
+             name="EthIf_TS_TxDxM1I9R0 Module">
+    <module id="EthIf_TS_TxDxM1I9R0"
+            label="EthIf"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-IPStack: AUTOSAR EthIf module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="1"
+            swVersionMinor="9"
+            swVersionPatch="18"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="3"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="3"
+            relVersionPatch="0"
+            categoryType="EthIf"
+            categoryLayer="Communication HW Abstraction"
+            categoryCategory="Communication"
+            categoryComponent="ECUC">
+      <cluster name="Ethernet Stack"/>
+    </module>
+  </extension>
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="EthIf_TS_TxDxM1I9R0_ConfigId"
+             name="EthIf_TS_TxDxM1I9R0 Configuration">
+    <configuration moduleId="EthIf_TS_TxDxM1I9R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/EthIf.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the recommended configuration EthIfRecConfiguration -->
+        <resource value="config_ext/EthIfRecConfiguration.xdm" type="xdm" id="res_EthIfRecConfiguration"/>
+        <recconfig
+          name="EthIfRecConfiguration"
+          default="true"
+          description="Frame type owner and generic upper layer functions set to TcpIp for IPv4, ARP and IPv6"
+          resourceId="res_EthIfRecConfiguration"
+          path="ASPath:/TS_TxDxM1I9R0/EthIfRecConfiguration"/>
+
+        <!-- register the recommended configuration EthIfRecConfigurationEthTSyn -->
+        <resource value="config_ext/EthIfRecConfigurationEthTSyn.xdm" type="xdm" id="res_EthIfRecConfigurationEthTSyn"/>
+        <recconfig
+          name="EthIfRecConfigurationEthTSyn"
+          default="false"
+          description="Frame type owner and generic upper layer functions set to TcpIp for IPv4, ARP, IPv6 and to EthTSyn for PTP"
+          resourceId="res_EthIfRecConfigurationEthTSyn"
+          path="ASPath:/TS_TxDxM1I9R0/EthIfRecConfigurationEthTSyn"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM1I9R0/EthIf"/>
+      </data>
+
+      <editor id="EthIf_TS_TxDxM1I9R0_EditorId"
+              label="Default"
+              tooltip="ACG-IPStack: AUTOSAR EthIf module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM1I9R0/EthIf"/>
+          <parameter name="title" value="EthIf"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_EthIf_TS_TxDxM1I9R0"
+           moduleId="EthIf_TS_TxDxM1I9R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.EthIfTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+
+
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="EthIf_TS_TxDxM1I9R0_GeneratorId"
+             name="EthIf_TS_TxDxM1I9R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="EthIf_TS_TxDxM1I9R0_TemplateBasedCodeGeneratorId"
+               moduleId="EthIf_TS_TxDxM1I9R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate,generate_macros"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+
+
+
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_EthIf_TS_TxDxM1I9R0"
+        name="EthIf service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="EthIf" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/EthIf_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.EthIf_TS_TxDxM1I9R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.3" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+
+
+
+
+
+  <!-- register common ComStack modules for FlexRay Stack cluster -->
+  <extension point="dreisoft.tresos.launcher2.api.plugin.modulecluster">
+    <modulecluster>
+      <default>
+        <cluster name="Ethernet Stack"/>
+        <module type="Com"/>
+        <module type="LdCom"/>
+        <module type="EcuC"/>
+        <module type="PduR"/>
+        <module type="IpduM"/>
+        <module type="IPduMplex"/>
+      </default>
+    </modulecluster>
+  </extension>
+
+  <!-- handle id calculator for EthIfController -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="EthIfCtrlIdx_EthIf_TS_TxDxM1I9R0"
+    name="EthIf/EthIfCtrlIdx"
+    desc="">
+        <operationclass class="dreisoft.tresos.hidwiz.api.SimpleHandleIdGroupByXPathPushOperation">
+            <parameter name="moduleId" value="EthIf_TS_TxDxM1I9R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I9R0/ELEMENTS/EthIf/EthIfConfigSet/EthIfController"/>
+            <parameter name="idPath" value="EthIfCtrlIdx"/>
+            <parameter name="groupBy" value="node:exists(EthIfVlanId)"/>
+            <parameter name="sortOrder" value="false,true"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.EthIf_TS_TxDxM1I9R0">
+                    <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.3"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for EthIfSwitchIdx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="EthIfSwitchIdx_EthIf_TS_TxDxM1I9R0"
+    name="EthIf/EthIfSwitchIdx"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="EthIf_TS_TxDxM1I9R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I9R0/ELEMENTS/EthIf/EthIfConfigSet/EthIfSwitch"/>
+            <parameter name="idPath" value="EthIfSwitchIdx"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.EthIf_TS_TxDxM1I9R0">
+                    <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.3"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for EthIfPhysControllerIdx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="EthIfPhysControllerIdx_EthIf_TS_TxDxM1I9R0"
+    name="EthIf/EthIfPhysControllerIdx"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="EthIf_TS_TxDxM1I9R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I9R0/ELEMENTS/EthIf/EthIfConfigSet/EthIfPhysController"/>
+            <parameter name="idPath" value="EthIfPhysControllerIdx"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.EthIf_TS_TxDxM1I9R0">
+                    <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.3"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for EthIfTransceiverIdx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="EthIfTransceiverIdx_EthIf_TS_TxDxM1I9R0"
+    name="EthIf/EthIfTransceiverIdx"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="EthIf_TS_TxDxM1I9R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I9R0/ELEMENTS/EthIf/EthIfConfigSet/EthIfTransceiver"/>
+            <parameter name="idPath" value="EthIfTransceiverIdx"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.EthIf_TS_TxDxM1I9R0">
+                    <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.3"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for EthIfSwitchPortGroupIdx -->
+  <extension
+    point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="EthIfSwitchPortGroupIdxEthIf_TS_TxDxM1I9R0"
+    name="EthIf/EthIfSwitchPortGroupIdx"
+    desc="">
+        <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+            <parameter name="moduleId" value="EthIf_TS_TxDxM1I9R0"/>
+            <parameter name="listPath" value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM1I9R0/ELEMENTS/EthIf/EthIfConfigSet/EthIfSwitchPortGroup"/>
+            <parameter name="idPath" value="EthIfSwitchPortGroupIdx"/>
+            <parameter name="zbcGroups" value="false"/>
+        </operationclass>
+        <event>
+            <and>
+                <with variable="class">
+                    <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+                </with>
+                <with variable="moduleId.EthIf_TS_TxDxM1I9R0">
+                    <equals value="true"/>
+                </with>
+                <with variable="relVersion">
+                    <equals value="4.3"/>
+                </with>
+            </and>
+        </event>
+    </pushoperation>
+  </extension>  
+  
+  <!-- Generator used to generate all code-templates within a directory the code-templates do all have access to the
+       name of the generated variant but the name of the generated file cannot be influenced directly - if required,
+       renaming a file can e.g. be done by a script run as post-generator
+    -->
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+              id="EthIf_TS_TxDxM1I9R0_Gen_Template">
+    <generator moduleId="EthIf_TS_TxDxM1I9R0"
+               id="EthIf_TS_TxDxM1I9R0_Gen_TemplateId"
+               modes="generate,Template_withPostRename,verify"
+               class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator">
+      <parameter name="mode_type" mode="Template_withPostRename" value="generate"/>
+
+      <!-- common template path parameters -->
+      <parameter name="templates" mode="generate,verify" value="generate_var,generate_macros"/>
+
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+
+    </generator>
+  </extension>
+
+  <!-- NGGenerator which calls a common ant-script within the ant-script it is also possible to call tresos Studio
+       generators in the example-script, a single code-template file is generated with a custom file-name (depending
+       on the variants name)
+    -->
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+    id="EthIf_TS_TxDxM1I9R0_Gen_NG">
+  <generator class="dreisoft.tresos.generator.ng.api.NGGenerator"
+    id="EthIf_TS_TxDxM1I9R0_Gen_NGId"
+    moduleId="EthIf_TS_TxDxM1I9R0"
+    modes="generate,NG_PostfixAndMove"
+    step="post">
+
+    <!-- Specify the ant build script as parameter to the NGGenerator. -->
+    <parameter name="buildfile" value="resources/generator.xml"/>
+
+    <!-- only having this parameter set to true, a generator is called once for each variant! -->
+    <parameter name="variantAware" value="true"/>
+  </generator>
+  </extension>
+</plugin>

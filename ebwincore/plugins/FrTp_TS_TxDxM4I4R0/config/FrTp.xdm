@@ -1,0 +1,1707 @@
+<?xml version='1.0'?>
+<datamodel version="7.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/16/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/16/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:cd="http://www.tresos.de/_projects/DataModel2/08/customdata.xsd" 
+         xmlns:f="http://www.tresos.de/_projects/DataModel2/14/formulaexpr.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd"  
+         xmlns:variant="http://www.tresos.de/_projects/DataModel2/11/variant.xsd">
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_TxDxM4I4R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="FrTp" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="ADMIN-DATA" type="ADMIN-DATA">
+                <ad:ADMIN-DATA>
+                  <ad:LANGUAGE>EN</ad:LANGUAGE>
+                  <ad:DOC-REVISIONS>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>4.2.0</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>AUTOSAR</ad:ISSUED-BY>
+                      <ad:DATE>2011-11-09T11:36:22Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                    <ad:DOC-REVISION>
+                      <ad:REVISION-LABEL>4.4.26</ad:REVISION-LABEL>
+                      <ad:ISSUED-BY>Elektrobit Automotive GmbH</ad:ISSUED-BY>
+                      <ad:DATE>2021-07-14T23:59:59Z</ad:DATE>
+                    </ad:DOC-REVISION>
+                  </ad:DOC-REVISIONS>
+                </ad:ADMIN-DATA>
+              </a:a>
+              <a:a name="DESC">
+                <a:v>&lt;html&gt;
+                        Configuration of the FlexRay Transport Protocol module according to ISO 10681-2.
+                      &lt;/html&gt;</a:v>
+              </a:a>
+              <a:a name="LOWER-MULTIPLICITY" value="0"/>
+              <a:a name="RELEASE" value="asc:4.0"/>
+              <a:a name="UPPER-MULTIPLICITY" value="1"/>
+              <a:a name="UUID" value="ECUC:2934096d-28a8-4cd7-bd56-5cd7c19809ba"/>
+              <a:da name="INVALID" type="XPath">
+                <a:tst expr="count(as:modconf(&apos;EcuC&apos;)) = 1" 
+                       false="The FlexRay Transport Layer module needs the ECU Configuration module."/>
+                <a:tst expr="count(as:modconf(&apos;FrIf&apos;)) = 1" 
+                       false="The FlexRay Transport Layer module needs the FlexRay Interface module."/>
+                <a:tst expr="count(as:modconf(&apos;PduR&apos;)) = 1" 
+                       false="The FlexRay Transport Layer module needs the PDU Router module."/>
+              </a:da>
+              <v:ctr name="CommonPublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Common container, aggregated by all modules. It contains published information about vendor and versions.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Common Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:a00be3e0-8783-9123-2d52-1eb616737ca6"/>
+                <v:var name="ArMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:948f3f2e-f129-4bc5-b4e1-7a7bdb8599e1"/>
+                  <a:da name="DEFAULT" value="4"/>
+                </v:var>
+                <v:var name="ArMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:2893b920-59d5-4ac2-b2c1-e23742e66d70"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="ArPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of AUTOSAR specification on which the appropriate implementation is based on.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="AUTOSAR Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6428eb9b-8790-488a-b9a3-0fba52d0f59e"/>
+                  <a:da name="DEFAULT" value="0"/>
+                </v:var>
+                <v:var name="SwMajorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Major version number of the vendor specific implementation of the module.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Major Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:605b18ae-3f9a-41d4-9225-67c9c5f6fc34"/>
+                  <a:da name="DEFAULT" value="4"/>
+                </v:var>
+                <v:var name="SwMinorVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Minor version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Minor Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a7fe44dc-ea25-4b8d-8fad-9fbcae86d56f"/>
+                  <a:da name="DEFAULT" value="4"/>
+                </v:var>
+                <v:var name="SwPatchVersion" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Patch level version number of the vendor specific implementation of the module. The numbering is vendor specific.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Software Patch Version"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" value="a318d2d9-0e75-49da-ac43-e7e4e682e2f9"/>
+                  <a:da name="DEFAULT" value="26"/>
+                </v:var>
+                <v:var name="ModuleId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Module ID of this module from Module List
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Numeric Module ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:78bc8362-080f-4253-b3da-804ab69a7154"/>
+                  <a:da name="DEFAULT" value="36"/>
+                </v:var>
+                <v:var name="VendorId" type="INTEGER_LABEL">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Vendor ID of the dedicated implementation of this module according to the AUTOSAR vendor list
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Vendor ID"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:01b0f467-6943-4558-b4f2-3fa1fad28449"/>
+                  <a:da name="DEFAULT" value="1"/>
+                </v:var>
+                <v:var name="Release" type="STRING_LABEL">
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="Release Information"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:1c68a547-f24e-4a4e-9540-69fbd533ec89"/>
+                  <a:da name="DEFAULT" value=""/>
+                </v:var>
+              </v:ctr>
+              <v:var name="IMPLEMENTATION_CONFIG_VARIANT" type="ENUMERATION">
+                <a:a name="LABEL" value="Config Variant"/>
+                <a:da name="DEFAULT" value="VariantPostBuild"/>
+                <a:da name="RANGE" value="VariantPostBuild"/>
+              </v:var>
+              <v:ctr name="FrTpDefensiveProgramming" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                &lt;p&gt;Parameters for defensive programming&lt;/p&gt;
+                &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="Defensive Programming Options"/>
+                <v:var name="FrTpDefProgEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                    &lt;p&gt;Enables or disables the defensive
+                    programming feature for the module FrTp.&lt;/p&gt;
+                    &lt;p&gt;Note: This feature is dependent on the use of the development error detection module.
+                    To use the defensive programming feature, proceed as follows:
+                    &lt;ol&gt;
+                    &lt;li&gt;Enable development error detection&lt;/li&gt;
+                    &lt;li&gt;Enable defensive programming&lt;/li&gt;
+                    &lt;li&gt;Enable assertions as required&lt;/li&gt;
+                    &lt;/ol&gt;
+                    &lt;/p&gt;
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Defensive Programming"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="../../FrTpGeneral/FrTpDevErrorDetect = &apos;true&apos;" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="FrTpPrecondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of precondition assertion checks reported from
+                  the module FrTp.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;FrTpDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;FrTpDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Precondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../FrTpGeneral/FrTpDevErrorDetect = &apos;true&apos;) and (../FrTpDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="FrTpPostcondAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of postcondition assertion checks reported from
+                  the module FrTp.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;FrTpDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;FrTpDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Postcondition Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../FrTpGeneral/FrTpDevErrorDetect = &apos;true&apos;) and (../FrTpDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="FrTpStaticAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of static assertion checks reported from
+                  the module FrTp.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;FrTpDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;FrTpDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Static Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../FrTpGeneral/FrTpDevErrorDetect = &apos;true&apos;) and (../FrTpDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="FrTpUnreachAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of unreachable code assertion checks
+                  reported from the module FrTp.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;FrTpDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;FrTpDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Unreachable Code Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../FrTpGeneral/FrTpDevErrorDetect = &apos;true&apos;) and (../FrTpDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+                <v:var name="FrTpInvariantAssertEnabled" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                  &lt;p&gt;Enables handling of invariant assertion checks
+                  reported from functions of the module FrTp.&lt;/p&gt;
+                  &lt;p&gt;Dependency on parameter(s):
+                  &lt;ul&gt;
+                  &lt;li&gt;Enable Development Error Detection (&lt;code&gt;FrTpDevErrorDetect&lt;/code&gt;): must be enabled &lt;/li&gt;
+                  &lt;li&gt;Enable Defensive Programming (&lt;code&gt;FrTpDefProgEnabled&lt;/code&gt;): must be enabled&lt;/li&gt;
+                  &lt;/ul&gt;
+                  &lt;/p&gt;
+                  &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="LABEL" value="Enable Invariant Assertions"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" type="XPath" 
+                        expr="(../../FrTpGeneral/FrTpDevErrorDetect = &apos;true&apos;) and (../FrTpDefProgEnabled = &apos;true&apos;)" 
+                        true="true" false="false"/>
+                </v:var>
+              </v:ctr>
+              <v:ctr name="FrTpGeneral" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>&lt;html&gt;
+                        This container contains the general configuration parameters of the FlexRay Transport Protocol module.
+                      &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="UUID" 
+                     value="ECUC:75dd14c2-0fdb-4fa2-9ab7-002e922049a1"/>
+                <v:var name="FrTpAckRt" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;&lt;em&gt;The functionality related to this parameter
+                        is not supported by the current implementation.&lt;/em&gt;&lt;/p&gt;
+                        &lt;p&gt;Preprocessor switch for enabling the Acknowledgement and retry mechanisms.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;True&lt;/code&gt;:  Acknowledge and Retry is enabled&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;False&lt;/code&gt;: Acknowledge and Retry is disabled&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:7910a674-32c7-4b67-8eea-598e80fc2e55"/>
+                  <a:da name="DEFAULT" value="true"/>
+                  <a:da name="EDITABLE" value="false"/>
+                </v:var>
+                <v:var name="FrTpChanNum" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        Preprocessor switch for defining the number of concurrent channels the module supports. Up to 32 channels shall be definable here.
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:2c60f0d8-b645-49c3-9ae1-2a9d9c5ca3af"/>
+                  <a:da name="DEFAULT" value="1"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=32"/>
+                    <a:tst expr="&gt;=1"/>
+                  </a:da>
+                </v:var>
+                <v:var name="FrTpChangeParamApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Preprocessor switch for enabling the API to change FrTp communication parameters.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;True&lt;/code&gt;:  ChangeParameter API is enabled&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;False&lt;/code&gt;: ChangeParameter API is disabled&lt;/li&gt;
+                        &lt;/ul&gt;
+                        &lt;strong&gt;This feature is currently not supported.&lt;/strong&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:85e4b12b-782f-4e3d-8e90-02c5c3f6f023"/>
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="EDITABLE" value="false"/>
+                </v:var>
+                <v:var name="FrTpDevErrorDetect" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Preprocessor switch for enabling development error detection.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;True&lt;/code&gt;:  Development Error Detection is enabled&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;False&lt;/code&gt;: Development Error Detection is disabled&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:dbe9dcee-eb95-48ec-9f9a-f6cb24e443c9"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+                <v:var name="FrTpFullDuplexEnable" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Preprocessor switch for enabling full duplex mechanisms for all channels.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;True&lt;/code&gt;: Full duplex is enabled&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;False&lt;/code&gt;: Fullduplex is disabled (Half duplex is enabled)&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:6db47148-f6bc-438a-9a44-b2866e298b45"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="FrTpMainFuncCycle" type="FLOAT">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        This parameter contains the calling period of the TPs Main Function. The parameter is specified in seconds.
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:5856a139-09b4-4ca8-9bcb-75382ffadae4"/>
+                  <a:da name="DEFAULT" value="0.005"/>
+                  <a:da name="INVALID" type="Multi">
+                    <mt:range>
+                      <mt:tst expr="&gt;= 0"/>
+                      <mt:tst expr="&lt;= Infinity"/>
+                    </mt:range>
+                  </a:da>
+                </v:var>
+                <v:var name="FrTpTransmitCancellation" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Preprocessor switch for enabling Transmit Cancellation.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;True&lt;/code&gt;:  Transmit Cancellation is enabled&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;False&lt;/code&gt;: Transmit Cancellation is disabled&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:23763db2-59f4-4aa4-9b85-2c275c821b27"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="FrTpUnknownMsgLength" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;&lt;em&gt;The functionality related to this parameter is not supported by the current implementation.&lt;/em&gt;&lt;/p&gt;
+                        &lt;p&gt;Preprocessor switch to support data transfer with unknown message length.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;True&lt;/code&gt;:  Transmission with unknown message length is enabled&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;False&lt;/code&gt;: Transmission with unknown message length is disabled&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:c226ddd7-ae28-4cdd-baca-791fe3cad4e1"/>
+                  <a:da name="DEFAULT" value="true"/>
+                  <a:da name="EDITABLE" value="false"/>
+                </v:var>
+                <v:var name="FrTpVersionInfoApi" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        &lt;p&gt;Preprocessor switch for enabling the Version info API.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;&lt;code&gt;True&lt;/code&gt;:  Version Info API is enabled&lt;/li&gt;
+                          &lt;li&gt;&lt;code&gt;False&lt;/code&gt;: Version Info API is disabled&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:8ce0d461-1481-4f38-b0f2-dbbb6739c42f"/>
+                  <a:da name="DEFAULT" value="false"/>
+                </v:var>
+                <v:var name="FrTpTxPduNum" type="INTEGER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        Preprocessor switch for defining the maximum number of TxPdus that can be
+                        configured.
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       type="IMPLEMENTATIONCONFIGCLASS">
+                    <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                  </a:a>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="DCE:87c61938-87e5-47ed-a874-b790bf74da4b"/>
+                  <a:da name="DEFAULT" value="1"/>
+                  <a:da name="INVALID" type="Range">
+                    <a:tst expr="&lt;=255"/>
+                    <a:tst expr="&gt;=1"/>
+                  </a:da>
+                </v:var>
+                <v:ctr name="VendorSpecific" type="IDENTIFIABLE">
+                  <a:da name="INVALID" type="XPath">
+                    <a:tst 
+                           expr="(FrTpLimitNumberOfConnections = &apos;true&apos;) and (num:i                       (                         FrTpConnectionBufferSizeUnlimited +                         count(FrTpConnectionBufferSizeUnlimited[. &gt; 0]) +                         sum(FrTpConnectionLimitConfig/*/FrTpConnectionBufferSize) +                         count(FrTpConnectionLimitConfig/*/FrTpConnectionBufferSize[. &gt; 0])                       ) &gt; 65535)" 
+                           true="The sum of all connection buffer sizes is larger than the supported maximum.                             The sum of all connection buffer sizes added to the number of connection buffers needs to be smaller than 65536."/>
+                    <a:tst 
+                           expr="(FrTpLimitNumberOfConnections = &apos;true&apos;) and                          num:i(count(FrTpConnectionLimitConfig/*) &gt; 65535)" 
+                           true="The number of connection limits is larger than the supported maximum of 65535."/>
+                  </a:da>
+                  <v:var name="FrTpMainfunctionsPerCommunicationCycle" 
+                         type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                          &lt;p&gt;
+                            This config parameter contains the number of FrTp_MainFunction()
+                            invocations within a single FlexRay communications cycle.
+                          &lt;/p&gt;
+                          &lt;p&gt;
+                            Note: Since there is only a single FrTp_MainFunction(), FrTp works only
+                            for multiple FlexRay clusters if they all use the same FlexRay
+                            communication cycle length.
+                          &lt;/p&gt;
+                        &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:da name="DEFAULT" value="1"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=255"/>
+                      <a:tst expr="&gt;=1"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="FrTpRelocatablePbcfgEnable" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                           Enables/disables support for relocatable postbuild configuration.
+                           &lt;ul&gt;
+                             &lt;li&gt;True: Postbuild configuration relocatable in memory.&lt;/li&gt;
+                             &lt;li&gt;False: Postbuild configuration not relocatable in memory.&lt;/li&gt;
+                           &lt;/ul&gt;
+                         &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="DCE:87c61938-86e0-47ed-a874-b790bf74da4b"/>
+                    <a:da name="DEFAULT" value="true"/>
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="(node:contains(node:refs(as:modconf(&apos;PbcfgM&apos;)/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf(&apos;FrTp&apos;)) = &apos;true&apos;)" 
+                          true="false" false="true"/>
+                  </v:var>
+                  <v:var name="FrTpCopyToLocalBuffer" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                           Enables/disables support for copy of STF to the local buffer, in case
+                           PduR doesn&apos;t provide enough buffer for STF payload.
+                           &lt;ul&gt;
+                             &lt;li&gt;True: Enable copy of STF to local buffer.&lt;/li&gt;
+                             &lt;li&gt;False: Disable copy of STF to local buffer.&lt;/li&gt;
+                           &lt;/ul&gt;
+                         &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="DCE:87c61938-86e0-47cd-a974-b790bf74da4b"/>
+                    <a:da name="DEFAULT" value="false"/>
+                  </v:var>
+                  <v:var name="FrTpLocalBufferSize" type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                           Specifies the size of the local buffer used for STF copy.
+                         &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="DCE:87c61938-86e0-47cd-a974-b790bf74da4b"/>
+                    <a:da name="DEFAULT" value="64"/>
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="(../FrTpCopyToLocalBuffer = &apos;true&apos;)" 
+                          true="true" false="false"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=246"/>
+                      <a:tst expr="&gt;=1"/>
+                    </a:da>
+                  </v:var>
+                  <v:var name="FrTpLimitNumberOfConnections" type="BOOLEAN">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            Enables/disables support for buffering data transfer requests in cases
+                            where all channels are allocated.
+                            &lt;ul&gt;
+                              &lt;li&gt;True: Enable buffer&lt;/li&gt;
+                              &lt;li&gt;False: Disable buffer&lt;/li&gt;
+                            &lt;/ul&gt;
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="DCE:cade4ecb-4cda-40e9-a27f-73829342d15e"/>
+                    <a:da name="DEFAULT" value="false"/>
+                  </v:var>
+                  <v:var name="FrTpConnectionBufferSizeUnlimited" 
+                         type="INTEGER">
+                    <a:a name="DESC">
+                      <a:v>&lt;html&gt;
+                            Specifies the maximum number of buffered data transfer requests for
+                            unlimited connections (i.e. connections whose remote address is not
+                            listed in FrTpConnectionLimitConfig).
+                          &lt;/html&gt;</a:v>
+                    </a:a>
+                    <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                         type="IMPLEMENTATIONCONFIGCLASS">
+                      <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                    </a:a>
+                    <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                    <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                    <a:a name="UUID" 
+                         value="DCE:01fd62ec-3ecb-4afc-a242-750aba153792"/>
+                    <a:da name="DEFAULT" value="0"/>
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="(../FrTpLimitNumberOfConnections = &apos;true&apos;)" 
+                          true="true" false="false"/>
+                    <a:da name="INVALID" type="Range">
+                      <a:tst expr="&lt;=255"/>
+                      <a:tst expr="&gt;=0"/>
+                    </a:da>
+                  </v:var>
+                  <v:lst name="FrTpConnectionLimitConfig" type="MAP">
+                    <a:da name="EDITABLE" type="XPath" 
+                          expr="(../FrTpLimitNumberOfConnections = &apos;true&apos;)" 
+                          true="true" false="false"/>
+                    <v:ctr name="FrTpConnectionLimitConfig" type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                              Maps a maximum number of active connections and a buffer size to a
+                              remote address.
+                            &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="POSTBUILDCHANGEABLE" value="false"/>
+                      <a:a name="UUID" 
+                           value="DCE:ee579bd0-b24d-4165-8de5-ee6d4ecd3f8d"/>
+                      <v:var name="FrTpRa" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                Specifies the remote address.
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="DCE:40a0d153-e3aa-419f-bb45-a5b4831e7b6f"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65535"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath>
+                            <mt:tst 
+                                    false="The FrTp remote address is not unique." 
+                                    expr="count(../../*/FrTpRa[. = node:current()]) = 1"/>
+                            <mt:tst 
+                                    false="The FrTp remote address is not used in any FrTpConnection" 
+                                    expr="count(../../../../../FrTpMultipleConfig/*/FrTpConnection/*/FrTpRa[. = node:current()]) &gt;= 1"/>
+                          </mt:xpath>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpConnectionLimit" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                Specifies the maximum number of active connections.
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="DCE:4f1e8c53-ec5b-4cbe-be40-27fc597fb66e"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=32"/>
+                          <a:tst expr="&gt;=1"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpConnectionBufferSize" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                Specifies the maximum number of buffered data transfer requests for
+                                this remote address.
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="DCE:8451a81e-7359-4ffb-b4d0-267519d3cdf1&apos;"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr=". &gt; count(../../../../../FrTpMultipleConfig/*[1]/FrTpConnection/*/FrTpTxSdu[../FrTpRa = node:current()/../FrTpRa])" 
+                              true="The connection buffer size is larger than the number of transmit connections with the corresponding remote address.                                   Some buffer elements will not be used."/>
+                      </v:var>
+                    </v:ctr>
+                  </v:lst>
+                </v:ctr>
+              </v:ctr>
+              <v:lst name="FrTpMultipleConfig" 
+                     type="MULTIPLE-CONFIGURATION-CONTAINER">
+                <a:da name="MAX" value="1"/>
+                <a:da name="MIN" value="1"/>
+                <v:ctr name="FrTpMultipleConfig" 
+                       type="MULTIPLE-CONFIGURATION-CONTAINER">
+                  <a:a name="DESC">
+                    <a:v>&lt;html&gt;
+                        This container holds one or several multiple configuration sets.
+                      &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="UUID" 
+                       value="ECUC:a9475420-4a73-4ce4-83bb-b93a5cee8dff"/>
+                  <v:lst name="FrTpConnection" type="MAP">
+                    <a:da name="INVALID" type="XPath" 
+                          expr="node:isconsecutive(*/FrTpTxSdu/FrTpTxSduId, 0)" 
+                          false="FrTpTxSduId must be zero-based and consecutive."/>
+                    <a:da name="MIN" value="1"/>
+                    <v:ctr name="FrTpConnection" type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                        This container contains the connection specific parameters to transfer N-PDUs via FlexRay TP.
+                      &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="POSTBUILDCHANGEABLE" value="true"/>
+                      <a:a name="UUID" 
+                           value="ECUC:daf437b6-aa4f-4ef5-92b5-33874ada757a"/>
+                      <a:da name="INVALID" type="XPath" 
+                            expr="(node:exists(./FrTpTxSdu/FrTpTxSduRef)=false()) or (num:max(node:refs(node:ref(./FrTpTxPduPoolRef)/*/*/FrTpTxPduRef)/PduLength)&gt;8)" 
+                            false="A connection which has a FrTpTxSdu configured, needs to reference a FrTpTxPduPool which has Pdus of size 9 bytes or larger configured."/>
+                      <v:var name="FrTpBandwidthLimitation" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter indicates whether the connection requires a  bandwidth limitation or not.
+                        If &lt;code&gt;FrTpBandwidthLimitation=True&lt;/code&gt; the sender shall send a StartFrame always on the first PDU of a PDU-Pool.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:be5bca90-0e33-4c7d-87ad-76dec2d0d2aa"/>
+                        <a:da name="DEFAULT" value="true"/>
+                        <a:da name="EDITABLE" value="false"/>
+                      </v:var>
+                      <v:var name="FrTpLa" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;This parameter defines the Local Address for the respective connection.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;When the local instance is the sender, this is the Source Address within the TP frame.&lt;/li&gt;
+                          &lt;li&gt;When the local instance is the receiver, this is the Target Address within the TP frame.&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:132fb4bd-1955-4930-8d55-7ac3532fdfaf"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65535"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpMultipleReceiverCon" type="BOOLEAN">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;This parameter defines, whether this connection is an 1:1 (&apos;false&apos;) or an 1:n (&apos;true&apos;) connection.&lt;/p&gt;
+                        &lt;p&gt;If data segmentation is required this parameter is used to check whether segmentation is possible or not.
+                        If the connection is 1:n segmentation is not possible and an error will occur.&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:3dbd0c29-a62d-4d7b-b708-151974cd4b20"/>
+                        <a:da name="DEFAULT" value="false"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="(node:current() = &apos;true&apos;) and (as:ref(../FrTpConCtrlRef)/FrTpAckType != &apos;FRTP_NO&apos;)" 
+                              true="FrTpAckType must be FRTP_NO if this parameter is enabled."/>
+                      </v:var>
+                      <v:var name="FrTpRa" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;This parameter defines the Remote Address for the respective connection.&lt;/p&gt;
+                        &lt;ul&gt;
+                          &lt;li&gt;When the local instance is the sender, this is the Target Address within the TP frame.&lt;/li&gt;
+                          &lt;li&gt;When the local instance is the receiver, this is the Source Address within the TP frame.&lt;/li&gt;
+                        &lt;/ul&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:e213f58a-7e1f-4d2a-a4d3-1605a5a82429"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=65535"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath 
+                                    false="The Remote/Local address pair is not unique." 
+                                    expr="count(../../*[(./FrTpLa=node:current()/../FrTpLa) and (./FrTpRa=node:current())]) = 1"/>
+                        </a:da>
+                      </v:var>
+                      <v:ref name="FrTpConCtrlRef" type="REFERENCE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        FrTpConnectionControlReference:    This parameter defines a reference to a connection control container.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="UUID" 
+                             value="ECUC:af3befcd-45e9-4148-8faf-64746c35f94f"/>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/FrTp/FrTpMultipleConfig/FrTpConnectionControl"/>
+                      </v:ref>
+                      <v:ref name="FrTpRxPduPoolRef" type="REFERENCE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines a reference to a RxPduPool.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="UUID" 
+                             value="ECUC:e0933913-63de-43ec-8cb5-422fc5309288"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="(../FrTpMultipleReceiverCon = &apos;false&apos; ) or (node:exists(../FrTpRxSdu))"/>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/FrTp/FrTpMultipleConfig/FrTpRxPduPool"/>
+                      </v:ref>
+                      <v:ref name="FrTpTxPduPoolRef" type="REFERENCE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines a reference to a TxPduPool.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="UUID" 
+                             value="ECUC:ad5e9a14-327d-4303-ae3e-a8b729639193"/>
+                        <a:da name="ENABLE" type="XPath" 
+                              expr="(../FrTpMultipleReceiverCon = &apos;false&apos; ) or (node:exists(../FrTpTxSdu))"/>
+                        <a:da name="INVALID" type="XPath" 
+                              expr="node:refvalid(.)" 
+                              false="FrTpTxPduPoolRef must reference a valid FrTpTxPduPool (/AUTOSAR/EcucDefs/FrTp/FrTpMultipleConfig/FrTpTxPduPool)."/>
+                        <a:da name="REF" 
+                              value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/FrTp/FrTpMultipleConfig/FrTpTxPduPool"/>
+                      </v:ref>
+                      <v:ctr name="FrTpRxSdu" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the Rx Service Data Unit Identifier (Sdu Id) which uniquely identifies a data transfer (inter-module communication) between FrTp and PDUR.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="UUID" 
+                             value="ECUC:2bebf6ec-219e-49af-8dc8-94e116335a8d"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <v:var name="FrTpRxSduId" type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                        &lt;p&gt;This unique identifier is used for change parameter request or receive cancellation from PduR to FrTp.&lt;/p&gt;
+                        &lt;p&gt;ImplementationType: &lt;code&gt;PduIdType&lt;/code&gt;&lt;/p&gt;
+                        &lt;p&gt;&lt;strong&gt;This parameter is currently not used&lt;/strong&gt;&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                          <a:a name="UUID" 
+                               value="ECUC:486179ae-7b2e-4d16-8eb9-ffc5a767c23c"/>
+                          <a:da name="DEFAULT" value="0"/>
+                          <a:da name="EDITABLE" value="false"/>
+                        </v:var>
+                        <v:ref name="FrTpRxSduRef" type="REFERENCE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                        Reference to a PDU in the global PDU structure.
+                      &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="UUID" 
+                               value="ECUC:4876e7cb-860a-4233-81db-4a2de8244c33"/>
+                          <a:da name="INVALID" type="XPath">
+                            <a:tst 
+                                   expr="count(../../../*/FrTpRxSdu/FrTpRxSduRef[. = node:current()]) = 1" 
+                                   false="The Rx N-SDU reference is not unique."/>
+                            <a:tst 
+                                   expr="count(as:modconf(&apos;PduR&apos;)[1]/PduRRoutingTables/*[1]/PduRRoutingTable/*/PduRRoutingPath/*/PduRSrcPdu[PduRSrcPduRef = node:current()]) &gt; 0" 
+                                   false="No corresponding routing path is configured in PduR."/>
+                            <a:tst 
+                                   expr="count(as:modconf(&apos;PduR&apos;)[1]/PduRRoutingTables/*[1]/PduRRoutingTable/*/PduRRoutingPath/*/PduRSrcPdu[PduRSrcPduRef = node:current()]) &lt;= 1" 
+                                   false="Multiple corresponding routing paths are configured in PduR. Exactly one corresponding routing path is required."/>
+                            <a:tst 
+                                   expr="as:modconf(&apos;PduR&apos;)[1]/PduRRoutingTables/*[1]/PduRRoutingTable/*/PduRRoutingPath/*/PduRSrcPdu[PduRSrcPduRef = node:current()]/PduRSourcePduHandleId != 65535" 
+                                   false="65535 is not a valid PduRSourcePduHandleId. This value is reserved for internal purposes."/>
+                            <a:tst 
+                                   expr="node:refvalid(.) and node:value(node:ref(.)/PduLength) &gt; 65535" 
+                                   true="The PduLength configured for this Pdu in EcuC module exceeds the maximum value (65535) supported by FrTp."/>
+                          </a:da>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                        </v:ref>
+                      </v:ctr>
+                      <v:ctr name="FrTpTxSdu" type="IDENTIFIABLE">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the Tx Service Data Unit Identifier (Sdu Id) which uniquely identifies a data transfer (inter-module communication) between FrTp and PDUR.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="OPTIONAL" value="true"/>
+                        <a:a name="UUID" 
+                             value="ECUC:3d26dff5-3b62-4c38-8032-519b289f59bf"/>
+                        <a:da name="ENABLE" value="false"/>
+                        <v:var name="FrTpTxSduId" type="INTEGER">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                        &lt;p&gt;This is a unique identifier for a to be transmitted message from the PduR to the FrTp.&lt;/p&gt;
+                        &lt;p&gt;ImplementationType: &lt;code&gt;PduIdType&lt;/code&gt;&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                          <a:a name="UUID" 
+                               value="ECUC:486179ae-7b2e-4d16-8eb9-ffc5a767c23c"/>
+                          <a:da name="INVALID" type="Multi">
+                            <mt:range>
+                              <mt:tst expr="&gt;= 0"/>
+                              <mt:tst expr="&lt;= 65534"/>
+                            </mt:range>
+                            <mt:xpath false="The Tx N-SDU Id is not unique." 
+                                      expr="count(../../../*/FrTpTxSdu/FrTpTxSduId[. = node:current()]) = 1"/>
+                          </a:da>
+                        </v:var>
+                        <v:ref name="FrTpTxSduRef" type="REFERENCE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                        Reference to a PDU in the global PDU structure.
+                      &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                               type="IMPLEMENTATIONCONFIGCLASS">
+                            <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                          </a:a>
+                          <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                          <a:a name="UUID" 
+                               value="ECUC:53652bde-41b6-4054-9bf8-bec6d6f95359"/>
+                          <a:da name="INVALID" type="XPath">
+                            <a:tst 
+                                   expr="count(../../../*/FrTpTxSdu/FrTpTxSduRef[. = node:current()]) = 1" 
+                                   false="The Tx N-SDU reference is not unique."/>
+                            <a:tst 
+                                   expr="count(as:modconf(&apos;PduR&apos;)[1]/PduRRoutingTables/*[1]/PduRRoutingTable/*/PduRRoutingPath/*/PduRDestPdu/*[PduRDestPduRef = node:current()]) &gt; 0" 
+                                   false="No corresponding routing path is configured in PduR."/>
+                            <a:tst 
+                                   expr="node:refvalid(.) and node:value(node:ref(.)/PduLength) &gt; 65535" 
+                                   true="The PduLength configured for this Pdu in EcuC module exceeds the maximum value (65535) supported by FrTp."/>
+                          </a:da>
+                          <a:da name="REF" 
+                                value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                        </v:ref>
+                      </v:ctr>
+                    </v:ctr>
+                  </v:lst>
+                  <v:lst name="FrTpConnectionControl" type="MAP">
+                    <a:da name="MIN" value="1"/>
+                    <v:ctr name="FrTpConnectionControl" type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                        This container contains the configuration parameters to control a FlexRay TP connection.
+                      &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="POSTBUILDCHANGEABLE" value="true"/>
+                      <a:a name="UUID" 
+                           value="ECUC:9ae16791-5e2f-424a-9867-babf691ec3ee"/>
+                      <v:var name="FrTpAckType" type="ENUMERATION">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the type of acknowledgement which is used for the specific channel.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:45e13963-200d-45a5-96e5-3267c92c0ac0"/>
+                        <a:da name="DEFAULT" value="FRTP_NO"/>
+                        <a:da name="RANGE">
+                          <a:v>FRTP_ACK_WITH_RT</a:v>
+                          <a:v>FRTP_NO</a:v>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpMaxAr" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the maximum number of trying to send a frame when a TIMEOUT AR occurs.
+                        &lt;p&gt;&lt;strong&gt;This parameter is currently not used.&lt;/strong&gt;&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:f92ab95e-285b-447b-b59a-c96296678562"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="EDITABLE" value="false"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpMaxAs" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the maximum number of trying to send a frame when a TIMEOUT AS occurs.
+                        &lt;p&gt;&lt;strong&gt;This parameter is currently not used.&lt;/strong&gt;&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:f544ed50-692f-4eac-b06e-725f44195f93"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="EDITABLE" value="false"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpMaxBufferSize" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        Limits the maximal buffer size the FrTp can choose in order to limit the amount of Tx buffer that will be requested at the sender side in a segmented transfer.
+                        &lt;p&gt;&lt;strong&gt;This parameter is currently not used.&lt;/strong&gt;&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:7f017436-3c7f-46e9-8409-766990b33763"/>
+                        <a:da name="DEFAULT" value="1"/>
+                        <a:da name="EDITABLE" value="false"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65535"/>
+                          <a:tst expr="&gt;=1"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpMaxFCWait" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the maximum number of FlowControl N-PDUs with FlowState &quot;WAIT&quot;.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:eddb6d0e-550b-4ff2-9c0f-bdad7c7d5462"/>
+                        <a:da name="DEFAULT" value="8"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpMaxFrIf" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the maximum number of trying to send a frame when the FrIf returns an error.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:668f68b3-42bf-40fa-a0b6-2076a2974f93"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpMaxNbrOfNPduPerCycle" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;This parameter is part of the ISO 10681-2 protocol&apos;s FlowControl parameter &quot;Bandwidth Control (BC)&quot;.&lt;/p&gt;
+                        &lt;p&gt;It limits the number of N-Pdus the sender is allowed to transmit within a FlexRay cycle.&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:511499e2-c997-4664-b839-cd6fcc37e817"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=31"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpMaxRn" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the maximum number of retries (if retry is configured).
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:22705c63-9e4a-43a8-a155-2ea0d0e299be"/>
+                        <a:da name="DEFAULT" value="4"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpSCexp" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;This parameter is part of the ISO 10681-2 protocol&apos;s FlowControl parameter &quot;Bandwidth Control (BC)&quot;.&lt;/p&gt;
+                        &lt;p&gt;It represents the exponent to calculate the minimum number of &quot;Separation Cycles&quot; the sender has to wait for the next transmission of an FrTp N-Pdu.&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:39029fbb-3d5b-482c-ab05-041cd8751234"/>
+                        <a:da name="DEFAULT" value="0"/>
+                        <a:da name="INVALID" type="Multi">
+                          <mt:range>
+                            <mt:tst expr="&lt;=7"/>
+                            <mt:tst expr="&gt;=0"/>
+                          </mt:range>
+                          <mt:xpath 
+                                    false="((2 ^ FrTpSCexp) - 1) x tCycleTime must be less than or equal to FrTpTimeoutCr." 
+                                    expr="((bit:shl(1,(.)) - 1) * (as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle)) &lt;= (../FrTpTimeoutCr)"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpTimeBr" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        &lt;p&gt;This parameter defines the time in seconds the FrTp requires to transmit a corresponding FlowControl Frame.&lt;/p&gt;
+                        &lt;p&gt;According to ISO 10681-2 this parameter is a performance requirement.&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:e160a206-95b9-4917-8862-427d65dcc2a0"/>
+                        <a:da name="DEFAULT" value="0.0"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=0.255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="(as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle &gt; 0) and (num:i((. * 1000000) mod (as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle * 1000000)) != 0)" 
+                              true="The timeout is not a multiple of the main function cycle time. The number of ticks for the timeout will be rounded up."/>
+                      </v:var>
+                      <v:var name="FrTpTimeBuffer" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the time in seconds of waiting for the next try to get a Tx or Rx buffer.
+                        &lt;p&gt;&lt;strong&gt;This parameter is currently not used.&lt;/strong&gt;&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:7e2e5b1b-ae37-4a23-bf2f-32c4bf862e1c"/>
+                        <a:da name="DEFAULT" value="0.0"/>
+                        <a:da name="EDITABLE" value="false"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65.535"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpTimeFrIf" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the time in seconds of waiting for the next try (if retry is activated) to send via FrIf_Transmit.
+                        &lt;p&gt;&lt;strong&gt;This parameter is currently not used.&lt;/strong&gt;&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:48fc4037-c3db-46b3-94ef-440242853af1"/>
+                        <a:da name="DEFAULT" value="0.0"/>
+                        <a:da name="EDITABLE" value="false"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=0.255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                      <v:var name="FrTpTimeoutAr" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter states the timeout in seconds between the PDU transmit request of the Transport Layer to the FlexRay Interface and the corresponding confirmation of the FlexRay Interface on the receiver side (for FC or AF).
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:90038b23-567e-421d-a35c-f82da1d7f0da"/>
+                        <a:da name="DEFAULT" value="0.02"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65.535"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="(as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle &gt; 0) and (num:i((. * 1000000) mod (as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle * 1000000)) != 0)" 
+                              true="The timeout is not a multiple of the main function cycle time. The number of ticks for the timeout will be rounded up."/>
+                      </v:var>
+                      <v:var name="FrTpTimeoutAs" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter specifies the timeout in seconds the FrIf shall confirm a transmitted Pdu to the FrTp.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:a673b7e0-8b68-4be7-9447-8b9a19e4cfa0"/>
+                        <a:da name="DEFAULT" value="0.02"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65.535"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="(as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle &gt; 0) and (num:i((. * 1000000) mod (as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle * 1000000)) != 0)" 
+                              true="The timeout is not a multiple of the main function cycle time. The number of ticks for the timeout will be rounded up."/>
+                      </v:var>
+                      <v:var name="FrTpTimeoutBs" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the timeout in seconds for waiting for an FC or AF on the sender side in a 1:1 connection.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:2ba00d4a-1079-4f0d-936a-5db48acd8cce"/>
+                        <a:da name="DEFAULT" value="0.5"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65.535"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="(as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle &gt; 0) and (num:i((. * 1000000) mod (as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle * 1000000)) != 0)" 
+                              true="The timeout is not a multiple of the main function cycle time. The number of ticks for the timeout will be rounded up."/>
+                      </v:var>
+                      <v:var name="FrTpTimeoutCr" type="FLOAT">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                        This parameter defines the timeout value in seconds a receiver is waiting for a CF or a LF.
+                      &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="ECUC:2a9422c2-8b51-4ec5-9ab5-3f5a8e8dde97"/>
+                        <a:da name="DEFAULT" value="0.5"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=65.535"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                        <a:da name="WARNING" type="XPath" 
+                              expr="(as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle &gt; 0) and (num:i((. * 1000000) mod (as:modconf(&apos;FrTp&apos;)[1]/FrTpGeneral/FrTpMainFuncCycle * 1000000)) != 0)" 
+                              true="The timeout is not a multiple of the main function cycle time. The number of ticks for the timeout will be rounded up."/>
+                      </v:var>
+                      <v:var name="FrTpMaxBufReq" type="INTEGER">
+                        <a:a name="DESC">
+                          <a:v>&lt;html&gt;
+                                This parameter is used to limit the number of retries for
+                                PduR_FrTpCopyTxData when no timer is active.
+                              &lt;/html&gt;</a:v>
+                        </a:a>
+                        <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                             type="IMPLEMENTATIONCONFIGCLASS">
+                          <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                        </a:a>
+                        <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                        <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                        <a:a name="UUID" 
+                             value="DCE:87c61938-86e0-47ed-a874-b7908f74d74b"/>
+                        <a:da name="DEFAULT" value="255"/>
+                        <a:da name="INVALID" type="Range">
+                          <a:tst expr="&lt;=255"/>
+                          <a:tst expr="&gt;=0"/>
+                        </a:da>
+                      </v:var>
+                    </v:ctr>
+                  </v:lst>
+                  <v:lst name="FrTpRxPduPool" type="MAP">
+                    <a:da name="INVALID" type="XPath" 
+                          expr="count(*/FrTpRxPdu/*)&lt;=255" 
+                          false="At most 255 FrTpRxPdu containers are supported, but more are configured."/>
+                    <v:ctr name="FrTpRxPduPool" type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                        This container contains all Pdus that are assigned to that Pdu Pool.
+                      &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="POSTBUILDCHANGEABLE" value="true"/>
+                      <a:a name="UUID" 
+                           value="ECUC:78a80c22-51d9-4999-897d-a64c3be59fad"/>
+                      <v:lst name="FrTpRxPdu" type="MAP">
+                        <v:ctr name="FrTpRxPdu" type="IDENTIFIABLE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                        &lt;p&gt;Container to hold the PDU parameters.&lt;/p&gt;
+                        &lt;p&gt;ImplementationType: &lt;code&gt;PduInfoType&lt;/code&gt;&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="POSTBUILDCHANGEABLE" value="true"/>
+                          <a:a name="UUID" 
+                               value="ECUC:293a3123-98f2-43d0-a74b-3708e5688631"/>
+                          <v:var name="FrTpRxPduId" type="INTEGER">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                        &lt;p&gt;This is a unique identifier for a received message which is forwarded from the FrIf to the FrTp.&lt;/p&gt;
+                        &lt;p&gt;ImplementationType: &lt;code&gt;PduIdType&lt;/code&gt;&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                            <a:a name="UUID" 
+                                 value="ECUC:2ed97a0f-0bee-481c-b44c-303a5f9b4c63"/>
+                            <a:da name="INVALID" type="Multi">
+                              <mt:range>
+                                <mt:tst expr="&lt;=65535"/>
+                                <mt:tst expr="&gt;=0"/>
+                              </mt:range>
+                              <mt:xpath false="FrTpRxPduId is not unique." 
+                                        expr="count(../../../../*/*/*/FrTpRxPduId[.=node:current()])=1"/>
+                            </a:da>
+                          </v:var>
+                          <v:ref name="FrTpRxPduRef" type="REFERENCE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                        Reference to a PDU in the global PDU structure.
+                      &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="UUID" 
+                                 value="ECUC:57804f45-2cd4-47ec-b5ec-70bd2676da01"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst 
+                                     expr="count(as:modconf(&apos;FrIf&apos;)[1]/FrIfConfig/*[1]/FrIfPdu/*/FrIfPduDirection/FrIfRxPduRef[. = node:current()]) &gt; 1" 
+                                     true="Multiple FrIf Rx PDU found referencing this N-PDU."/>
+                              <a:tst 
+                                     expr="(../../../../../../../FrTpGeneral/VendorSpecific/FrTpCopyToLocalBuffer=&apos;true&apos;) and (as:ref(.)/PduLength &gt; (../../../../../../../FrTpGeneral/VendorSpecific/FrTpLocalBufferSize)+8)" 
+                                     true="The maximum PduLength of the PDU must be such that the payload of a start frame is less than or equal to FrTpLocalBufferSize"/>
+                            </a:da>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                          </v:ref>
+                        </v:ctr>
+                      </v:lst>
+                    </v:ctr>
+                  </v:lst>
+                  <v:lst name="FrTpTxPduPool" type="MAP">
+                    <a:da name="INVALID" type="XPath">
+                      <a:tst expr="count(*/FrTpTxPdu/*)&lt;=255" 
+                             false="At most 255 FrTpTxPdu containers are supported, but more are configured."/>
+                      <a:tst 
+                             expr="node:isconsecutive(*/FrTpTxPdu/*/FrTpTxConfirmationPduId, 0)" 
+                             false="FrTpTxConfirmationPduId must be zero-based and consecutive."/>
+                      <a:tst 
+                             expr="count(*/FrTpTxPdu/*)&lt;=(../../../FrTpGeneral/FrTpTxPduNum)" 
+                             false="The number of configured FrTpTxPdu must be less than or equal to the parameter FrTpTxPduNum."/>
+                    </a:da>
+                    <v:ctr name="FrTpTxPduPool" type="IDENTIFIABLE">
+                      <a:a name="DESC">
+                        <a:v>&lt;html&gt;
+                        This container contains all Pdus that are assigned to that Pdu Pool.
+                      &lt;/html&gt;</a:v>
+                      </a:a>
+                      <a:a name="POSTBUILDCHANGEABLE" value="true"/>
+                      <a:a name="UUID" 
+                           value="ECUC:a2415a14-8390-4b76-b88b-32b28bef741d"/>
+                      <a:da name="WARNING" type="XPath" 
+                            expr="node:containsValue(node:paths(node:refs(as:modconf(&apos;FrTp&apos;)[1]/FrTpMultipleConfig/*[1]/FrTpConnection/*/FrTpTxPduPoolRef)),node:path(.))" 
+                            false="The PDU pool is not used by any connection. Consider removing it to reduce the ROM consumption of the module configuration."/>
+                      <v:lst name="FrTpTxPdu" type="MAP">
+                        <a:da name="MIN" value="1"/>
+                        <v:ctr name="FrTpTxPdu" type="IDENTIFIABLE">
+                          <a:a name="DESC">
+                            <a:v>&lt;html&gt;
+                        &lt;p&gt;Container to hold the PDU parameters.&lt;/p&gt;
+                        &lt;p&gt;ImplementationType: &lt;code&gt;PduInfoType&lt;/code&gt;&lt;/p&gt;
+                      &lt;/html&gt;</a:v>
+                          </a:a>
+                          <a:a name="POSTBUILDCHANGEABLE" value="true"/>
+                          <a:a name="UUID" 
+                               value="ECUC:6c3c184f-27ba-4e88-a02e-b7da04d5d309"/>
+                          <v:var name="FrTpTxConfirmationPduId" type="INTEGER">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                                    &lt;p&gt;Handle Id to be used by the FrIf to confirm the transmission of the FrTpTxPdu to the FrIf module.&lt;/p&gt;
+                                  &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="SYMBOLICNAMEVALUE" value="true"/>
+                            <a:a name="UUID" 
+                                 value="ECUC:8324381f-3689-4616-8019-8b490ac93f8a"/>
+                            <a:da name="DEFAULT" value="0"/>
+                            <a:da name="INVALID" type="Range">
+                              <a:tst expr="&lt;=255"/>
+                              <a:tst expr="&gt;=0"/>
+                            </a:da>
+                          </v:var>
+                          <v:ref name="FrTpTxPduRef" type="REFERENCE">
+                            <a:a name="DESC">
+                              <a:v>&lt;html&gt;
+                        Reference to a PDU in the global PDU structure.
+                      &lt;/html&gt;</a:v>
+                            </a:a>
+                            <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                                 type="IMPLEMENTATIONCONFIGCLASS">
+                              <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+                            </a:a>
+                            <a:a name="ORIGIN" value="AUTOSAR_ECUC"/>
+                            <a:a name="UUID" 
+                                 value="ECUC:29602a84-6c32-4014-8e25-d597b357b5ea"/>
+                            <a:da name="INVALID" type="XPath">
+                              <a:tst 
+                                     expr="count(as:modconf(&apos;FrTp&apos;)[1]/FrTpMultipleConfig/*[1]/FrTpTxPduPool/*/FrTpTxPdu/*/FrTpTxPduRef[. = node:current()]) = 1" 
+                                     false="The Tx N-PDU reference is not unique."/>
+                              <a:tst 
+                                     expr="count(as:modconf(&apos;FrIf&apos;)[1]/FrIfConfig/*[1]/FrIfPdu/*/FrIfPduDirection/FrIfTxPduRef[. = node:current()]) = 1" 
+                                     false="No (or multiple) FrIf Tx PDU found referencing this N-PDU."/>
+                              <a:tst 
+                                     expr="as:modconf(&apos;FrIf&apos;)[1]/FrIfConfig/*[1]/FrIfPdu/*/FrIfPduDirection/FrIfConfirm[(../FrIfTxPduRef = node:current()) and (. != &apos;true&apos;)]" 
+                                     true="The FrIf configuration doesn&apos;t support call of FrTp_TxConfirmation."/>
+                              <a:tst 
+                                     expr="as:modconf(&apos;FrIf&apos;)[1]/FrIfConfig/*[1]/FrIfPdu/*/FrIfPduDirection/FrIfImmediate[(../FrIfTxPduRef = node:current()) and (. != &apos;false&apos;)]" 
+                                     true="The FrIf configuration doesn&apos;t support call of FrTp_TriggerTransmit."/>
+                            </a:da>
+                            <a:da name="REF" 
+                                  value="ASPathDataOfSchema:/AUTOSAR/EcucDefs/EcuC/EcucPduCollection/Pdu"/>
+                          </v:ref>
+                        </v:ctr>
+                      </v:lst>
+                    </v:ctr>
+                  </v:lst>
+                </v:ctr>
+              </v:lst>
+              <v:ctr name="PublishedInformation" type="IDENTIFIABLE">
+                <a:a name="DESC">
+                  <a:v>EN:
+                    &lt;html&gt;
+                      Additional published parameters not covered by CommonPublishedInformation container.
+                  &lt;/html&gt;</a:v>
+                </a:a>
+                <a:a name="LABEL" value="EB Published Information"/>
+                <a:a name="TAB" value="EB Published Information"/>
+                <a:a name="UUID" 
+                     value="ECUC:cb4128ed-26c1-4ddd-906e-854bed917e07"/>
+                <v:var name="PbcfgMSupport" type="BOOLEAN">
+                  <a:a name="DESC">
+                    <a:v>EN:
+                      &lt;html&gt;
+                        Specifies whether or not the FrTp can use the PbcfgM module for post-build support.
+                    &lt;/html&gt;</a:v>
+                  </a:a>
+                  <a:a name="IMPLEMENTATIONCONFIGCLASS" 
+                       value="PublishedInformation"/>
+                  <a:a name="LABEL" value="PbcfgM support"/>
+                  <a:a name="ORIGIN" value="Elektrobit Automotive GmbH"/>
+                  <a:a name="SYMBOLICNAMEVALUE" value="false"/>
+                  <a:a name="UUID" 
+                       value="ECUC:eb61002e-69c0-4f16-a910-c27adb75f6ee"/>
+                  <a:da name="DEFAULT" value="true"/>
+                </v:var>
+              </v:ctr>
+            </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

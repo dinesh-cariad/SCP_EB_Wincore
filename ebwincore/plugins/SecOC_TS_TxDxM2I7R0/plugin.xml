@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR SecOC_TS_TxDxM2I7R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="SecOC_TS_TxDxM2I7R0_ModuleId"
+             name="SecOC_TS_TxDxM2I7R0 Module">
+    <module id="SecOC_TS_TxDxM2I7R0"
+            label="SecOC"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-SECOC: Security"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="2"
+            swVersionMinor="7"
+            swVersionPatch="4"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="3"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="3"
+            relVersionPatch="0"
+            categoryType="SecOC"
+            categoryLayer="Communication Services"
+            categoryCategory="Communication Services"
+            categoryComponent="ECUC">
+      <cluster name="Security"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="SecOC_TS_TxDxM2I7R0_ConfigId"
+             name="SecOC_TS_TxDxM2I7R0 Configuration">
+    <configuration moduleId="SecOC_TS_TxDxM2I7R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/SecOC.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM2I7R0/SecOC"/>
+      </data>
+
+      <editor id="SecOC_TS_TxDxM2I7R0_EditorId"
+              label="Default"
+              tooltip="ACG-SECOC: Security">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM2I7R0/SecOC"/>
+          <parameter name="title" value="SecOC"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_SecOC_TS_TxDxM2I7R0"
+           moduleId="SecOC_TS_TxDxM2I7R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.SecOCTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="SecOC_TS_TxDxM2I7R0_GeneratorId"
+             name="SecOC_TS_TxDxM2I7R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="SecOC_TS_TxDxM2I7R0_TemplateBasedCodeGeneratorId"
+               moduleId="SecOC_TS_TxDxM2I7R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate,generate_macros"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+  <extension point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+    <ecuresource
+      target="*"
+      derivate="*"
+      moduleId="SecOC_TS_TxDxM2I7R0"
+      file="resources/AdjacentLayer.properties">
+    </ecuresource>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <!-- handle id calculator for SecOCRxSecuredLayerPduId -->
+    <pushoperation id="SecOCRxSecuredLayerPduId_SecOC_TS_TxDxM2I7R0"
+                   name="SecOC/SecOCRxSecuredLayerPduId"
+                   desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="SecOC_TS_TxDxM2I7R0"/>
+        <parameter name="listPath"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM2I7R0/ELEMENTS/SecOC/SecOCRxPduProcessing"/>
+        <parameter name="listPath_2"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM2I7R0/ELEMENTS/SecOC/SecOCRxPduProcessing"/>
+        <parameter name="listPath_3"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM2I7R0/ELEMENTS/SecOC/SecOCRxPduProcessing"/>
+        <parameter name="idPath" value="SecOCRxSecuredPduLayer/SecOCRxSecuredLayerPduId"/>
+        <parameter name="filterPath" value="SecOCRxSecuredPduLayer"/>
+        <parameter name="filterValues" value="SecOCRxSecuredPdu"/>
+        <parameter name="idPath_2" value="SecOCRxSecuredPduLayer/SecOCRxAuthenticPdu/SecOCRxAuthenticPduId"/>
+        <parameter name="filterPath_2" value="SecOCRxSecuredPduLayer"/>
+        <parameter name="filterValues_2" value="SecOCRxSecuredPduCollection"/>
+        <parameter name="idPath_3" value="SecOCRxSecuredPduLayer/SecOCRxCryptographicPdu/SecOCRxCryptographicPduId"/>
+        <parameter name="filterPath_3" value="SecOCRxSecuredPduLayer"/>
+        <parameter name="filterValues_3" value="SecOCRxSecuredPduCollection"/>
+        <parameter name="zbcGroups" value="false"/>
+        <parameter name="zbcGroups_2" value="false"/>
+        <parameter name="zbcGroups_3" value="false"/>
+        <parameter name="startingId" value="0"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.SecOC_TS_TxDxM2I7R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.3"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+
+    <!-- handle id calculator for SecOCTxAuthenticLayerPduId -->
+    <pushoperation id="SecOCTxAuthenticLayerPduId_SecOC_TS_TxDxM2I7R0"
+                   name="SecOC/SecOCTxAuthenticLayerPduId"
+                   desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="SecOC_TS_TxDxM2I7R0"/>
+        <parameter name="listPath"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM2I7R0/ELEMENTS/SecOC/SecOCTxPduProcessing"/>
+        <parameter name="idPath" value="SecOCTxAuthenticPduLayer/SecOCTxAuthenticLayerPduId"/>
+        <parameter name="zbcGroups" value="false"/>
+        <parameter name="startingId" value="0"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.SecOC_TS_TxDxM2I7R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.3"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+
+    <!-- handle id calculator for SecOCTxSecuredLayerPduId -->
+    <pushoperation id="SecOCTxSecuredLayerPduId_SecOC_TS_TxDxM2I7R0"
+                   name="SecOC/SecOCTxSecuredLayerPduId"
+                   desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId" value="SecOC_TS_TxDxM2I7R0"/>
+        <parameter name="listPath"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM2I7R0/ELEMENTS/SecOC/SecOCTxPduProcessing"/>
+        <parameter name="listPath_2"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM2I7R0/ELEMENTS/SecOC/SecOCTxPduProcessing"/>
+        <parameter name="listPath_3"
+                   value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM2I7R0/ELEMENTS/SecOC/SecOCTxPduProcessing"/>
+        <parameter name="idPath" value="SecOCTxSecuredPduLayer/SecOCTxSecuredLayerPduId"/>
+        <parameter name="filterPath" value="SecOCTxSecuredPduLayer"/>
+        <parameter name="filterValues" value="SecOCTxSecuredPdu"/>
+        <parameter name="idPath_2" value="SecOCTxSecuredPduLayer/SecOCTxAuthenticPdu/SecOCTxAuthenticPduId"/>
+        <parameter name="filterPath_2" value="SecOCTxSecuredPduLayer"/>
+        <parameter name="filterValues_2" value="SecOCTxSecuredPduCollection"/>
+        <parameter name="idPath_3" value="SecOCTxSecuredPduLayer/SecOCTxCryptographicPdu/SecOCTxCryptographicPduId"/>
+        <parameter name="filterPath_3" value="SecOCTxSecuredPduLayer"/>
+        <parameter name="filterValues_3" value="SecOCTxSecuredPduCollection"/>
+        <parameter name="zbcGroups" value="false"/>
+        <parameter name="zbcGroups_2" value="false"/>
+        <parameter name="zbcGroups_3" value="false"/>
+        <parameter name="startingId" value="0"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.SecOC_TS_TxDxM2I7R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.3"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+  <!-- Generator used to generate all code-templates within a directory the code-templates do all have access to the
+     name of the generated variant but the name of the generated file cannot be influenced directly - if required,
+     renaming a file can e.g. be done by a script run as post-generator
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+              id="SecOC_TS_TxDxM2I7R0_Gen_Template">
+    <generator moduleId="SecOC_TS_TxDxM2I7R0"
+               id="SecOC_TS_TxDxM2I7R0_Gen_TemplateId"
+               modes="generate,Template_withPostRename"
+               class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator">
+      <parameter name="mode_type" mode="Template_withPostRename" value="generate"/>
+
+      <!-- common template path parameters -->
+      <parameter name="templates" mode="generate,verify" value="generate_var,generate_macros"/>
+
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+
+    </generator>
+  </extension>
+
+  <!-- NGGenerator which calls a common ant-script within the ant-script it is also possible to call tresos Studio
+       generators in the example-script, a single code-template file is generated with a custom file-name (depending
+       on the variants name)
+    -->
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+             id="SecOC_TS_TxDxM2I7R0_Gen_NG">
+    <generator class="dreisoft.tresos.generator.ng.api.NGGenerator"
+               id="SecOC_TS_TxDxM2I7R0_Gen_NGId"
+               moduleId="SecOC_TS_TxDxM2I7R0"
+               modes="generate,NG_PostfixAndMove"
+               step="post">
+
+      <!-- Specify the ant build script as parameter to the NGGenerator. -->
+      <parameter name="buildfile" value="resources/generator.xml"/>
+
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+    </generator>
+  </extension>
+
+  <!-- Required to auto-map the main functions -->
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_SecOC_TS_TxDxM2I7R0"
+        name="SecOC service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="SecOC" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/SecOC_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.SecOC_TS_TxDxM2I7R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.3" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension></plugin>

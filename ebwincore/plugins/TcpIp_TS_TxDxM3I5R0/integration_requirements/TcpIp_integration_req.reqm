@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+    <specobject>
+      <id>TcpIp.EB_INTREQ_TcpIp_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The reinitialization process shall not interrupt other module functions.
+        If reinitialization of the module is required, the call of
+        <function>TcpIp_Init()</function> shall not interrupt other module functions.
+      </description>
+      <rationale>
+        The reinitialization process resets all internal variables. Continuing an interrupted
+        module function after reinitialization can lead to undefined module behavior.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ_TcpIp_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        <function>TcpIp_Init()</function> shall not be preempted by any other module API calls.
+        It needs to be ensured that the function call <function>TcpIp_Init()</function> is not
+        preempted by any other module API calls.
+      </description>
+      <rationale>
+        During the call of <function>TcpIp_Init()</function> global variables and pointers get
+        initialized. It is easy for the integrator to avoid this preemption, thus no data protection
+        mechanism has been implemented for function <function>TcpIp_Init()</function>.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ_TcpIp_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        <code>TcpIp_MainFunction</code> must not preempt or be preempted by
+        <code>EthIf_MainFunctionRx()</code>.
+        The integrator must assure that <code>EthIf_MainFunctionRx()</code> can preempt
+        <code>TcpIp_MainFunction()</code>. The
+        integrator also must assure that <code>TcpIp_MainFunction()</code> does not preempt
+        <code>EthIf_MainFunctionRx()</code>.
+      </description>
+      <rationale>
+        This limitation reduces code size and execution time by eliminating the need for extensive
+        use of exclusive areas.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ_TcpIp_0004</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Eth and EthIf must not use receive or transmit interrupts.
+        The Integrator must assure that neither Eth nor EthIf use interrupts. That is,
+        <code>EthIfEnableRxInterrupt</code>, <code>EthCtrlEnableRxInterrupt</code>,
+        <code>EthIfEnableTxInterrupt</code> and <code>EthCtrlEnableTxInterrupt</code> shall be set
+        to false.
+        This prevents <code>TcpIp_RxIndication()</code> from interrupting <code>TcpIp_MainFunction()</code>.
+      </description>
+      <rationale>
+        This limitation reduces code size and execution time by eliminating the need for extensive
+        use of exclusive areas.
+      </rationale>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ_TcpIp_0005</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        TcpIp_MainFunctionTx() shall have the same preemption constraints as TcpIp_MainFunction().
+      </description>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ_TcpIp_0006</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The Integrator must assure that the hardware buffer returned by EthIf_provideTxBuffer is
+        always greater than or equal to the requested buffer size if EthIf_provideTxBuffer returns
+        BUFREQ_OK. If requirement SWS_Eth_00079 is implemented by the Ethernet driver the buffer is
+        always greater or equal when EthIf_provideTxBuffer returns BUFREQ_OK. (If a buffer is requested
+        with Eth_ProvideTxBuffer that is larger than the available buffer length, the buffer shall not
+        be locked but return the available length and BUFREQ_E_OVFL.)
+      </description>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ_TcpIp_0007</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The Integrator must assure that the Crypto modules are initialized before the initialization of TcpIp.
+      </description>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ_TcpIp_0008</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The Integrator must assure that StbM module is initialized before the initialization of TcpIp.
+      </description>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ.uisnSecretKeyLen</id>
+      <status>approved</status>
+      <source>https://tools.ietf.org/html/rfc6528, Section 3</source>
+      <version>1</version>
+      <description>
+        Key used to generate the pseudo random value used in unpredictable TCP sequence numbers
+        shall be 128 bits long.
+      </description>
+      <tags>
+        <tag>Unit:Tcp</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ.secretHashOutLen</id>
+      <status>approved</status>
+      <source>https://tools.ietf.org/html/rfc6528, Section 3</source>
+      <version>1</version>
+      <description>
+        The hash value produced by Csm_MacGenerate used to create the TCP sequence number
+        (unpredictable sequence numbers and syn cookies) shall be 4 octets long.
+      </description>
+      <tags>
+        <tag>Unit:Tcp</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ.storingIpAddresses</id>
+      <status>approved</status>
+      <source>https://tools.ietf.org/html/rfc6528, Section 3</source>
+      <version>1</version>
+      <description>
+        BswM and NvM should be initialized before TcpIp when NvM storing of Ip addresses is used.
+        BswM will read the addresses during startup which will then be available for TcpIp to use
+        in internal memory.
+        ComM_RequestComMode(NO_COMMUNICATION) needs to be called to properly turn TcpIp off and
+        signalize NvM that writing can be done.
+        BswM will write the addresses during shutdown which will then be copied
+        from internal memory to NvM.
+      </description>
+      <tags>
+        <tag>Unit:Memory</tag>
+      </tags>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ.ASILD_EthIf_ProvideTxBuffer</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        If the function EthIf_ProvideTxBuffer returns BUFREQ_OK then Eth layer has already ensured that
+        the buffer provided by argument BufPtr is larger or equal as the argument LenBytePtr.
+      </description>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ.ASILD_EthIf_GetPhysAddr</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        Upon calling the function EthIf_GetPhysAddr the Eth layer SHALL ensure that it does not write more
+        than 6 bytes beyond argument PhysAddrPtr (i.e. there is no write access to PhysAddrPtr[6] or later).
+      </description>
+    </specobject>
+
+    <specobject>
+      <id>TcpIp.EB_INTREQ.ASILD_TcpIp_GetRemotePhysAddr</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+        The 3rd argument (PhysAddrPtr) passed to TcpIp_GetRemotePhysAddr has to point to at least 6 bytes of allocated memory.
+      </description>
+    </specobject>
+
+  </specobjects>
+</specdocument>

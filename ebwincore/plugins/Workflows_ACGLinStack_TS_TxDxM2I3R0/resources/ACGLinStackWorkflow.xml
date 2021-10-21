@@ -1,0 +1,815 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tresos Studio Workflow >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+<workflow xmlns="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+  id="ACGLinStackWorkflow" version="2.3"
+  label="AutoCore Workflow LIN Stack"
+  description="The EB tresos workflow is a step-by-step instruction to guide you through the configuration of a project.
+                       The workflow represents a sequence of steps to accomplish the task of building an application.">
+
+
+  <group id="LIN" label="Integrate a LIN communication stack into your basic software project">
+    <description>
+      <![CDATA[
+     <h2><b>Goal</b></h2>
+    <p>To integrate a LIN communication stack into your basic software project.</p>
+       <p>The <i>AutoCore Workflow LIN Stack</i> helps you to add a LIN stack to your software component
+          and to create a runnable software component that communicates via the LIN bus.</p>
+     <h2><b>Preconditions</b></h2>
+        <p>The <i>AutoCore Workflow LIN Stack</i> continues the <i>AutoCore Workflow Rte</i>. If you did not perform the steps
+          as described in the <i>AutoCore Workflow Rte</i>, go through the <a href="workflow://ACGWorkflowRte/RTE">AutoCore Workflow Rte</a> before continuing with this LIN stack workflow.</p>
+        <h2><u>Procedure</u></h2>
+        <p><ol>
+            <li>Add new LIN-specific modules to your project.</li>
+            <li>Import an ECU configuration.</li>
+            <li>Run assistants.</li>
+            <li>Configure new modules.</li>
+            <li>Update the configuration of other modules.</li>
+            <li>Change, build and run your application.</li>
+        </ol></p>
+        <h2><u>Output</u></h2>
+        <blockquote><b>Note:</b> <p>Names of dialogs, editors, importers, tables, tabs, etc. are
+          displayed in <i>italic</i> font. </p>
+          <p>Buttons, text boxes, check boxes, drop-down list boxes and menu entries are displayed in <b>bold</b> font. </p>
+          <p>File, directory and path names, parameters and command line commands are displayed in
+          <tt>Courier</tt> font.</p>
+          </blockquote>
+        <blockquote><b>Tip:</b> A workflow step that is displayed with a green arrow icon is an
+          action step. You may start the corresponding action by
+          double-clicking the step or by clicking the <b>Run</b> button in the tool bar.
+          A workflow step that is displayed with a red cross icon is an unavailable step. With your
+          current selection in the <i>Project Explorer</i> view it is not possible to execute the
+          corresponding action.</blockquote>
+        ]]>
+    </description>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Add modules >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+    <action label="Generate BSW and SWC descriptions" id="LIN_PROJ_GENERATESWCD">
+      <description>
+        <![CDATA[
+				<p>In EB tresos Studio you can generate AUTOSAR 3.2, 4.0, or 4.2 compliant BSW and SWC descriptions. Select the 
+				desired schema compliance to trigger the generation mode of the specific SWC description.</p>
+				Under Project/Build Project/ select one of the following menu items to trigger the generation of SWC descriptions:
+				<ul>
+				  <li>generate_asr32_swcd to generate AUTOSAR 3.2 compliant BSW SWC descriptions</li>
+				  <li>generate_asr40_swcd to generate AUTOSAR 4.0 compliant BSW SWC descriptions</li>
+				  <li>generate_swcd to generate AUTOSAR default BSW SWC descriptions</li>
+				</ul>
+				<p>Double-click this action to generate AUTOSAR default BSW SWC descriptions.</p>
+         ]]>
+      </description>
+      <command description="Generate swcd"
+        serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand(mode=generate_swcd)"
+      />
+    </action>
+    
+    <action id="LIN_ADD_ADD" label="Add modules">
+      <command description="Add modules"
+        serialization="dreisoft.tresos.launcher2.api.plugin.ModuleConfigurationDialogCommand"/>
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+        <p>To add all LIN stack modules to your project.
+        </p>
+        <h2><b>Procedure</b></h2>
+        </p>
+          <ol>
+            <li>Double-click this action step in the <i>Workflows</i> view to open the <i>Module Configurations</i> dialog.</li>
+            <li>In the <i>Available Modules</i>
+              tree, select all modules necessary for LIN communication:<br/>
+             <ul>
+                <li><i>Lin (LIN Driver)</i></li>
+                <li><i>LinIf (LIN Interface)</i></li>
+                <li><i>LinSM (LIN State Manager)</i></li>
+                <li><i>Com (Communication)</i></li>
+                <li><i>ComM (Communication Manager)</i></li>
+                <li><i>EcuC (ECU Configuration)</i></li>
+                <li><i>PduR (PDU Router)</i></li>
+            </ul>
+            </li>
+            <li>Click the button <b>Add module configurations for selected modules</b>.
+             <blockquote><b>Tip:</b> Multiple selection of modules is possible: All LIN stack modules are grouped together in the cluster <b>Lin Stack</b>.</blockquote>
+            </li>
+            <li>Select <b>PduR</b> in the <b>Module Configurations</b> list and change the
+            <b>Recommended Configuration</b> to <b>PduRRecConfigurationLinEcu</b>.</li>
+            <li>Click <b>OK</b>.</li>
+          </ol>
+          </p>
+          ]]>
+      </description>
+    </action>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Import DBC >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+    <group id="LIN_IMP" label="Import LIN communication matrix description file" type="choice">
+      <description>
+        <![CDATA[
+          <p>The LIN communication matrix is represented in the LDF or system description file format.
+            Such import automatically configures a big part of the modules <i>Lin</i>,
+            <i>LinIf</i>, <i>Com</i>, <i>EcuC</i> and <i>PduR</i>
+            (and other modules).</p>
+           <ul>
+            <li>To import a communication matrix from a system description, proceed to step <a
+                href="workflow:///LIN_IMP_SYSTEM">Import from system description</a>.
+          </li>
+          <li>To import a communication matrix from a LDF file, proceed to step <a
+                href="workflow:///LIN_IMP_LDF">Import from LDF</a>.
+          </li>
+          </u>
+          ]]>
+      </description>
+      <action id="LIN_IMP_SYSTEM" label="Import from system description">
+        <command description="Import network description"
+          serialization="dreisoft.tresos.launcher2.api.plugin.ImporterExporterCommand"/>
+        <description>
+          <![CDATA[
+              <ol>
+                <li>Double-click this action step in the <i>Workflows</i> view. The <i>Im- and
+                    Exporter</i> dialog opens up.</li>
+                <li>In the <i>Create, manage and run im- and exporters</i> dialog, select the system
+                description importer you have added in the <i>AutoCore Workflow Rte</i>.</li>
+                <li>Select the tab <i>All Models</i> and add the LIN system description at the second position.</li>
+                <li>To apply your changes, click <b>Apply</b>.</li>
+                <li>To import your LIN communication matrix into the ECU configuration, click the button <b>Run Importer</b>.</li>
+              </ol>
+          <b>Application demos concrete examples</b>:
+          <p>
+          Add LinSystem.arxml to the second position of Imp_System importer.</p>
+          <p>The importer should look like below:</p>
+              <ul>
+              <li>output\generated\swcd\Base_Bswmd.arxml</li>
+              <li>supplement\SimpleDemo_SysDesc\system\LinSystem.arxml</li>
+              <li>supplement\SimpleDemo_SysDesc\system\SoftwareComponents.arxml</li>
+              <li>systemmod\ConnectionEditor.arxml</li>
+              <li>supplement\SimpleDemo_SysDesc\system\BswMMode.arxml</li>
+              <li>output\generated\swcd\*.arxml</li>
+              </ul>
+              <b>Remark:</b> it is mandatory to have the first two entries as defined here!
+          ]]>
+        </description>
+      </action>
+      <action id="LIN_IMP_LDF" label="Import from LDF">
+        <command description="Import network description"
+          serialization="dreisoft.tresos.launcher2.api.plugin.ImporterExporterCommand"/>
+        <description>
+          <![CDATA[
+              <ol>
+                <li>Double-click this action step in the <i>Workflows</i> view. The <i>Im- and
+                    Exporter</i> dialog opens up.</li>
+                <li>Add a new <i>LDF Importer</i> by clicking on the <b>Create a new im- or
+                exporter</b> button.</li>
+                <li>On the <i>New Importer/Exporter</i> page, select <b>LDF Importer</b> in the
+                <b>Importer/Exporter</b> drop-down list box and change the name of
+                the importer. Proceed to the next page.</li>
+                <li>On the <i>All Models</i> page, select the LDF file to be imported. Proceed to the next page.</li>
+                <li>On the <i>System Model Import</i> page, clear the check box <b>Override existing
+                model</b>. Otherwise your
+                    software components in the system model will be overwritten. Proceed to the next page.</li>
+                <li>On the <i>ECU Configuration
+                    Import</i> page select the check box <b>Enable ECU Configuration import</b>.</li>
+                <li>Click <b>Finish</b>.</li>
+                <li>To import your LIN communication matrix into the ECU configuration, click the button <b>Run Importer</b>.</li>
+              </ol>
+          ]]>
+        </description>
+      </action>
+    </group>
+
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Import ECU Configuration >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+    <group id="LIN_ECU" label="Import ECU configuration">
+      <description>
+        <![CDATA[
+          <p>After importing the system description the ECU configuration can be updated based on the current system model.</p>
+         
+         ]]>
+      </description>
+      <action label="Configure ImportEcuConfig wizard" id="LIN_ECU_CFG">
+        <command description="Configure ImportEcuConfig wizard"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerId=ImportEcuConfig)" />
+        <description>
+          <![CDATA[
+            
+            <ol>
+            <li>To open the <i>ImportEcuConfig wizard</i>, double-click this action step in the <i>Workflows</i> view.
+               Alternatively you can open the <i>ImportEcuConfig wizard</i> in the menu <i>Project -> Unattended Wizards -> Unattended wizard configuration...</i> 
+               The Unattended Wizards configuration window opens up, select <i>Create ECU Configuration(ImportEcuConfig)</i> entry from the left side list.</li>
+            <li>Select the module configurations you want to import.</li>
+            <li>Click the <b>Close</b> button to close the wizard configuration dialog</li>
+            </ol>
+          ]]>
+        </description>
+      </action>
+      
+      <action label="Run ImportEcuConfig wizard" id="LIN_ECU_CFG_RUN">
+        <command description="Run ImportEcuConfig wizard"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=ImportEcuConfig)" />
+        <description>
+          <![CDATA[
+            <ol>
+            <li>To run the <i>ImportEcuConfig wizard</i>, double-click this action step in the <i>Workflows</i> view.
+               Alternatively you can open the <i>ImportEcuConfig wizard</i> in the menu <i>Project -> Unattended Wizards -> Unattended wizard configuration...</i> 
+               The Unattended Wizards configuration window opens up, select <i>Create ECU Configuration(ImportEcuConfig)</i> entry from the left side list.</li>
+            <li>Click the <b>Run</b> button to run the <i>ImportEcuConfig wizard</i></li>
+            </ol>
+          ]]>
+        </description>
+      </action>
+      
+    </group>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Assistants >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="LIN_ASS" label="Run assistant dialogs" type="sequence">
+      <description>
+        <![CDATA[
+          <p>Assistant dialogs help you with the configuration of complex tasks and thus avoid time-consuming configuration work.</p>
+          <p>You can use the following assistance dialogs to configure the LIN communication stack:</p>
+          <p>
+          <ul>
+            <li><a href="workflow:///LIN_ASS_HID"><i>Handle ID Calculator</i></a></li>
+          </ul>
+          </p>
+          ]]>
+      </description>
+
+      <action id="LIN_ASS_HID" label="Calculate Handle IDs">
+        <command description="Unattended wizards dialog" type="configure"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerType=HandleId)"/>
+        <command description="Calculate Handle IDs"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerType=HandleId)"/>
+        <description>
+          <![CDATA[
+          <h2><b>Goal</b></h2>
+            <p>To calculate the handle-IDs (i.e the PDU-IDs and
+              controller-IDs) for the modules of the communication stack.</p>
+            <p>
+            <h2><b>Procedure</b></h2>
+            <ul>
+              <li>To open the configuration dialog of the <i>Handle ID Calculator</i>, click the book icon
+              in the tool bar of the <i>Workflows</i> view.</li>
+              <li>To calculate the handle-IDs, double-click this action step in the <i>Workflows</i>
+              view. The <i>Handle ID Calculator</i> opens up and calculates automatically all
+              handle-IDs.</li>
+            </ul>
+            </p>
+            <blockquote><b>Note:</b> By default the <i>Handle ID Calculator</i> calculates all
+              handle-IDs of the loaded modules.</blockquote>
+            ]]></description>
+      </action>
+
+    </group>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Configure Basic Software >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="LIN_BSW" label="Modify the remaining module configurations" repeatable="false"
+      type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+        <p>To configure the basic software modules in your project.</p>
+        <h2><b>Procedure</b></h2>
+          <p>You can change each basic software module configuration either by double-clicking the
+            respective action step in the <i>Workflows</i> view or by double-clicking the module in the <i>Project Explorer</i> view.</p>
+          <blockquote><b>Tip</b>: To search for configuration parameter names
+            project wide, use the keys <b>Ctrl+T</b>.</blockquote>
+          <p>Configure the following modules manually:</p>
+          <ul>
+            <li><a href="workflow:///LIN_BSW_LIN"><i>Lin</i></a>: Set the protocol parameter.</li>
+            <li><a href="workflow:///LIN_BSW_LINIF"><i>LinIf</i></a>:
+              Enable/disable the wakeup support.</li>
+            <li><a href="workflow:///LIN_BSW_COMM"><i>ComM</i></a>: Configure the <i>ComM</i> module.</li>
+            <li><a href="workflow:///LIN_BSW_LINSM"><i>LinSM</i></a>: Configure the <i>LinSM</i>
+            module.</li>
+            <li><a href="workflow:///LIN_BSW_PDUR"><i>PduR</i></a>: Configure the <i>PduR</i> module.</li>
+            <li><a href="workflow:///LIN_BSW_PORT"><i>Port</i></a>: Connect I/O pins to the
+              LIN transceiver.</li>
+            <li><a href="workflow:///LIN_BSW_BSWM"><i>BswM</i></a>: Update the <i>BswM</i> module.</li>
+            <li><a href="workflow:///LIN_BSW_RTE"><i>Rte</i></a>: Update the data
+              mapping.
+            </li>
+          </ul>
+          ]]></description>
+
+      <action label="Configure the Lin module" id="LIN_BSW_LIN">
+        <command description="Open Lin configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Lin)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <p>To configure the <i>Lin</i> module:</p>
+            <ol>
+            <li>Double-click this action step in the <i>Workflows</i> view. The <i>Lin</i> editor
+            opens up in the editor area of EB tresos Studio.</li>
+              <li>In the <i>LinGlobalConfig</i> tab, create a configuration unless the <a
+              href="workflow:///LIN_IMP">LIN communication matrix import</a> has already created one.</li>
+              <li>Make sure at least one configuration exists in the list <b>LinChannel</b>. For each channel
+                set the parameter <tt>LinClockRef</tt>.</li>
+              <li>Enable or disable wakeup support with the parameter <tt>LinChannelWakeupSupport</tt>.</li>
+            </ol>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Configure the LinIf module" id="LIN_BSW_LINIF">
+        <command description="Open LinIf configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=LinIf)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+           <p>To configure the <i>LinIf</i> module:</p>
+           <p>
+           <ol>
+            <li>Double-click this action step in the <i>Workflows</i> view. The <i>LinIf</i> editor
+            opens up in the editor area of EB tresos Studio.</li>
+             <li>If <tt>LinChannelWakeupSupport</tt> is enabled in the <i>Lin</i> module of your project,
+             also enable <tt>LinIfCheckWakeupSupported</tt>
+             in the <i>LinIf</i> module.</li>
+           </ol>
+           </p>
+           ]]>
+        </description>
+      </action>
+
+      <action label="Configure the ComM module" id="LIN_BSW_COMM">
+        <command description="Open ComM configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=ComM)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <p>To configure the <i>ComM</i> module:</p>
+            <p>
+            <ol>
+             <li>Double-click this action step in the <i>Workflows</i> view. The <i>ComM</i> editor
+            opens up in the editor area of EB tresos Studio.</li>
+              <li>In the tab <i>General</i>, enable <tt>Enable Rte Usage</tt>. The <i>ComM</i> then
+              provides a service component which can be connected to the application to request the
+              communication mode.</li>
+              <li>In the tab <i>General</i>, adapt the value of the parameter <tt>Minimum Full Communication Mode Duration Time</tt>
+              to your needs. It specifies the minimum time until the ECU can be shut down.</li>
+              </li>
+              <li>In the ComMConfigSet tab, create a configuration unless there is already one.</li>
+              <li>In the tab <i>Users</i>, add a new configuration if there is not already an existing entry.</li>
+              <li>In the tab <i>Network Channel</i>, add a new configuration and enter the configuration.</li>
+              <li>Set the <tt>Bus Type</tt> to <b>COMM_BUS_TYPE_LIN</b>.</li>
+              <li><p>Set the <tt>Network Management Variant</tt> to <b>LIGHT</b> and set the parameter <tt>Network Management Light Timeout</tt>.</p></li>
+              <li>Open the tab <i>User Per Channel</i>, add an entry and set the reference.</li>
+              <li>Verify that ComMDcmUsage parameter is set to false, as normally Dcm module is not part of an application demo projects.</li>
+            </ol>
+            </p>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Configure the LinSM module" id="LIN_BSW_LINSM">
+        <command description="Open LinSM configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=LinSM)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <p>To configure the <i>LinSM</i> module:</p>
+            <ol>
+            <li>Double-click this action step in the <i>Workflows</i> view. The <i>LinSM</i> editor
+            opens up in the editor area of EB tresos Studio.</li>
+            <li>In the tab <i>Configuration Set</i>, add a new configuration.</li>
+              <li>In the tab <i>LIN Channel List</i>, add a LIN channel and set the reference
+                to <b>ComM Channel</b>.</li>
+              <li>Add a reference to the <b>LINSMSchedule</b>, set the parameter
+                <tt>LinSMScheduleIndex</tt> and set the reference <b>LINSMScheduleIndexRef</b>.</li>
+            </ol>
+            </p>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Configure the PduR module" id="LIN_BSW_PDUR">
+        <command description="Open PduR configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=PduR)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <p>To configure the <i>PduR</i> module:
+            <ol>
+             <li>Double-click this action step in the <i>Workflows</i> view. The <i>PduR</i> editor
+            opens up in the editor area of EB tresos Studio.</li>
+            <li>In the tab <i>PduRBswModules</i>, disable the parameter <i>PdurBswModuleIsEnable</i>
+            for all modules except the entries for the modules <i>LinIf</i> and <i>Com</i>.
+            </li>
+            </ol>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Configure the Port module" id="LIN_BSW_PORT">
+        <command description="Open Port configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Port)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+          <h2><b>Goal</b></h2>
+            <p>To configure the I/O pins that connect the
+              CAN core with the CAN transceiver by configuring the module <i>Port</i>.</p>
+              The configuration of different MCAL driver implementations may differ from each other.
+              In addition, the configuration depends on the connected LIN transceiver.</p>
+            <blockquote><b>Note:</b> This configuration step is hardware-dependent.</blockquote>
+            <h2><b>Procedure</b></h2>
+            <p>If required by your hardware, configure the following pins:</p>
+            <p>Pins out:
+            <ul>
+              <li>Transmit Data (Tx)</li>
+              <li>Enable</li>
+              <li>Standby</li>
+            </ul>
+            </p>
+            <p>Pins in:
+            <ul>
+              <li>Receive Data (Rx)</li>
+              <li>Error line</li>
+            </ul>
+            </p>
+            <p>For a proper mode and pin number selection, refer to the manual of your microcontroller.</p>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Configure the BswM module" id="LIN_BSW_BSWM">
+        <command description="Open BswM configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=BswM)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+          <h2><b>Goal</b></h2>
+          <p>To configure the <i>BswM</i> module, which initializes and activates several other
+          modules.</p>
+            <p>To make this configuration step easier, you can import the configuration file <tt>BswM_simple_demo_lin_rte_additions.epc</tt>
+            from the folder <tt>supplement/SimpleDemo_EPCs\epc</tt>, which is located in the
+            directory <tt>demos/AutoCore</tt> of your EB tresos Studio installation. Therefore, you
+            have to create a new <i>Autosar Importer</i>.</p>
+            <h2><b>Procedure</b></h2>
+            <p>To import the configuration file <tt>BswM_simple_demo_lin_rte_additions.epc</tt>:
+            <ol>
+              <li>First, copy the directory <tt>supplement\SimpleDemo_EPCs</tt> (located in
+              <tt>demos\...\supplement</tt> in your EB tresos Studio installation) to the project
+              directory of your EB tresos Studio project.
+              This step is recommended because EB tresos Studio will then
+              use paths relative to the project directory
+              instead of storing absolute file paths.</li>
+              <li>Right-click your project in the <i>Project Explorer</i> view. A context menu opens
+              up.</li>
+              <li>Select the menu item <b>Im- and Exporters...</b>. The <i>Create, manage and run
+              im- and exporters</i> dialog opens up.</li>
+             <li>Add a new <i>Autosar Importer</i> by clicking the <b>Add</b> button. The <i>New Importer/Exporter</i> wizard opens up.</li>
+               <p>On the <i>New Importer/Exporter</i> page of the <i>New Importer/Exporter</i> wizard:</p>
+               <ul>
+             <li>In the <b>Name</b> text box, type the name of your importer.</li>
+             <li>In the <b>Importer/Exporter</b> drop-down list box, choose <b>Autosar Im-/Exporter</b>.</li>
+             <li>In the <b>Mode</b> drop-down list box, select <b>Import only</b>.</li>
+             <li>Click <b>Next</b> to proceed to the <i>Autosar Options</i> page.</li>
+             </ul>
+             <p>On the <i>Autosar Options</i> page:</p>
+             <ul>
+             <li>Click the <b>Browse...</b> button and browse to the file
+             <tt>workspace/&lt;PROJECT_NAME&gt;/supplement/SimpleDemo_EPCs/epc/BswM_simple_demo_lin_rte_additions.epc</tt>.</li>
+              <li>In the <b>Content type</b> drop-down list box, select the
+              version <b>asc:4.0.3</b>.</li>
+              <li>In the <b>Import Strategy</b> drop-down list box, select <b>Merge</b>.</li>
+              <li>Click <b>Finish</b>. The <i>New Importer/Exporter</i> wizard closes.</li>
+               </ul>
+             <li>To start the import, click the <b>Run Importer</b> button in the lower left corner
+             of the <i>Create, manage and run im-and exporters</i> dialog. The <i>BswM</i> configuration is being updated.</li>
+            </ol></p>
+            <b>Application demo related information:</b>
+            <p>The BswM configuration will be extended to get access to
+               all communication relevant states. With this information the BswM is able to
+               start/stop the communication.
+               Mode request ports are used to access the communication relevant
+               states. The mode request ports for ComM and LinSM will
+               be added to the BswM configuration. Additionally new rules which
+               enable/disable the communication are added. There will be also
+               some rules added to handle the shutdown and the restart of the
+               ECU.</p>
+            ]]>
+        </description>
+      </action>
+      <action label="Calculate Dem, NvM and EcuM service needs" id="LIN_BSW_SERVICE_NEEDS1">
+        <command description="Open the Service Needs Calculator configuration" type="configure"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerId=SvcAs_Trigger)"/>
+        <command description="Run the Service Needs Calculator"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=SvcAs_Trigger)"/>
+        <description>
+          <![CDATA[
+                <p>The <i>Service Needs Calculator</i> automatically resolves most dependencies between the
+            different modules. For example, it adds required <i>Dem</i> events to the <i>Dem</i>
+            configuration, required init functions to the <i>EcuM</i> module and required NvM blocks to the
+            <i>NvM</i> module.</p>
+        <p>
+            It is recommended that you run the <i>Service Needs Calculator</i> before the step
+            <a href="workflow:///LIN_BSW_SWDUPDATE1">Update Service Component and BSWM
+                Descriptions</a> as this mentioned step requires a consistent ECU configuration.
+        </p>
+            <ul>
+                <li>To open the configuration dialog of the <i>Service Needs Calculator</i>, click the book icon
+                    in the tool bar of the <i>Workflows</i> view.
+                    Alternatively you can find the configuration dialog in the menu <i>Project -> Unattendent Wizards -> Unattendent wizard configuration</i></li>
+                <li>To run the <i>Service Needs Calculator</i>, double-click this action step in the <i>Workflows</i> view.
+                    Alternatively you can run the <i>Service Needs Calculator</i> in the menu <i>Project -> Unattendent Wizards -> Calculate Service Needs</i></li>
+            </ul>
+            ]]>
+        </description>
+      </action>
+      <action label="Update BSW and SWC descriptions in the system model" id="LIN_BSW_SWCD1" >
+        <command description="Run the Imp_Swcd im "
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=MultiTask_UpdateBswDescriptions)" />
+        <description>
+          <![CDATA[
+        <p>The wizard generates and import the BSW and SWC descriptions for all the enabled BSW modules</p>
+        <p>This step is a prerequisite for the main-function-to-task mapping and of the configuration of the BSW exclusive area in the
+                <i>Rte</i>.</p>
+        <p> After this step, the service components are available and can be connected to the application
+            software components. </p>
+        <ul>
+            <li>To run the <i>MultiTask_UpdateBswDescriptions</i>, double-click this
+                action step in the <i>Workflows</i> view.</li>
+            <li> Alternatively you can run the <i>MultiTask_UpdateBswDescriptions</i> in the menu <i>Project -> Unattended Wizards -> Execute multiple tasks(MultiTask_UpdateBswDescriptions)</i></li>
+            
+        </ul>
+          ]]>
+        </description>
+      </action>
+      <action label="Run Compositions and Connections Editor" id="CAN_BSW_COMCONEDIT">
+        <command
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.SidebarTriggerCommand(triggerId=ConnectionEditor_Trigger)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <ol>
+              <li>To run the <i>Compositions and Connections Editor</i>, double-click this action
+              step in the <i>Workflows</i> view or select <b>Edit Compositions and Connections</b>
+              from the category <i>System</i> in the Sidebar view. If the System and EcuInstance
+              have not yet been selected for the given project, then the <i>Select system and ecuInstance</i>
+              dialog opens up.</li>
+              <ul>
+                <li>In the <i>System</i> drop-down list box, select a system from the system description.
+                In the <i>EcuInstance</i> drop-down list box, select an ECU from the system description.
+                </li>
+                <li>Click <b>OK</b> to proceed to the <i>Compositions and Connections Editor</i>.</li>
+              </ul>
+              <li>Add Component Prototypes:
+                <ol>
+                  <li>Right-click on <b>TopLevelComposition</b> in the <i>Entity</i> list and select
+                  <b>Add Prototypes...</b>.</li>
+                  <li>Select the <b>ComM</b> checkbox.</li>
+                  <li>Click <b>OK</b> to add a component prototype for each selected component type</li>
+                </ol>
+              </li>
+              <li>Add connections:
+                <ol>
+                  <li>To make the assignment, expand a prototype, right-click on the prototype's
+                  port and select <b>Add Connector...</b>. Then expand a component prototype and
+                  select a port.If the OK button is not enabled, then the selected port is not compatible.
+                  With the buttons on top of the dialog you can restrict the entities of the Tree to show
+                  or hide incompatible ports and already connected ports. With the type filter text you can
+                  restrict the shown ports by name. Click <b>OK</b> to add the connection.</li>
+                  <ul>
+                    <li>For a concrete example, see an application demo hint below the text</lI>
+                  </ul>
+                  </li>
+                </ol>
+              </li>
+            </ol>
+            <b>Application demos concrete examples</b>:
+            <p>
+            <li>In the assignment of Compositions and Connections Editor, assign the following prototype and port:
+            <p>ComM_Prototype/UR_ComMUser_0 -> SWC_CyclicCounter/UR_ComMUser_0</p>
+            </li>
+          ]]>
+        </description>
+      </action>
+      <action label="Run EcuExtractCreator wizard" id="RTE_BSW_RUN_EXCREAT">
+        <command description="Run EcuExtractCreator wizard"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=EcuExtractCreator)" />
+        <description>
+          <![CDATA[
+            <p>To run the <i>EcuExtractCreator wizard</i>, double-click this action step in the <i>Workflows</i> view.
+               Alternatively you can run the <i>EcuExtractCreator wizard</i> in the menu <i>Project -> Unattended Wizards -> Creates
+              an ecu extract (EcuExtractCreator)</i></p>
+          ]]>
+        </description>
+      </action>
+      <action label="Configure the Rte module" id="LIN_BSW_RTE">
+        <command description="Open Rte configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Rte)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+          <p>
+            <ol>
+             <li>Double-click this action step in the <i>Workflows</i> view. The <i>Select Editor</i> dialog
+             opens up. </li>
+             <li>Select <b>Rte Editor</b>. The <i>Rte Editor</i> opens up in the editor area of EB
+             tresos Studio.</li>
+             <li>Open the tab <i>Data Mapping</i>.
+                <ul>
+                <li>Map the data element prototypes to Com signals or system signals.</li>
+                </ul>
+             </li>
+             <li>Open the <i>Event Mapping</i> tab.
+                 <ul>
+                     <li>Auto-map all Bsw main functions that are triggered by Bsw timing events.</li>
+                     <li>To auto-map all Bsw main functions click the button <b>Auto-map all Bsw main
+                         functions that are triggered by Bsw timing events</b></li>
+                     <li>Map all remaining events that have the <tt>Required</tt> flag set to <tt>true</tt> to a
+                         task.</li>
+                     <li>To map an event to a task, select a task in the <b>Task</b> drop-down
+                         list box and click the button <b>Map the runnable entity selected above
+                         to the task selected below</b>.</li>
+                     <li>Map timing events and non-timing events to separate tasks.</li>
+                 </ul>
+             </li>
+             <li>Open the <i>Service Port Mapping</i> tab.
+                <ul>
+                  <li>Assign service ports to application ports: Select a service port in the
+                  <b>Services</b> list and an application port in the
+                   <b>Application components and port mappings</b> list. To make the assignment, click the button
+                   <b>Connect the selected service components...</b>.</li>
+                  <li>If service ports and application ports have matching names, you can automate
+                  the mapping with the <b>Auto connect</b> controls below the two tables.</li>
+                </ul>
+             </li>
+
+              </ol>
+              </p>
+              <blockquote><b>Note:</b> Since the import of the <a href="workflow:///LIN_IMP">LIN communication matrix</a> may have overwritten
+              previous changes to your AUTOSAR system, check again the Rte configuration steps described in the
+              <a href="workflow://ACGWorkflowRte/RTE_BSW_RTE">AutoCore Workflow Rte</a>.</blockquote>
+            ]]>
+        </description>
+      </action>
+      <action label="Calculate Os service needs" id="LIN_BSW_SERVICE_NEEDS3">
+        <command description="Open the Service Needs Calculator configuration" type="configure"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerId=SvcAs_Trigger)"/>
+        <command description="Run the Service Needs Calculator"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=SvcAs_Trigger)"/>
+        <description>
+          <![CDATA[
+         <p>It is recommended that you run the <i>Service Needs Calculator</i> again to add the Os
+            objects required by the <i>Rte</i> module to the <i>Os</i> configuration.
+            Since this requires a consistent Rte</i> configuration, this step is recommended
+            after you have completed the step <a href="workflow:///LIN_BSW_RTE">Configure Rte
+                module</a>.</p>
+        <ul>
+            <li>To open the configuration dialog of the <i>Service Needs Calculator</i>, click the
+                book icon in the tool bar of the <i>Workflows</i> view.
+                Alternatively you can find the configuration dialog in the menu <i>Project -> Unattendent Wizards -> Unattendent wizard configuration</li>
+            <li>To run the <i>Service Needs Calculator</i>, double-click this action step in the <i>Workflows</i> view.
+                Alternatively you can run the <i>Service Needs Calculator</i> in the menu <i>Project -> Unattendent Wizards -> Calculate Service Needs</li>
+        </ul>
+            ]]>
+        </description>
+      </action>
+      <action label="Update system model" id="LIN_BSW_SWCD2" >
+        <command description="Run the Imp_Swcd im "
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=MultiTask_UpdateBswDescriptions)" />
+        <description>
+          <![CDATA[
+        <p>The wizard generates and import the BSW and SWC descriptions for all the enabled BSW modules</p>
+        <p>The last steps have changed the ECU configuration, on which the BSWMD depends. Thus, it
+            is recommended to update the basic software module description again. </p>
+        <ul>
+            <li>To run the <i>MultiTask_UpdateBswDescriptions</i>, double-click this
+                action step in the <i>Workflows</i> view.</li>
+            <li> Alternatively you can run the <i>MultiTask_UpdateBswDescriptions</i> in the menu <i>Project -> Unattended Wizards -> Execute multiple tasks(MultiTask_UpdateBswDescriptions)</i></li>
+            
+        </ul>
+          ]]>
+        </description>
+      </action>
+    </group>
+    <!-- <<<<<<<<<<<<<<<<<<<<< Update Multiple task wizards >>>>>>>>>>>>>>>>>>>>>>>> -->    
+    <group id="LIN_WIZARD" label="Update Execute multiple tasks wizards" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+        <p>To Update <b>Execute multiple tasks</b> to ease the execution of different steps.</p>
+          <p>The Execute multiple tasks wizards can be used to serialize the execution of several actions.</p>
+          <p>The following actions are available:
+            <ul>
+              <li>Run importer</li>
+              <li>Run exporter</li>
+              <li>Run unattended wizard</li>
+              <li>Run code generation</li>
+              <li>Run an external command</li>
+            </ul>
+          </p>
+        <b>Application demos concrete examples</b>:
+        <p>
+         To ease the creation and update of the Application demo two Execute multiple tasks wizard are created:
+         <ul>
+         <li>MultiTask_UpdateBswDescriptions: to update the system model based on the current BSW configuration</li>
+         <li>MultiTask_RunFullImport: to import the complete system description</li>
+         </ul>
+         At this step we want to update the MultiTask_RunFullImport wizard to include the <i>ImportEcuConfig wizard</i>
+        ]]>
+      </description>
+      <action id="LIN_WIZARD_SYS" label="Import System description">
+        <command description="Open execute multiple tasks wizard"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerID=MultiTask_RunFullImport)" />
+        <description>
+          <![CDATA[
+          <p>To update an <i>Execute multiple tasks wizard</i>:
+          <ol>
+          <li>Go to the menu <i>Project -> Unattended Wizards -> Unattended wizard configuration...</i>
+          The Unattended Wizards configuration window opens up </li>
+          <li>Select the <i>Execute multiple tasks(MultiTask_RunFullImport)</i> element from the list in the left side window.</li>
+          <li>On the right side window press the plus button to create a new task for the <i>ImportEcuConfig</i>
+              <ul>
+              <li>In the <i>Action</i> column select <i>Run unattended wizard</i></li>
+              <li>In the <i>Parameter</i> column select <i>ImportEcuConfig</i></li>
+              </ul>
+          </li>
+         <li>Using the arows position the <i>ImportEcuConfig</i> entry above the <i>AutoHandleId</i> entry.</li>
+         <li>Click <i>Close to close the Unattended wizards configuration window</i></li>
+          <ol>
+          ]]>
+        </description>
+      </action>
+    </group>
+    
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Application >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="LIN_APP" label="Build your application" type="sequence">
+      <description>
+        <![CDATA[
+           <h2><b>Goal</b></h2>
+          <p>To generate code, build your application and run your application.</p>
+           <h2><b>Preconditions</b></h2>
+           <p>If you have performed all steps that are described in the AutoCore Workflow Rte, there are
+            some C source files in your project already.</p>
+          <h2><b>Procedure</b></h2>
+          <ol>
+          <li><a href="workflow:///LIN_APP_GENERATE">Generate code</a></li>
+           <li><a href="workflow:///LIN_APP_BUILD">Build your application</a></li>
+          <li><a href="workflow:///LIN_APP_RUN">Run your application</a></li>
+          </ol>
+        <h2><b>Output</b></h2>
+        <p>The application code will be located in the <i>Project
+                  Explorer</i> view in the directory <tt>source\application</tt>. This application code belongs to your project.</p>
+              ]]>
+      </description>
+
+      <action label="Generate code" id="LIN_APP_GENERATE" repeatable="true">
+        <command description="Generate code"
+          serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand()"/>
+        <description>
+          <![CDATA[
+                <p>Start the generation of your project configuration code
+                    by double-clicking this action step in the <i>Workflows</i> view or by clicking
+                    the hammer icon in the tool bar of EB tresos Studio.
+                </p>
+                ]]>
+        </description>
+      </action>
+
+      <action label="Build your application" id="LIN_APP_BUILD" repeatable="true">
+        <description>
+          <![CDATA[
+                <p>To make your application running you have to create a binary
+                  for your target platform.</p>
+                <p>To create a binary for your target platform:</p>
+                <ol>
+                  <li>Execute <tt>launch.bat</tt></li>
+                  <li>To build the dependencies, type <tt>make depend</tt> in the command line.</li>
+                  <li>To compile and link your software components, type <tt>make</tt>.</li>
+                </ol>
+                ]]>
+        </description>
+      </action>
+
+      <action label="Run your application" id="LIN_APP_RUN">
+        <description>
+          <![CDATA[
+            <p>Your finished application binary is located in the directory <tt>output\bin</tt>.</p>
+            <p>You can use a debugger (e.g. Lauterbach) to download your application to your
+              target ECU.</p>
+            <blockquote><b>Note:</b> To test the LIN communication on the bus, you must connect at
+              least a second LIN node. EB tresos Inspector can monitor and analyze your LIN (and FlexRay/CAN)
+              bus traffic.</blockquote>
+            ]]>
+        </description>
+      </action>
+
+
+    </group>
+
+    <action id="LIN_FIN" label="Finish">
+      <description>
+        <![CDATA[
+              <p>You have built your LIN stack application successfully.</p>
+              ]]>
+      </description>
+    </action>
+
+  </group>
+
+</workflow>

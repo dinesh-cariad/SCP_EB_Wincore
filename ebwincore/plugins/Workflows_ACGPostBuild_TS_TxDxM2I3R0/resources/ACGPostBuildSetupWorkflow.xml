@@ -1,0 +1,460 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tresos Studio Workflow >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+<workflow xmlns="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+  id="ACGPostBuildSetupWorkflow" version="2.3"
+  label="AutoCore Workflow Post-Build Setup"
+  description="The EB tresos workflow is a step-by-step instruction to guide you through the
+    configuration of a project. The workflow represents a sequence of steps to accomplish the task
+    of building an application.">
+
+  <group id="PBSETUP" label="Setup your software project for post-build support">
+    <description>
+      <![CDATA[
+       <h2 style="color:#00c400";><b>GOAL</b></h2>
+          <p>To set-up your basic software project for post-build support.</p>
+          <p>The <b>AutoCore Workflow Post-Build Setup</b> helps you set up your existing
+          configuration project for post-build support.</p>
+       <h2 style="color:#00c400";><b>PRECONDITIONS</b></h2>
+          <p>The <b>AutoCore Workflow Post-Build Setup</b> continues the <b>AutoCore Workflow CAN
+          Stack</b>, the <b>AutoCore Workflow FlexRay Stack</b>, the <b>AutoCore Workflow LIN
+          Stack</b> or the <b>AutoCore Workflow IP Stack</b>. If you did not perform the steps as
+          described in the <b>AutoCore Workflow CAN
+          Stack</b>, the <b>AutoCore Workflow FlexRay Stack</b>, the <b>AutoCore Workflow LIN
+          Stack</b> or the <b>AutoCore Workflow IP Stack</b>, go to the <a href="workflow://ACGCanStackWorkflow/CAN">AutoCore Workflow
+          CAN Stack</a>, <a href="workflow://ACGFrStackWorkflow/FLEXRAY">AutoCore Workflow FlexRay
+          Stack</a>, <a href="workflow://ACGLinStackWorkflow/LIN">AutoCore Workflow LIN Stack</a>
+          or <a href="workflow://ACGEthStackWorkflow/ETH">AutoCore Workflow IP Stack</a>
+          before you continue with this post-build setup workflow.</p>
+        <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+        <ol>
+          <li>Add the <b>PbcfgM</b> (Post-Build Configuration Manager) module to your project.</li>
+          <li>Configure the <b>PbcfgM</b> (Post-Build Configuration Manager) module to manage your
+          post-build capable modules.</li>
+          <li>Change, build and run your application.</li>
+        </ol>
+       
+      ]]>
+    </description>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Add modules >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+    <action label="Generate BSW and SWC descriptions" id="PBSETUP_PROJ_GENERATESWCD">
+      <description>
+        <![CDATA[
+            <h2 style="color:#00c400";><b>GOAL</b></h2>
+				<p>You can generate AUTOSAR 3.2, 4.0, or 4.2 compliant BSW and SWC
+				descriptions.</p>
+				  <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+				<ol><li>Select the 
+				 schema compliance to trigger the generation mode of the specific SWC description.</li>
+				<li>Under <b>Project > Build Project</b>, select one of the following menu items to trigger the generation of SWC descriptions:
+				<ul>
+				  <li>generate_asr32_swcd to generate AUTOSAR 3.2 compliant BSW SWC descriptions</li>
+				  <li>generate_asr40_swcd to generate AUTOSAR 4.0 compliant BSW SWC descriptions</li>
+				  <li>generate_swcd to generate AUTOSAR default BSW SWC descriptions</li>
+				</ul></li>
+				<li>Double-click this action to generate AUTOSAR default BSW SWC descriptions.</li></ul>
+         ]]>
+      </description>
+      <command description="Generate swcd"
+        serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand(mode=generate_swcd)"
+      />
+    </action>
+    <action id="PBSETUP_ADD" label="Add modules">
+      <command description="Add modules"
+        serialization="dreisoft.tresos.launcher2.api.plugin.ModuleConfigurationDialogCommand"/>
+
+      <description>
+        <![CDATA[
+          <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To add the <b>PbcfgM</b> (Post-Build Configuration Manager) module to your
+            project.</p>
+        <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+          <p><ol>
+            <li>In the <b>Workflows</b> view , double-click this action step to open the <b>Module
+            Configurations</b> dialog.</li>
+            <li>Select <b>PbcfgM</b> (Post-Build Configuration
+            Manager) in the <b>Available Modules</b> tree.</li>
+            <li>Select <b>Add module configurations for selected modules</b>.</li>
+            <li>Select <b>OK</b>.</li>
+          </ol></p>
+        ]]>
+      </description>
+    </action>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Configure Basic Software >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="PBSETUP_BSW" label="Modify the module configurations" repeatable="false"
+      type="sequence">
+      <description>
+        <![CDATA[
+           <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To configure the basic software modules in your project.</p>
+          <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+            <p>You can change each basic software module configuration either by double-clicking the
+            respective action step in the <b>Workflows</b> view, or by double-clicking the module in
+            the <b>ProjecteExplorer</b> view.</p>
+          <p><strong style="color:#ff9900">Note:</strong>
+            To search for configuration parameter names project-wide, use the
+            <b>Ctrl+T</b> keys.</p>
+         
+          <p>Configure manually the following module:</p>
+          <p>
+            <a href="workflow:///PBSETUP_BSW_PBCFGM">PbcfgM</a>: configure BSW modules to
+            be managed by <b>PbcfgM</b>.
+          </p>
+        ]]>
+      </description>
+
+      <action label="Configure the PbcfgM module" id="PBSETUP_BSW_PBCFGM">
+        <command description="Open PbcfgM configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=PbcfgM)"
+          autoadvance="false"/>
+
+        <description>
+          <![CDATA[
+           <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To configure the PbcfgM module.</p>
+            <ol>
+              <li>Double-click this action step in the <b>Workflows</b> view. The <b>PbcfgM</b>
+              editor opens up in the editor area of EB tresos Studio.</li>
+              <li>In the <b>PbcfgMBswModules</b> tab, create one list entry for each BSW module that
+              is managed by the <b>PbcfgM</b>.</li>
+              <li>For each created list entry, select the according configuration of this BSW module
+              via the <tt>PbcfgMBswModuleRef</tt> parameter. Only post-build capable
+              modules must be selected.</li>
+             
+            </ol>
+             <h2 style="color:#00c400";><b>APPLICATION DEMOS CONCRETE EXAMPLES</b></h2>
+            
+            <p><i>simple_demo_can_rte</i>:</p>
+              <p>Create a list entry for the following BSW modules: <i>CanIf</i>, <i>Com</i> and
+                 <i>PduR</i></p>
+            <p><i>simple_demo_fr_rte</i>:</p>
+              <p>Create a list entry for the following BSW modules: <i>FrIf</i>, <i>Com</i> and
+                 <i>PduR</i></p>
+            <p><i>simple_demo_lin_rte</i>:</p>
+              <p>Create a list entry for the following BSW modules: <>LinIf</i>, <i>Com</i>
+                 and <i>PduR</i></p>
+          ]]>
+        </description>
+      </action>
+
+      <action id="PBSETUP_IMP_SYSTEM" label="Import from system description">
+        <command description="Import network description"
+          serialization="dreisoft.tresos.launcher2.api.plugin.ImporterExporterCommand"/>
+        <description>
+          <![CDATA[
+              <h2 style="color:#00c400";><b>GOAL</b></h2>
+              <p>To import an AUTOSAR system description (ARXML).</p>
+              <p>The communication matrix is represented in the system description file format.
+                 When you import the system description file, it configures large parts of the
+                 <b>Can</b>,
+                 <b>CanIf</b>, <b>Com</b>, <b>EcuC</b> and <b>PduR</b> modules (and other modules).
+                 Additionally,
+                 this file contains the configuration data for the <b>CanTp</b> and <b>CanNm</b> modules.</p>
+              <p>The system description contains the configuration of a new CAN message which is periodically
+              sent.
+                 The period is modified in the last step of the post-build workflows <a
+                 href="workflow://ACGPostBuildUpdateWorkflow/PBUPDATE">Post-Build Update Workflow</a>.</p>
+             <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+              <ol>
+                <li>Double-click this action step in the <b>Workflows</b> view.</li>
+                <li>In the <b>Create, manage and run im- and exporters</b> dialog, select the system
+                description importer that you added in the <b>AutoCore Workflow Rte</b>.</li>
+                <li>Select the <b>All Models</b> tab to replace the old system description file, and add the new by clicking <b>Edit</b> 
+                and selecting the desired system description file.</li>
+                <li>To apply your changes, select <b>Apply</b>.</li>
+                <li>To import your communication matrix into the ECU configuration, select <b>Run Importer</b>.</li>
+              </ol>
+               <h2 style="color:#00c400";><b>APPLICATION DEMOS CONCRETE EXAMPLES</b></h2>
+          
+              <p><i>simple_demo_can_rte</i>:</p>
+              <p>Add system description file: <tt>workspace/&lt;PROJECT_NAME&gt;/supplement/SimpleDemo_SysDesc/system/CanSystem_PostBuild_Setup.arxml</tt>
+                to the second position of Imp_System importer.</p>
+              <p>The importer must look like below:</p>
+              <ul>
+              <li>output\generated\swcd\Base_Bswmd.arxml</li>
+              <li>supplement\SimpleDemo_SysDesc\system\CanSystem_PostBuild_Setup.arxml</li>
+              <li>supplement\SimpleDemo_SysDesc\system\SoftwareComponents.arxml</li>
+              <li>systemmod\ConnectionEditor.arxml</li>
+              <li>supplement\SimpleDemo_SysDesc\system\BswMMode.arxml</li>
+              <li>output\generated\swcd\*.arxml</li>
+              </ul>
+             <p><strong style="color:#ff9900">Note:</strong> It is mandatory to have the first two
+             entries as defined here.</p>
+            ]]>
+        </description>
+      </action>
+      
+      <action label="Run ImportEcuConfig wizard" id="PBSETUP_ECU_CFG_RUN">
+        <command description="Run ImportEcuConfig wizard"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=ImportEcuConfig)" />
+        <description>
+          <![CDATA[
+           <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To run the ImportEcuConfig wizard.</p>
+               <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+            <p>Double-click this action step in the <b>Workflows</b> view.
+               Alternatively, you can open the <b>ImportEcuConfig wizard</b> in <b>Project >
+               Unattended Wizards > Unattended wizard configuration</b>, and select <b>Create ECU
+               Configuration(ImportEcuConfig)</b> entry from the left side list.</p>
+            <p>Select <b>Run</b> to run the <b>ImportEcuConfig wizard</b>.</p>
+            </ol>
+          ]]>
+        </description>
+      </action>
+      
+      <action label="Sort PDUs in CanIf" id="PBSETUP_BSW_CANIF_SORT">
+        <command description="Open CanIf configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=CanIf)"
+          autoadvance="false"/>
+
+        <description>
+          <![CDATA[
+             <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To prepare PDUs for configuration updates.</p>
+            <p>PDUs exchanged with non-post-build capable modules should be
+               put first in the list of PDUs to ensure that the PDU IDs of these PDUs do not
+               change if the Calculate Handle ID assistant is re-run after the re-import of the
+               system description.</p>
+          <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+            <ol>
+              <li>In the <b>Workflows</b> view, double-click this action step to open the
+              <b>CanIf</b>.</li>
+              <li>In the <b>CanIfInitCfg</b> tab, open the first <tt>CanIfInitCfg</tt> by double-clicking on the respective entry in the <b>CanIfInitCfg</b> list.</li>
+              <li>In the <b>CanIfRxPduCfg</b> and <b>CanIfTxPduCfg</b> tabs, select one entry and use
+                  the arrows to move the entry up or down in the list.</li>
+              <li>In the <b>CanIfRxPduCfg</b> and <b>CanIfTxPduCfg</b> tabs, update all missing
+                  references about <b>CanIfRxPduHrhIdRef</b> and <b>CanIfTxPduBufferRef</b>.</li>
+            </ol>
+          ]]>
+        </description>
+      </action>
+
+      <action label="Sort PDUs in FrIf" id="PBSETUP_BSW_FRIF_SORT">
+        <command description="Open FrIf configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=FrIf)"
+          autoadvance="false"/>
+
+        <description>
+          <![CDATA[
+              <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To prepare PDUs for configuration updates.</p>
+            <p>PDUs exchanged with non-post-build capable modules should be
+               put first in the list of PDUs to ensure that the PDU IDs of these PDUs do not
+               change if the Calculate Handle ID assistant is re-run after the re-import of the
+               system description.</p>
+             <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+            <ol>
+              <li>Double-click this action step in the <b>Workflows</b> view to open the <b>FrIf</b>
+                  editor.</li>
+              <li>In the <b>FrIfConfig</b> tab, open the first <tt>FrIfConfig</tt> by double
+                  clicking on the respective entry in the <b>FrIfConfig</b> list.</li>
+              <li>In the <b>FrIfPdu</b> tab, select one entry and use the arrows to
+                  move the entry up or down in the list.</li>
+            </ol>
+          ]]>
+        </description>
+      </action>
+
+    </group>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Assistants and Wizards >>>>>>>>>>>>>>>>>> -->
+
+    <group id="PBSETUP_ASS" label="Run assistant dialogs" type="sequence">
+      <description>
+        <![CDATA[
+         <h2 style="color:#00c400";><b>GOAL</b></h2>
+          <p>Assistant dialogs help you configure complex tasks and avoid
+          time-consuming configuration work.</p>
+          <p>You can use the following assistance dialog to configure the communication stack:
+          <a href="workflow:///PBSETUP_ASS_HID">Handle ID Calculator</a>
+          </p>
+        ]]>
+      </description>
+
+      <action id="PBSETUP_ASS_HID" label="Calculate Handle IDs">
+        <command description="Unattended wizards dialog" type="configure"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerType=HandleId)"/>
+        <command description="Calculate Handle IDs"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerType=HandleId)"/>
+
+        <description>
+          <![CDATA[
+            <h2 style="color:#00c400";><b>GOAL</b></h2>
+              <p>To calculate the handle-IDs (that is to say the PDU-IDs and controller-IDs) for the modules of
+              the communication stack.</p>
+             <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+              <ul>
+                <li>To open the configuration dialog of the <b>Handle ID Calculator</b>, select the
+                book icon in the toolbar of the <b>Workflows</b> view.</li>
+                <li>To calculate the handle-IDs, double-click this action step in the
+                <b>Workflows</b> view. The <b>Handle ID Calculator</b> opens up and calculates
+                automatically all handle-IDs.</li>
+              </ul>
+            <p><strong style="color:#ff9900">Note:</strong>
+              By default, the <b>Handle ID Calculator</b> calculates all handle-IDs of the loaded
+              modules.</p>
+           
+          ]]>
+        </description>
+      </action>
+
+      <action label="Edit FrIf Joblist" id="PBSETUP_ASS_FRAS">
+        <command
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.SidebarTriggerCommand(triggerId=frifwizard_trigger)"/>
+
+        <description>
+          <![CDATA[
+              <h2 style="color:#00c400";><b>GOAL</b></h2>
+              <p>To edit the job list of the FlexRay interface (FrIf). This workflow step
+              is only required and possible if your project contains the <b>FlexRay Interface
+              (FrIf)</b> module.</p>
+              <p>The <b>FlexRay Interface (FrIf) Joblist Editor</b> creates job triggers and
+              communication operations that handle the reception, the indication, and the
+              transmission of PDUs (that is to say FlexRay messages). The configuration is performed on
+              <b>Frame Triggering</b> granularity.</p>
+              <p>The upper pane of the <b>FlexRay Interface (FrIf) Joblist Editor</b> displays a
+              list of all <b>Frame Triggerings</b> (it actually contains the PDUs). In the lower
+              pane
+              of the <b>FlexRay Interface (FrIf) Joblist Editor</b> you can see a list of all
+              created <b>Job Triggers</b> (to define the time the FlexRay communication
+              cycle actions can potentially be performed) and the created <b>Communication
+              Operations</b> (to define what action must be performed at this time).</p>
+           <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+             
+              <ol>
+                <li>In the <b>Workflows</b> view, double-click this action step to open the
+                <b>FlexRay Interface (FrIf) Joblist Editor</b>.</li>
+                <li>Select the desired <b>FrIf Cluster</b>, and select
+                <b>Next</b>.</li>
+                <li>In the lower left corner of the <b>FlexRay Interface (FrIf) Joblist Editor</b>,
+                select the desired number of <b>Job Triggers</b> per FlexRay communication cycle and
+                select <b>AUTO JT</b> to operate the desired number of <b>Job
+                Triggers</b> and distribute them evenly across the FlexRay communication cycle.</li>
+                <li>In the lower left corner of the <b>FlexRay Interface (FrIf) Joblist Editor</b>,
+                select <b>AUTO Assign</b> to assign all of the <b>Frame Triggerings</b>
+                displayed in the upper part of the <b>FlexRay Interface (FrIf) Joblist Editor</b> to
+                the created <b>Job Triggers</b>. This enables a minimum transmission/reception
+                latency and an automatic selection of the appropriate <b>Communication Operations</b>.
+                </li>
+                <li>Select <b>Finish</b>.</li>
+              </ol>
+            <p><strong style="color:#ff9900">Note:</strong>
+              The automatic creation of <b>Job Triggers</b>, and the automatic assignment of
+              <b>Frame Triggerings</b> to the job triggers is the most efficient way to create a
+              valid job list, and it is the recommended way. For very complex configurations, you can
+              manually create <b>Job Triggers</b> and manually assign the <b>Frame
+              Triggerings</b> to these created <b>Job Triggers</b>.</p>
+            
+          ]]>
+        </description>
+      </action>
+
+    </group>
+    
+    <action label="Update system model " id="PBSETUP_BSW_SWCD1" >
+      <command description="Run the MultiTask_RunFullImport"
+        serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=MultiTask_RunFullImport)" />
+      <description>
+        <![CDATA[
+        <h2 style="color:#00c400";><b>GOAL</b></h2>
+        <p>The last steps changed the ECU configuration, on which the BSWMD depends. It
+             is mandatory to update the system model and the basic software module description.</p>
+        <p>The wizard performs a complete update of the system model based on the imported files and current configuration.</p>
+        <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+        <ul>
+            <li>To run the <b>MultiTask_RunFullImport</b>, double-click this
+                action step in the <b>Workflows</b> view.</li>
+            <li> Alternatively, you can run the <b>MultiTask_RunFullImport</b> in <b>Project >
+            Unattended Wizards > Execute multiple tasks(MultiTask_RunFullImport)</b></li>.
+            
+        </ul>
+          ]]>
+      </description>
+      </action>
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Application >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="PBSETUP_APP" label="Build your application" type="sequence">
+      <description>
+        <![CDATA[
+            <h2 style="color:#00c400";><b>GOAL</b></h2>
+            <p>To generate code, build your application and run your application.</p>
+           <h2 style="color:#00c400";><b>PROCEDURE</b></h2>
+            <p><ol>
+              <li><a href="workflow:///PBSETUP_APP_GENERATE">Generate code</a>.</li>
+              <li><a href="workflow:///PBSETUP_APP_BUILD">Build your application</a>.</li>
+              <li><a href="workflow:///PBSETUP_APP_RUN">Run your application</a>.</li>
+            </ol></p>
+           <h2 style="color:#00c400";><b>OUTPUT</b></h2>
+            <p>The binaries are located in the <b>Project Explorer</b> view in the
+            <tt>output\bin</tt> directory.</p>
+        ]]>
+      </description>
+
+      <action label="Generate code" id="PBSETUP_APP_GENERATE" repeatable="true">
+        <command description="Generate code"
+          serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand()"/>
+
+        <description>
+          <![CDATA[
+           <h2 style="color:#00c400";><b>GOAL</b></h2> 
+              <p>To start generating your project configuration code.</p>
+               <h2 style="color:#00c400";><b>PROCEDURE</b></h2> 
+              <p>Double-click this action
+              step in the <b>Workflows</b> view, or select the hammer icon in the toolbar
+              of EB tresos Studio.</p>
+          ]]>
+        </description>
+      </action>
+
+      <action label="Build your application" id="PBSETUP_APP_BUILD" repeatable="true">
+        <description>
+          <![CDATA[
+         
+              <h2 style="color: #00c400;"><strong>GOAL</strong></h2>
+                <p>To make your application running, you must create a binary
+                  for your target platform.</p>
+                   <h2 style="color: #00c400;"><strong>PROCEDURE</strong></h2>
+                <p>To create a binary for your target platform:</p>
+                <ol>
+                  <li>Execute <tt>launch.bat</tt></li>
+                  <li>To build the dependencies, type <tt>make depend</tt> in the command line.</li>
+                  <li>To compile and link your software components, type <tt>make</tt>.</li>
+                </ol>
+          ]]>
+        </description>
+      </action>
+
+      <action label="Run your application" id="PBSETUP_APP_RUN" repeatable="true">
+        <description>
+          <![CDATA[
+          
+             <h2 style="color: #00c400;"><strong>GOAL</strong></h2>
+            <p>Your complete application binary is located in the <tt>output\bin</tt> directory.</p>
+            <p>You can use a debugger (such as Lauterbach) to download your application to your
+              target ECU.</p>
+          ]]>
+        </description>
+      </action>
+    </group>
+
+    <action id="PBSETUP_FIN" label="Finish">
+      <description>
+        <![CDATA[
+         <h2 style="color: #00c400;"><strong>RESULT</strong></h2>
+          <p>You successfully set up your basic software project for post-build support.</p>
+          <p>You can continue with the <a
+          href="workflow://ACGPostBuildOnlyWorkflow/PBONLY">Post-Build Only Workflow</a>, which is
+          based on the Post-Build Setup Workflow and contains instructions for upgrading your
+          Post-Build Setup Workflow with Post-Build Only support.</p>
+        ]]>
+      </description>
+    </action>
+  </group>
+
+</workflow>

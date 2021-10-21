@@ -1,0 +1,1951 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+[!AUTOSPACING!][!//
+[!INCLUDE "../../generate_common/Dem_Include.m"!]
+[!VAR "NumberIndicatorAttribute" = "count(DemConfigSet/*/DemEventParameter/*/DemEventClass/DemIndicatorAttribute/*)"!][!//
+[!CALL "CREATE_DTCCLASS_LIST_FROM_EVENTS"!][!//
+[!CALL "CALC_EVENT_DESC"!][!//
+[!CALL "CALCULATE_MULTICORE_SETTINGS"!][!//
+[!CALL "DEBOUNCE_COUNTER_GET_CLASS_COUNT"!][!//
+[!CALL "DEBOUNCE_TIME_GET_CLASS_COUNT"!][!//
+
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-1-3_STRICT_COMPACT.xsd">
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_Dem</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>DataConstrs</SHORT-NAME>
+          <ELEMENTS>
+            <DATA-CONSTR>
+              <SHORT-NAME>CONSTR_DebounceCounterClassIdx</SHORT-NAME>
+              <DATA-CONSTR-RULES>
+                <DATA-CONSTR-RULE>
+                  <INTERNAL-CONSTRS>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">[!"$DebounceCounterClassCount - 1"!]</UPPER-LIMIT>
+                  </INTERNAL-CONSTRS>
+                </DATA-CONSTR-RULE>
+              </DATA-CONSTR-RULES>
+            </DATA-CONSTR>
+            <DATA-CONSTR>
+              <SHORT-NAME>CONSTR_DebounceTimeClassIdx</SHORT-NAME>
+              <DATA-CONSTR-RULES>
+                <DATA-CONSTR-RULE>
+                  <INTERNAL-CONSTRS>
+                    <LOWER-LIMIT INTERVAL-TYPE="CLOSED">0</LOWER-LIMIT>
+                    <UPPER-LIMIT INTERVAL-TYPE="CLOSED">[!"$DebounceTimeClassCount - 1"!]</UPPER-LIMIT>
+                  </INTERNAL-CONSTRS>
+                </DATA-CONSTR-RULE>
+              </DATA-CONSTR-RULES>
+            </DATA-CONSTR>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleDescriptions</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-DESCRIPTION>
+              <SHORT-NAME>Dem</SHORT-NAME>
+              <MODULE-ID>54</MODULE-ID>
+              <PROVIDED-ENTRYS>
+                <BSW-MODULE-ENTRY-REF-CONDITIONAL>
+                  <BSW-MODULE-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dem/BswModuleEntrys/Dem_MainFunction</BSW-MODULE-ENTRY-REF>
+                </BSW-MODULE-ENTRY-REF-CONDITIONAL>
+              </PROVIDED-ENTRYS>
+              <INTERNAL-BEHAVIORS>
+                <!-- BSW Internal Behaviour of the Master Dem instance -->
+                <BSW-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>InternalBehavior_[!"$MasterCoreId"!]</SHORT-NAME>
+                  <ENTITYS>
+                    <BSW-SCHEDULABLE-ENTITY>
+                      <SHORT-NAME>Dem_MainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0.0</MINIMUM-START-INTERVAL>
+                      <IMPLEMENTED-ENTRY-REF DEST="BSW-MODULE-ENTRY">/AUTOSAR_Dem/BswModuleEntrys/Dem_MainFunction</IMPLEMENTED-ENTRY-REF>
+                    </BSW-SCHEDULABLE-ENTITY>
+                  </ENTITYS>
+                  <EVENTS>
+                    <BSW-TIMING-EVENT>
+                      <SHORT-NAME>TimingEvent_MainFunction</SHORT-NAME>
+                      <STARTS-ON-EVENT-REF DEST="BSW-SCHEDULABLE-ENTITY">/AUTOSAR_Dem/BswModuleDescriptions/Dem/InternalBehavior_[!"$MasterCoreId"!]/Dem_MainFunction</STARTS-ON-EVENT-REF>
+                      <PERIOD>[!"DemGeneral/DemTaskTime"!]</PERIOD>
+                    </BSW-TIMING-EVENT>
+                  </EVENTS>
+                </BSW-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </BSW-MODULE-DESCRIPTION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+        <AR-PACKAGE>
+          <SHORT-NAME>BswModuleEntrys</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-MODULE-ENTRY>
+              <SHORT-NAME>Dem_MainFunction</SHORT-NAME>
+              <!-- ADMIN-DATA For ACG-6 compatibility -->
+              <ADMIN-DATA>
+                <SDGS>
+                  <SDG GID="EB:DnT">
+                    <SD GID="FunctionGroup">Extern</SD>
+                    <SD GID="EnableTracing">false</SD>
+                  </SDG>
+                </SDGS>
+              </ADMIN-DATA>
+              <SERVICE-ID>85</SERVICE-ID>
+              <IS-REENTRANT>false</IS-REENTRANT>
+              <IS-SYNCHRONOUS>true</IS-SYNCHRONOUS>
+              <CALL-TYPE>SCHEDULED</CALL-TYPE>
+              <EXECUTION-CONTEXT>TASK</EXECUTION-CONTEXT>
+              <SW-SERVICE-IMPL-POLICY>STANDARD</SW-SERVICE-IMPL-POLICY>
+              <ARGUMENTS>
+              </ARGUMENTS>
+            </BSW-MODULE-ENTRY>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_Dem</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>Implementations</SHORT-NAME>
+          <ELEMENTS>
+            <BSW-IMPLEMENTATION>
+              <SHORT-NAME>BswImplementation_[!"$MasterCoreId"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Files</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dem.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dem_BSW_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dem_Int.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dem_Int_Stc.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dem_NvMCbk.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dem_Stc.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dem_Trace.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dem_Types.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::include::Dem_Version.h</SHORT-LABEL>
+                      <CATEGORY>SWHDR</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dem.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dem_Core.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dem_DcmIfAccess.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dem_DcmIfFFandED.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dem_DcmIfOBD.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dem_DcmIfStatusInfo.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dem_J1939Dcm.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>Autosar::src::Dem_J1939FF.c</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Dem_defs.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>make::Dem_rules.mak</SHORT-LABEL>
+                      <CATEGORY>SWMAKE</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+
+              <MC-SUPPORT>
+                <MC-PARAMETER-INSTANCES>
+<!-- Common part "$CalibrationSupport/$CalibrationWithEvCombSupport -->
+[!CALL "CALC_INDICATOR_CLASSES"!]
+[!CALL "GET_NUMBER_OF_INDICATOR_CLASSES"!]
+[!IF "$NumberOfIndicatorClasses < 256"!]
+  [!VAR "DemIndicatorGrpIdxType" = "'uint8'"!]
+[!ELSEIF "$NumberOfIndicatorClasses < 65536"!]
+  [!VAR "DemIndicatorGrpIdxType" = "'uint16'"!]
+[!ELSE!]
+  [!VAR "DemIndicatorGrpIdxType" = "'uint32'"!]
+[!ENDIF!]
+[!IF "$NumberOfIndicatorClasses < DemGeneral/DemMaxNumberIndicatorClasses"!]
+  [!VAR "NumberOfIndicatorClasses" = "DemGeneral/DemMaxNumberIndicatorClasses"!]
+[!ENDIF!]
+[!IF "$NumberOfIndicatorClasses > 0"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_IndicatorClasses</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i($NumberOfIndicatorClasses)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+[!FOR "IndicatorLink" = "0"  TO "$NumberOfIndicatorClasses"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>IndicatorClasses_[!"$IndicatorLink"!]</SHORT-NAME>
+                        <CATEGORY>STRUCTURE</CATEGORY>
+                        <SUB-ELEMENTS>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>Enabled</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Enabled state of the Indicator class (enabled == 1, disabled == 0).
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>Enabled</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>IndicatorId</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Id of the indicator referenced by Indicator class. Range of accepted
+                                values is 0..254, as only 255 indicators are allowed by Autosar.
+                                If MIL indicator is referenced then the ObdDTC of the respective event
+                                shall be enabled.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>IndicatorId</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>Behaviour</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Behaviour of Indicator class has the range 0..3 corresponding to the
+                                indicator modes DEM_INDICATOR_OFF, DEM_INDICATOR_CONTINUOUS,
+                                DEM_INDICATOR_BLINKING and DEM_INDICATOR_BLINK_CONT.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>Behaviour</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>HealingCycleThreshold</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                HealingCycleThreshold of Indicator class. Calibration of this value
+                                is only allowed before Dem_PreInit() is called. If the threshold
+                                will be re-calibrated the effect will be considered at the next
+                                processing and not during initialization.
+                                Range is 0..255.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>HealingCycleThreshold</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>FailureCycleThreshold</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                FailureCycleThreshold of Indicator class. Calibration of this value
+                                is only allowed before Dem_PreInit() is called. If the threshold
+                                will be re-calibrated the effect will be considered at the next
+                                processing and not during initialization.
+                                Range is limited to 1..255. For rationale see deviation "Fault
+                                Confirmation and Warning Indicator behavior".
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>FailureCycleThreshold</SYMBOL>
+                          </MC-DATA-INSTANCE>
+  [!IF "DemGeneral/DemCommonOperationCycleSupport = 'false'"!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>HealingCycle</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                OperationCycle type used as HealingCycle for the Indicator class. It
+                                has to reference a configured operation cycle.
+                                Range of allowed values is 0..254, as maximum operation cycles that
+                                can be configured is limited to 255.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>HealingCycle</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>FailureCycle</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                OperationCycle type used as FailureCycle for the Indicator class. It
+                                has to reference a configured operation cycle. If parameter
+                                DemIndicatorFailureCycleSource is set to DEM_FAILURE_CYCLE_EVENT
+                                then FailureCycle is disabled.
+                                Range of allowed values is 0..254, as maximum operation cycles that
+                                can be configured is limited to 255.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>FailureCycle</SYMBOL>
+                          </MC-DATA-INSTANCE>
+  [!ENDIF!]
+                        </SUB-ELEMENTS>
+                        <SYMBOL>[[!"$IndicatorLink"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+[!ENDFOR!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_IndicatorClasses</SYMBOL>
+                  </MC-DATA-INSTANCE>
+[!ENDIF!]
+
+[!IF "$CalibrationSupport = 'true'"!]
+[!IF "DemGeneral/DemDevFreezeFrameSupport = 'true'"!]
+                  <!-- !LINKSTO Dem.Calibration.IndividualDevFF,1 -->
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_EventDescDevFF</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:integer(count(DemConfigSet/*/DemEventParameter/*) + 1)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+
+  [!LOOP "node:order(DemConfigSet/*/DemEventParameter/*, 'DemEventId')"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>DevFreezeFrames_[!"num:i(DemEventId)"!]</SHORT-NAME>
+                        <CATEGORY>ARRAY</CATEGORY>
+                        <ARRAY-SIZE>2</ARRAY-SIZE>
+                        <SUB-ELEMENTS>
+
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DevFF_A</SHORT-NAME>
+                            <CATEGORY>STRUCTURE</CATEGORY>
+                            <SUB-ELEMENTS>
+                              <MC-DATA-INSTANCE>
+                                <SHORT-NAME>DevFFClassIdx</SHORT-NAME>
+                                <DESC>
+                                  <L-2 L="EN">
+                                    Development Freeze Frame A class index (Event: [!"name(.)"!]).
+                                    Ranges between 0 and DEM_FFCLS_NULL_IDX defined as number of
+                                    configured DemFreezeFrameClasses. Calibrating this class index
+                                    to the value DEM_FFCLS_NULL_IDX will disable the DevFF_A
+                                    functionality. Values bigger than DEM_FFCLS_NULL_IDX are not
+                                    allowed.
+                                  </L-2>
+                                </DESC>
+                                <CATEGORY>VALUE</CATEGORY>
+                                <RESULTING-PROPERTIES>
+                                  <SW-DATA-DEF-PROPS-VARIANTS>
+                                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                      <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                                      <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                      <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  </SW-DATA-DEF-PROPS-VARIANTS>
+                                </RESULTING-PROPERTIES>
+                                <SYMBOL>DevFFClassIdx</SYMBOL>
+                              </MC-DATA-INSTANCE>
+                            </SUB-ELEMENTS>
+                            <SYMBOL>[0]</SYMBOL>
+                          </MC-DATA-INSTANCE>
+
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DevFF_B</SHORT-NAME>
+                            <CATEGORY>STRUCTURE</CATEGORY>
+                            <SUB-ELEMENTS>
+                              <MC-DATA-INSTANCE>
+                                <SHORT-NAME>DevFFClassIdx</SHORT-NAME>
+                                <DESC>
+                                  <L-2 L="EN">
+                                    Development Freeze Frame B class index (Event: [!"name(.)"!]).
+                                    Ranges between 0 and DEM_FFCLS_NULL_IDX defined as number of
+                                    configured DemFreezeFrameClasses. Calibrating this class index
+                                    to the value DEM_FFCLS_NULL_IDX will disable the DevFF_B
+                                    functionality. Values bigger than DEM_FFCLS_NULL_IDX are not
+                                    allowed.
+                                  </L-2>
+                                </DESC>
+                                <CATEGORY>VALUE</CATEGORY>
+                                <RESULTING-PROPERTIES>
+                                  <SW-DATA-DEF-PROPS-VARIANTS>
+                                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                      <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                                      <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                      <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  </SW-DATA-DEF-PROPS-VARIANTS>
+                                </RESULTING-PROPERTIES>
+                                <SYMBOL>DevFFClassIdx</SYMBOL>
+                              </MC-DATA-INSTANCE>
+                            </SUB-ELEMENTS>
+                            <SYMBOL>[1]</SYMBOL>
+                          </MC-DATA-INSTANCE>
+
+                        </SUB-ELEMENTS>
+                        <SYMBOL>[[!"DemEventId"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+  [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_EventDescDevFF</SYMBOL>
+                  </MC-DATA-INSTANCE>
+[!ENDIF!]
+
+[!IF "(node:refexists(DemGeneral/DemCommonFFDataClassRef)) or
+      ( (DemGeneral/DemDevFreezeFrameSupport = 'true') and
+        (node:refexists(DemGeneral/DemCommonFFDataDevAClassRef)) )"!]
+                  <!-- !LINKSTO Dem.Calibration.CommonFF,1 -->
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_CommonPartFFClassIdx</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>3</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>Common_DevFF_A_Class_Index</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Class index of the common freeze frame part of DevFF_A. Ranges between 0
+                            and DEM_FFCLS_NULL_IDX defined as number of configured
+                            DemFreezeFrameClasses. Calibrating this class index to the value
+                            DEM_FFCLS_NULL_IDX will disable the common freeze frame part of
+                            development freeze frame A functionality. Values bigger than
+                            DEM_FFCLS_NULL_IDX are not allowed.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[0]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>Common_RegularFF_Class_Index</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Class index of the common freeze frame part of regular freeze frame.
+                            Ranges between 0 and DEM_FFCLS_NULL_IDX defined as number of configured
+                            DemFreezeFrameClasses. Calibrating this class index to the value
+                            DEM_FFCLS_NULL_IDX will disable the common freeze frame part of
+                            regular freeze frame functionality. Values bigger
+                            than DEM_FFCLS_NULL_IDX are not allowed.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[2]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_CommonPartFFClassIdx</SYMBOL>
+                  </MC-DATA-INSTANCE>
+[!ENDIF!]
+
+  [!VAR "OBDSupport" = "node:value('DemGeneral/DemOBDSupport')"!]
+  [!VAR "FreezeFrameRecordCapture" = "node:value('DemGeneral/DemFreezeFrameCapture')"!]
+  [!VAR "EnableConditionGroupNumber" = "num:integer(count(DemGeneral/DemEnableConditionGroup/*))"!]
+  [!CALL "GET_VCC_OCC5_USED"!][!//
+  [!CALL "CREATE_EVENT_CLASS_LIST"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_EventClassDesc</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i($MaxNumberEventClasses)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+  [!VAR "EventClassIdx" = "0"!]
+  [!FOR "EmptyEventClassIdx" = "$EventClassIdx"  TO "$MaxNumberEventClasses - 1"!]
+    [!VAR "EventClassString" = "."!]
+                      <!-- !LINKSTO VCC_DEM_007_Req106v2,1 -->
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>EventClass_[!"num:i($EventClassIdx)"!]</SHORT-NAME>
+                        <CATEGORY>STRUCTURE</CATEGORY>
+                        <SUB-ELEMENTS>
+    [!IF "$IndicatorClassSupport = 'true'"!]
+                          <!-- !LINKSTO VCC_DEM_006_Req108v1,1 -->
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>IndicatorClassIdx</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Index of Indicator class. Range is 0..[!"num:i($NumberOfIndicatorClasses)"!].
+                                Value [!"num:i($NumberOfIndicatorClasses)"!] is used to disable
+                                indicator class.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/[!"$DemIndicatorGrpIdxType"!]</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/[!"$DemIndicatorGrpIdxType"!]</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>IndicatorClassIdx</SYMBOL>
+                          </MC-DATA-INSTANCE>
+    [!ENDIF!]
+    [!IF "count(DemConfigSet/*/DemEventParameter/*[DemEventClass/DemAgingAllowed = 'true']) > 0"!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>AgingCycleCounterThreshold</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Value of DemAgingCycleCounterThreshold. Calibration of this value is
+                                only allowed before Dem_PreInit() is called. After re-calibration of
+                                aging support the stored event related data is not valid.
+                                Range is 0..255. Value 0 disables aging.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>AgingCycleCounterThreshold</SYMBOL>
+                          </MC-DATA-INSTANCE>
+    [!ENDIF!]
+    [!IF "$VccOcc5Used = 1"!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>OBDAgingCycleCounterThreshold</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Value of DemOBDAgingCycleCounterThreshold. Calibration of this value
+                                is only allowed before Dem_PreInit() is called. If the threshold
+                                will be re-calibrated the effect will be considered at the next
+                                processing and not during initialization.
+                                Range is 0..255. Value 0 disables aging.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>OBDAgingCycleCounterThreshold</SYMBOL>
+                          </MC-DATA-INSTANCE>
+    [!ENDIF!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>EventFailureCycleCounterThreshold</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Value of DemEventFailureCycleCounterThreshold. Allowed calibration
+                                values are in the range 1..254. Value 0 is invalid.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>EventFailureCycleCounterThreshold</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>EventPriority</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Value of DemEventPriority. Range is 1..255, value 1 representing the
+                                highest priority and each value sequentially larger indicating a
+                                lower importance. Value 0 is invalid.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>EventPriority</SYMBOL>
+                          </MC-DATA-INSTANCE>
+[!IF "$CommonOperationCycleEnabled = 'true'"!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>CommonOperationCycle</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Common operation cycle is used as aging cycle, event failure cycle,
+                                indicator failure cycle and indicator healing cycle.  It has to
+                                reference a configured operation cycle.
+                                Range is limited to 0..254.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>CommonOperationCycle</SYMBOL>
+                          </MC-DATA-INSTANCE>
+[!ENDIF!]
+[!IF "$AgingAllowedSeperateFlag = 'true'"!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>AgingAllowed</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Parameter to enable/disable aging. Calibration of this value is only
+                                allowed before Dem_PreInit() is called.
+                                Range is 0..1. Value 0 disables aging and 1 enables it.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/boolean</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/boolean</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>AgingAllowed</SYMBOL>
+                          </MC-DATA-INSTANCE>
+[!ENDIF!]
+[!IF "($OBDSupport = 'true') or ($FreezeFrameRecordCapture = 'DEM_TRIGGER_ON_FDC_THRESHOLD')"!][!//
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>Bitfield</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">Collection of Boolean parameters per Event Class</L-2>
+                            </DESC>
+                            <CATEGORY>STRUCTURE</CATEGORY>
+                            <SUB-ELEMENTS>
+                              <MC-DATA-INSTANCE>
+                                <SHORT-NAME>MinRatioEvent</SHORT-NAME>
+                                <DESC>
+                                  <L-2 L="EN">
+                                    Value 1 means DemMinRatioEvent == 'true' and value 0 implies
+                                    that DemMinRatioEvent == 'false'. Range is 0..1.
+                                  </L-2>
+                                </DESC>
+                                <CATEGORY>VALUE</CATEGORY>
+                                <RESULTING-PROPERTIES>
+                                  <SW-DATA-DEF-PROPS-VARIANTS>
+                                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                      <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                      <SW-BIT-REPRESENTATION>
+                                        <BIT-POSITION>0</BIT-POSITION>
+                                        <NUMBER-OF-BITS>1</NUMBER-OF-BITS>
+                                      </SW-BIT-REPRESENTATION>
+                                      <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                      <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  </SW-DATA-DEF-PROPS-VARIANTS>
+                                </RESULTING-PROPERTIES>
+                                <SYMBOL>Bitfield</SYMBOL>
+                              </MC-DATA-INSTANCE>
+                              <MC-DATA-INSTANCE>
+                                <SHORT-NAME>FreezeFrameUpdate</SHORT-NAME>
+                                <DESC>
+                                  <L-2 L="EN">
+                                    Value 1 means DemFreezeFrameUpdate == 'true' and value 0 implies
+                                    that DemFreezeFrameUpdate == 'false'. Range is 0..1.
+                                  </L-2>
+                                </DESC>
+                                <CATEGORY>VALUE</CATEGORY>
+                                <RESULTING-PROPERTIES>
+                                  <SW-DATA-DEF-PROPS-VARIANTS>
+                                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                      <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                      <SW-BIT-REPRESENTATION>
+                                        <BIT-POSITION>1</BIT-POSITION>
+                                        <NUMBER-OF-BITS>1</NUMBER-OF-BITS>
+                                      </SW-BIT-REPRESENTATION>
+                                      <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                      <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  </SW-DATA-DEF-PROPS-VARIANTS>
+                                </RESULTING-PROPERTIES>
+                                <SYMBOL>Bitfield</SYMBOL>
+                              </MC-DATA-INSTANCE>
+                            </SUB-ELEMENTS>
+                          </MC-DATA-INSTANCE>
+[!ENDIF!]
+[!IF "$EnableConditionGroupNumber > 0"!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>EnableConditionGroupRef</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Reference to a configured enable condition group. If
+                                DemEnableConditionGroupRef is disabled for a dedicated event, the
+                                number of all configured enable condition groups will be placed at
+                                this parameter.
+                                Range is 0..254.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>EnableConditionGroupRef</SYMBOL>
+                          </MC-DATA-INSTANCE>
+[!ENDIF!]
+                        </SUB-ELEMENTS>
+                        <SYMBOL>[[!"num:i($EventClassIdx)"!]]</SYMBOL>
+  [!VAR "EventClassIdx" = "$EventClassIdx + 1"!]
+                      </MC-DATA-INSTANCE>
+  [!ENDFOR!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_EventClassDesc</SYMBOL>
+                  </MC-DATA-INSTANCE>
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_EventDesc</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:integer(count(DemConfigSet/*/DemEventParameter/*))"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+[!VAR "Index" = "1"!]
+[!LOOP "node:order(DemConfigSet/*/DemEventParameter/*, 'DemEventId')"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>[!"name(.)"!]</SHORT-NAME>
+                        <CATEGORY>STRUCTURE</CATEGORY>
+                        <SUB-ELEMENTS>
+                          <!-- EvConf1 -->
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>EvConf1</SHORT-NAME>
+                            <CATEGORY>STRUCTURE</CATEGORY>
+                            <SUB-ELEMENTS>
+                              <!-- !LINKSTO VCC_DEM_006_Req103v1,1 -->
+                              <MC-DATA-INSTANCE>
+                                <SHORT-NAME>DemUdsDTC</SHORT-NAME>
+                                <DESC>
+                                  <L-2 L="EN">
+                                    UDS DTC value of the event (special case DTC 0: means DTC off; it is not allowed to have the same DTC value for more than one event). Valid range of DTC calibration is within
+                                    the configured DTC group including value 0 to disable the DTC. If re-calibration is performed during Dcm service request processing, the Dem may return still with the DTC,
+                                    although the DTC is switched off already until a request for a different DTC. For service 0x19, if the DTC is identified by the algorithm the value of the DTC will be returned.
+                                    In case calibration occurs with DTC off and the service is called again, the DTC being identified by the algorithm, the DTC returned by the service is DEM_NO_DTC.
+                                    Range is 0..16777214, displayable on 24 bits.
+                                  </L-2>
+                                </DESC>
+                                <CATEGORY>VALUE</CATEGORY>
+                                <RESULTING-PROPERTIES>
+                                  <SW-DATA-DEF-PROPS-VARIANTS>
+                                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                      <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint32</BASE-TYPE-REF>
+                                      <SW-BIT-REPRESENTATION>
+                                        <BIT-POSITION>0</BIT-POSITION>
+                                        <NUMBER-OF-BITS>24</NUMBER-OF-BITS>
+                                      </SW-BIT-REPRESENTATION>
+                                      <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                      <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint32</DATA-CONSTR-REF>
+                                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  </SW-DATA-DEF-PROPS-VARIANTS>
+                                </RESULTING-PROPERTIES>
+                                <SYMBOL>EvConf1</SYMBOL>
+                              </MC-DATA-INSTANCE>
+                              <!-- !LINKSTO VCC_DEM_006_Req103v1,1 -->
+                              <MC-DATA-INSTANCE>
+                                <SHORT-NAME>DemDTCSeverity</SHORT-NAME>
+                                <DESC>
+                                  <L-2 L="EN">
+                                    Internal representation:
+                                    '0' == 'DEM_DTC_SEV_NO_SEVERITY',
+                                    '1' == 'DEM_DTC_SEV_MAINTENANCE_ONLY',
+                                    '2' == 'DEM_DTC_SEV_CHECK_AT_NEXT_HALT',
+                                    '3' == 'DEM_DTC_SEV_IMMEDIATELY'.
+                                  </L-2>
+                                </DESC>
+                                <CATEGORY>VALUE</CATEGORY>
+                                <RESULTING-PROPERTIES>
+                                  <SW-DATA-DEF-PROPS-VARIANTS>
+                                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                      <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint32</BASE-TYPE-REF>
+                                      <SW-BIT-REPRESENTATION>
+                                        <BIT-POSITION>26</BIT-POSITION>
+                                        <NUMBER-OF-BITS>2</NUMBER-OF-BITS>
+                                      </SW-BIT-REPRESENTATION>
+                                      <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                      <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint32</DATA-CONSTR-REF>
+                                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  </SW-DATA-DEF-PROPS-VARIANTS>
+                                </RESULTING-PROPERTIES>
+                                <SYMBOL>EvConf1</SYMBOL>
+                              </MC-DATA-INSTANCE>
+                            </SUB-ELEMENTS>
+                          </MC-DATA-INSTANCE>
+                          <!-- EvConf2 -->
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>EvConf2</SHORT-NAME>
+                            <CATEGORY>STRUCTURE</CATEGORY>
+                            <SUB-ELEMENTS>
+                              <!-- !LINKSTO VCC_DEM_006_Req101v1_DemFreezeFrameClass,1 -->
+                              <MC-DATA-INSTANCE>
+                                <SHORT-NAME>FFClassIdx</SHORT-NAME>
+                                <DESC>
+                                  <L-2 L="EN">
+                                    Index of used Freeze Frame class. Range is 0..16383 displayable
+                                    on 14 bits (maximum assignable bits).
+                                  </L-2>
+                                </DESC>
+                                <CATEGORY>VALUE</CATEGORY>
+                                <RESULTING-PROPERTIES>
+                                  <SW-DATA-DEF-PROPS-VARIANTS>
+                                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                      <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint32</BASE-TYPE-REF>
+                                      <SW-BIT-REPRESENTATION>
+                                        <BIT-POSITION>[!"num:i($CalEvDescFFClassIdxOffset)"!]</BIT-POSITION>
+                                        <NUMBER-OF-BITS>[!"num:i($CalEvDescFFClassIdxWidth)"!]</NUMBER-OF-BITS>
+                                      </SW-BIT-REPRESENTATION>
+                                      <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                      <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint32</DATA-CONSTR-REF>
+                                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  </SW-DATA-DEF-PROPS-VARIANTS>
+                                </RESULTING-PROPERTIES>
+                                <SYMBOL>EvConf2</SYMBOL>
+                              </MC-DATA-INSTANCE>
+  [!IF "$EventClassSupport = 'true'"!]
+                              <!-- !LINKSTO VCC_DEM_006_Req101v1_DemEventClass,1 -->
+                              <MC-DATA-INSTANCE>
+                                <SHORT-NAME>EventClassIndex</SHORT-NAME>
+                                <DESC>
+                                  <L-2 L="EN">
+                                    Index of Event Class. Ranges from 0 to whichever value is
+                                    greater between DemMaxNumberEventClasses and the number of
+                                    different EventClasses. DemMaxNumberEventClasses can be
+                                    configured to a maximum value of 2048.
+                                  </L-2>
+                                </DESC>
+                                <CATEGORY>VALUE</CATEGORY>
+                                <RESULTING-PROPERTIES>
+                                  <SW-DATA-DEF-PROPS-VARIANTS>
+                                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                      <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint32</BASE-TYPE-REF>
+                                      <SW-BIT-REPRESENTATION>
+                                        <BIT-POSITION>[!"num:i($CalEvDescEventClassIdxOffset)"!]</BIT-POSITION>
+                                        <NUMBER-OF-BITS>[!"num:i($CalEvDescEventClassIdxWidth)"!]</NUMBER-OF-BITS>
+                                      </SW-BIT-REPRESENTATION>
+                                      <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                      <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint32</DATA-CONSTR-REF>
+                                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  </SW-DATA-DEF-PROPS-VARIANTS>
+                                </RESULTING-PROPERTIES>
+                                <SYMBOL>EvConf2</SYMBOL>
+                              </MC-DATA-INSTANCE>
+  [!ENDIF!]
+                            </SUB-ELEMENTS>
+                          </MC-DATA-INSTANCE>
+                          <!-- EvConf3 -->
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>EvConf3</SHORT-NAME>
+                            <CATEGORY>STRUCTURE</CATEGORY>
+                            <SUB-ELEMENTS>
+                              <!-- !LINKSTO VCC_DEM_006_Req103v1,1 -->
+                              <MC-DATA-INSTANCE>
+                                <SHORT-NAME>DemDTCFunctionalUnit</SHORT-NAME>
+                                <DESC>
+                                  <L-2 L="EN">
+                                    DTCFunctionalUnit identifies the corresponding basic vehicle or
+                                    system function which reports the DTC. Ranges between 0 and the
+                                    maximum value which fits the number of bits allocated for this
+                                    information. The width of this bit-field information can vary
+                                    depending on the configuration.
+                                  </L-2>
+                                </DESC>
+                                <CATEGORY>VALUE</CATEGORY>
+                                <RESULTING-PROPERTIES>
+                                  <SW-DATA-DEF-PROPS-VARIANTS>
+                                    <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                      <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint32</BASE-TYPE-REF>
+                                      <SW-BIT-REPRESENTATION>
+                                        <BIT-POSITION>[!"num:i($CalEvDescDTCFuncUnitOffset)"!]</BIT-POSITION>
+                                        <NUMBER-OF-BITS>[!"num:i($CalEvDescDTCFuncUnitWidth)"!]</NUMBER-OF-BITS>
+                                      </SW-BIT-REPRESENTATION>
+                                      <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                      <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint32</DATA-CONSTR-REF>
+                                    </SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  </SW-DATA-DEF-PROPS-VARIANTS>
+                                </RESULTING-PROPERTIES>
+                                <SYMBOL>EvConf3</SYMBOL>
+                              </MC-DATA-INSTANCE>
+                            </SUB-ELEMENTS>
+                          </MC-DATA-INSTANCE>
+                        </SUB-ELEMENTS>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+  [!VAR "Index" = "$Index + 1"!]
+[!ENDLOOP!]
+
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_EventDesc</SYMBOL>
+                  </MC-DATA-INSTANCE>
+
+
+[!LOOP "DemGeneral/DemFreezeFrameClass/*"!]
+  [!VAR "Index" = "0"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>[!"name(.)"!]</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:integer(count(DemDidClassRef/*))"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+  [!LOOP "DemDidClassRef/*"!]
+                      <!-- !LINKSTO VCC_DEM_006_Req109v1,1, dsn.Dem.Calibration.DID.Unused,1 -->
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>[!"name(as:ref(.))"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Index of DID. Range is 0..65534. Value 65535 (0xFFFF) is used for
+                            internal processing, not allowed for calibration.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+    [!VAR "Index" = "$Index + 1"!]
+  [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_FFSegIdx[!"name(.)"!]</SYMBOL>
+                  </MC-DATA-INSTANCE>
+
+[!ENDLOOP!]
+
+
+<!-- !LINKSTO VCC_DEM_006_Req101v1_DemDebounceCounterBased,1 -->
+[!IF "$DebounceCounterClassCount > 0"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_DebounceCounterClassIdx</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i(count(DemConfigSet/*/DemEventParameter/*[DemEventClass/DemDebounceAlgorithmClass = 'DemDebounceCounterBased']))"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+  [!IF "$DebounceCounterClassCount <= 127"!]
+    [!VAR "BitWidth" = "7"!]
+    [!VAR "Type" = "'uint8'"!]
+  [!ELSE!]
+    [!VAR "BitWidth" = "15"!]
+    [!VAR "Type" = "'uint16'"!]
+  [!ENDIF!]
+  [!VAR "Index" = "0"!]
+  [!LOOP "node:order(DemConfigSet/*/DemEventParameter/*[DemEventClass/DemDebounceAlgorithmClass = 'DemDebounceCounterBased'], 'DemEventId')"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>[!"name(.)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Debounce counter based class index must be in range of 0 to [!"$DebounceCounterClassCount - 1"!].
+                            Depending on configuration, a maximum value of 32767, displayable on 15 bits can be referenced.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/[!"$Type"!]</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>0</BIT-POSITION>
+                                <NUMBER-OF-BITS>[!"num:i($BitWidth)"!]</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Dem/DataConstrs/CONSTR_DebounceCounterClassIdx</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+    [!VAR "Index" = "$Index + 1"!]
+  [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_DebounceCounterClassIdx</SYMBOL>
+                  </MC-DATA-INSTANCE>
+
+                  <MC-DATA-INSTANCE>
+                    <!-- !LINKSTO VCC_DEM_006_Req105v1,1 -->
+                    <SHORT-NAME>Dem_DebounceCounterClass</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i($DebounceCounterClassCount)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+  [!VAR "DebounceIdx" = "0"!]
+  [!FOR "DebounceCtrIndex" = "0" TO "$DebounceCounterClassCount - 1"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>DemDebounceCounterBasedClass_[!"num:i($DebounceIdx)"!]</SHORT-NAME>
+                        <CATEGORY>STRUCTURE</CATEGORY>
+                        <SUB-ELEMENTS>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemDebounceCounterDecrementStepSize</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Defines the step size for decrementing the internal fault detection
+                                counter (PREPASSED).
+                                Range is 1..32768. Value 0 is invalid.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>CountDecStepSize</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemDebounceCounterIncrementStepSize</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Defines the step size for incrementing the internal fault detection
+                                counter (PREFAILED).
+                                Range is 1..32767. Value 0 is invalid.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>CountIncStepSize</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemDebounceCounterPassedThreshold</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Defines the value of the internal fault detection counter, which
+                                indicates the passed status.
+                                Range is -32768..-1. Value 0 is invalid.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/sint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/sint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>CounterPassedThreshold</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemDebounceCounterFailedThreshold</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Defines the value of the internal fault detection counter, which
+                                indicates the failed status.
+                                Range is 1..32767. Value 0 is invalid.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/sint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/sint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>CounterFailedThreshold</SYMBOL>
+                          </MC-DATA-INSTANCE>
+    [!IF "(DemGeneral/DemFreezeFrameCapture = 'DEM_TRIGGER_ON_FDC_THRESHOLD') or
+          (DemGeneral/DemExtendedDataCapture = 'DEM_TRIGGER_ON_FDC_THRESHOLD')"!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemDebounceCounterUnconfirmedThreshold</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Defines the value of the internal fault detection counter, which
+                                indicates the "unconfirmedDTC" status.
+                                In case unconfirmedDTC threshold is set to be same as failed
+                                threshold, the unconfirmedDTC threshold is deactivated for this
+                                event.
+                                Range is 1..32767. Value 0 is invalid.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/sint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/sint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>CounterUnconfirmedThreshold</SYMBOL>
+                          </MC-DATA-INSTANCE>
+    [!ENDIF!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemDebounceCounterJumpDownValue</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Jump-Down value of the internal fault detection counter.
+                                Range is -32768..32767.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/sint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/sint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>JumpDownValue</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemDebounceCounterJumpUpValue</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Jump-Up value of the internal fault detection counter.
+                                Range is -32768..32767.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/sint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/sint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>JumpUpValue</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemDebounceCounterJumpDown</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Switch for the activation of Jump-Down. Range is 0..1.
+                                Value 0 means Jump-Down is deactivated.
+                                Value 1 means Jump-Down is activated.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>JumpDown</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemDebounceCounterJumpUp</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Switch for the activation of Jump-Up. Range is 0..1.
+                                Value 0 means Jump-Up is deactivated.
+                                Value 1 means Jump-Up is activated.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>JumpUp</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                        </SUB-ELEMENTS>
+                        <SYMBOL>[[!"num:i($DebounceIdx)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+    [!VAR "DebounceIdx" = "$DebounceIdx + 1"!]
+  [!ENDFOR!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_DebounceCounterClass</SYMBOL>
+                  </MC-DATA-INSTANCE>
+[!ENDIF!]
+<!-- !LINKSTO Dem.Calibration.DemTimeBasedDebounceClassConcept.arxml,1 -->
+
+[!IF "$DebounceTimeClassCount > 0"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_DebounceTimeClassIdx</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i(count(DemConfigSet/*/DemEventParameter/*[DemEventClass/DemDebounceAlgorithmClass = 'DemDebounceTimeBase']))"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+  [!IF "$DebounceTimeClassCount <= 255"!]
+    [!VAR "BitWidth" = "8"!]
+    [!VAR "Type" = "'uint8'"!]
+  [!ELSE!]
+    [!VAR "BitWidth" = "16"!]
+    [!VAR "Type" = "'uint16'"!]
+  [!ENDIF!]
+  [!VAR "Index" = "0"!]
+  [!LOOP "node:order(DemConfigSet/*/DemEventParameter/*[DemEventClass/DemDebounceAlgorithmClass = 'DemDebounceTimeBase'], './DemEventId')"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>[!"name(.)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">Debounce Time based class index must be in range of 0 to [!"$DebounceTimeClassCount - 1"!].</L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/[!"$Type"!]</BASE-TYPE-REF>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Dem/DataConstrs/CONSTR_DebounceTimeClassIdx</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+    [!VAR "Index" = "$Index + 1"!]
+  [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_DebounceTimeClassIdx</SYMBOL>
+                  </MC-DATA-INSTANCE>
+
+                  <MC-DATA-INSTANCE>
+                    
+                    <SHORT-NAME>Dem_DebounceTimeClass</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i($DebounceTimeClassCount)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+  [!VAR "TimeDebounceIdx" = "0"!]
+  [!FOR "TimeDebounceCtrIndex" = "0" TO "$DebounceTimeClassCount - 1"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>DemDebounceTimeBasedClass_[!"num:i($TimeDebounceIdx)"!]</SHORT-NAME>
+                        <CATEGORY>STRUCTURE</CATEGORY>
+                        <SUB-ELEMENTS>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>TimeFailedThreshold</SHORT-NAME>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint32</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint32</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>TimeFailedThreshold</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>TimePassedThreshold</SHORT-NAME>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint32</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint32</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>TimePassedThreshold</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                        </SUB-ELEMENTS>
+                        <SYMBOL>[[!"num:i($TimeDebounceIdx)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+    [!VAR "TimeDebounceIdx" = "$TimeDebounceIdx + 1"!]
+  [!ENDFOR!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_DebounceTimeClass</SYMBOL>
+                  </MC-DATA-INSTANCE>
+[!ENDIF!]
+[!IF "DemGeneral/DemOBDSupport = 'true'"!]
+  [!IF "count(DemConfigSet/*/DemPidClass/*) > 0"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_PidClass</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:integer(count(as:modconf('Dem')[1]/DemConfigSet/*/DemPidClass/*))"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+    [!VAR "Index" = "0"!]
+    [!LOOP "DemConfigSet/*/DemPidClass/*"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>[!"name(.)"!]</SHORT-NAME>
+                        <CATEGORY>STRUCTURE</CATEGORY>
+                        <SUB-ELEMENTS>
+                          <!-- !LINKSTO VCC_DEM_006_Req111v1,1, dsn.Dem.OBD.DemPidIdentifier.Unused,1 -->
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemPidIdentifier</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                PID Identifier. The PID identifier must be unique. Range is 0..254.
+                                Value 255 is used to disable PIDs in calibration context.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>DemPidIdentifier</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                        </SUB-ELEMENTS>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+      [!VAR "Index" = "$Index + 1"!]
+    [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_PidClass</SYMBOL>
+                  </MC-DATA-INSTANCE>
+  [!ENDIF!]
+[!ENDIF!]
+[!IF "DemGeneral/DemOBDSupport = 'true'"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_OBDConfig</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:integer(count(DemConfigSet/*/DemEventParameter/*))"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+  [!VAR "Index" = "1"!]
+  [!LOOP "node:order(DemConfigSet/*/DemEventParameter/*, 'DemEventId')"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>[!"name(.)"!]</SHORT-NAME>
+                        <CATEGORY>STRUCTURE</CATEGORY>
+                        <SUB-ELEMENTS>
+                          <!-- !LINKSTO VCC_DEM_006_Req103v1,1 -->
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>DemObdDTC</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                OBD DTC value of the current event. If re-calibration is performed
+                                for a stored event (OBD to non-OBD), the related OBD freeze frame
+                                (if stored), the related permanent event memory entry (if stored),
+                                etc. will not be cleared. The event memory entry will remain
+                                occupied and these data will then remain in an orphan state and will
+                                be inaccessible, belonging to an event that is no longer an OBD
+                                event. Such an OBD freeze frame can only be cleared by a subsequent
+                                call of Dem_ClearDTC() on the uds dtc of this event, or with a clear
+                                on all UDS DTCs, - however, it is recommended to clear the event before
+                                re-calibration and avoid this situation.
+                                The user shall take care to calibrate a non-OBD event to OBD only if
+                                DemEventDestination of the event is set to DEM_DTC_ORIGIN_PRIMARY_MEMORY.
+                                If OBD DTC value re-calibration is performed for an event,
+                                DemEventOBDReadinessGroup needs to be re-calibrated consistently.
+                                Range is 0..65535. Value 0 means 'no OBD DTC assigned'.
+                              </L-2>
+                              <L-2 L="EN">
+                                It is possible to configure multiple DTCs with identical OBD DTC
+                                value. When more than one DemDTCClass has identical OBD DTC, it is
+                                recommended to have same DemEventPriority, DemEventOBDReadinessGroup,
+                                DemDTCSeverity and DemDTCFunctionalUnit for events referring these
+                                DTCs to avoid inconsistencies in the Dem behavior.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>Dem_ObdDTC</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                        </SUB-ELEMENTS>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+    [!VAR "Index" = "$Index + 1"!]
+  [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_OBDConfig</SYMBOL>
+                  </MC-DATA-INSTANCE>
+
+  [!IF "node:exists(DemGeneral/DemMaxNumEventsPerReadinessGroup) and (DemGeneral/DemMaxNumEventsPerReadinessGroup > 0)"!]
+    [!VAR "ReadinessGroups" = "concat('DEM_OBD_RDY_MISF', '#', 'DEM_OBD_RDY_FLSYS', '#', 'DEM_OBD_RDY_CMPRCMPT', '#', 'DEM_OBD_RDY_EGR', '#', 'DEM_OBD_RDY_FLSYS_NONCONT', '#')"!]
+    [!IF "node:exists(DemGeneral/DemGeneralOBD/DemOBDEngineType) and (DemGeneral/DemGeneralOBD/DemOBDEngineType = 'DEM_IGNITION_SPARK')"!][!//
+      [!VAR "ReadinessGroups" = "concat($ReadinessGroups, 'DEM_OBD_RDY_CAT', '#', 'DEM_OBD_RDY_HTCAT', '#', 'DEM_OBD_RDY_EVAP', '#', 'DEM_OBD_RDY_SECAIR', '#', 'DEM_OBD_RDY_O2SENS', '#', 'DEM_OBD_RDY_O2SENSHT', '#', 'DEM_OBD_RDY_AC', '#')"!]
+    [!ELSE!][!//
+      [!VAR "ReadinessGroups" = "concat($ReadinessGroups, 'DEM_OBD_RDY_HCCAT', '#', 'DEM_OBD_RDY_NOXCAT', '#', 'UNUSED_1', '#', 'DEM_OBD_RDY_BOOSTPR', '#', 'DEM_OBD_RDY_EGSENS', '#', 'DEM_OBD_RDY_PMFLT', '#', 'UNUSED_2', '#')"!]
+    [!ENDIF!]
+    [!VAR "NumberOfGroups" = "count(text:split($ReadinessGroups, '#'))"!]
+    [!VAR "NumberEventsPerReadinessGroup" = "DemGeneral/DemMaxNumEventsPerReadinessGroup"!]
+                  <!-- !LINKSTO VCC_DEM_006_Req102v1,1 -->
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_OBDReadinessGroup</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:integer($NumberOfGroups)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+    [!VAR "ReadinessGroupCounter" = "0"!]
+    [!FOR "GroupIndex" = "1" TO "$NumberOfGroups"!]
+      [!VAR "GroupName" = "text:split($ReadinessGroups, '#')[position() = $GroupIndex]"!]
+      [!VAR "GroupCounter" = "0"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>[!"$GroupName"!]</SHORT-NAME>
+                        <CATEGORY>ARRAY</CATEGORY>
+                        <ARRAY-SIZE>[!"num:integer($NumberEventsPerReadinessGroup)"!]</ARRAY-SIZE>
+                        <SUB-ELEMENTS>
+      [!LOOP "as:modconf('Dem')[1]/DemConfigSet/*/DemEventParameter/*[DemEventClass/DemEventOBDReadinessGroup = $GroupName]"!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>[!"node:name(.)"!]</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Event assigned to ReadinessGroup [!"$GroupName"!]. The event can be
+                                assigned to multiple groups. Being an EventId the calibrated value
+                                must be within the DemEventId limits.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>[[!"num:integer($GroupCounter)"!]]</SYMBOL>
+                          </MC-DATA-INSTANCE>
+        [!VAR "GroupCounter" = "$GroupCounter + 1"!][!//
+      [!ENDLOOP!]
+      [!FOR "GroupCounter" = "$GroupCounter" TO "$NumberEventsPerReadinessGroup - 1"!]
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>EventInvalid_[!"$GroupCounter"!]</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">
+                                Readiness groups will have EventInvalid_&lt;GroupIndex> for each entry
+                                till the limit indicated by the vendor specific parameter
+                                DemMaxNumEventsPerReadinessGroup which can be configured to a
+                                maximum value of 40.
+                              </L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>[[!"num:integer($GroupCounter)"!]]</SYMBOL>
+                          </MC-DATA-INSTANCE>
+      [!ENDFOR!]
+                        </SUB-ELEMENTS>
+                        <SYMBOL>[[!"num:integer($ReadinessGroupCounter)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+      [!VAR "ReadinessGroupCounter" = "$ReadinessGroupCounter + 1"!][!//
+    [!ENDFOR!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_OBDReadinessGroup</SYMBOL>
+                  </MC-DATA-INSTANCE>
+  [!ENDIF!]
+[!ENDIF!]
+
+[!IF "DemGeneral/DemOBDSupport = 'true'"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_ObdReadinessForceCompleteMask</SHORT-NAME>
+                    <CATEGORY>STRUCTURE</CATEGORY>
+                    <SUB-ELEMENTS>
+                      <!-- !LINKSTO VCC_DEM_006_Req112v1,1 -->
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>DemOBDEngineType</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Range is 0..1. Value 0 means OBDEngineType is set to DEM_IGNITION_SPARK
+                            and value 1 means OBDEngineType is set to DEM_IGNITION_COMPRESSION.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>3</BIT-POSITION>
+                                <NUMBER-OF-BITS>1</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>Dem_ObdReadinessForceCompleteMask</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>DemOBDForceMisfireMonitoringReady</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Range is 0..1. Value 0 means DemOBDForceMisfireMonitoringReady is set to
+                            FALSE and value 1 means it is set to TRUE.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>4</BIT-POSITION>
+                                <NUMBER-OF-BITS>1</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>Dem_ObdReadinessForceCompleteMask</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                      <!-- !LINKSTO VCC_DEM_006_Req112v1,1 -->
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>DemOBDForceFuelSysMonitoringReady</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Range is 0..1. Value 0 means DemOBDForceFuelSysMonitoringReady is set to
+                            FALSE and value 1 means it is set to TRUE.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>5</BIT-POSITION>
+                                <NUMBER-OF-BITS>1</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>Dem_ObdReadinessForceCompleteMask</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                      <!-- !LINKSTO VCC_DEM_006_Req112v1,1 -->
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>DemOBDForceCCMonitoringReady</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Range is 0..1. Value 0 means DemOBDForceCCMonitoringReady is set to
+                            FALSE and value 1 means it is set to TRUE.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                               <BIT-POSITION>6</BIT-POSITION>
+                               <NUMBER-OF-BITS>1</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>Dem_ObdReadinessForceCompleteMask</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                    </SUB-ELEMENTS>
+                  </MC-DATA-INSTANCE>
+[!ENDIF!]
+                  <!-- !LINKSTO Dem.CalibrationPID41BitCCM_ENA,1 -->
+[!IF "DemGeneral/DemOBDSupport = 'true'"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_ObdReadinessPID41ByteB</SHORT-NAME>
+                    <CATEGORY>STRUCTURE</CATEGORY>
+                    <SUB-ELEMENTS>
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>DemOBDSetCCMenabled</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Comprehensive component monitoring enabled (CCM_ENA 1 == enabled,
+                            0 == disabled).
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>2</BIT-POSITION>
+                                <NUMBER-OF-BITS>1</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>Dem_ObdReadinessPID41ByteB</SYMBOL>
+                      </MC-DATA-INSTANCE>
+                    </SUB-ELEMENTS>
+                  </MC-DATA-INSTANCE>
+[!ENDIF!]
+[!IF "node:exists(DemGeneral/DemGeneralOBD/DemOBDCompliancy)"!]
+                  <!-- !LINKSTO VCC_DEM_007_Req177v1,1 -->
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_ObdCompliancyPID1CByte</SHORT-NAME>
+                    <DESC>
+                      <L-2 L="EN">
+                        Configuration value to define the appropriate value to PID$1C
+                        "OBD requirements to which vehicle or engine is certified." according to the
+                        respective standards, e.g. OBD, OBDII, JOBD etc.
+                        Range is 0..255.
+                      </L-2>
+                    </DESC>
+                    <CATEGORY>VALUE</CATEGORY>
+                    <RESULTING-PROPERTIES>
+                      <SW-DATA-DEF-PROPS-VARIANTS>
+                        <SW-DATA-DEF-PROPS-CONDITIONAL>
+                          <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                          <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                          <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                        </SW-DATA-DEF-PROPS-CONDITIONAL>
+                      </SW-DATA-DEF-PROPS-VARIANTS>
+                    </RESULTING-PROPERTIES>
+                    <SYMBOL>Dem_ObdCompliancyPID1CByte</SYMBOL>
+                  </MC-DATA-INSTANCE>
+[!ENDIF!]
+[!IF "(as:modconf('Dem')[1]/DemGeneral/DemExtendedDataCapture = 'DEM_TRIGGER_ON_FDC_THRESHOLD') and
+      (as:modconf('Dem')[1]/DemGeneral/DemEventDisplacementStrategy = 'DEM_DISPLACEMENT_FULL') and
+      (as:modconf('Dem')[1]/DemGeneral/DemEventDisplacementSupport = 'true')"!]
+  [!IF "num:integer(count(DemConfigSet/*/DemAdvDisplacementPassiveTableLine/*)) > 0"!]
+    [!VAR "NumberOfLines" = "num:integer(count(DemConfigSet/*/DemAdvDisplacementPassiveTableLine/*))"!]
+    [!VAR "NumOfLines" = "0"!]
+                  <!-- !LINKSTO VCC_DEM_006_Req116v1,1 -->
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_AdvDisplPassiveTableLineReportedEventIds</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"$NumberOfLines"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+    [!LOOP "DemConfigSet/*/DemAdvDisplacementPassiveTableLine/*"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>[!"name(.)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Reference to EventIds that are considered in the advanced displacement
+                            algorithm as reported events.
+                            Range 1..65535. Value 0 is invalid.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($NumOfLines)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+      [!VAR "NumOfLines" = "$NumOfLines + 1"!]
+    [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_AdvDisplPassiveTableLineReportedEventIds</SYMBOL>
+                  </MC-DATA-INSTANCE>
+    [!VAR "NumOfLines" = "0"!]
+    [!LOOP "DemConfigSet/*/DemAdvDisplacementPassiveTableLine/*"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>DemAdvDisplacementPassiveTableLine[!"num:integer($NumOfLines)"!]</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:integer(count(./DemPassiveEventRefs/*/DemPassiveEventRef))"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+      [!VAR "Index" = "0"!]
+      [!LOOP "./DemPassiveEventRefs/*/DemPassiveEventRef"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>DemPassiveEventRef_[!"name(as:ref(.))"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">
+                            Reference to EventIds that are considered in the advanced displacement
+                            algorithm as passive events.
+                            Range 1..65535. Value 0 is invalid.
+                          </L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i($Index)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+        [!VAR "Index" = "$Index + 1"!]
+      [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_AdvDisplPassiveEventIdsLine[!"num:integer($NumOfLines)"!]</SYMBOL>
+                  </MC-DATA-INSTANCE>
+      [!VAR "NumOfLines" = "$NumOfLines + 1"!]
+    [!ENDLOOP!]
+  [!ENDIF!]
+[!ENDIF!]
+
+                  <!-- !LINKSTO VCC_DEM_006_Req104v1,1 -->
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_EventEnabled</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:i((count(DemConfigSet/*/DemEventParameter/*) + 1 + 7) div 8)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+[!LOOP "node:order(DemConfigSet/*/DemEventParameter/*, 'DemEventId')"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>EventAvailable_[!"num:i(DemEventId)"!]</SHORT-NAME>
+                          <DESC>
+                            <L-2 L="EN">
+                              Availability of event [!"name(.)"!] (1 means enabled, 0 means disabled).
+                              Calibration of this value is only allowed before Dem_PreInit() is
+                              called. If the event which provides the OBD freeze frame is disabled
+                              the OBD freeze frame will not be updated and no OBD freeze frame will
+                              be provided to the Dcm. If an event which is stored in event memory is
+                              disabled the event memory entry is not available anymore. The Dem
+                              NvM-blocks has to be invalidated after re-calibration is performed
+                              (in order to avoid data inconsistency). If the event stored in event
+                              memory is also combined, disabling it could lead to an inconsistent UDS
+                              DTC status and shall be avoided at any case. For service 0x19, if the DTC
+                              referenced by the event ID is identified by the algorithm, the value
+                              of the DTC will be returned. In case calibration occurs with 0 for the
+                              event ID and the service is called again, the DTC referenced by the
+                              disabled event is identified by the algorithm, the DTC returned by the
+                              service is DEM_NO_DTC. If re-calibration is performed during Dem
+                              processing or without invalidation of outdated Dem NvM-blocks the Dem
+                              behavior is undefined (can lead e.g. to segmentation faults in the
+                              worst case).
+                            </L-2>
+                          </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                        <RESULTING-PROPERTIES>
+                          <SW-DATA-DEF-PROPS-VARIANTS>
+                            <SW-DATA-DEF-PROPS-CONDITIONAL>
+                              <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint8</BASE-TYPE-REF>
+                              <SW-BIT-REPRESENTATION>
+                                <BIT-POSITION>[!"num:i(DemEventId mod 8)"!]</BIT-POSITION>
+                                <NUMBER-OF-BITS>1</NUMBER-OF-BITS>
+                              </SW-BIT-REPRESENTATION>
+                              <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                              <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint8</DATA-CONSTR-REF>
+                            </SW-DATA-DEF-PROPS-CONDITIONAL>
+                          </SW-DATA-DEF-PROPS-VARIANTS>
+                        </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i(DemEventId div 8)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+[!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_EventEnabled</SYMBOL>
+                  </MC-DATA-INSTANCE>
+[!ELSE!] <!--"$CalibrationSupport = 'false'" -->
+  [!IF "$IndicatorClassSupport = 'true'"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_EventIndicatorClassIdx</SHORT-NAME>
+                    <DESC>
+                      <L-2 L="EN">Array for mapping an indicator group per event</L-2>
+                    </DESC>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:integer(count(DemConfigSet/*/DemEventParameter/*))"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+    [!LOOP "node:order(DemConfigSet/*/DemEventParameter/*, 'DemEventId')"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>[!"name(.)"!]</SHORT-NAME>
+                        <DESC>
+                          <L-2 L="EN">Index of Indicator group referenced by [!"name(.)"!] (DemEventId=[!"num:i(DemEventId)"!]).
+      [!IF "node:exists(DemDTCClassRef) and node:refvalid(DemDTCClassRef)"!]
+                            This Event references DTCClass [!"name(as:ref(DemDTCClassRef))"!].
+      [!ELSE!]
+                            This Event references no DTCClass.
+      [!ENDIF!]
+                            Use the value [!"num:i($NumberOfIndicatorClasses)"!] to disable.</L-2>
+                        </DESC>
+                        <CATEGORY>VALUE</CATEGORY>
+                          <RESULTING-PROPERTIES>
+                            <SW-DATA-DEF-PROPS-VARIANTS>
+                              <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/[!"$DemIndicatorGrpIdxType"!]</BASE-TYPE-REF>
+                                <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/[!"$DemIndicatorGrpIdxType"!]</DATA-CONSTR-REF>
+                              </SW-DATA-DEF-PROPS-CONDITIONAL>
+                            </SW-DATA-DEF-PROPS-VARIANTS>
+                          </RESULTING-PROPERTIES>
+                        <SYMBOL>[[!"num:i(DemEventId)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+    [!ENDLOOP!]
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_EventIndicatorClassIdx</SYMBOL>
+                  </MC-DATA-INSTANCE>
+  [!ENDIF!]
+  [!IF "DemGeneral/DemOBDSupport = 'true'"!]
+                  <MC-DATA-INSTANCE>
+                    <SHORT-NAME>Dem_OBDConfig</SHORT-NAME>
+                    <CATEGORY>ARRAY</CATEGORY>
+                    <ARRAY-SIZE>[!"num:integer($DemNbOfDTCClasses)"!]</ARRAY-SIZE>
+                    <SUB-ELEMENTS>
+      [!VAR "DTCClassIdx" = "0"!]
+      [!LOOP "text:split($DemDTCClassList, '#')"!]
+                      <MC-DATA-INSTANCE>
+                        <SHORT-NAME>[!"."!]</SHORT-NAME>
+                        <CATEGORY>STRUCTURE</CATEGORY>
+                        <SUB-ELEMENTS>
+                          <MC-DATA-INSTANCE>
+                            <SHORT-NAME>Dem_ObdDTC</SHORT-NAME>
+                            <DESC>
+                              <L-2 L="EN">DemObdDTC for each Combined DTC</L-2>
+                            </DESC>
+                            <CATEGORY>VALUE</CATEGORY>
+                            <RESULTING-PROPERTIES>
+                              <SW-DATA-DEF-PROPS-VARIANTS>
+                                <SW-DATA-DEF-PROPS-CONDITIONAL>
+                                  <BASE-TYPE-REF DEST="SW-BASE-TYPE">/AUTOSAR_Platform/BaseTypes/uint16</BASE-TYPE-REF>
+                                  <SW-CALIBRATION-ACCESS>READ-WRITE</SW-CALIBRATION-ACCESS>
+                                  <DATA-CONSTR-REF DEST="DATA-CONSTR">/AUTOSAR_Platform/DataConstrs/uint16</DATA-CONSTR-REF>
+                                </SW-DATA-DEF-PROPS-CONDITIONAL>
+                              </SW-DATA-DEF-PROPS-VARIANTS>
+                            </RESULTING-PROPERTIES>
+                            <SYMBOL>Dem_ObdDTC</SYMBOL>
+                          </MC-DATA-INSTANCE>
+                        </SUB-ELEMENTS>
+                        <SYMBOL>[[!"num:i($DTCClassIdx)"!]]</SYMBOL>
+                      </MC-DATA-INSTANCE>
+        [!VAR "DTCClassIdx" = "$DTCClassIdx + 1"!]
+      [!ENDLOOP!][!//
+                    </SUB-ELEMENTS>
+                    <SYMBOL>Dem_OBDConfig</SYMBOL>
+                  </MC-DATA-INSTANCE>
+  [!ENDIF!]
+[!ENDIF!]
+                </MC-PARAMETER-INSTANCES>
+              </MC-SUPPORT>
+[!INCLUDE "../Dem_Bswmd_ResourceConsumption.arxml.m"!]
+            </BSW-IMPLEMENTATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

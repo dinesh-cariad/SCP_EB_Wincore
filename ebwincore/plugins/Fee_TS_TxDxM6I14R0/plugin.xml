@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR Fee_TS_TxDxM6I14R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Fee_TS_TxDxM6I14R0_ModuleId"
+             name="Fee_TS_TxDxM6I14R0 Module">
+    <module id="Fee_TS_TxDxM6I14R0"
+            label="Fee"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-MemoryStack: AUTOSAR Fee driver module"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="6"
+            swVersionMinor="14"
+            swVersionPatch="13"
+            swVersionSuffix="B439717"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            specVersionSuffix="3"
+            relVersionMajor="4"
+            relVersionMinor="0"
+            relVersionPatch="3"
+            categoryType="Fee"
+            categoryLayer="Memory Hardware Abstraction"
+            categoryCategory="Memory"
+            categoryComponent="ECUC">
+      <cluster name="Memory Stack"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Fee_TS_TxDxM6I14R0_ConfigId"
+             name="Fee_TS_TxDxM6I14R0 Configuration">
+    <configuration moduleId="Fee_TS_TxDxM6I14R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Fee.xdm" type="xdm" id="res_default"/>
+
+        <!-- register the recommended configuration FeeRecConfiguration -->
+        <resource value="config_ext/FeeRecConfiguration.xdm" type="xdm" id="res_FeeRecConfiguration"/>
+        <recconfig
+          name="FeeRecConfiguration"
+          default="true"
+          description="Eight blocks are configured"
+          resourceId="res_FeeRecConfiguration"
+          path="ASPath:/TS_TxDxM6I14R0/FeeRecConfiguration"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM6I14R0/Fee"/>
+      </data>
+
+      <editor id="Fee_TS_TxDxM6I14R0_EditorId"
+              label="Default"
+              tooltip="ACG-MemoryStack: AUTOSAR Fee driver module">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM6I14R0/Fee"/>
+          <parameter name="title" value="Fee"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="Fee_TS_TxDxM6I14R0_GeneratorId"
+             name="Fee_TS_TxDxM6I14R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="Fee_TS_TxDxM6I14R0_TemplateBasedCodeGeneratorId"
+               moduleId="Fee_TS_TxDxM6I14R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation
+        id="SvcAsReq_Fee_TS_TxDxM6I14R0"
+        name="Fee service needs requests">
+      <operationclass plugin="SvcAsLib" class="eb.tresos.svclib.api.pushservice.SvcRequestOperation">
+        <parameter name="module" value="Fee" />
+        <parameter name="req://schm.mainFunctions:1" value="resources/Fee_SchM_MainFunctions.xml" />
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="eb.tresos.svclib.api.event.SvcRequestsEvent" />
+          </with>
+          <with variable="svc.type">
+            <equals value="request" />
+          </with>
+          <with variable="ecuConfig.moduleId.Fee_TS_TxDxM6I14R0">
+            <equals value="true" />
+          </with>
+          <or>
+            <with variable="ecuConfig.relVersion">
+              <equals value="4.0" />
+            </with>
+            <with variable="ecuConfig.relVersion">
+              <equals value="0.0" />
+            </with>
+          </or>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+</plugin>

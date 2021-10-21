@@ -1,0 +1,48 @@
+// $codepro.audit.disable
+/*
+ * Copyright (C) Elektrobit Automotive GmbH
+ * All rights reserved
+ */
+import static dreisoft.tresos.soad.generator.Constants.MODULE_NAME;
+import static dreisoft.tresos.soad.generator.Constants.GENERATED_FILE_NAME_SEPARATOR;
+ 
+import dreisoft.tresos.generator.ng.api.ant.JavaGenContext;
+import dreisoft.tresos.soad.generator.output.AbstractFileGenerator;
+import dreisoft.tresos.generator.ng.api.cds.CDSGenFile;
+import eb.tresos.xgen.api.XBackend;
+import eb.tresos.xgen.api.XGENConstants;
+
+import java.io.IOException;
+import dreisoft.tresos.soad.generator.output.postbuild.PostBuildData;
+import dreisoft.tresos.soad.generator.output.postbuild.ram.SoAd_PBRAMLayoutType;
+import dreisoft.tresos.soad.generator.output.precompile.PreCompileData;
+
+
+/**
+ * Generator class for generating files
+ */
+public class CLASS extends AbstractFileGenerator {
+  
+  
+  private static JavaGenContext getJavaGenContext(Object arg, StringBuffer buffer) {
+    try {
+        return JavaGenContext.get(arg, buffer);
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return null;
+    }
+  }
+  
+  private static CDSGenFile getCSDGenFile(JavaGenContext ctxt) {
+    try {
+        return ctxt.cds.startFile(ctxt.getWriter(), new XBackend() );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        throw new IllegalStateException( "Exception occurred: " + e.getLocalizedMessage() );
+    }
+  }
+  
+  public String generate(Object argument) {
+    return "";
+  }
+}

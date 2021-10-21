@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+    AUTOSAR Csm_TS_TxDxM3I1R0 plugin
+    Project: EB tresos AutoCore
+
+    Copyright 2005-2021 by Elektrobit Automotive GmbH
+    All rights exclusively reserved for Elektrobit Automotive GmbH,
+    unless expressly agreed to otherwise.
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+             id="Csm_TS_TxDxM3I1R0_ModuleId"
+             name="Csm_TS_TxDxM3I1R0 Module">
+    <module id="Csm_TS_TxDxM3I1R0"
+            label="Csm"
+            mandatory="false"
+            allowMultiple="false"
+            description="ACG-CSMCRYIF: Crypto Service Manager"
+            copyright="(c) 2005-2021 Elektrobit Automotive GmbH"
+            swVersionMajor="3"
+            swVersionMinor="1"
+            swVersionPatch="13"
+            swVersionSuffix="B439717"
+            specVersionMajor="4"
+            specVersionMinor="3"
+            specVersionPatch="0"
+            specVersionSuffix="0000"
+            relVersionMajor="4"
+            relVersionMinor="3"
+            relVersionPatch="0"
+            categoryType="Csm"
+            categoryLayer="System Services"
+            categoryCategory="System Services"
+            categoryComponent="ECUC">
+      <cluster name="Crypto"/>
+    </module>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+             id="Csm_TS_TxDxM3I1R0_ConfigId"
+             name="Csm_TS_TxDxM3I1R0 Configuration">
+    <configuration moduleId="Csm_TS_TxDxM3I1R0">
+      <schema>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+        <resource value="config/Csm.xdm" type="xdm" id="res_default"/>
+      </schema>
+
+      <data>
+        <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+        <schemaNode path="ASPath:/TS_TxDxM3I1R0/Csm"/>
+      </data>
+
+      <editor id="Csm_TS_TxDxM3I1R0_EditorId"
+              label="Default"
+              tooltip="ACG-CSMCRYIF: Crypto Service Manager">
+        <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+          <parameter name="schema" value="ASPath:/TS_TxDxM3I1R0/Csm"/>
+          <parameter name="title" value="Csm"/>
+          <parameter name="noTabs" value="false"/>
+          <parameter name="noLinks" value="true"/>
+          <parameter name="groupLinks" value="false"/>
+          <parameter name="groupContainers" value="false"/>
+          <parameter name="groupTables" value="true"/>
+          <parameter name="optionalGeneralTab" value="true"/>
+        </class>
+      </editor>
+    </configuration>
+  </extension>
+
+  <extension point="dreisoft.tresos.comimporter.api.plugin.comtransformer">
+    <comtransformer
+           id="ComTransformer_Csm_TS_TxDxM3I1R0"
+           moduleId="Csm_TS_TxDxM3I1R0">
+      <transformer
+             class="dreisoft.tresos.comimporter.api.transformer.asr40.CsmTransformer">
+      </transformer>
+    </comtransformer>
+  </extension>
+
+  <extension point="dreisoft.tresos.launcher2.plugin.generator"
+             id="Csm_TS_TxDxM3I1R0_GeneratorId"
+             name="Csm_TS_TxDxM3I1R0 Generator">
+    <generator class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+               id="Csm_TS_TxDxM3I1R0_TemplateBasedCodeGeneratorId"
+               moduleId="Csm_TS_TxDxM3I1R0">
+      <!-- common template path parameters -->
+      <parameter name="templates"
+                 mode="generate,verify" value="generate"/>
+
+      <!-- swcd modes and template path parameters -->
+      <parameter name="mode_type"
+                 mode="generate_swcd" value="generate"/>
+      <parameter name="mode_type"
+                 mode="verify_swcd" value="verify"/>
+      <parameter name="templates"
+                 mode="generate_swcd,verify_swcd" value="generate_swcd"/>
+    </generator>
+  </extension>
+  <!-- handle id calculator for CsmCallbackId -->
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="CsmCallbackId_Csm_TS_TxDxM3I1R0" name="Csm/CsmCallbackId" desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId"  value="Csm_TS_TxDxM3I1R0"/>
+        <parameter name="listPath"  value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM3I1R0/ELEMENTS/Csm/CsmCallbacks/CsmCallback"/>
+        <parameter name="idPath"    value="CsmCallbackId"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.Csm_TS_TxDxM3I1R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.3"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for CsmJobId -->
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="CsmJobId_Csm_TS_TxDxM3I1R0" name="Csm/CsmJobId" desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId"  value="Csm_TS_TxDxM3I1R0"/>
+        <parameter name="listPath"  value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM3I1R0/ELEMENTS/Csm/CsmJobs/CsmJob"/>
+        <parameter name="idPath"    value="CsmJobId"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.Csm_TS_TxDxM3I1R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.3"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+
+  <!-- handle id calculator for CsmKeyId -->
+  <extension point="dreisoft.tresos.guidedconfig.api.plugin.pushservice">
+    <pushoperation id="CsmKeyId_Csm_TS_TxDxM3I1R0" name="Csm/CsmKeyId" desc="">
+      <operationclass class="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.SimpleHandleIdPushOperation">
+        <parameter name="moduleId"  value="Csm_TS_TxDxM3I1R0"/>
+        <parameter name="listPath"  value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_TxDxM3I1R0/ELEMENTS/Csm/CsmKeys/CsmKey"/>
+        <parameter name="idPath"    value="CsmKeyId"/>
+      </operationclass>
+      <event>
+        <and>
+          <with variable="class">
+            <equals value="dreisoft.tresos.guidedconfig.api.pushservice.operations.handleid.HandleIdEvent"/>
+          </with>
+          <with variable="moduleId.Csm_TS_TxDxM3I1R0">
+            <equals value="true"/>
+          </with>
+          <with variable="relVersion">
+            <equals value="4.3"/>
+          </with>
+        </and>
+      </event>
+    </pushoperation>
+  </extension>
+</plugin>
+
+

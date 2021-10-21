@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+   Plug-in with demos for the EB tresos Studio Public API.
+ -->
+
+  <!--***************************************************************
+    DEMO 5
+    Dialog with:
+    - Multipages (page navigation via BACK/NEXT buttons)
+    - Multidocking (one wizard can be docked at different points in the GUI)
+  ***************************************************************-->
+  
+  <!--
+    Standard module definition extension point
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+         id="GCDemo5_TS_T00D0M0I0R0"
+         name="Guided Config Demo5 Module Extension">
+
+    <module id="GCDemo5_TS_T00D0M0I0R0"
+            label="GCDemo5_TS_T00D0M0I0R0"
+            mandatory="false"
+            allowMultiple="false"
+            description="Description here"
+            copyright="(c) Elektrobit Automotive"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            relVersionMajor="2"
+            relVersionMinor="1"
+            relVersionPatch="0"
+            categoryType="GCDemo5"
+            categoryLayer="Examples"
+            categoryCategory="Demo"
+            categoryComponent="ECUC">
+       <ecuType target="Demo" derivate="GuidedConfig"/>
+    </module>
+   </extension>
+
+   <!--
+    extension point defining the schema and data structure of the module
+   -->
+   <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+              id="GCDemo5_TS_T00D0M0I0R0ConfExt"
+              name="GCDemo5_TS_T00D0M0I0R0 Config Extension">
+       <configuration moduleId="GCDemo5_TS_T00D0M0I0R0">
+
+         <!-- schema definition -->
+           <schema>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+               <resource value="config/GCDemo5_TS_T00D0M0I0R0.xdm"
+                         type="xdm"/>
+           </schema>
+
+           <!-- data definition -->
+           <data>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+               <schemaNode path="ASPath:/TS_T00D0M0I0R0/GCDemo5"/>
+           </data>
+
+           <!-- generic editor definition -->
+           <editor id="GCDemo5_TS_T00D0M0I0R0Editor"
+                   label="GCDemo5_TS_T00D0M0I0R0"
+                   tooltip="Editor for the GCDemo5_TS_T00D0M0I0R0Editor module">
+               <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+                 <parameter name="schema" value="ASPath:/TS_T00D0M0I0R0/GCDemo5"/>
+                 <parameter name="title" value="GCDemo5_TS_T00D0M0I0R0Editor editor"/>
+               </class>
+           </editor>
+           
+      <!-- ///////////////////////////////////////////////////////////////////
+            Custom Module Editor
+              This editor is a guided config editor, but is not visible in the wizard sidebar view
+              but in the project explorer.
+      ///////////////////////////////////////////////////////////////////////// -->
+      <!-- Multiple docking
+         The used wizard is also docked as dialog in the sidebar view -->
+           <editor id="Demo5CustomModuleEditor"
+                  label="Demo5CustomModuleEditor"
+                    icon="icons/yellow.gif"
+                  tooltip="Demo5CustomModuleEditor">
+            <class class="dreisoft.tresos.guidedconfig.api.gui.editor.GuidedConfigEditor"
+                   plugin="dreisoft.tresos.guidedconfig.api.plugin">
+              <parameter
+                    name="wizardId"
+                    value="guidedDemo5">
+              </parameter>
+            </class>
+         </editor>
+           
+       </configuration>
+   </extension>
+  
+  <extension
+         point="dreisoft.tresos.guidedconfig.api.plugin.guidedconfigwizard">
+      <guidedconfigwizard id="guidedDemo5" basePath="icons">
+         <backend class="dreisoft.tresos.guidedconfig.demo5.Demo5Backend"/>
+         <gui class="dreisoft.tresos.guidedconfig.demo5.Demo5MultiPage"/>
+      </guidedconfigwizard>
+  </extension>
+  <extension
+        point="dreisoft.tresos.guidedconfig.api.plugin.trigger">
+     <trigger>
+        <sidebar
+              categoryId="Demos"
+              id="guidedDemo5"
+              wizardId="guidedDemo5"
+              wizardType="dialog">
+           <visibility>
+                 <with variable="ECUConfigContext.moduleType.GCDemo5">
+                    <equals value="true"/>
+                 </with>
+           </visibility>
+           <display
+                 label="Demo5 Dialog"
+                 tooltip="Demo5 Dialog">
+           </display>
+        </sidebar>
+     </trigger>
+  </extension>
+
+</plugin>

@@ -1,0 +1,100 @@
+<%@ jet package="eb.tresos.someipxf.generated.jet" class="SomeIpXf_OsApp_PartitionApi_c" skeleton="File.skeleton"
+    imports="eb.tresos.someipxf.generator.output.entity.AbstractFunctionOutputElement
+             eb.tresos.someipxf.generator.output.FileGeneratorHelper
+             eb.tresos.someipxf.generator.intermediate.GeneratorPartitionHandler"
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final OutModel outmodel = (OutModel)context.gen.getVariable( OutModel.ARG_NAME, OutModel.class, null );
+    final GeneratorPartitionHandler partitionHandler = outmodel.getGeneratorPartitionHandler();
+    final String partitionName = partitionHandler.getPartitionName();
+    final boolean isSafePartition = partitionHandler.isSafePartition(partitionName);
+%>
+<%@ include file="head.c.inc" %>
+
+<%
+  if(outmodel.isAddMisraDeviationHeaderComment())
+  {
+%>
+/* MISRA-C:2012 Deviation List
+ *
+ * MISRAC2012-1) Deviated Rule: 2.2 (required)
+ * There shall be no dead code.
+ *
+ * Reason:
+ * The macro E2E_PARAM_UNUSED causes a False Positive Misra warning.
+ * The macro is needed to avoid a compiler warning and can't
+ * be written differently.
+ * It expands to a void cast which is an exception of the rule 2.2
+ * according to the MISRA-C:2012 Guidelines March 2013.
+*/
+<%
+  }
+%>
+/*==================[includes]==============================================*/
+
+#include <SomeIpXf<%= isSafePartition ? "_S" : "" %><%=partitionHandler.getPartitionInfix()%>_PartitionApi.h> /* Generated serializer/deserializer functions */
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+<%
+  if(partitionHandler.hasPartitionActiveSessionHandling(partitionName))
+  {
+%>
+<%= FileGeneratorHelper.getSessionHandlingCounterVariablesDefinitions(isSafePartition, partitionName, outmodel.funcSer.get(partitionName).values(), NL) %>
+<%
+  }
+%>
+/*==================[external function definitions]=========================*/
+
+#define SOMEIPXF_START_SEC_CODE
+#include <SomeIpXf_MemMap.h>
+
+/*----------- S e r i a l i z a t i o n   o f   S O M E / I P --------------*/
+
+
+<%
+  for (AbstractFunctionOutputElement func : outmodel.funcSer.get(partitionName).values())
+  {
+    stringBuffer.append(func.generateFunctionDefinition(NL, isSafePartition));
+  }
+%>
+
+/*--------- D e s e r i a l i z a t i o n   o f   S O M E / I P ------------*/
+
+
+<%
+  for (AbstractFunctionOutputElement func : outmodel.funcDeSer.get(partitionName).values())
+  {
+    stringBuffer.append(func.generateFunctionDefinition(NL, isSafePartition));
+  }
+%>
+
+#define SOMEIPXF_STOP_SEC_CODE
+#include <SomeIpXf_MemMap.h>
+
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.c.inc" %>

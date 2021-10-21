@@ -1,0 +1,1516 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+[!/* do not generate this file if RTE is not used */!]
+[!SKIPFILE "as:modconf('StbM')[1]/StbMGeneral/StbMRteUsage != 'true'"!]
+[!INCLUDE "StbM_TimeBaseHlp.m"!]
+[!VAR "StbMTimeRecordingSupport" = "node:value(as:modconf('StbM')[1]/StbMGeneral/StbMTimeRecordingSupport)"!][!//
+[!VAR "StbMNotificationCustomerSupport" = "node:exists(as:modconf('StbM')[1]/StbMGeneral/StbMTimerStartThreshold)"!][!//
+
+[!VAR "StbMSyncTimebaseNumber" = "num:i(count(StbMSynchronizedTimeBase/*[not(node:value(StbMSynchronizedTimeBaseIdentifier) >= 16)]))"!][!//
+[!VAR "StbMOffsetTimebaseNumber" = "num:i(count(as:modconf('StbM')[1]/StbMSynchronizedTimeBase/*[node:exists(./StbMOffsetTimeBase)]))"!][!//
+[!VAR "StbMMulticoreSupport" = "node:value(as:modconf('StbM')[1]/StbMGeneral/StbMMulticoreSupport)"!][!//
+
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_StbM</SHORT-NAME>
+      <ELEMENTS/>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>SwComponentTypes</SHORT-NAME>
+          <ELEMENTS>
+          
+    
+[!VAR "generateMainFunction" = "true()"!]
+
+[!VAR "StatusNotification_Generate_PORTs" = "true()"!]
+[!VAR "StatusNotification_Generate_PORT-API-OPTIONs" = "true()"!]
+[!VAR "StatusNotification_Generate_DATA-SEND-POINTS" = "true()"!]
+
+[!VAR "MeasurementNotification_Generate_PORTs" = "true()"!]
+[!VAR "MeasurementNotification_Generate_PORT-API-OPTIONs" = "true()"!]
+[!VAR "MeasurementNotification_Generate_SYNCHRONOUS-SERVER-CALL-POINTs" = "true()"!]
+
+[!VAR "TimeValidation_Generate_PORTs" = "true()"!]
+[!VAR "TimeValidation_Generate_PORT-API-OPTIONs" = "true()"!]
+[!VAR "TimeValidation_Generate_SYNCHRONOUS-SERVER-CALL-POINTs" = "true()"!]
+
+
+[!VAR "TimeNotification_StartTimer_Generate_PORTs" = "true()"!]
+[!VAR "TimeNotification_StartTimer_Generate_PORT-API-OPTIONs" = "true()"!]
+[!VAR "TimeNotification_StartTimer_Generate_OPERATION-INVOKED-EVENTs" = "true()"!]
+[!VAR "TimeNotification_StartTimer_Generate_SYNCHRONOUS-SERVER-CALL-POINTs" = "true()"!]
+[!VAR "TimeNotification_StartTimer_Generate_RUNNABLEs" = "true()"!]
+
+
+
+
+<!-- !LINKSTO StbM.dsn.MulticoreDistribution,1 -->
+[!LOOP "text:split($ListOfEcucPartitionNames, ';')"!]
+[!VAR "EcuCPartitionName" = "."!]
+[!IF "$EcuCPartitionName = '_NoPartition'"!]
+  [!VAR "EcuCPartitionName" = "''"!]
+[!ENDIF!]
+
+            <SERVICE-SW-COMPONENT-TYPE>
+              <SHORT-NAME>StbM[!"$EcuCPartitionName"!]</SHORT-NAME>
+
+              <PORTS>
+
+      
+[!LOOP "text:split($ListOfBusConnectionsToTimeBase, ';')"!][!//
+
+[!VAR "tmpTimeBaseId" = "text:split( ., ':' )[1]"!][!//
+[!VAR "tmpCtrName" = "text:split( ., ':' )[13]"!][!//
+
+
+[!VAR "masterConnected" = "text:split( ., ':' )[2]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($masterConnected = 'isMaster') or ($gatewayConnected = 'true'))"!][!//
+
+
+[!// -------------------------------------------- Provide P-PORTs for GLOBALTIME_MASTER Client-Server Interface, for all masters (setter functions) -------------------------------------------------
+
+[!VAR "allowSystemWideGlobalTimeMasterForMasterEnabled" = "text:split( ., ':' )[19]"!][!//
+[!VAR "allowSystemWideGlobalTimeMasterForMaster" = "text:split( ., ':' )[16]"!][!//
+[!VAR "isSystemWideGlobalTimeMasterForMaster" = "text:split( ., ':' )[17]"!][!//
+[!IF "($allowSystemWideGlobalTimeMasterForMaster = 'true') or ($isSystemWideGlobalTimeMasterForMaster = 'true')"!][!//
+                <!-- Port Prototype for setter functions of master time base "[!"$tmpCtrName"!]" -->
+                <P-PORT-PROTOTYPE>
+                  <!-- !LINKSTO StbM.ASR44.SWS_StbM_00244,1 -->
+                  <SHORT-NAME>GlobalTime_Master_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+
+
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/GetMasterConfig</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+
+
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/SetGlobalTime</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!IF "($tmpTimeBaseId > 15) and ($tmpTimeBaseId < 32)"!][!//
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/SetOffset</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ENDIF!]
+[!VAR "isMasterRateCorrectionActivatedOnTimeBase" = "text:split( ., ':' )[21]"!][!//
+[!IF "(($masterConnected = 'isMaster') and ($isMasterRateCorrectionActivatedOnTimeBase = 'true'))"!][!//
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/SetRateCorrection</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ENDIF!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/SetUserData</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!IF "($tmpTimeBaseId <= 31)"!][!//
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/TriggerTimeTransmission</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ENDIF!]
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/UpdateGlobalTime</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF
+                    DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDIF!][!//
+
+
+[!// -------------------------------------------- Provide P-PORTs for GLOBALTIME_SLAVE Client-Server Interface, for all masters (getter functions) -------------------------------------------------
+
+[!IF "($masterConnected = 'isMaster')"!][!//
+                <!-- Port Prototype for getter functions of master time base "[!"$tmpCtrName"!]" -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>GlobalTime_Slave_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetCurrentTime</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!IF "$StbMExtendedTimeStampUsed = 'true'"!][!//
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetCurrentTimeExtended</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ENDIF!][!//
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetRateDeviation</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetTimeBaseStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF
+                    DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDIF!][!//
+
+
+[!ENDIF!][!//
+
+
+
+
+
+
+
+[!VAR "slaveConnected" = "text:split( ., ':' )[3]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($slaveConnected = 'isSlave') or ($gatewayConnected = 'true'))"!][!//
+
+[!// ------------------------------------------------ Provide P-PORTs for GLOBALTIME_SLAVE Client-Server Interface, for all slaves (getter functions) -----------------------------------------------
+
+[!VAR "isTimeRecordingEnabledOnThisTimeBase" = "text:split( ., ':' )[15]"!][!//
+[!VAR "isTimeRecordingUsedOnTimeBase" = "text:split( ., ':' )[18]"!][!//
+
+                <!-- Port Prototype for getter functions of slave time base "[!"$tmpCtrName"!]" -->
+                <P-PORT-PROTOTYPE>
+                  <!-- !LINKSTO StbM.ASR44.SWS_StbM_00248,1 -->
+                  <SHORT-NAME>GlobalTime_Slave_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetCurrentTime</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!IF "$StbMExtendedTimeStampUsed = 'true'"!][!//
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetCurrentTimeExtended</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ENDIF!][!//
+
+
+[!IF "$StbMTimeRecordingSupport = 'true'"!][!//
+[!IF "$isTimeRecordingEnabledOnThisTimeBase = 'true'"!][!//
+
+[!IF "($tmpTimeBaseId < 16)"!][!//
+[!// GetSyncTimeRecordHead OPERATION shall be generated only for SYNC time bases, which have Sync TimeRecording activated
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetSyncTimeRecordHead</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ELSE!][!//
+[!// GetOffsetTimeRecordHead OPERATION shall be generated only for OFFSET time bases, which have Offset TimeRecording activated
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetOffsetTimeRecordHead</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+[!ENDIF!][!//
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetRateDeviation</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetTimeBaseStatus</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetTimeLeap</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF
+                    DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+                
+[!ENDIF!][!//         
+
+
+[!ENDLOOP!][!// 
+
+
+
+<!-- Generate only on the the first EcucPartition (on which StbM_MainFunction API is mapped to) -->
+[!IF "(($StatusNotification_Generate_PORTs = 'true') or ($MeasurementNotification_Generate_PORTs = 'true') or ($TimeValidation_Generate_PORTs = 'true'))"!]
+
+[!LOOP "text:split($ListOfBusConnectionsToTimeBase, ';')"!][!//
+[!VAR "tmpCtrName" = "text:split( ., ':' )[13]"!][!// 
+[!VAR "isTimeRecordingEnabledOnThisTimeBase" = "text:split( ., ':' )[15]"!][!//
+
+
+[!VAR "slaveConnected" = "text:split( ., ':' )[3]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($slaveConnected = 'isSlave') or ($gatewayConnected = 'true'))"!][!//       
+                
+[!// ------------------------------------------------ Provide R-PORTs for MEASUREMENT NOTIFICATION Client-Server Interface, for slaves ---------------------------------------------------
+
+[!IF "$StbMTimeRecordingSupport = 'true'"!][!//
+[!IF "$isTimeRecordingEnabledOnThisTimeBase = 'true'"!][!//
+                <!-- Port Prototype for MeasurementNotification of slave time base "[!"$tmpCtrName"!]" -->
+                <R-PORT-PROTOTYPE>
+                   <SHORT-NAME>MeasurementNotification_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/StbM_MeasurementNotification_[!"$tmpCtrName"!]</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+
+
+[!// ------------------------------------------------ Provide P-PORTs for STATUS NOTIFICATION Sender-Receiver Interface, for each time base ---------------------------------------------------
+
+[!IF "$isStatusNotificationUsed = 'true'"!][!//
+[!VAR "isStatusNotificationUsedOnThisTimeBase" = "text:split( ., ':' )[20]"!][!//
+[!IF "$isStatusNotificationUsedOnThisTimeBase = 'true'"!][!//
+                <!-- Port Prototype for StatusNotification Sender-Receiver Interface -->
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00290,1 -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>GlobalTime_StatusEvent_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <NONQUEUED-SENDER-COM-SPEC>
+                      <DATA-ELEMENT-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_StbM/PortInterfaces/StbM_StatusNotification/eventNotification</DATA-ELEMENT-REF>
+                      <HANDLE-OUT-OF-RANGE>NONE</HANDLE-OUT-OF-RANGE>
+                      <USES-END-TO-END-PROTECTION>false</USES-END-TO-END-PROTECTION>
+                      <INIT-VALUE>
+                        <CONSTANT-REFERENCE>
+                          <CONSTANT-REF DEST="CONSTANT-SPECIFICATION">/AUTOSAR_StbM/ConstantSpecifications/StbM_InitConst_EventNotification</CONSTANT-REF>
+                        </CONSTANT-REFERENCE>
+                      </INIT-VALUE>
+                    </NONQUEUED-SENDER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="SENDER-RECEIVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/StbM_StatusNotification</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+
+
+
+
+[!// ----------------------------------------------------- Provide R-PORTs for TIME VALIDATION Client-Server Interfaces, for masters and slaves ------------------------------------------------------
+
+[!IF "$StbMTimeValidationUsed = 'true'"!][!//
+
+[!VAR "masterCanTSynConnected" = "text:split( ., ':' )[5]"!][!//
+[!VAR "masterFrTSynConnected" = "text:split( ., ':' )[6]"!][!//
+[!VAR "masterEthTSynConnected" = "text:split( ., ':' )[7]"!][!//
+[!VAR "slaveCanTSynConnected" = "text:split( ., ':' )[9]"!][!//
+[!VAR "slaveFrTSynConnected" = "text:split( ., ':' )[10]"!][!//
+[!VAR "slaveEthTSynConnected" = "text:split( ., ':' )[11]"!][!//
+
+[!VAR "isTimeValidationEnabledOnTimeBase" = "text:split( ., ':' )[14]"!][!//
+[!IF "$isTimeValidationEnabledOnTimeBase = 'true'"!][!//
+
+                <!-- R-PORTs for Time Validation Master CLIENT-SERVER Interfaces of master time base "[!"$tmpCtrName"!]"  -->
+[!IF "($masterEthTSynConnected = 'masterEthTSyn')"!][!//
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00458,1 -->
+                <R-PORT-PROTOTYPE>
+                  <SHORT-NAME>TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+[!ELSEIF "$masterFrTSynConnected = 'masterFrTSyn'"!][!//
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00459,1 -->
+                <R-PORT-PROTOTYPE>
+                  <SHORT-NAME>TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+[!ELSEIF "$masterCanTSynConnected = 'masterCanTSyn'"!][!//
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00460,1 -->
+                <R-PORT-PROTOTYPE>
+                  <SHORT-NAME>TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+[!ELSE!]
+                <!-- no CanTSyn/FrTSyn/EthTSyn master connected => do not define any R-PORT -->
+[!ENDIF!][!//
+
+                <!-- R-PORTs for Time Validation Slave CLIENT-SERVER Interfaces of slave time base "[!"$tmpCtrName"!]"  -->
+                <!-- Provide a R-PORT, only if no R-PORT was provided on the master side (for Gateway Time Bases, we do not want duplicated R-PORTs) -->
+[!IF "(($masterEthTSynConnected = 'noEthTSynMaster') and ($slaveEthTSynConnected = 'slaveEthTSyn'))"!][!//
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00458,1 -->
+                <R-PORT-PROTOTYPE>
+                  <SHORT-NAME>TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+[!ELSEIF "$masterFrTSynConnected = 'noFrTSynMaster' and $slaveFrTSynConnected = 'slaveFrTSyn'"!][!//
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00459,1 -->
+                <R-PORT-PROTOTYPE>
+                  <SHORT-NAME>TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+[!ELSEIF "$masterCanTSynConnected = 'noCanTSynMaster' and $slaveCanTSynConnected = 'slaveCanTSyn'"!][!//
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00460,1 -->
+                <R-PORT-PROTOTYPE>
+                  <SHORT-NAME>TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+[!ELSE!]
+                <!-- no CanTSyn/FrTSyn/EthTSyn slave connected or CanTSyn/FrTSyn/EthTSyn masters already connected (Gateway time base)  => do not define any R-PORT -->
+[!ENDIF!][!//
+
+
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+
+[!ENDLOOP!][!//
+
+
+[!VAR "StatusNotification_Generate_PORTs" = "false()"!]
+[!VAR "MeasurementNotification_Generate_PORTs" = "false()"!]
+[!VAR "TimeValidation_Generate_PORTs" = "false()"!]
+[!ENDIF!]
+
+
+
+
+
+
+
+
+[!// ------------------------------------------------------ Provide P_PORTs and R-PORTs for TIME NOTIFICATION Client-Server Interfaces --------------------------------------------------
+
+<!-- Generate only on the the first EcucPartition (on which StbM_MainFunction API is mapped to) -->
+[!IF "$TimeNotification_StartTimer_Generate_PORTs = 'true'"!]
+
+[!IF "$StbMNotificationCustomerSupport = 'true'"!][!//
+
+  [!LOOP "text:split($ListOfTimeBasesWithNotificationCustomers, ';')"!][!//
+    [!VAR "timeBaseName" = "text:split( ., ':' )[2]"!][!//
+    [!VAR "notificationCustomerName" = "text:split( ., ':' )[4]"!][!//
+    [!VAR "isCallbackConfigured" = "text:split( ., ':' )[5]"!][!//
+  
+                  <P-PORT-PROTOTYPE>
+                    <!-- !LINKSTO StbM.ASR19-11.SWS_StbM_91004,1 -->
+                    <SHORT-NAME>StartTimer_[!"$timeBaseName"!]_[!"$notificationCustomerName"!]</SHORT-NAME>
+                    <PROVIDED-COM-SPECS>
+                      <SERVER-COM-SPEC>
+                        <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_StartTimer/StartTimer</OPERATION-REF>
+                        <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                      </SERVER-COM-SPEC>
+                    </PROVIDED-COM-SPECS>
+                    <PROVIDED-INTERFACE-TREF
+                      DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/StbM_StartTimer</PROVIDED-INTERFACE-TREF>
+                  </P-PORT-PROTOTYPE>
+  
+                  [!IF "$isCallbackConfigured = 'false'"!]
+                  <R-PORT-PROTOTYPE>
+                    <!-- !LINKSTO StbM.ASR19-11.SWS_StbM_00276,1 -->
+                    <SHORT-NAME>GlobalTime_TimeEvent_[!"$timeBaseName"!]_[!"$notificationCustomerName"!]</SHORT-NAME>
+                    <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_StbM/PortInterfaces/StbM_TimeNotification</REQUIRED-INTERFACE-TREF>
+                  </R-PORT-PROTOTYPE>
+                  [!ENDIF!][!//
+  
+  [!ENDLOOP!][!//
+
+[!ENDIF!][!//
+
+[!VAR "TimeNotification_StartTimer_Generate_PORTs" = "false()"!]
+[!ENDIF!][!//
+
+
+
+
+
+
+              </PORTS>
+
+
+
+
+
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>StbMIntBeh[!"$EcuCPartitionName"!]</SHORT-NAME>
+
+                  <EVENTS>
+
+
+[!LOOP "text:split($ListOfBusConnectionsToTimeBase, ';')"!][!//
+
+[!VAR "tmpTimeBaseId" = "text:split( ., ':' )[1]"!][!//
+[!VAR "tmpCtrName" = "text:split( ., ':' )[13]"!][!//
+
+
+[!VAR "masterConnected" = "text:split( ., ':' )[2]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($masterConnected = 'isMaster') or ($gatewayConnected = 'true'))"!][!//
+
+
+[!// --------------------------------------------------------- Provide EVENTs for all masters (setter functions) -------------------------------------------------------
+
+[!VAR "allowSystemWideGlobalTimeMasterForMasterEnabled" = "text:split( ., ':' )[19]"!][!//
+[!VAR "allowSystemWideGlobalTimeMasterForMaster" = "text:split( ., ':' )[16]"!][!//
+[!VAR "isSystemWideGlobalTimeMasterForMaster" = "text:split( ., ':' )[17]"!][!//
+[!IF "($allowSystemWideGlobalTimeMasterForMaster = 'true') or ($isSystemWideGlobalTimeMasterForMaster = 'true')"!][!//
+
+                    <!-- Events of setter functions of master time base "[!"$tmpCtrName"!]" -->
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetMasterConfig_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetMasterConfig[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Master_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/GetMasterConfig</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SetGlobalTime_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_SetGlobalTime[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Master_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/SetGlobalTime</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!IF "($tmpTimeBaseId > 15) and ($tmpTimeBaseId < 32)"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SetOffset_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_SetOffset[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Master_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/SetOffset</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+[!VAR "isMasterRateCorrectionActivatedOnTimeBase" = "text:split( ., ':' )[21]"!][!//
+[!IF "(($masterConnected = 'isMaster') and ($isMasterRateCorrectionActivatedOnTimeBase = 'true'))"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SetRateCorrection_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_SetRateCorrection[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Master_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/SetRateCorrection</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_SetUserData_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_SetUserData[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Master_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/SetUserData</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!IF "($tmpTimeBaseId <= 31)"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_TriggerTimeTransmission_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_TriggerTimeTransmission[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Master_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/TriggerTimeTransmission</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_UpdateGlobalTime_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_UpdateGlobalTime[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Master_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/UpdateGlobalTime</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ENDIF!]
+
+
+[!// --------------------------------------------------------- Provide EVENTs for all masters (getter functions) -------------------------------------------------------
+
+[!IF "($masterConnected = 'isMaster')"!][!//
+                    <!-- Events of getter functions of master time base "[!"$tmpCtrName"!]" -->
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetCurrentTime_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetCurrentTime[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetCurrentTime</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+[!IF "$StbMExtendedTimeStampUsed = 'true'"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetCurrentTimeExtended_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetCurrentTimeExtended[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetCurrentTimeExtended</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+
+                    <OPERATION-INVOKED-EVENT>
+                    <SHORT-NAME>EV_GetRateDeviation_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetRateDeviation[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetRateDeviation</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetTimeBaseStatus_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetTimeBaseStatus[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetTimeBaseStatus</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+
+
+
+
+
+
+[!VAR "slaveConnected" = "text:split( ., ':' )[3]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($slaveConnected = 'isSlave') or ($gatewayConnected = 'true'))"!][!//
+
+[!// ----------------------------------------------------------- Provide EVENTs for all slaves (getter functions) ---------------------------------------------------------------
+
+[!VAR "isTimeRecordingEnabledOnThisTimeBase" = "text:split( ., ':' )[15]"!][!//
+[!VAR "isTimeRecordingUsedOnTimeBase" = "text:split( ., ':' )[18]"!][!//
+
+                    <!-- Events of getter functions of slave time base "[!"$tmpCtrName"!]" -->
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetCurrentTime_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetCurrentTime[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetCurrentTime</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+[!IF "$StbMExtendedTimeStampUsed = 'true'"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetCurrentTimeExtended_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetCurrentTimeExtended[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetCurrentTimeExtended</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+
+
+[!IF "$StbMTimeRecordingSupport = 'true'"!][!//
+[!IF "$isTimeRecordingEnabledOnThisTimeBase = 'true'"!][!//
+
+[!IF "($tmpTimeBaseId < 16)"!][!//
+[!// GetSyncTimeRecordHead OPERATION shall be generated only for SYNC time bases, which have Sync TimeRecording activated
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetSyncTimeRecordHead_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetSyncTimeRecordHead[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetSyncTimeRecordHead</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ELSE!][!//
+[!// GetOffsetTimeRecordHead OPERATION shall be generated only for OFFSET time bases, which have Offset TimeRecording activated
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetOffsetTimeRecordHead_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetOffsetTimeRecordHead[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetOffsetTimeRecordHead</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetRateDeviation_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetRateDeviation[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetRateDeviation</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetTimeBaseStatus_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetTimeBaseStatus[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetTimeBaseStatus</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_GetTimeLeap_[!"$tmpCtrName"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_GetTimeLeap[!"$EcuCPartitionName"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/GetTimeLeap</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>  
+
+[!ENDIF!][!//
+
+
+
+[!ENDLOOP!][!//
+
+
+
+[!// ----------------------------------------------------------- Provide EVENTs for all STARTTIMER P-PORTS ---------------------------------------------------------------
+
+<!-- Generate only on the the first EcucPartition (on which StbM_MainFunction API is mapped to) -->
+[!IF "$TimeNotification_StartTimer_Generate_OPERATION-INVOKED-EVENTs = 'true'"!]
+
+[!IF "$StbMNotificationCustomerSupport = 'true'"!][!//
+
+  [!LOOP "text:split($ListOfTimeBasesWithNotificationCustomers, ';')"!][!//
+      [!VAR "timeBaseName" = "text:split( ., ':' )[2]"!][!//
+      [!VAR "notificationCustomerName" = "text:split( ., ':' )[4]"!][!//
+                  <OPERATION-INVOKED-EVENT>
+                    <SHORT-NAME>EV_StartTimer_[!"$timeBaseName"!]_[!"$notificationCustomerName"!]</SHORT-NAME>
+                    <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]/RE_StartTimer</START-ON-EVENT-REF>
+                    <OPERATION-IREF>
+                      <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StartTimer_[!"$timeBaseName"!]_[!"$notificationCustomerName"!]</CONTEXT-P-PORT-REF>
+                      <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_StartTimer/StartTimer</TARGET-PROVIDED-OPERATION-REF>
+                    </OPERATION-IREF>
+                  </OPERATION-INVOKED-EVENT>
+  
+  [!ENDLOOP!][!//
+
+[!ENDIF!][!//
+
+[!VAR "TimeNotification_StartTimer_Generate_OPERATION-INVOKED-EVENTs" = "false()"!]
+[!ENDIF!][!//
+
+
+                  </EVENTS>
+
+                  <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+
+
+                  <PORT-API-OPTIONS>
+      
+[!LOOP "text:split($ListOfBusConnectionsToTimeBase, ';')"!][!//
+
+[!VAR "tmpTimeBaseId" = "text:split( ., ':' )[1]"!][!//
+[!VAR "tmpCtrName" = "text:split( ., ':' )[13]"!][!//
+
+
+[!VAR "masterConnected" = "text:split( ., ':' )[2]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($masterConnected = 'isMaster') or ($gatewayConnected = 'true'))"!][!//
+
+[!// ------------------------------------------------------ Provide PORT API OPTIONs for all GLOBALTIME_MASTER P-PORTs, for masters ---------------------------------------------------------
+
+[!VAR "allowSystemWideGlobalTimeMasterForMaster" = "text:split( ., ':' )[16]"!][!//
+[!VAR "isSystemWideGlobalTimeMasterForMaster" = "text:split( ., ':' )[17]"!][!//
+[!IF "($allowSystemWideGlobalTimeMasterForMaster = 'true') or ($isSystemWideGlobalTimeMasterForMaster = 'true')"!][!//
+
+                    <!-- Port defined argument values for time base "[!"$tmpCtrName"!]" -->
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>[!"num:i($tmpTimeBaseId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_SynchronizedTimeBaseType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Master_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!ENDIF!][!//
+
+
+[!IF "($masterConnected = 'isMaster')"!][!//
+[!// ------------------------------------------------------ Provide PORT API OPTIONs for all GLOBALTIME_SLAVE P-PORTs, for masters ---------------------------------------------------------
+
+                    <!-- Port defined argument values for time base "[!"$tmpCtrName"!]" -->
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>[!"num:i($tmpTimeBaseId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_SynchronizedTimeBaseType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!ENDIF!][!//
+
+
+[!ENDIF!][!//
+
+
+
+
+[!VAR "slaveConnected" = "text:split( ., ':' )[3]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($slaveConnected = 'isSlave') or ($gatewayConnected = 'true'))"!][!//
+
+
+
+[!// ------------------------------------------------------ Provide PORT API OPTIONs for all GLOBALTIME_SLAVE P-PORTs, for slaves ---------------------------------------------------------
+
+
+                    <!-- Port defined argument values for time base "[!"$tmpCtrName"!]" -->
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>[!"num:i($tmpTimeBaseId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_SynchronizedTimeBaseType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_Slave_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+
+
+[!ENDIF!][!//
+
+
+[!ENDLOOP!][!//
+
+
+
+
+<!-- Generate only on the the first EcucPartition (on which StbM_MainFunction API is mapped to) -->
+[!IF "(($MeasurementNotification_Generate_PORT-API-OPTIONs = 'true') or ($StatusNotification_Generate_PORT-API-OPTIONs = 'true') or ($TimeValidation_Generate_PORT-API-OPTIONs = 'true'))"!]
+
+
+[!// ------------------------------------------------------ Provide PORT API OPTIONs for all MEASUREMENT NOTIFICATION P-PORTs, for slaves ---------------------------------------------------------
+
+[!LOOP "text:split($ListOfBusConnectionsToTimeBase, ';')"!][!//
+
+[!VAR "tmpCtrName" = "text:split( ., ':' )[13]"!][!//
+[!VAR "slaveConnected" = "text:split( ., ':' )[3]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($slaveConnected = 'isSlave') or ($gatewayConnected = 'true'))"!][!//
+
+[!IF "$StbMTimeRecordingSupport = 'true'"!][!//
+
+[!VAR "isTimeRecordingEnabledOnThisTimeBase" = "text:split( ., ':' )[15]"!][!//
+[!IF "$isTimeRecordingEnabledOnThisTimeBase = 'true'"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/MeasurementNotification_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+
+
+[!// ------------------------------------------------------ Provide PORT API OPTIONs for all STATUS NOTIFICATION P-PORTs, for each time base ---------------------------------------------------------
+
+[!IF "$isStatusNotificationUsed = 'true'"!][!//
+[!VAR "isStatusNotificationUsedOnThisTimeBase" = "text:split( ., ':' )[20]"!][!//
+[!IF "$isStatusNotificationUsedOnThisTimeBase = 'true'"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_StatusEvent_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+
+
+
+[!// ------------------------------------------------------ Provide PORT API OPTIONs for all TIME VALIDATION R-PORTs ---------------------------------------------------------
+
+[!IF "$StbMTimeValidationUsed = 'true'"!]
+
+[!VAR "tmpTimeBaseId" = "text:split( ., ':' )[1]"!][!//
+[!VAR "masterCanTSynConnected" = "text:split( ., ':' )[5]"!][!//
+[!VAR "masterFrTSynConnected" = "text:split( ., ':' )[6]"!][!//
+[!VAR "masterEthTSynConnected" = "text:split( ., ':' )[7]"!][!//
+[!VAR "masterEthTSynPdelayResponderConnected" = "text:split( ., ':' )[8]"!][!//
+
+[!VAR "slaveCanTSynConnected" = "text:split( ., ':' )[9]"!][!//
+[!VAR "slaveFrTSynConnected" = "text:split( ., ':' )[10]"!][!//
+[!VAR "slaveEthTSynConnected" = "text:split( ., ':' )[11]"!][!//
+[!VAR "slaveEthTSynPdelayInitiatorConnected" = "text:split( ., ':' )[12]"!][!//
+
+[!VAR "isTimeValidationEnabledOnTimeBase" = "text:split( ., ':' )[14]"!][!//
+[!IF "$isTimeValidationEnabledOnTimeBase = 'true'"!][!//
+
+                    <!-- Provide PORT_API_OPTION for TIME VALIDATION MASTER R-PORTs of master time base "[!"$tmpCtrName"!]" -->
+[!IF "($masterEthTSynConnected = 'masterEthTSyn')"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!ELSEIF "$masterFrTSynConnected = 'masterFrTSyn'"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!ELSEIF "$masterCanTSynConnected = 'masterCanTSyn'"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!ELSE!]
+                    <!-- no CanTSyn/FrTSyn/EthTSyn R-PORTs for Masters were defined => do not define any PORT-API-OPTION -->
+[!ENDIF!][!//
+
+                    <!-- Provide PORT_API_OPTION for TIME VALIDATION SLAVE R-PORTs of slave time base "[!"$tmpCtrName"!]" -->
+[!IF "(($masterEthTSynConnected = 'noEthTSynMaster') and ($slaveEthTSynConnected = 'slaveEthTSyn'))"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!ELSEIF "$masterFrTSynConnected = 'noFrTSynMaster' and $slaveFrTSynConnected = 'slaveFrTSyn'"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!ELSEIF "$masterCanTSynConnected = 'noCanTSynMaster' and $slaveCanTSynConnected = 'slaveCanTSyn'"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]</PORT-REF>
+                    </PORT-API-OPTION>
+[!ELSE!]
+                    <!-- no CanTSyn/FrTSyn/EthTSyn R-PORTs for Slaves were defined or CanTSyn/FrTSyn/EthTSyn R-PORTs for Masters already defined (Gateway time base)  => do not define PORT-API-OPTION -->
+[!ENDIF!][!//
+
+
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+
+
+[!ENDLOOP!][!//
+
+
+[!VAR "MeasurementNotification_Generate_PORT-API-OPTIONs" = "false()"!]
+[!VAR "StatusNotification_Generate_PORT-API-OPTIONs" = "false()"!]
+[!VAR "TimeValidation_Generate_PORT-API-OPTIONs" = "false()"!]
+[!ENDIF!]
+
+
+
+
+[!// ------------------------------------------------------ Provide PORT API OPTIONs for all TIME NOTIFICATION P-PORTs ---------------------------------------------------------
+
+<!-- Generate only on the the first EcucPartition (on which StbM_MainFunction API is mapped to) -->
+[!IF "$TimeNotification_StartTimer_Generate_PORT-API-OPTIONs = 'true'"!]
+
+[!IF "$StbMNotificationCustomerSupport = 'true'"!][!//
+
+  [!LOOP "text:split($ListOfTimeBasesWithNotificationCustomers, ';')"!][!//
+        [!VAR "timeBaseId" = "text:split( ., ':' )[1]"!][!//
+        [!VAR "timeBaseName" = "text:split( ., ':' )[2]"!][!//
+        [!VAR "notificationCustomerId" = "text:split( ., ':' )[3]"!][!//
+        [!VAR "notificationCustomerName" = "text:split( ., ':' )[4]"!][!//
+        [!VAR "isCallbackConfigured" = "text:split( ., ':' )[5]"!][!//
+        
+                  <!-- Port defined argument values for time base "[!"$timeBaseName"!]" and notificationCustomer "[!"$notificationCustomerName"!]" -->
+                  <PORT-API-OPTION>
+                    <ENABLE-TAKE-ADDRESS>false</ENABLE-TAKE-ADDRESS>
+                    <INDIRECT-API>false</INDIRECT-API>
+                    <PORT-ARG-VALUES>
+                      <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>[!"num:i($timeBaseId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_SynchronizedTimeBaseType</VALUE-TYPE-TREF>
+                      </PORT-DEFINED-ARGUMENT-VALUE>
+                      <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>[!"num:i($notificationCustomerId)"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_CustomerIdType</VALUE-TYPE-TREF>
+                      </PORT-DEFINED-ARGUMENT-VALUE>
+                    </PORT-ARG-VALUES>
+                    <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StartTimer_[!"$timeBaseName"!]_[!"$notificationCustomerName"!]</PORT-REF>
+                  </PORT-API-OPTION>
+  
+                  [!IF "$isCallbackConfigured = 'false'"!]
+                  <PORT-API-OPTION>
+                    <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                    <INDIRECT-API>false</INDIRECT-API>
+                    <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_TimeEvent_[!"$timeBaseName"!]_[!"$notificationCustomerName"!]</PORT-REF>
+                  </PORT-API-OPTION>
+                  [!ENDIF!][!//
+                  
+  [!ENDLOOP!][!//
+
+[!ENDIF!][!//
+
+[!VAR "TimeNotification_StartTimer_Generate_PORT-API-OPTIONs" = "false()"!]
+[!ENDIF!][!//
+
+
+                  </PORT-API-OPTIONS>
+
+
+
+
+                  <RUNNABLES>
+
+
+[!IF "$generateMainFunction = 'true'"!][!//
+[!VAR "generateMainFunction" = "false()"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_MainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <DATA-READ-ACCESSS/>
+                      <DATA-RECEIVE-POINT-BY-ARGUMENTS/>
+                      
+                      
+<!-- Generate only on the the first EcucPartition (on which StbM_MainFunction API is mapped to) -->
+[!IF "$StatusNotification_Generate_DATA-SEND-POINTS = 'true'"!]
+
+[!IF "$isStatusNotificationUsed = 'true'"!][!//
+                      <DATA-SEND-POINTS>
+
+[!LOOP "text:split($ListOfBusConnectionsToTimeBase, ';')"!][!//
+[!VAR "tmpCtrName" = "text:split( ., ':' )[13]"!][!//
+[!VAR "isStatusNotificationUsedOnThisTimeBase" = "text:split( ., ':' )[20]"!][!//
+[!IF "$isStatusNotificationUsedOnThisTimeBase = 'true'"!][!//
+
+[!// ---------------------------------------------------- Provide DATA SEND POINTS for STATUS NOTIFICATION P-PORTs, for all time bases  --------------------------------------------------
+
+                        <VARIABLE-ACCESS>
+                          <SHORT-NAME>DSP_RE_StatusNotification_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <ACCESSED-VARIABLE>
+                            <AUTOSAR-VARIABLE-IREF>
+                              <PORT-PROTOTYPE-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_StatusEvent_[!"$tmpCtrName"!]</PORT-PROTOTYPE-REF>
+                              <TARGET-DATA-PROTOTYPE-REF DEST="VARIABLE-DATA-PROTOTYPE">/AUTOSAR_StbM/PortInterfaces/StbM_StatusNotification/eventNotification</TARGET-DATA-PROTOTYPE-REF>
+                            </AUTOSAR-VARIABLE-IREF>
+                          </ACCESSED-VARIABLE>
+                        </VARIABLE-ACCESS>
+[!ENDIF!][!//
+[!ENDLOOP!][!//
+
+                      </DATA-SEND-POINTS>
+[!ENDIF!][!//
+
+[!VAR "StatusNotification_Generate_DATA-SEND-POINTS" = "false()"!]
+[!ENDIF!][!//
+                      <DATA-WRITE-ACCESSS/>
+
+
+
+
+[!IF "($StbMTimeRecordingSupport = 'true') or ($StbMNotificationCustomerSupport = 'true') or ($StbMTimeValidationUsed = 'true')"!][!//
+
+                      <SERVER-CALL-POINTS>
+
+                      
+<!-- Generate only on the the first EcucPartition (on which StbM_MainFunction API is mapped to) -->
+[!IF "(($MeasurementNotification_Generate_SYNCHRONOUS-SERVER-CALL-POINTs = 'true') or ($TimeValidation_Generate_SYNCHRONOUS-SERVER-CALL-POINTs = 'true'))"!]
+
+
+[!LOOP "text:split($ListOfBusConnectionsToTimeBase, ';')"!][!//
+
+[!VAR "tmpCtrName" = "text:split( ., ':' )[13]"!][!//
+[!VAR "tmpTimeBaseId" = "text:split( ., ':' )[1]"!][!//
+
+[!// ------------------------------------------------------------------- Provide SERVER CALL POINTS for MEASUREMENT NOTIFICATION R-PORTs --------------------------------------------------------------------
+
+[!VAR "slaveConnected" = "text:split( ., ':' )[3]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($slaveConnected = 'isSlave') or ($gatewayConnected = 'true'))"!][!//
+
+[!IF "($StbMTimeRecordingSupport = 'true')"!]
+[!VAR "isTimeRecordingEnabledOnThisTimeBase" = "text:split( ., ':' )[15]"!][!//
+[!IF "$isTimeRecordingEnabledOnThisTimeBase = 'true'"!][!//
+
+[!IF "($tmpTimeBaseId < 16)"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_SetSyncTimeRecordTable_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/MeasurementNotification_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_MeasurementNotification_[!"$tmpCtrName"!]/SetSyncTimeRecordTable</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ELSE!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_SetOffsetTimeRecordTable_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/MeasurementNotification_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_MeasurementNotification_[!"$tmpCtrName"!]/SetOffsetTimeRecordTable</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+
+
+
+[!// ----------------------------------------------------------- Provide SERVER CALL POINTS for TIME VALIDATION R-PORTs --------------------------------------------------------------------
+
+[!IF "$StbMTimeValidationUsed = 'true'"!][!//
+
+[!VAR "masterCanTSynConnected" = "text:split( ., ':' )[5]"!][!//
+[!VAR "masterFrTSynConnected" = "text:split( ., ':' )[6]"!][!//
+[!VAR "masterEthTSynConnected" = "text:split( ., ':' )[7]"!][!//
+[!VAR "masterEthTSynPdelayResponderConnected" = "text:split( ., ':' )[8]"!][!//
+[!VAR "slaveCanTSynConnected" = "text:split( ., ':' )[9]"!][!//
+[!VAR "slaveFrTSynConnected" = "text:split( ., ':' )[10]"!][!//
+[!VAR "slaveEthTSynConnected" = "text:split( ., ':' )[11]"!][!//
+[!VAR "slaveEthTSynPdelayInitiatorConnected" = "text:split( ., ':' )[12]"!][!//
+
+[!VAR "isTimeValidationEnabledOnTimeBase" = "text:split( ., ':' )[14]"!][!//
+[!IF "$isTimeValidationEnabledOnTimeBase = 'true'"!][!//
+
+                        <!-- Provide SERVER CALL POINTS for TIME VALIDATION Master Client-Server Interfaces of master time base "[!"$tmpCtrName"!]" -->
+[!IF "$masterEthTSynConnected = 'masterEthTSyn'"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_EthSetMasterTimingData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/SetMasterTimingData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_EthSetPdelayResponderData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/SetPdelayResponderData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_EthSetSlaveTimingData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/SetSlaveTimingData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_EthSetPdelayInitiatorData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/SetPdelayInitiatorData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ELSEIF "$masterFrTSynConnected = 'masterFrTSyn'"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_FrSetMasterTimingData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]/SetMasterTimingData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ELSEIF "$masterCanTSynConnected = 'masterCanTSyn'"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_CanSetMasterTimingData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]/SetMasterTimingData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ELSE!]
+                        <!-- no CanTSyn/FrTSyn/EthTSyn master connected => do not define any SERVER CALL POINT -->
+[!ENDIF!][!//
+
+                        <!-- Provide SERVER CALL POINTS for TIME VALIDATION Slave Client-Server Interfaces of slave time base "[!"$tmpCtrName"!]" -->
+[!IF "(($masterEthTSynConnected = 'noEthTSynMaster') and ($slaveEthTSynConnected = 'slaveEthTSyn'))"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_EthSetSlaveTimingData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/SetSlaveTimingData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_EthSetPdelayInitiatorData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/SetPdelayInitiatorData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_EthSetMasterTimingData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/SetMasterTimingData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_EthSetPdelayResponderData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/SetPdelayResponderData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ELSEIF "$slaveFrTSynConnected = 'slaveFrTSyn'"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_FrSetSlaveTimingData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]/SetSlaveTimingData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ELSEIF "$slaveCanTSynConnected = 'slaveCanTSyn'"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>sscp_CanSetSlaveTimingData_[!"$tmpCtrName"!]</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]/SetSlaveTimingData</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+[!ELSE!][!//
+                        <!-- no CanTSyn/FrTSyn/EthTSyn slave connected => do not define any SERVER CALL POINT -->
+[!ENDIF!][!//
+
+
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+
+[!ENDLOOP!][!//
+
+
+[!VAR "MeasurementNotification_Generate_SYNCHRONOUS-SERVER-CALL-POINTs" = "false()"!]
+[!VAR "TimeValidation_Generate_SYNCHRONOUS-SERVER-CALL-POINTs" = "false()"!]
+[!ENDIF!]
+
+
+
+[!// ----------------------------------------------------------- Provide SERVER CALL POINTS for TIME NOTIFICATION R-PORTs --------------------------------------------------------------------
+
+<!-- Generate only on the the first EcucPartition (on which StbM_MainFunction API is mapped to) -->
+[!IF "$TimeNotification_StartTimer_Generate_SYNCHRONOUS-SERVER-CALL-POINTs = 'true'"!]
+
+[!IF "($StbMNotificationCustomerSupport = 'true')"!]
+
+  [!LOOP "text:split($ListOfTimeBasesWithNotificationCustomers, ';')"!][!//
+          [!VAR "timeBaseName" = "text:split( ., ':' )[2]"!][!//
+          [!VAR "notificationCustomerName" = "text:split( ., ':' )[4]"!][!//
+          [!VAR "isCallbackConfigured" = "text:split( ., ':' )[5]"!][!//
+          
+          [!IF "$isCallbackConfigured = 'false'"!]
+                     <!-- Synchronous Server Call Point for time base "[!"$timeBaseName"!]" and notificationCustomer "[!"$notificationCustomerName"!]" for TimeNotification C-S Interface -->
+                     <SYNCHRONOUS-SERVER-CALL-POINT>
+                       <SHORT-NAME>sscp_TimeNotification_[!"$timeBaseName"!]_[!"$notificationCustomerName"!]</SHORT-NAME>
+                       <OPERATION-IREF>
+                         <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/GlobalTime_TimeEvent_[!"$timeBaseName"!]_[!"$notificationCustomerName"!]</CONTEXT-R-PORT-REF>
+                         <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_StbM/PortInterfaces/StbM_TimeNotification/NotifyTime</TARGET-REQUIRED-OPERATION-REF>
+                       </OPERATION-IREF>
+                       <TIMEOUT>0.0</TIMEOUT>
+                     </SYNCHRONOUS-SERVER-CALL-POINT>
+          [!ENDIF!][!//
+  
+  [!ENDLOOP!][!//
+
+[!ENDIF!][!//
+
+[!VAR "TimeNotification_StartTimer_Generate_SYNCHRONOUS-SERVER-CALL-POINTs" = "false()"!]
+[!ENDIF!][!//
+
+                      </SERVER-CALL-POINTS>
+[!ENDIF!][!//
+
+
+
+                      <SYMBOL>StbM_MainFunction</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+
+
+[!IF "($masterTimeDomainsPresent = 'true')"!][!//
+
+[!IF "($atLeastOneMasterTimeBaseWithAllowSystemWideEnabled = 'true')"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetMasterConfig[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetMasterConfig[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+
+[!// Provide runnable entities (setter functions) for all masters with StbMAllowSystemWideGlobalTimeMaster or StbMIsSystemWideGlobalTimeMaster activated
+[!IF "($masterTimeDomainsPresentWithSystemWideUsed = 'true')"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetGlobalTime[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_SetGlobalTime[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!IF "$masterOffsetTimeDomainsPresentWithSystemWideUsed = 'true'"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetOffset[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_SetOffset[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!IF "($atLeastOneMasterTimeBaseWithAllowRateCorrectionActivated = 'true')"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetRateCorrection[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_SetRateCorrection[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_SetUserData[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_SetUserData[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!IF "($StbMSyncTimebaseNumber > 0)"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_TriggerTimeTransmission[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_TriggerTimeTransmission[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_UpdateGlobalTime[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_UpdateGlobalTime[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+
+
+
+
+[!// Provide runnable entities (getter functions) for all masters (StbMAllowSystemWideGlobalTimeMaster and StbMIsSystemWideGlobalTimeMaster shall not be activated for GlobalTime_Slave C-S Interface)
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetCurrentTime[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetCurrentTime[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!IF "$StbMExtendedTimeStampUsed = 'true'"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetCurrentTimeExtended[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetCurrentTimeExtended[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetRateDeviation[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetRateDeviation[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetTimeBaseStatus[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetTimeBaseStatus[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+
+[!ENDIF!][!//
+
+
+
+
+
+[!IF "($slaveTimeDomainsPresent = 'true')"!][!//
+
+
+[!// Provide runnable entities for all slaves (just getter functions)
+[!IF "($masterTimeDomainsPresent = 'false')"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetCurrentTime[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetCurrentTime[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!IF "$StbMExtendedTimeStampUsed = 'true'"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetCurrentTimeExtended[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetCurrentTimeExtended[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetRateDeviation[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetRateDeviation[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetTimeBaseStatus[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetTimeBaseStatus[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+
+[!ENDIF!][!//
+
+
+
+[!IF "$StbMTimeRecordingSupport = 'true'"!]
+[!// RE_GetSyncTimeRecordHead RUNNABLE shall be generated only for SYNC time bases, which have Sync TimeRecording activated and used
+[!IF "$atLeastOneSyncSlaveStbMTimeBaseWithTimeRecording = 'true'"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetSyncTimeRecordHead[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetSyncTimeRecordHead[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!// GetOffsetTimeRecordHead OPERATION shall be generated only for OFFSET time bases, which have Offset TimeRecording activated
+[!IF "$atLeastOneOffsetSlaveStbMTimeBaseWithTimeRecording = 'true'"!]
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetOffsetTimeRecordHead[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetOffsetTimeRecordHead[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+[!ENDIF!]
+[!ENDIF!]
+
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_GetTimeLeap[!"$EcuCPartitionName"!]</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>StbM_GetTimeLeap[!"$EcuCPartitionName"!]</SYMBOL>
+                    </RUNNABLE-ENTITY>
+
+[!ENDIF!][!//
+
+
+
+
+<!-- Generate only on the the first EcucPartition (on which StbM_MainFunction API is mapped to) -->
+[!IF "$TimeNotification_StartTimer_Generate_RUNNABLEs = 'true'"!]
+[!VAR "TimeNotification_StartTimer_Generate_RUNNABLEs" = "false()"!]
+
+[!IF "$StbMNotificationCustomerSupport = 'true'"!][!//
+                   <!-- Runnable Entity for StbM_StartTimer C-S Interface -->
+                   <RUNNABLE-ENTITY>
+                     <SHORT-NAME>RE_StartTimer</SHORT-NAME>
+                     <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                     <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                     <SYMBOL>StbM_StartTimer</SYMBOL>
+                   </RUNNABLE-ENTITY>
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+
+                  </RUNNABLES>
+
+                  <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </SERVICE-SW-COMPONENT-TYPE >
+
+[!ENDLOOP!]
+            
+            
+            
+            
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+
+    
+    
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_StbM</SHORT-NAME>
+      <AR-PACKAGES>
+        <AR-PACKAGE>
+          <SHORT-NAME>SwcImplementations</SHORT-NAME>
+          <ELEMENTS>
+
+<!-- !LINKSTO StbM.dsn.MulticoreDistribution,1 -->
+[!LOOP "text:split($ListOfEcucPartitionNames, ';')"!]
+[!VAR "EcuCPartitionName" = "."!]
+[!IF "$EcuCPartitionName = '_NoPartition'"!]
+  [!VAR "EcuCPartitionName" = "''"!]
+[!ENDIF!]
+
+            <SWC-IMPLEMENTATION>
+              <SHORT-NAME>StbMImpl[!"$EcuCPartitionName"!]</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Code</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>Resources</SHORT-NAME>
+                <MEMORY-SECTIONS>
+                 <MEMORY-SECTION>
+                    <SHORT-NAME>CODE</SHORT-NAME>
+                    <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                  </MEMORY-SECTION>
+                </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>3.1.7</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_StbM/SwComponentTypes/StbM[!"$EcuCPartitionName"!]/StbMIntBeh[!"$EcuCPartitionName"!]</BEHAVIOR-REF>
+            </SWC-IMPLEMENTATION>
+
+[!ENDLOOP!]
+            
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+    
+    
+    
+  </AR-PACKAGES>
+</AUTOSAR>

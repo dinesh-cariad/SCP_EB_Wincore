@@ -1,0 +1,53 @@
+<%@ jet package="eb.tresos.comxf.generated.jet" class="ComXf_Api_h" skeleton="File.skeleton"
+        imports="
+                eb.tresos.comxf.generator.intermediate.GeneratorPartitionHandler
+                "
+%>
+<%
+    JavaGenContext context = null;
+    try {
+        context = JavaGenContext.get( argument, stringBuffer );
+    } catch( IOException e ) {
+        e.printStackTrace();
+        return "";
+    }
+
+    final Model model = (Model)context.gen.getVariable( Model.ARG_NAME, Model.class, null );
+    final String includeGuardName = getIncludeGuardName( context );
+    final GeneratorPartitionHandler partitionHandler = model.getGeneratorPartitionHandler();
+%>
+<%@ include file="head.h.inc" %>
+/*==================[includes]==============================================*/
+
+<%for (final String partitionName : partitionHandler.getPartitionNames()) {
+    if (partitionHandler.isSafePartition(partitionName))
+    {%>
+#include <ComXf_S<%= partitionHandler.getPartitionInfix(partitionName) %>_PartitionApi.h>
+<%  }
+    else
+    {%>
+#include <ComXf<%= partitionHandler.getPartitionInfix(partitionName) %>_PartitionApi.h>
+<%  }
+} %>
+
+/*==================[macros]================================================*/
+
+/*==================[type definitions]======================================*/
+
+/*==================[external function declarations]========================*/
+
+/*==================[internal function declarations]========================*/
+
+/*==================[external constants]====================================*/
+
+/*==================[internal constants]====================================*/
+
+/*==================[external data]=========================================*/
+
+/*==================[internal data]=========================================*/
+
+/*==================[external function definitions]=========================*/
+
+/*==================[internal function definitions]=========================*/
+
+<%@ include file="foot.h.inc" %>

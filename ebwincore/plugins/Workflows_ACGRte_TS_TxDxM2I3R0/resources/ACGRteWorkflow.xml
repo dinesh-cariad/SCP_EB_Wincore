@@ -1,0 +1,1047 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< tresos Studio Workflow >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+<workflow xmlns="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.tresos.de/_projects/tresos/workflow_1_0.xsd workflow_1_0.xsd"
+  id="ACGWorkflowRte" version="2.3"
+  label="AutoCore Workflow Rte"
+  description="This workflow is a step-by-step instruction to guide you through the initial setup of a project.">
+
+
+  <group id="RTE" label="Setup initial project">
+    <description>
+      <![CDATA[
+        <h2><u>Goal</u></h2>
+        <p>To create an application with basic functionality based on the project template.</p>
+         <p>This workflow helps you to configure the basic software to create a basic functionality for your AUTOSAR application.</p>
+        <p>If you follow the steps in this workflow, you will create a stack including
+          board start-up, tasks, scheduling and software components. This is the prerequisite for later ECU configurations with CAN, FlexRay, LIN or Ethernet communication.
+	       </p>
+        <p>
+         <p>Creating a new project by importing a project template has the following advantages compared to creating a new project from scratch:</p>
+          <ul>
+            <li>The basic modules <i>Base</i>, <i>Make</i>, <i>Platforms</i>, <i>Os</i>,
+            <i>Rte</i>, <i>BswM</i>, <i>EcuM</i>, <i>Dem</i>, <i>Mcu</i> and
+              <i>Resource</i> (on specific platforms), which are necessary for your stack, are
+              added automatically to your project and are already pre-configured.</li>
+            <li>The directory <tt>source\boards</tt> in your project directory will contain C
+              code and assembler sources to start your ECU and provides you with linker and debugger scripts.</li>
+            <li>The directory <tt>source\application</tt> in your project directory will contain C
+              code for the <i>BswM</i> and <i>EcuM</i> callouts and for an initialization
+              task.</li>
+            <li>The folder <tt>util</tt> in your project directory will contain your project-specific makefiles.</li>
+          </ul>
+        </p>
+        <h2><u>Preconditions</u></h2>
+        <p>To create a new application, you have to provide:
+          <ul>
+            <li>your own application software components,</li>
+            <li>your own software component description, and/or</li>
+            <li>your own system description.</li>
+          </ul>
+        </p>
+
+        <h2><u>Workflow types overview</u></h2>
+        <p>Various workflows are provided that helps to create typical AUTOSAR applications, their overview and dependencies are described here:
+          <ol>
+            <li>Basic workflow
+            <ul>
+              <li><b>Rte</b> (this workflow, that is based on 'basicTemplate' project)</li>
+            </ul>
+
+            <li>Communication stack workflows
+            <ul>
+              <li><b>CAN Stack</b>, <b>FlexRay Stack</b>, <b>LIN Stack</b>, or <b>Ethernet Stack</b> that continue <b>Rte</b> workflow</li>
+            </ul>
+
+            <li>Memory stack workflow
+            <ul>
+              <li><b>Memory Stack</b> that continues <b>CAN Stack</b>, <b>Ethernet Stack</b> or <b>Rte</b> workflow</li>
+            </ul>
+
+            <li>Post-Build workflows
+            <ul>
+              <li><b>Post-Build Setup</b> that continues <b>CAN Stack</b>, <b>FlexRay Stack</b> or <b>Ethernet Stack</b> workflow</li>
+              <li><b>Post-Build Only</b> that continues <b>Post-Build Setup</b> workflow</li>
+              <li><b>Post-Build Update</b> that continues <b>Post-Build Only</b> workflow</li>
+            </ul>
+          </ol>
+        </p>
+
+        <h2><u>Procedure</u></h2>
+        <p><ol>
+            <li>Import the project template.</li>
+            <li>Import your software component/system description file(s).</li>
+            <li>Configure the basic software modules.</li>
+            <li>Build the stack.</li>
+        </ol></p>
+        <h2><u>Output</u></h2>
+        <p>The configuration described in this workflow
+          is similar to the <tt>simple_demo_rte</tt>, which you find in the
+          <tt>demos\AutoCore</tt> directory of your EB tresos installation. The only difference between
+          this workflow and the <tt>simple_demo_rte</tt> is that the demo is delivered with its
+          own software components.</p>
+        </p>
+         <blockquote><b>Note:</b> <p>Names of dialogs, editors, importers, tables, tabs, etc. are
+          displayed in <i>italic</i> font. </p>
+          <p>Buttons, text boxes, check boxes, drop-down list boxes and menu entries are displayed in <b>bold</b> font. </p>
+          <p>File, directory and pathnames, parameters and command line commands are displayed in
+          <tt>Courier</tt> font.</p>
+          </blockquote>
+        <blockquote><b>Tip:</b> A workflow step that is displayed with a green arrow icon is an
+          action step. You may start the corresponding action by
+          double-clicking the step or by clicking the <b>Run</b> button in the tool bar.
+          A workflow step that is displayed with a red cross icon is an unavailable step. With your
+          current selection in the <i>Project Explorer</i> view, it is not possible to execute the
+          corresponding action.</blockquote>
+        ]]>
+    </description>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Create Project >>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="RTE_PROJ" label="Create your project" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><u>Goal</u></h2>
+        <p>To create your project.</p>
+              <p>The first step is to create a new project that contains modules,
+                the application source code and specific parts of the build environment. Thus, in this group step of the workflow
+                you are guided through the steps to start such a project with a project template that is delivered with EB tresos AutoCore.</p>
+              ]]>
+      </description>
+
+      <action label="Create new project (from template)" id="RTE_PROJ_TMP" repeatable="true">
+        <command description="Import existing project"
+          serialization="org.eclipse.ui.file.import(importWizardId=org.eclipse.ui.wizards.import.ExternalProject)"/>
+        <description>
+          <![CDATA[
+                <p>Start your project by importing a project template. To import a project template:</p>
+                <ol>
+                  <li>Double-click this action step in the <i>Workflows</i> view. The <i>Import</i> dialog opens up.</li>
+                  <li>In the text box <b>Select root directory</b>, browse to the project template folder
+                    <tt>basicTemplate</tt>. This folder is located in the EB tresos AutoCore derivative-specific subdirectory of the <tt>templates\AutoCore</tt>
+                    directory in your EB tresos Studio installation, e.g. the directory <tt>templates\AutoCore\&lt;ACG_RELEASE_NAME&gt;\basicTemplate</tt>.</li>
+                  <li>Select the check box <b>Copy projects into workspace</b>.</li>
+                  <li>Click <b>Finish</b>.</li>
+                </ol>
+                ]]>
+        </description>
+      </action>
+
+      <action label="Rename project" id="RTE_PROJ_REN" needsproject="true">
+        <description>
+          <![CDATA[
+		<p>
+    After importing the project into the workspace, rename the project as follows:
+    <ol>
+      <li>Right-click on the project name in the <i>Project Explorer</i> view. A context menu opens up.</li>
+      <li>In the context menu, select <b>Rename</b>.</li>
+      <li>Type a new project name.</li>
+    </ol>
+    </p>
+		]]>
+        </description>
+      </action>
+
+      <action label="Load project" id="RTE_PROJ_LOAD">
+        <description>
+          <![CDATA[
+		<p>
+		  After importing a project or restarting EB tresos Studio, your module
+                  configuration is not loaded automatically.
+		</p>
+		<p>
+		  To load a project and thus access the configuration of an EB tresos AutoCore stack:
+		</p>
+		<p>
+		<ol>
+		  <li>Expand the contents of a project in the <i>Project Explorer</i> view.</li>
+		  <li>Double-click the folder marked with a gray ECU icon, which is the first subfolder of the
+		  project. The project is loaded and its modules are displayed in the <i>Project Explorer</i> view. </li>
+		</ol>
+		</p>
+		]]>
+        </description>
+      </action>
+      <action label="Generate BSW and SWC descriptions" id="RTE_PROJ_GENERATESWCD">
+        <description>
+          <![CDATA[
+				<p>In EB tresos Studio you can generate AUTOSAR 3.2, 4.0, or 4.2 compliant BSW and SWC descriptions. Select the 
+				desired schema compliance to trigger the generation mode of the specific SWC description.</p>
+				Under Project/Build Project/ select one of the following menu items to trigger the generation of SWC descriptions:
+				<ul>
+				  <li>generate_asr32_swcd to generate AUTOSAR 3.2 compliant BSW SWC descriptions</li>
+				  <li>generate_asr40_swcd to generate AUTOSAR 4.0 compliant BSW SWC descriptions</li>
+				  <li>generate_swcd to generate AUTOSAR default BSW SWC descriptions</li>
+				</ul>
+				<p>Double-click this action to generate AUTOSAR default BSW SWC descriptions.</p>
+         ]]>
+        </description>
+        <command description="Generate swcd"
+          serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand(mode=generate_swcd)"
+        />
+      </action>
+      <action label="Adjust target and derivate settings" id="RTE_PROJ_TRGT">
+        <command description="Open Resource configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Resource)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+           <blockquote><b>Note:</b> This step concerns the module <i>Resource</i>, which only exists on platforms with different
+                    subderivatives. If you do not work with such a platform, you may skip this step.</blockquote>
+		              <p>To select your target derivative:</p>
+		              <p>
+                  <ol>
+                    <li>Double-click this step in the <i>Workflows</i> view. If this step is not available, open the
+                    <i>Resource</i> module in the <i>Project Explorer</i> view.</li>
+                    <li>Change the parameter <tt>ResourceSubderivative</tt> to select your derivative platform.</li>
+		              </ol>
+		              </p>
+
+          ]]>
+        </description>
+      </action>
+
+      <action id="RTE_PROJ_ADD" label="Add modules">
+        <command description="Add modules"
+          serialization="dreisoft.tresos.launcher2.api.plugin.ModuleConfigurationDialogCommand"/>
+        <description>
+          <![CDATA[
+                <p>
+                <ol>
+                  <li>Double-click this action step in the <i>Workflows</i> view. The <i>Module Configurations</i> dialog opens up.</li>
+                  <li>To add a module, select the module to be added from the <i>Available Modules</i> tree and
+                  click the button <b>Add module configurations for selected modules</b>:
+                  <ul>
+                  <li>Add the I/O drivers.</li>
+                  <li>If you need I/O
+                  functionality, add I/O drivers such as the <i>Port</i> module, the <i>Dio</i> module or the <i>Adc</i> module.</li>
+                  </ul>
+                  <li>Click <b>OK</b>.</li>
+                </ol>
+                </p>
+                <blockquote><b>Tip:</b> The available modules are arranged by clusters.
+                  If you select a cluster and click the button <b>Add module configurations for
+                    selected modules</b>, all modules listed under
+                  this cluster are added to your project.</blockquote>
+                ]]></description>
+      </action>
+      
+      
+
+      <action id="RTE_PROJ_CHECK" label="Check available modules">
+        <description>
+          <![CDATA[
+                <p>Expand the contents of your ECU in your project in the <i>Project Explorer</i>
+                view and check whether the following modules are now included in your project:</p>
+                <p>
+                <ul>
+                  <li><i>BswM (Basic Software Mode Manager)</i></li>
+                  <li><i>Dem (Diagnostic Event Manager)</i></li>
+                  <li><i>Det (Development Error Tracer)</i></li>
+                  <li><i>EcuM (ECU State Manager)</i></li>
+                  <li><i>Mcu (Microcontroller Unit)</i></li>
+                  <li><i>Os (Operating System)</i></li>
+                  <li><i>Rte (Run-time Environment)</i></li>
+                  <li><i>Base</i></li>
+                  <li><i>Make</i></li>
+                  <li><i>MemMap</i></li>
+                  <li><i>Platforms</i></li>
+                  <li><i>Resource</i> (on specific platforms)</li>
+                  <li>I/O drivers such as <i>Port</i>, <i>Dio</i> etc. (optional)</li>
+                </ul>
+                </p>
+                <p>If a module is missing, repeat the workflow step <a
+                href="workflow:///RTE_PROJ_ADD">Add modules</a>.
+                </p>
+                ]]></description>
+      </action>
+
+    </group>
+
+    <!-- <<<<<<<<<<<< Software component/system description import >>>>>>>>>>>>>>>>> -->
+    <group id="RTE_IMPORT" label="Import software component description or system description" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+        <p>To import an AUTOSAR software component
+             description or system description (ARXML). This step is required to connect software components to an AUTOSAR basic software stack.</p>
+             <h2><b>Procedure</b></h2>
+             <ol>
+             <li>Either place software component descriptions and system
+             descriptions into one file or import several files.</li>
+           <li>Import both software component descriptions and system descriptions with
+             the <i>System Description Importer</i>.</li>
+             </ol>
+        ]]>
+      </description>
+      <action id="RTE_IMPORT_CPY" label="Copy software component description or system description files">
+        <description>
+          <![CDATA[
+                  <p>
+                  First, copy the software component/system description files (ARXML) you want to import to the project
+                  directory of your EB tresos Studio project.
+                  </p>
+           <p>This step is recommended because EB tresos Studio will then use paths relative to the project directory
+           instead of storing absolute file paths.</p>
+           ]]>
+        </description>
+      </action>
+      <group id="RTE_IMPORT_TYPE" label="Import software component and system description"
+        type="sequence">
+        <description>
+          <![CDATA[
+          A software component description or a complete system description can be imported.
+          <p>In contrast to a software component description, the system description contains more
+          information, e.g.</p>
+           <ul>
+           <li>a communication matrix,</li>
+           <li>a description of the hardware topology and bus systems,</li>
+           <li>a software component to ECU mapping,</li>
+           <li>data mappings between the data elements and system signals.</li>
+           </ul>
+           <p>
+           If you import a software component description, you have to select a top level
+           composition. EB tresos Studio then imports all components below the top level composition automatically.
+           To import a software component description, proceed to step <a
+                href="workflow:///RTE_IMPORT_SWC">Import software component description</a>.
+           </p>
+           <p>
+           If you import a system description, you have to select a system and an ECU. EB tresos
+           Studio will then evaluate the software component to ECU mapping of the system to
+           determine the software components to be imported. To import a system description, proceed to step <a
+                href="workflow:///RTE_IMPORT_SYS">Import system description</a>.
+           </p>
+      </group>
+           ]]>
+        </description>
+  
+        <action id="RTE_IMPORT_SWC" label="Import Software components descriptions">
+          <command description="Run System Description Importer"
+            serialization="dreisoft.tresos.launcher2.api.plugin.ImporterExporterCommand"/>
+          <description>
+            <![CDATA[
+          <p>To import software component descriptions into your project:</p>
+           <ol>
+            <li>Double-click this action step in the <i>Workflows</i> view. The
+                <i>Create, manage and run im- and exporters</i> dialog opens up. </li>
+            <li>Add a new <i>System Description Importer</i> by clicking on the <b>Add</b> button. The <i>New Importer/Exporter</i> wizard opens up.</li>
+             <p>On the <i>New Importer/Exporter</i> page of the <i>New Importer/Exporter</i> wizard:</p>
+              <ul>
+             <li>In the <b>Name</b> text box, type the name of your importer.</li>
+             <li>In the <b>Importer/Exporter</b> drop-down list box, choose <b>System Description Importer</b>.</li>
+             <li>Click <b>Next</b> to proceed to the <i>All Models</i> page.</li>
+             </ul>
+             <p>On the <i>All Models</i> page:</p>
+             <ul>
+             <li>To add the files you want to import, click the <b>Add</b> button and browse to the software component description file you want to import, or click <b>New</b> to enter the path..</li>
+             <p>The <b>Meta model version</b> is selected automatically.</p>
+             <li>For a concrete example(s) see the application demo hints below the text.</li>
+             <li>Click <b>Next</b> to proceed to the <i>System Model Import</i> page.</li>
+             </ul>
+              <p>On the <i>System Model Import</i> page:</p>
+              <ul>
+                 <li>Select the check box <b>Merge content of selected files into existing model</b>.</li>
+                 <li>Click the <b>Finish</b> button. The <i>New Importer/Exporter</i> wizard closes.</li>
+            </ul>
+            <li>To start the import, click the <b>Run Importer</b> button in the lower left corner of the <i>Create, manage and run im-and exporters</i> dialog.</li>
+            </li>
+        </ol>
+        <b>Application demos concrete examples</b>:
+          <p>
+            Name the importer as <i>Imp_Swcd</i>, this name is referenced later in the workflow. 
+            Add the following entries:
+              <ul>
+              <li>output\generated\swcd\Base_Bswmd.arxml</li>
+              <li>output\generated\swcd\*.arxml</li>
+              </ul>
+            <b>Remark:</b> it is mandatory to have the first entry as defined here! 
+          ]]>
+          </description>
+        </action>
+        <action id="RTE_IMPORT_SYS" label="Import System description">
+          <command description="Run System Description Importer"
+            serialization="dreisoft.tresos.launcher2.api.plugin.ImporterExporterCommand"/>
+          <description>
+            <![CDATA[
+          <p>To import system descriptions into your project:</p>
+           <ol>
+            <li>Double-click this action step in the <i>Workflows</i> view. The
+                <i>Create, manage and run im- and exporters</i> dialog opens up. </li>
+            <li>Add a new <i>System Description Importer</i> by clicking on the <b>Add</b> button. The <i>New Importer/Exporter</i> wizard opens up.</li>
+             <p>On the <i>New Importer/Exporter</i> page of the <i>New Importer/Exporter</i> wizard:</p>
+              <ul>
+             <li>In the <b>Name</b> text box, type the name of your importer.</li>
+             <li>In the <b>Importer/Exporter</b> drop-down list box, choose <b>System Description Importer</b>.</li>
+             <li>Click <b>Next</b> to proceed to the <i>All Models</i> page.</li>
+             </ul>
+             <p>On the <i>All Models</i> page:</p>
+             <ul>
+             <li>To add the files you want to import, click the <b>Add</b> button and browse to the system description file you want to import, or click <b>New</b> to enter the path..</li>
+             <p>The <b>Meta model version</b> is selected automatically.</p>
+             <li>For a concrete example(s) see the application demo hints below the text.</li>
+             <li>Click <b>Next</b> to proceed to the <i>System Model Import</i> page.</li>
+             </ul>
+              <p>On the <i>System Model Import</i> page:</p>
+              <ul>
+                 <li>Select the check box <b>Overwrite existing model with content from selected files</b>.</li>
+                 <li>Click the <b>Finish</b> button. The <i>New Importer/Exporter</i> wizard closes.</li>
+            </ul>
+            <li>To start the import, click the <b>Run Importer</b> button in the lower left corner of the <i>Create, manage and run im-and exporters</i> dialog.</li>
+            </li>
+        </ol>
+        <b>Application demos concrete examples</b>:
+          <p>
+          Name the importer as Imp_System, this name is referenced later in the workflow. 
+          <p>
+          Depending on which demo you plan to create based on the curent one select one of the following instead of the System.arxml file from the list below
+              <ul>
+              <li>If you plan later on create <b>simple_demo_can_rte</b>, or <b>simple_demo_mem_can_rte</b> select: CanSystem.arxml</li>
+              <li>If you plan later on create <b>simple_demo_fr_rte</b> select:FlexRaySystem.arxml</li>
+              <li>If you plan later on create <b>simple_demo_eth_rte</b> select:EthSystem.arxml</li>
+              <li>If you plan later on create <b>simple_demo_lin_rte</b> select:LinSystem.arxml</li>
+              </ul>
+            Add the following entries:
+              <ul>
+              <li>output\generated\swcd\Base_Bswmd.arxml</li>
+              <li>supplement\SimpleDemo_SysDesc\system\System.arxml</li>
+              <li>supplement\SimpleDemo_SysDesc\system\SoftwareComponents.arxml</li>
+              <li>supplement\SimpleDemo_SysDesc\system\BswMMode.arxml</li>
+              <li>output\generated\swcd\*.arxml</li>
+              </ul>
+              <b>Remark:</b> it is mandatory to have the first entry as defined here!
+           </p>
+           <p>For the <i>AUTOSAR schema variant</i> select <i>standard</i>.</p>
+          ]]>
+          </description>
+        </action>
+      </group>
+    </group>
+
+    <!-- <<<<<<<<<<<<<<<<<<<<< Create Multiple task wizards >>>>>>>>>>>>>>>>>>>>>>>> -->
+    <group id="RTE_WIZARD" label="Create Execute multiple tasks wizards" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+        <p>To create <b>Execute multiple tasks</b> to ease the execution of different steps.</p>
+          <p>The Execute multiple tasks wizards can be used to serialize the execution of several actions.</p>
+          <p>The following actions are available:
+            <ul>
+              <li>Run importer</li>
+              <li>Run exporter</li>
+              <li>Run unattended wizard</li>
+              <li>Run code generation</li>
+              <li>Run an external command</li>
+            </ul>
+          </p>
+        <b>Application demos concrete examples</b>:
+        <p>
+         To ease the creation and update of the Application demo two Execute multiple tasks wizard are created:
+         <ul>
+         <li>MultiTask_UpdateBswDescriptions: to update the system model based on the current BSW configuration</li>
+         <li>MultiTask_RunFullImport: to import the complete system description</li>
+         </ul>
+        ]]>
+      </description>
+      <action id="RTE_WIZARD_SWC" label="Update BSW and SWC descriptions wizard">
+        <command description="Open execute multiple tasks wizard"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerID=MultiTask_UpdateBswDescriptions)"/>
+          <description>
+            <![CDATA[
+          <p>To create an <i>Execute multiple tasks wizard</i>:
+          <ol>
+          <li>Go to the menu <i>Project -> Unattended Wizards -> Unattended wizard configuration...</i>
+          The Unnatended Wizards configuration window opens up </li>
+          <li>Select the <i>Execute multiple tasks(MultiTask)</i> element from the list in the left side window and copy it with the copy button.</li>
+          <li>Name the wizard <b>MultiTask_UpdateBswDescriptions</b> and press ok.</li>
+          <li>On the right side window press the plus button to create a new task for the <b>Swcd generation</b>
+              <ul>
+              <li>In the <i>Action</i> column select <i>Generate mode</i></li>
+              <li>In the <i>Parameter</i> column select <i>generate_swcd</i></li>
+              </ul>  
+          </li>
+          <li>On the right side window press the plus button to create a new task for the <b>Software component importer</b>
+              <ul>
+              <li>In the <i>Action</i> column select <i>Run importer</i></li>
+              <li>In the <i>Parameter</i> column select <i>Imp_Swcd</i></li>
+              </ul>  
+          </li>
+          <li>Click <i>Close to close the Unattended wizards configuration window</i></li>
+          <ol>
+          ]]>
+          </description>
+        </action>
+        <action id="RTE_WIZARD_SYS" label="Import System description wizard">
+          <command description="Open execute multiple tasks wizard"
+            serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerID=MultiTask_UpdateBswDescriptions)" />
+          <description>
+            <![CDATA[
+          <p>To create an <i>Execute multiple tasks wizard</i>:
+          <ol>
+          <li>Go to the menu <i>Project -> Unattended Wizards -> Unattended wizard configuration...</i>
+          The Unnatended Wizards configuration window opens up </li>
+          <li>Select the <i>Execute multiple tasks(MultiTask)</i> element from the list in the left side window and copy it with the copy button.</li>
+          <li>Name the wizard <b>MultiTask_RunFullImport</b> and press ok.</li>
+          <li>On the right side window press the plus button to create a new task for the <b>Swcd generation</b>
+              <ul>
+              <li>In the <i>Action</i> column select <i>Generate mode</i></li>
+              <li>In the <i>Parameter</i> column select <i>generate_swcd</i></li>
+              </ul>  
+          </li>
+          <li>On the right side window press the plus button to create a new task for the <b>System importer</b>
+              <ul>
+              <li>In the <i>Action</i> column select <i>Run importer</i></li>
+              <li>In the <i>Parameter</i> column select <i>Imp_System</i></li>
+              </ul>  
+          </li>
+          <li>On the right side window press the plus button to create a new task for the <b>Ecu Extract Creator</b>
+              <ul>
+              <li>In the <i>Action</i> column select <i>Run unattended wizard</i></li>
+              <li>In the <i>Parameter</i> column select <i>EcuExtractCreator</i></li>
+              </ul>  
+          </li>
+          <li>On the right side window press the plus button to create a new task for the <b>Calculate Handle Ids</b>
+              <ul>
+              <li>In the <i>Action</i> column select <i>Run unattended wizard</i></li>
+              <li>In the <i>Parameter</i> column select <i>AutoHandleId</i></li>
+              </ul>  
+          </li>
+          <li>On the right side window press the plus button to create a new task for the <b>Calculate Service Needs </b>
+              <ul>
+              <li>In the <i>Action</i> column select <i>Run unattended wizard</i></li>
+              <li>In the <i>Parameter</i> column select <i>SvcAs_Trigger</i></li>
+              </ul>  
+          </li>
+          <li>Click <i>Close to close the Unattended wizards configuration window</i></li>
+          <ol>
+          ]]>
+          </description>
+        </action>
+    </group>
+    
+    <!-- <<<<<<<<<<<<<<<<<<<<<< Configure Basic Software >>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="RTE_BSW" label="Configure AUTOSAR modules" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+             <p>To configure the modules of your project.</p>
+                <h2><b>Procedure</b></h2>
+              <p>You need to configure the following modules manually:</p>
+              <ol>
+                <li><a href="workflow:///RTE_BSW_DET">Det (Development Error Tracer)</a>: Configure the
+                <i>Rte</i> usage.</li>
+                <li><a href="workflow:///RTE_BSW_OS">Os (Operating System)</a>:
+                  Add some tasks to the <i>Os</i> module.</li>
+                <li><a href="workflow:///RTE_BSW_RTE">Rte (Run-Time Environment)</a>:
+                  Map runnable entities to tasks, and generate service components.</li>
+                <li><a href="workflow:///RTE_BSW_IO">I/O drivers</a>: Configures the <i>Port</i>, <i>Dio</i>, <i>Adc</i> (optional)</li>
+                <li><a href="workflow:///RTE_BSW_BSWM">BswM</a>: Update the <i>BswM</i> module.</li>
+              </ol>
+               <p>You can change each basic software module configuration by double-clicking the
+                respective action step in the <i>Workflows</i> view or by selecting the module in the
+                <i>Project Explorer</i> view.</p>
+              <blockquote><b>Tip</b>: To search for configuration parameter names
+                project-wide, use the keyboard shortcut <b>Ctrl+T</b>.</blockquote>
+              ]]>
+      </description>
+      
+      <action label="Run EcuExtractCreator wizard" id="RTE_BSW_RUN_EXCREAT">
+        <command description="Run EcuExtractCreator wizard"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=EcuExtractCreator)" />
+        <description>
+          <![CDATA[
+            <p>To run the <i>EcuExtractCreator wizard</i>, double-click this action step in the <i>Workflows</i> view.
+               Alternatively you can run the <i>EcuExtractCreator wizard</i> in the menu <i>Project -> Unattended Wizards -> Creates
+              an ecu extract (EcuExtractCreator)</i></p>
+            <p>When the <i>EcuExtractCreator wizard</i> is run for the first time the <i>System Configuration</i> page is opened, here the <i>System</i> and <i>EcuInstance</i> needs to be configured.</p>
+            <b>Application demos concrete examples</b>:
+              <p>In the popup window for the system configuration select the  <i>System</i> depending on which system description you imported and <i>EcuTestNode</i> for <i>EcuInstance</i>.</p>
+          ]]>
+        </description>
+      </action>
+      
+      <action label="Configure Det module" id="RTE_BSW_DET">
+        <command description="Open Det configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Det)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <p>If your software components do not report errors to the <i>Det</i> module, you can skip this
+            step.</p>
+            <ol>
+              <li>Double-click this action step in the <i>Workflows</i> view. The <i>Det</i> editor opens up. </li>
+              <li>Open the tab <i>Det Accessing Software Components</i>. Select the option <b>Enable Rte Usage</b>.
+                  For each software component that shall be connected to the <i>Det</i>, add an entry to the <i>Det
+                  Accessing Software Components</i> table.</li>
+              <li>For a concrete example(s) see an application demo hints below the text.</li>
+            </ol>
+            </p>
+            <b>Application demos concrete examples</b>:
+              <p>
+              <li>SW component SWC_CyclicCounter is connected to Det, hence add one item in Det Accessing Software Components tab.
+              </li>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Configure Os module" id="RTE_BSW_OS">
+        <command description="Open Os configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Os)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <p>The runnable entities of your software components must be assigned to <i>Os</i> tasks. Therefore you have
+              to provide these objects now. It is recommended to split up your time-triggered and event-triggered
+              runnable entities to different tasks:</p>
+            <p>
+              <ol>
+                <li>Double-click this action step in the <i>Workflows</i> view. The <i>Os</i> editor opens up.</li>
+                <li>Create two tasks in the <i>Os</i> configuration and assign an adequate name to them, e.g.
+                <tt>Rte_Time_Task</tt> and <tt>Rte_Event_Task</tt>.</li>
+                <li>Set the <tt>OsTaskPriority</tt> according to your needs.
+                <li>For a concrete example(s) see an application demo hints below the text.</li>
+                </li>
+              </ol>
+            </p>
+            <blockquote><b>Note:</b> Of course you may create more than one timed-trigged or event-triggered task
+              for your software components, e.g. if you have software components with different periods.</blockquote>
+            <b>Application demos concrete examples</b>:
+              <p>
+              <li>Configure for Rte_Time_Task; OsTaskPriority=52; OsStackSize=1024; and leave the other parameters with the default settings.
+              </li>
+              <li>Configure for Rte_Event_Task; OsTaskPriority=51; OsStackSize=1024; and leave the other parameters with the default settings.
+              </li>
+            ]]>
+        </description>
+      </action>
+      <action label="Configure I/O drivers" id="RTE_BSW_IO">
+        <command description="Open Port configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Port)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+                   <p>If your application contains any I/O functionality, you have to configure the
+            <i>Port Driver</i>. You may also configure other I/O drivers in
+            this step, such as <i>Dio</i>/<i>Adc</i>/<i>Spi</i>/<i>Pwm</i>/<i>Icu</i>/<i>Gpt</i>. To
+            configure the <i>Port Driver</i>:</p>
+            <ol>
+                <li>Double-click this action step in the <i>Workflows</i> view. The <i>Port</i> Editor opens up. </li>
+                <li>Configure the pin direction and pin functionality for all required port pins.</li>
+                <li>If required, open the
+                    <i>Dio</i>/<i>Adc</i>/<i>Spi</i>/<i>Pwm</i>/<i>Icu</i>/<i>Gpt</i> Editor(s) by
+                    double-clicking the respective module(s) in the <i>Project Explorer</i> view and
+                    configure the modules according to your needs. </li>
+            </ol>
+            <b>Application demos concrete examples</b>:
+          <p>
+            Add description of Port and Dio configuration needed for the blinking LED
+          </p>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Configure the BswM module" id="RTE_BSW_BSWM">
+        <command description="Open BswM configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=BswM)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+          <h2><b>Goal</b></h2>
+          <p>To configure the <i>BswM</i> module, which initializes and activates several other
+          modules.</p>
+          <p>In case a window pops up which asks you to select between a <i>BswM Editor</i> and a <i>Generic Editor</i>,
+          you may simply close this window by clicking on the <i>Cancel</i> button.</p>
+            <p>To make this configuration step easier, you can import the configuration file <tt>BswM_simple_demo_rte_additions.epc</tt>
+            from the folder <tt>supplement\SimpleDemo_EPCs\epc</tt>, which is located in the
+            directory <tt>demos/AutoCore</tt> of your EB tresos Studio installation. Therefore, you
+            have to create a new <i>Autosar Importer</i>.</p>
+            <h2><b>Procedure</b></h2>
+            <p>To import the configuration file <tt>BswM_simple_demo_rte_additions.epc</tt>:
+            <ol>
+              <li>First, copy the directory <tt>supplement\SimpleDemo_EPCs</tt> (located in
+              <tt>demos\...\supplement</tt> in your EB tresos Studio installation) to the project
+              directory of your EB tresos Studio project.
+              This step is recommended because EB tresos Studio will then
+              use paths relative to the project directory
+              instead of storing absolute file paths.</li>
+              <li>Right-click your project in the <i>Project Explorer</i> view. A context menu opens
+              up.</li>
+              <li>Select the menu item <b>Im- and Exporters...</b>. The <i>Create, manage and run
+              im- and exporters</i> dialog opens up.</li>
+             <li>Add a new <i>Autosar Importer</i> by clicking the <b>Add</b> button. The <i>New Importer/Exporter</i> wizard opens up.</li>
+               <p>On the <i>New Importer/Exporter</i> page of the <i>New Importer/Exporter</i> wizard:</p>
+               <ul>
+             <li>In the <b>Name</b> text box, type the name of your importer.</li>
+             <li>In the <b>Importer/Exporter</b> drop-down list box, choose <b>Autosar Im-/Exporter</b>.</li>
+             <li>In the <b>Mode</b> drop-down list box, select <b>Import only</b>.</li>
+             <li>Click <b>Next</b> to proceed to the <i>Autosar Options</i> page.</li>
+             </ul>
+             <p>On the <i>Autosar Options</i> page:</p>
+             <ul>
+             <li>Click the <b>Browse...</b> button and browse to the file
+             <tt>workspace/&lt;PROJECT_NAME&gt;/supplement/SimpleDemo_EPCs/epc/BswM_simple_demo_rte_additions.epc</tt>.</li>
+              <li>In the <b>Content type</b> drop-down list box, select the version <b>asc:4.0.3</b>.</li>
+              <li>In the <b>Import Strategy</b> drop-down list box, select <b>Merge</b>.</li>
+              <li>Click <b>Finish</b>. The <i>New Importer/Exporter</i> wizard closes.</li>
+               </ul>
+             <li>To start the import, click the <b>Run Importer</b> button in the lower left corner
+             of the <i>Create, manage and run im-and exporters</i> dialog. The <i>BswM</i> configuration is being updated.</li>
+            </ol></p>
+            <b>Application demo related information:</b>
+            <p>In case you want to use the PbcfgM module in your application,
+               please set the BswM <i>Config Variant</i> to <i>VariantPostBuild</i>.
+            <p>The BswM configuration will be extended to use the Rte
+               to signal the current state of the BswM to other modules or
+               SWCs.
+               Therefore a new mode switch port will be added. Additionally, new
+               actions which modify the mode switch port are added. All
+               ActionLists will be extended with the appropriate action to
+               modify the mode switch port. As a result, every state change will be
+               signalized via the Rte.</p>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Calculate Dem, NvM and EcuM service needs" id="RTE_BSW_SERVICE_NEEDS1">
+        <command description="Open the Service Needs Calculator configuration" type="configure"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerId=SvcAs_Trigger)"/>
+        <command description="Run the Service Needs Calculator"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=SvcAs_Trigger)"/>
+        <description>
+          <![CDATA[
+                 <p>The <i>Service Needs Calculator</i> automatically resolves most dependencies between the
+            different modules. For example, it adds required Dem events to the <i>Dem</i>
+            configuration, required init functions to the <i>EcuM</i> module and required NvM blocks to the
+            <i>NvM</i> module.</p>
+        <p>
+            It is recommended that you run the <i>Service Needs Calculator</i> before the step
+            <a href="workflow:///RTE_BSW_SWDUPDATE1">Update service component and BSWM
+                descriptions</a> as this mentioned step requires a consistent ECU configuration.
+        </p>
+            <ul>
+                <li>To open the configuration dialog of the <i>Service Needs Calculator</i>, click the book icon
+                    in the tool bar of the <i>Workflows</i> view. Alternatively you can find the configuration dialog
+                    in the menu <i>Project -> Unattended Wizards -> Unattended wizard configuration</i></li>
+                <li>To run the <i>Service Needs Calculator</i>, double-click this action step in the <i>Workflows</i> view.
+                    Alternatively you can run the <i>Service Needs Calculator</i>
+                    in the menu <i>Project -> Unattended Wizards -> Calculate Service Needs</i></li>
+            </ul>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Update BSW and SWC descriptions in the system model" id="RTE_BSW_SWCD1" >
+        <command description="Run the Imp_Swcd im "
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=MultiTask_UpdateBswDescriptions)" />
+        <description>
+          <![CDATA[
+        <p>The wizard generates and import the BSW and SWC descriptions for all the enabled BSW modules</p>
+        <p>This step is a prerequisite for the main-function-to-task mapping and of the configuration of the BSW exclusive area in the
+                <i>Rte</i>.</p>
+        <p> After this step, the service components are available and can be connected to the application
+            software components. </p>
+        <ul>
+            <li>To run the <i>MultiTask_UpdateBswDescriptions</i>, double-click this
+                action step in the <i>Workflows</i> view.</li>
+            <li> Alternatively you can run the <i>MultiTask_UpdateBswDescriptions</i> in the menu <i>Project -> Unattended Wizards -> Execute multiple tasks(MultiTask_UpdateBswDescriptions)</i></li>
+            
+        </ul>
+          ]]>
+        </description>
+      </action>
+      <action label="Run Compositions and Connections Editor" id="RTE_BSW_COMCONEDIT">
+        <command
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.SidebarTriggerCommand(triggerId=ConnectionEditor_Trigger)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+            <ol>
+              <li>To run the <i>Compositions and Connections Editor</i>, double-click this action
+              step in the <i>Workflows</i> view or select <b>Edit Compositions and Connections</b>
+              from the category <i>System</i> in the Sidebar view. If the System and EcuInstance
+              have not yet been selected for the given project, then the <i>Select system and ecuInstance</i>
+              dialog opens up.</li>
+              <ul>
+                <li>In the <i>System</i> drop-down list box, select a system from the system description.
+                In the <i>EcuInstance</i> drop-down list box, select an ECU from the system description.
+                </li>
+                <li>Click <b>OK</b> to proceed to the <i>Compositions and Connections Editor</i>.</li>
+              </ul>
+              <li>Add Component Prototypes:
+                <ol>
+                  <li>Right-click on <b>TopLevelComposition</b> in the <i>Entity</i> list and select
+                  <b>Add Prototypes...</b>.</li>
+                  <li>Select the <b>BswM</b> and <b>DevelopmentErrorTracer</b> checkboxes.</li>
+                  <li>Click <b>OK</b> to add a component prototype for each selected component type</li>
+                </ol>
+              </li>
+              <li>Add connections:
+                <ol>
+                  <li>To make the assignment, expand a prototype, right-click on the prototype's
+                  port and select <b>Add Connector...</b>. Then expand a component prototype and
+                  select a port.If the OK button is not enabled, then the selected port is not compatible.
+                  With the buttons on top of the dialog you can restrict the entities of the Tree to show
+                  or hide incompatible ports and already connected ports. With the type filter text you can
+                  restrict the shown ports by name. Click <b>OK</b> to add the connection.</li>
+                  <ul>
+                    <li>For a concrete example, see an application demo hint below the text</lI>
+                  </ul>
+                  </li>
+                </ol>
+              </li>
+            </ol>
+            <b>Application demos concrete examples</b>:
+            <p>
+            <li>In the assignment of Compositions and Connections Editor, assign the following prototypes and ports:
+            <p>DevelopmentErrorTracer_Prototype/DS_SWC_0 -> SWC_CyclicCounter/R_CyclicCounterDet</p>
+            <p>BswM_Prototype/ModeSwitchPort_BswMSwitchPort_Rte -> SWC_CyclicCounter/ModeSwitchPort_BSWM_COMBINEDACTION_BswMMode_PortInterfaces_BswMMode</p>
+            </li>
+          ]]>
+        </description>
+      </action>
+      <action label="Update System Description Importer" id="RTE_BSW_UPDATEIMP">
+        <command description="Update Imp_System importer"
+          serialization="dreisoft.tresos.launcher2.api.plugin.ImporterExporterCommand" />
+        <description>
+          <![CDATA[
+            <p>After editing the connections an arxml file is generated which contains all the connections created in the Connection editor.</p>
+            <p>In order to keep the connections it is required to import the ConnectionEditor.arxml file into the system model, this file must be added to the Imp_System importer</p>
+        <h2><u>Procedure</u></h2>
+        <p><ol>
+            <li>Double-click this action step in the <i>Workflows</i> view. The
+                <i>Create, manage and run im- and exporters</i> dialog opens up. </li>
+            <li>Select the <i>Imp_System</i> and go to <i>All Models</i> tab</li>
+             <p>On the <i>All Models</i> page:</p>
+              <ul>
+              <li>To add the file, click the <b>Add</b> button and browse to <i>"Project root"/systemmod/ConnectionEditor.arxml</i>, or click <b>New</b> to enter the path <i>systemmod/ConnectionEditor.arxml</i></li>
+              <li>Click the <b>OK</b> button. The <i>Create, manage and run im- and exporters</i> dialog closes.</li>
+              </ul>
+        </ol></p>
+         ]]>
+        </description>
+      </action>
+      <action label="Configure Rte module" id="RTE_BSW_RTE">
+        <command description="Open Rte configuration"
+          serialization="dreisoft.tresos.launcher2.api.plugin.EditConfigurationCommand(moduleType=Rte)"
+          autoadvance="false"/>
+        <description>
+          <![CDATA[
+                     <ol>
+                <li>Double-click this action step in the <i>Workflows</i> view. The <i>Select Editor</i> dialog
+                    opens up.</li>
+                <li>Select <i>Rte Editor</i>. The <i>Rte Editor</i> opens up.</li>
+                <li>Open the <i>General Options</i> tab.
+                    <ul>
+                        <li>Set <i>Rte Generator Output</i> to <i>Full</i>. Rationale: Now, the
+                            <i>Rte</i> generates the Rte code and the BSW Scheduler code.</li>
+                        <li>Select the software counter provided by the basicTemplate (e.g. Os/Os/Rte_Counter). Rationale: The <i>Rte</i> needs a reference to an OS counter.</li>
+                    </ul>
+                </li>
+                <li>Open the <i>Implementation Selection</i> tab.
+                    <ul>
+                        <li>If your software components have multiple implementations and the selected default value is not correct,
+                            select the implementation for each of your software component.</li>
+                    </ul>
+                </li>
+                <li>Open the <i>Event Mapping</i> tab.
+                    <ul>
+                        <li>Auto-map all Bsw main functions that are triggered by Bsw timing events.</li>
+                        <li>To auto-map all Bsw main functions click the button <b>Auto-map all Bsw main
+                            functions that are triggered by Bsw timing events</b></li>
+                        <li>Map all remaining events that have the <tt>Required</tt> flag set to <tt>true</tt> to a
+                            task.</li>
+                        <li>To map an event to a task, select a task in the <b>Task</b> drop-down
+                            list box and click the button <b>Map the runnable entity selected above
+                            to the task selected below</b>.</li>
+                        <li>Map timing events and non-timing events to separate tasks.</li>
+                        <li>For a concrete example(s) see an application demo hints below the text.</li>
+                    </ul>
+                </li>
+            </ol>
+            <b>Application demos concrete examples</b>:
+            <p>
+            <li>During Event Mapping step configure:
+            <p>Os/Os/Rte_Time_Task -> CyclicEvent (RteTimingEvent)
+            <p>Os/Os/Rte_Event_Task -> DataReceivedEvent (DataReceivedEvent), ModeSwitchedRunTwo (ModeSwitchEvent Entry), ModeSwitchedPrpShutdown (ModeSwitchEvent Entry)
+            </li>
+            ]]>
+        </description>
+      </action>
+      <action label="Calculate Os and Com service needs" id="RTE_BSW_SERVICE_NEEDS3">
+        <command description="Open the Service Needs Calculator configuration" type="configure"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureDialogCommand(triggerId=SvcAs_Trigger)"/>
+        <command description="Run the Service Needs Calculator"
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=SvcAs_Trigger)"/>
+        <description>
+          <![CDATA[
+                  <p>It is recommended that you run the <i>Service Needs Calculator</i> again to add the
+            Os and Com objects required by the <i>Rte</i> module to the <i>Os</i> configuration. Since
+            this requires a consistent <i>Rte</i> configuration, this step is
+            recommended after you have completed the step <a href="workflow:///RTE_BSW_RTE">Configure Rte module</a>.</p>
+            <ul>
+                <li>To open the configuration dialog of the <i>Service Needs Calculator</i>, click the book icon
+                    in the tool bar of the <i>Workflows</i> view. Alternatively you can find the configuration dialog
+                    in the menu <i>Project -> Unattended Wizards -> Unattended wizard configuration</i></li>
+                <li>To run the <i>Service Needs
+                    Calculator</i>, double-click this action step in the <i>Workflows</i> view.
+                    Alternatively you can run the <i>Service Needs Calculator</i>
+                    in the menu <i>Project -> Unattended Wizards -> Calculate Service Needs</i></li>
+            </ul>
+            ]]>
+        </description>
+      </action>
+
+      <action label="Update system model" id="RTE_BSW_SWCD2" >
+        <command description="Run the Imp_Swcd im "
+          serialization="dreisoft.tresos.guidedconfig.api.plugin.AutoConfigureTriggerCommand(triggerId=MultiTask_UpdateBswDescriptions)" />
+        <description>
+          <![CDATA[
+        <p>The wizard generates and import the BSW and SWC descriptions for all the enabled BSW modules</p>
+        <p>The last steps have changed the ECU configuration, on which the BSWMD depends. Thus, it
+            is recommended to update the basic software module description again. </p>
+        <ul>
+            <li>To run the <i>MultiTask_UpdateBswDescriptions</i>, double-click this
+                action step in the <i>Workflows</i> view.</li>
+            <li> Alternatively you can run the <i>MultiTask_UpdateBswDescriptions</i> in the menu <i>Project -> Unattended Wizards -> Execute multiple tasks(MultiTask_UpdateBswDescriptions)</i></li>
+            
+        </ul>
+          ]]>
+        </description>
+      </action>
+
+    </group>
+    <!-- <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Application >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> -->
+
+    <group id="RTE_APP" label="Build your application" type="sequence">
+      <description>
+        <![CDATA[
+        <h2><b>Goal</b></h2>
+          <p>To generate code, build the code build and run your application.</p>
+          <h2><b>Procedure</b></h2>
+          <ol>
+          <li><a href="workflow:///RTE_APP_GENERATE">Generate code</a></li>
+          <li><a href="workflow:///RTE_APP_CHG">Change the location of your application</a></li>
+          <li><a href="workflow:///RTE_APP_MAKE">Change make- and batch files"</a></li>
+           <li><a href="workflow:///RTE_APP_BUILD">Build your application"</a></li>
+          <li><a href="workflow:///RTE_APP_RUN">Run your application"</a></li>
+          </ol>
+        <h2><b>Output</b></h2>
+              <p>The application code will be located in the <i>Project
+                  Explorer</i> view in the directory <tt>source\application</tt>. This application code belongs to your project.</p>
+              <blockquote><b>Note:</b> The directory <tt>source\application</tt> only contains the static part of your source code.
+                After code generation, the directory <tt>output\generated</tt> contains the part of
+                the source code that reflects your module.</blockquote>
+              <p>The directory <tt>source\boards\&lt;board-name&gt;</tt> contains ECU startup code, linker scripts and
+                other platform related code. Do not change these files.</p>
+              <p>The directory <tt>util</tt> contains makefiles and configuration files for path and compiler settings.
+                The file <tt>launch.bat</tt> starts a command line with which you may compile your application.</p>
+              ]]>
+      </description>
+
+      <action label="Generate code" id="RTE_APP_GENERATE" repeatable="true">
+        <command description="Generate code"
+          serialization="dreisoft.tresos.launcher2.api.plugin.GeneratorCommand()"/>
+        <description>
+          <![CDATA[
+                <p>To generate your project configuration code, double-click
+                this action step in the <i>Workflows</i> view or click
+                    the hammer icon in the tool bar of EB tresos Studio. Your code is being generated.
+                </p>
+                <p>You find the generated code in the your workspace in the directory <tt>output\generated</tt>.</p>
+                ]]>
+        </description>
+      </action>
+
+      <action label="Change the location of your application" id="RTE_APP_CHG">
+        <description>
+          <![CDATA[
+                  <p>Copy the source code of your software components into the directory
+                  <tt>source\application</tt> of your project.</p>
+                  <blockquote><b>Tip:</b> Application template files are generated <tt>output\generated\src_appl</tt></blockquote>
+                  <p>
+                    <b>Application demos concrete examples</b>:
+                    <li>Copy application files from <tt>supplement\SimpleDemo_SWCs\source\application</tt> which is located in the directory <tt>demos\AutoCore</tt> of your EB tresos Studio installation, to your application folder <tt>source\application</tt>
+                    </li>
+                  </p>
+                ]]>
+        </description>
+      </action>
+
+      <action label="Change make- and batch files" id="RTE_APP_MAKE">
+        <description>
+          <![CDATA[
+      <p>Open the <tt>util</tt> directory in your project directory, which is located
+                    in your EB tresos Studio workspace.</p>
+      <p>If not already configured that way, set the following path variables in the corresponding files as follows:</p>
+      <ol>
+        <li>In the file <tt>launch.bat</tt>, set the variable <tt>TRESOS_BASE</tt> to your EB tresos Studio installation directory, e.g. to <tt>C:\EB\tresos</tt>;
+            if you changed the <i>Generation Path</i> of the <i>Code Generator</i> in your project's properties, set the variable <tt>GEN_OUTPUT_PATH</tt> to your generation directory, e.g. to <tt>C:\EB\tresos\workspace\project\output\generated</tt>.
+        </li>
+        <li>In the file <tt>[target]_[derivate]_Makefile.mak</tt>, set the vaiable <tt>TOOLCHAIN</tt> to your desired toolchain, e.g. to <tt>tasking</tt>.</li>
+        <li>In the file <tt>[target]_[derivate]_[toolchain]_cfg.mak</tt>, set the variable <tt>TOOLPATH_COMPILER</tt> to the installation path of the used toolchain, e.g. to <tt>C:\Programme\tasking\ctc</tt>.</li>
+      </ol>
+
+        ]]>
+        </description>
+      </action>
+
+      <action label="Change code in your application" id="RTE_APP_CODE">
+        <description>
+          <![CDATA[
+      <p>Open the <tt>source/application</tt> directory in your project directory, which is located
+                    in your EB tresos Studio workspace.</p>
+      <p>Change the code as follows</p>
+      <ol>
+        <li>In the file <tt>Eb_Intgr_BswM_UserCallouts.c</tt>, locate the function <tt>Eb_Intgr_BswM_OnRunTwo</tt> and change the code so that <tt>Rte_Start</tt> is called. Then locate the function <tT>Eb_Intgr_BswM_OnGoOffOneA</tt> and change the code so that <tt>Rte_Stop</tt> is called.</li>
+      </ol>
+
+        ]]>
+        </description>
+      </action>
+
+
+      <action label="Build your application" id="RTE_APP_BUILD" repeatable="true">
+        <description>
+          <![CDATA[
+                <p>To make your application running, you have to create a binary
+                  for your target platform.</p>
+                <p>To create a binary for your target platform:</p>
+                <ol>
+                  <li>Execute <tt>launch.bat</tt>.</li>
+                  <li>To compile and link your software components, type <tt>make</tt>.</li>
+                </ol>
+                ]]>
+        </description>
+      </action>
+
+      <action label="Run your application" id="RTE_APP_RUN">
+        <description>
+          <![CDATA[
+                <p>Your finished application binary is located in the directory <tt>output\bin</tt>.</p>
+                <p>You can use a debugger (e.g. Lauterbach) to download your application to your
+                  target ECU.</p>
+                ]]>
+        </description>
+      </action>
+    </group>
+
+    <action id="RTE_FIN" label="Finish">
+      <description>
+        <![CDATA[
+              <p>You have built your basic application successfully.</p>
+              <p>You may continue with the
+                <a href="workflow://ACGCanStackWorkflow/CAN">CAN Stack Workflow</a>
+                , <a href="workflow://ACGFrStackWorkflow/FLEXRAY">FlexRay Stack Workflow</a>
+                , <a href="workflow://ACGLinStackWorkflow/LIN">LIN Stack Workflow</a>
+                , <a href="workflow://ACGEthStackWorkflow/ETH">Ethernet Stack Workflow</a>
+                , or <a href="workflow://ACGMemStackWorkflow/MEM">Memory Stack Workflow</a>,
+                which are based on the Rte Workflow and which contain instructions for
+                upgrading your Rte Workflow with CAN, FlexRay, LIN communication or Memory Stack.</p>
+              ]]>
+      </description>
+    </action>
+
+  </group>
+</workflow>

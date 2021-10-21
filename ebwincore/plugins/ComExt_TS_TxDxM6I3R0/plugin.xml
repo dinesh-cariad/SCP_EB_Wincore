@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+  <!--
+     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+     + Copyright (C) Elektrobit
+     + All rights reserved
+     +
+     + NAME: plugin.xml
+     +
+     + $Id$
+     ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  -->
+
+  <extension point="dreisoft.tresos.generator.api.plugin.generator"
+               id="Com_TS_TxDxM6I3R0_GeneratorExt">
+    <generator id="Com_TS_TxDxM6I3R0_Generator"
+               moduleId="Com_TS_TxDxM6I3R0"
+               class="dreisoft.tresos.generator.ng.api.NGGenerator">
+      <!-- execute the ng.jetgen task -->
+      <!--
+          NOTE: Output is written to C:\Users\Tom\projects\tresos_workspaces\2008b\ComGeneratorTest\output
+      -->
+      <parameter mode="generate"
+            name="buildfile"
+            value="resources/ng_jetgen_task_build.xml"/>
+      <parameter mode="verify"
+            name="buildfile"
+            value="resources/ng_jetgen_task_build.xml"/>
+      <!-- only having this parameter set to true, a generator is called once for each variant! -->
+      <parameter name="variantAware" value="true"/>
+     </generator>
+   </extension>
+
+   <extension
+          point="dreisoft.tresos.datamodel2.api.plugin.xpathregistration">
+    <xpathfunction>
+      <classregistration
+              class="dreisoft.tresos.com.xpath.XPathFunctions"
+              description="xpath functions to check the ComInitValue properties of ComSignal and ComGroupSignal objects"
+              namespace="asc_com"/>
+    </xpathfunction>
+   </extension>
+</plugin>

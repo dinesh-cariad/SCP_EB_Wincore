@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+    
+    <mainFunction name="Can_MainFunction_Write"
+        base="as:modconf( 'Can' )[1]/CanGeneral/CanMainFunctionWritePeriod/*"
+        suffix="concat( '_', num:i( ./@index ))">
+        <enable type="XPATH" value="count(as:modconf( 'Can' )[1]/CanGeneral/CanMainFunctionWritePeriod/*)>0"/>
+        <header value="Can.h" />
+        <cycleTime type="XPATH" value="./CanMainFunctionWritePeriod" />
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150" />
+        <callBefore>
+            <mainFunction>FrIf_MainFunction</mainFunction>
+            <mainFunction>LinIf_MainFunction</mainFunction>
+            <mainFunction>Xcp_MainFunction</mainFunction>
+            <mainFunction>Spi_MainFunction_Handling</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>Can_MainFunction_BusOff</mainFunction>
+            <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+            <mainFunction>Can_MainFunction_Mode</mainFunction>
+            <mainFunction>CanTrcv_MainFunction</mainFunction>
+            <mainFunction>Can_MainFunction_Read</mainFunction>
+            <mainFunction>IpduM_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+            <mainFunction>Dcm_MainFunction</mainFunction>
+            <mainFunction>CanTp_MainFunction</mainFunction>
+            <mainFunction>FrTp_MainFunction</mainFunction>
+            <mainFunction>IpduM_MainFunctionTx</mainFunction>
+            <mainFunction>Com_MainFunctionTx</mainFunction>
+        </callAfter>
+    </mainFunction>
+
+    
+    <mainFunction name="Can_MainFunction_Read"
+        base="as:modconf( 'Can' )[1]/CanGeneral/CanMainFunctionReadPeriod/*"
+        suffix="concat( '_', num:i( ./@index ))">
+        <enable type="XPATH" value="count(as:modconf( 'Can' )[1]/CanGeneral/CanMainFunctionReadPeriod/*)>0"/>
+        <header value="Can.h" />
+        <cycleTime type="XPATH" value="./CanMainFunctionReadPeriod" />
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150" />
+        <callBefore>
+            <mainFunction>IpduM_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+            <mainFunction>Dcm_MainFunction</mainFunction>
+            <mainFunction>CanTp_MainFunction</mainFunction>
+            <mainFunction>FrTp_MainFunction</mainFunction>
+            <mainFunction>IpduM_MainFunctionTx</mainFunction>
+            <mainFunction>Com_MainFunctionTx</mainFunction>
+            <mainFunction>Can_MainFunction_Write</mainFunction>
+            <mainFunction>FrIf_MainFunction</mainFunction>
+            <mainFunction>LinIf_MainFunction</mainFunction>
+            <mainFunction>Xcp_MainFunction</mainFunction>
+            <mainFunction>Spi_MainFunction_Handling</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+            <mainFunction>Can_MainFunction_Mode</mainFunction>
+            <mainFunction>CanTrcv_MainFunction</mainFunction>
+        </callAfter>
+    </mainFunction>
+
+    <mainFunction name="Can_MainFunction_BusOff">
+        <enable type="XPATH" value="node:exists( as:modconf( 'Can' )[1]/CanGeneral/CanMainFunctionBusoffPeriod )" />
+        <header value="Can.h" />
+        <cycleTime type="XPATH" value="as:modconf( 'Can' )[1]/CanGeneral/CanMainFunctionBusoffPeriod" />
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150" />
+        <callBefore>
+            <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+            <mainFunction>Can_MainFunction_Mode</mainFunction>
+            <mainFunction>CanTrcv_MainFunction</mainFunction>
+            <mainFunction>Can_MainFunction_Read</mainFunction>
+            <mainFunction>IpduM_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+            <mainFunction>Dcm_MainFunction</mainFunction>
+            <mainFunction>CanTp_MainFunction</mainFunction>
+            <mainFunction>FrTp_MainFunction</mainFunction>
+            <mainFunction>IpduM_MainFunctionTx</mainFunction>
+            <mainFunction>Com_MainFunctionTx</mainFunction>
+            <mainFunction>Can_MainFunction_Write</mainFunction>
+            <mainFunction>FrIf_MainFunction</mainFunction>
+            <mainFunction>LinIf_MainFunction</mainFunction>
+            <mainFunction>Xcp_MainFunction</mainFunction>
+            <mainFunction>Spi_MainFunction_Handling</mainFunction>
+        </callBefore>
+    </mainFunction>
+
+    <mainFunction name="Can_MainFunction_Wakeup">
+        <enable type="XPATH" value="node:exists( as:modconf( 'Can' )[1]/CanGeneral/CanMainFunctionWakeupPeriod )" />
+        <header value="Can.h" />
+        <cycleTime type="XPATH" value="as:modconf( 'Can' )[1]/CanGeneral/CanMainFunctionWakeupPeriod" />
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150" />
+        <callBefore>
+            <mainFunction>Can_MainFunction_Mode</mainFunction>
+            <mainFunction>CanTrcv_MainFunction</mainFunction>
+            <mainFunction>Can_MainFunction_Read</mainFunction>
+            <mainFunction>IpduM_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+            <mainFunction>Dcm_MainFunction</mainFunction>
+            <mainFunction>CanTp_MainFunction</mainFunction>
+            <mainFunction>FrTp_MainFunction</mainFunction>
+            <mainFunction>IpduM_MainFunctionTx</mainFunction>
+            <mainFunction>Com_MainFunctionTx</mainFunction>
+            <mainFunction>Can_MainFunction_Write</mainFunction>
+            <mainFunction>FrIf_MainFunction</mainFunction>
+            <mainFunction>LinIf_MainFunction</mainFunction>
+            <mainFunction>Xcp_MainFunction</mainFunction>
+            <mainFunction>Spi_MainFunction_Handling</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        </callAfter>
+    </mainFunction>
+
+    <mainFunction name="Can_MainFunction_Mode">
+        <enable type="XPATH" value="node:exists( as:modconf( 'Can' )[1]/CanGeneral/CanMainFunctionModePeriod )" />
+        <header value="Can.h" />
+        <cycleTime type="XPATH" value="as:modconf( 'Can' )[1]/CanGeneral/CanMainFunctionModePeriod" />
+        <taskPrefix value="SchMComTask" />
+        <taskPriority value="150" />
+        <callBefore>
+            <mainFunction>CanTrcv_MainFunction</mainFunction>
+            <mainFunction>Can_MainFunction_Read</mainFunction>
+            <mainFunction>IpduM_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRx</mainFunction>
+            <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+            <mainFunction>Dcm_MainFunction</mainFunction>
+            <mainFunction>CanTp_MainFunction</mainFunction>
+            <mainFunction>FrTp_MainFunction</mainFunction>
+            <mainFunction>IpduM_MainFunctionTx</mainFunction>
+            <mainFunction>Com_MainFunctionTx</mainFunction>
+            <mainFunction>Can_MainFunction_Write</mainFunction>
+            <mainFunction>FrIf_MainFunction</mainFunction>
+            <mainFunction>LinIf_MainFunction</mainFunction>
+            <mainFunction>Xcp_MainFunction</mainFunction>
+            <mainFunction>Spi_MainFunction_Handling</mainFunction>
+        </callBefore>
+        <callAfter>
+            <mainFunction>Can_MainFunction_BusOff</mainFunction>
+            <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        </callAfter>
+    </mainFunction>
+
+</schm:mainFunctions>
+
+

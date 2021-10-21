@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+  <!--
+  Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+   Plug-in with demos for the EB tresos Studio Public API.
+ -->
+
+  <!--
+    Standard module definition extension point
+  -->
+  <extension point="dreisoft.tresos.launcher2.plugin.module"
+         id="PublicApiTest_TS_T00D0M0I0R0Ext"
+         name="Example Code Generator Module Extension">
+
+    <module id="PublicApiTest_TS_T00D0M0I0R0"
+            label="PublicApiTest_TS_T00D0M0I0R0"
+            mandatory="false"
+            allowMultiple="false"
+            description="Description here"
+            copyright="(c) Elektrobit Automotive"
+            swVersionMajor="2"
+            swVersionMinor="0"
+            swVersionPatch="0"
+            specVersionMajor="2"
+            specVersionMinor="0"
+            specVersionPatch="0"
+            relVersionMajor="2"
+            relVersionMinor="1"
+            relVersionPatch="0"
+            categoryType="PublicApiTest"
+            categoryLayer="Driver"
+            categoryCategory="Com"
+            categoryComponent="ECUC">
+
+       <ecuType target="TEST" derivate="TEST"/>
+    </module>
+   </extension>
+
+   <!--
+    extension point defining the schema and data structure of the module
+   -->
+   <extension point="dreisoft.tresos.launcher2.plugin.configuration"
+              id="PublicApiTest_TS_T00D0M0I0R0ConfExt"
+              name="PublicApiTest_TS_T00D0M0I0R0 Config Extension">
+    <configuration moduleId="PublicApiTest_TS_T00D0M0I0R0">
+
+         <!-- schema definition -->
+           <schema>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarSchemaManager"/>
+               <resource value="config/PublicApiTest_TS_T00D0M0I0R0.xdm"
+                         type="xdm"/>
+           </schema>
+
+           <!-- data definition -->
+           <data>
+               <manager class="dreisoft.tresos.autosar2.resourcehandling.AutosarConfigManager"/>
+               <schemaNode path="ASPath:/TS_T00D0M0I0R0/PublicApiTest"/>
+           </data>
+
+           <!-- generic editor definition -->
+           <editor id="PublicApiTest_TS_T00D0M0I0R0Edit"
+                   label="PublicApiTest_TS_T00D0M0I0R0"
+                   tooltip="Tooltip Description heres">
+               <class class="dreisoft.tresos.launcher2.editor.GenericConfigEditor">
+                 <parameter name="schema" value="ASPath:/TS_T00D0M0I0R0/PublicApiTest"/>
+                 <parameter name="title" value="Description here"/>
+               </class>
+           </editor>
+       </configuration>
+   </extension>
+
+   <!-- definition of an own XPATH function
+
+      This extension points links a Java class with an XPATH namespace. Each function that is called
+      via this namespace is looked up in the registered java class.
+      Each public static method in the java class is useable as an XPATH function in code template or
+      in Public API functions.
+
+      Just have a look into the MyXPathFunctionClass class to get a glance on how to implement a
+      custom XPATH class.
+     -->
+   <extension
+         point="dreisoft.tresos.datamodel2.api.plugin.xpathregistration">
+      <xpathfunction>
+         <classregistration
+               class="test.tresos.plugin.xpath.MyXPathFunctionClass"
+               description="This is a demo xpath function class. Usable in Code Templates via demo:methodName"
+               namespace="demo">
+         </classregistration>
+      </xpathfunction>
+      <xpathfunction>
+         <classregistration
+               class="test.tresos.plugin.xpath.MyXPathArrayFunctions"
+               description="Defines functions to store strings within arrays and arrays of strings within arrays"
+               namespace="array">
+         </classregistration>
+      </xpathfunction>
+   </extension>
+
+   <!-- definition of a public api generator
+
+      This extension points defines a java class as generator for a specific module ID. This generator
+      will be called when generating the specified module.
+      A public API generator class must implement the ICodeGenerator interface.
+
+      Just have a look into the TestGenerator class to get a glance on how to implement a Public API
+      generator.
+     -->
+   <extension
+         point="dreisoft.tresos.generator.api.plugin.generator"
+         id="MyGeneratorID"
+         name="Test Generator">
+      <generator
+            class="test.tresos.plugin.generator.TestGenerator"
+            id="GeneratorID"
+            moduleId="PublicApiTest_TS_T00D0M0I0R0">
+      </generator>
+   </extension>
+
+   <!-- definition of a NG generator (with Ant build script support)
+
+        The NG generator is registered at the public API generator extension point. The generator class
+        to use is always "dreisoft.tresos.generator.ng.api.NGGenerator". The Ant build script to run is
+        specified by a nested parameter with name "buildfile". The value contains the path relative to
+        the root of this plugin.
+   -->
+   <extension
+         point="dreisoft.tresos.generator.api.plugin.generator"
+         id="MyNGGeneratorID"
+         name="Test NG Generator">
+      <generator
+            class="dreisoft.tresos.generator.ng.api.NGGenerator"
+            id="TestNGGeneratorID"
+            modes="generate,verify,custom"
+            moduleId="PublicApiTest_TS_T00D0M0I0R0">
+
+          <!-- Specify the ant build script as parameter to the NGGenerator. -->
+          <parameter name="buildfile"
+                     value="nggenerator/scripts/build.xml"/>
+      </generator>
+      <!-- Specify an icon and label for the custom mode -->
+      <modeMenuItem
+            mode="custom"
+            icon="icons/yellow.gif"
+            label="Custom Generation Mode">
+      </modeMenuItem>
+   </extension>
+
+   <!-- definition of ecu resource properties files -->
+   <extension
+         point="dreisoft.tresos.autosar2.api.plugin.ecuresource">
+      <!-- Defines properties file Example.properties under folder resources relative to the
+        plugin's root folder. The special parameter "subderivate" is considered by a
+        DefaultEcuResourceFinder. -->
+      <ecuresource
+            target="TEST"
+            derivate="TEST"
+            moduleId="PublicApiTest_TS_T00D0M0I0R0"
+            file="resources/Example.properties">
+         <parameter
+               name="subderivate"
+               value="Default">
+         </parameter>
+      </ecuresource>
+      <!-- Defines another properties file for the same target and derivate but for another
+        subderivate. -->
+      <ecuresource
+            target="TEST"
+            derivate="TEST"
+            moduleId="PublicApiTest_TS_T00D0M0I0R0"
+            file="resources/Example_Sub1.properties">
+         <parameter
+               name="subderivate"
+               value="SubDerivate1">
+         </parameter>
+      </ecuresource>
+   </extension>
+
+   <!-- Defines a new DefaultEcuResourceFinder. The predefined parameters "name" and "path"
+     are registered with this finder. Therefore the given schema path (from parameter "path")
+     is evaluated and the resulting value is checked against the values of parameter
+     "subderivate" of any ecu resource properties with the relevant target and derivate.
+     -->
+   <extension
+         point="dreisoft.tresos.autosar2.api.plugin.ecuresourcefinder">
+      <ecuresourcefinder>
+         <finder
+               class="dreisoft.tresos.autosar2.api.ecuresource.DefaultEcuResourceFinder">
+            <parameter
+                  name="name"
+                  value="subderivate">
+            </parameter>
+            <!-- parameter "path" must contain a schema path! -->
+            <parameter
+                  name="path"
+                  value="/AUTOSAR/TOP-LEVEL-PACKAGES/TS_T00D0M0I0R0/ELEMENTS/PublicApiTest/ExamplesResourceFile/SubDerivate">
+            </parameter>
+         </finder>
+      </ecuresourcefinder>
+   </extension>
+
+</plugin>

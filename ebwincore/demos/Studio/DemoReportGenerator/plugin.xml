@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<!--
+ Copyright (C) Elektrobit Automotive GmbH - All rights reserved.
+
+ Module plugin example with a template generated report of all comments 
+  
+ The template will without a CSV-file with all comments in all languages present.
+-->
+
+<plugin>
+
+   <!-- 
+     This extension draws the connection between the module, the template files 
+     and the template-based code generator.
+   -->
+   <extension point="dreisoft.tresos.launcher2.plugin.generator"
+              id="DemoReportGeneratorEXT"
+	      name="Demo Report Generator for Comments">
+       <!-- 
+  	     This element contains the actual data for registering the code generator.
+	     class: 	  in the case of the template-based code generator this value is
+	                  always 
+	                  "dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+	   -->
+      <generator
+            class="dreisoft.tresos.launcher2.generator.TemplateBasedCodeGenerator"
+            id="DemoReportGenerator.generator1"
+            modes="config_report"
+            step="pre">
+          <!-- define a specific mode -->
+          <parameter name="mode_type" mode="config_report" value="generate"/>
+          <parameter name="templates" mode="config_report" value="generate"/>
+          <parameter name="templates" mode="*" value="generate"/>
+      </generator>
+      <!-- decorate the report menuitem with a specific label and icon -->
+      <modeMenuItem
+           icon="icons/configreport.gif"
+           label="Configuration Report (incl. Comments)"
+           mode="config_report">
+      </modeMenuItem>
+  </extension>
+
+</plugin>

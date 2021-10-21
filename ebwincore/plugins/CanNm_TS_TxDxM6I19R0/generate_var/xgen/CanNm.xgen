@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module CanNm?>
+
+<!-- !LINKSTO CanNm.Format.VCC-62,1 -->
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!AUTOSPACING!]
+[!INCLUDE "../../generate_macros/CanNm_Checks.m"!][!//
+[!SELECT "CanNmGlobalConfig/*[1]"!]
+[!VAR "CanNmChannelCount"="num:i(count(CanNmChannelConfig/*))"!]
+[!IF "as:modconf('CanNm')[1]/CanNmGeneral/CanNmPnSupported = 'true'"!]
+  [!VAR "CanNm_Pn_Eira_Timer_Arr_Size"="num:i(node:value(CanNmPnInfo/CanNmPnInfoLength) * 8)"!]
+  [!VAR "CanNmPnInfoLength"="num:i(node:value(CanNmPnInfo/CanNmPnInfoLength))"!]
+[!ENDIF!]
+[!ENDSELECT!]
+
+
+
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current PB variant Sufix
+*/!][!VAR "CANNM_VARIANT_SUFIX"="concat('_',$postBuildVariant,'_')"!]
+[!ELSE!]
+[!/* Current PB variant Sufix
+*/!][!VAR "CANNM_VARIANT_SUFIX"="string("_")"!]
+[!ENDIF!]
+[!IF "var:defined('postBuildVariant')"!]
+[!/* Current postbuild configuration name
+*/!][!VAR "initPredefinedCfgName"="concat(name(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]),'_',$postBuildVariant)"!]
+[!ELSE!]
+[!/* Current postbuild name
+*/!][!VAR "initPredefinedCfgName"="name(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1])"!]
+[!ENDIF!]
+[!/* Current postbuild-c variant
+<!-- !LINKSTO CanNm.EB.PBSelectable.FileName,1 -->
+*/!][!VAR "CANNM_PBCFG_C_VARIANT"="concat('CanNm',$CANNM_VARIANT_SUFIX,'PBcfg.c')"!]
+[!/* Current postbuild-h variant
+*/!][!VAR "CANNM_PBCFG_H_VARIANT"="concat('CanNm',$CANNM_VARIANT_SUFIX,'PBcfg.h')"!]
+[!/* Current Config variant
+*/!][!VAR "CANNM_CONFIG_LAYOUT_VARIANT"="concat('CanNm',$CANNM_VARIANT_SUFIX,'ConfigLayout')"!]
+<!-- !LINKSTO CanNm.EB.PBSelectable.TypeName,1 -->
+[!/* Current Config Type variant based
+*/!][!VAR "CANNM_CONFIGLAYOUTTYPE_VARIANT"="concat('CanNm',$CANNM_VARIANT_SUFIX,'ConfigLayoutType')"!]
+[!/* Current Const Config Type variant based
+*/!][!VAR "CANNM_CONSTCONFIGLAYOUTTYPE_VARIANT"="concat('CanNm',$CANNM_VARIANT_SUFIX,'ConstConfigLayoutType')"!]
+
+
+
+[!CODE!]
+
+
+
+  <!-- This is the configuration of module CanNm -->
+  <module name="CanNm" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+[!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+      <?artifact directory="include" file="CanNm_Types.h" type="types-h" generate="yes"?>
+[!ELSE!]
+      <?artifact directory="include" file="CanNm_Types.h" type="types-h" generate="no"?>
+[!ENDIF!]
+<!-- !LINKSTO CanNm.Impl.Relocatable,1 -->
+[!VAR "relocatable" = "'false'"!]
+[!IF "node:contains(node:refs(as:modconf('PbcfgM')/PbcfgMBswModules/*/PbcfgMBswModuleRef), as:modconf('CanNm')) = 'true'"!]
+  [!IF "node:exists(as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable) and (as:modconf('PbcfgM')/PbcfgMGeneral/PbcfgMRelocatableCfgEnable = 'true')"!]
+    [!VAR "relocatable" = "'true'"!]
+  [!ENDIF!]
+[!ELSE!]
+    [!IF "CanNmGeneral/CanNmRelocatablePbcfgEnable = 'true'"!]
+      [!VAR "relocatable" = "'true'"!]
+    [!ENDIF!]
+[!ENDIF!]
+
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"$relocatable"!]</boolean-value>
+      </parameter>
+
+      <!-- !LINKSTO CANNM202,1 -->
+      <!-- This is the type definition of the root structure -->
+      <type name="CanNm_ConfigType">
+        <struct>
+          <!-- !LINKSTO CanNm.Impl.Hash,1 -->
+          <member name="PlatformSignature" type="uint32" comment="Used to validate the platform"/>
+          <member name="LcfgSignature" type="uint32" comment="Used to validate the post build configuration against the link time configuration"/>
+          <member name="CfgSignature" type="uint32" comment="Used to validate the post build configuration against the precompile time configuration"/>
+          <member name="PublicInfoSignature" type="uint32" comment="Used to validate Public information"/>
+          <member name="CanNm_ChannelData" type="CanNm_ChannelDataType" count="[!"$CanNmChannelCount"!]" comment="CanNm_ChannelData"/>
+          <member name="BufferOffsets" type="uint32" count="[!"$CanNmChannelCount"!]" comment="BufferOffsets array" />
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled = 'false'"!]
+          <member name="TxBufferOffset" type="uint32" comment="Offset where Tx buffers starts"/>
+[!ENDIF!]
+          <member name="PbRequiredCfgRamSize" type="uint32" comment="Buffer size needed by TX and RX pdus"/>
+[!IF "as:modconf('CanNm')[1]/CanNmGeneral/CanNmPnSupported = 'true'"!]
+          <member name="PnFilterMask" type="uint8" count="[!"$CanNmPnInfoLength"!]" comment="PnFilterMask array" />
+          <member name="EiraTimerMap" type="uint8" count="[!"$CanNm_Pn_Eira_Timer_Arr_Size"!]" comment="EiraTimerMap array"/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+      <type name="CanNm_ChannelDataType">
+        <struct>
+          <member name="UserDataLength" type="uint32" comment="User Data Length"/>
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled = 'false'"!]
+          <member name="CanNmMsgCycleOffset" type="uint16" comment="CanNmMsgCycleOffset"/>
+[!ENDIF!]
+          <member name="RxPduLength" type="PduLengthType" comment="PduLength array"/>
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmComUserDataSupport = 'true'"!]
+          <member name="UserTxConfPduId" type="PduIdType" comment="UserTxConfPduId array"/>
+          <member name="UserRxPduId" type="PduIdType" comment="UserRxPduId"/>
+[!ENDIF!]
+[!IF "CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled = 'false'"!]
+          <member name="TxPduId" type="PduIdType" comment="Pdu ID if transmit PDU (from CanIf)"/>
+[!ENDIF!]
+[!IF "count(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*[CanNmNodeIdEnabled='true']) > 0"!]
+          <member name="CanNmNodeId" type="uint8" comment="CanNmNodeId"/>
+[!ENDIF!]
+[!IF "as:modconf('CanNm')[1]/CanNmGeneral/CanNmPnSupported = 'true'"!]
+          <member name="PnEnabled" type="boolean" comment="PnEnabled configuration for each channel"/>
+          <member name="PnHandleMultipleNetworkRequests" type="boolean" comment="PnHandleMultipleNetworkRequests configuration for each channel"/>
+[!ENDIF!]
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmComUserDataSupport = 'true'"!]
+          <member name="UserRxPduEnabled" type="boolean" comment="UserRxPduEnabled"/>
+[!ENDIF!]
+        </struct>
+      </type>
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <!-- !LINKSTO CANNM301,1, CanNm.Format.C,1 -->
+      <?artifact directory="include" file="[!"$CANNM_PBCFG_H_VARIANT"!]" type="postbuild-h" ?>
+      <?artifact directory="src" file="[!"$CANNM_PBCFG_C_VARIANT"!]" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of CanNm_Pbcfg.h and CanNm_Types.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+      <type name="[!"$CANNM_CONFIGLAYOUTTYPE_VARIANT"!]">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="CanNm_ConfigType"/>
+        </struct>
+      </type>
+
+
+      <type name="[!"$CANNM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]">
+        <reference type="[!"$CANNM_CONFIGLAYOUTTYPE_VARIANT"!]">
+          <compiler-abstraction>
+            <const memory-class="CANNM_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <!--
+          Type definition and initialisation:
+          Specifies the content of CanNm_Pbcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="[!"$CANNM_CONSTCONFIGLAYOUTTYPE_VARIANT"!]"
+                name="[!"$CANNM_CONFIG_LAYOUT_VARIANT"!]">
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$initPredefinedCfgName"!]</symbolic-value>
+        </parameter>
+
+        <!-- CanNm_ConfigType -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('CanNm')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('CanNm')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int>
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('CanNm')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('CanNm')[1]/CommonPublishedInformation/Release))"!]</int>
+          </field>
+          <field>
+[!SELECT "CanNmGlobalConfig/*[1]"!]
+[!LOOP "node:order(CanNmChannelConfig/*,'CanNmRxPdu/*[1]/CanNmRxPduId')"!]
+            <field>
+              <field>
+                <int>[!"num:i(CanNmUserDataLength)"!]</int>
+              </field> <!-- User Data Length -->
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled = 'false'"!]
+              <field>
+                <int>
+                [!"num:i((CanNmMsgCycleOffset * 1000) div (../../CanNmMainFunctionPeriod * 1000))"!]
+                </int>
+              </field> <!-- CanNmMsgCycleOffset -->
+[!ENDIF!]
+              <field>
+                <int>[!"num:i(as:ref(CanNmRxPdu/*[1]/CanNmRxPduRef)/PduLength)"!]</int>
+              </field> <!-- PduLength -->
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmComUserDataSupport = 'true'"!]
+              <field>
+                <int>[!//
+[!IF "node:exists(CanNmUserDataTxPdu)"!][!/*
+  */!][!"num:i(as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/
+       PduRDestPdu/*[PduRDestPduRef=node:current()/CanNmUserDataTxPdu/CanNmTxUserDataPduRef]/
+       PduRDestPduHandleId)"!][!//
+[!ELSE!][!/*
+  */!]0[!//
+[!ENDIF!]</int>
+               </field> <!-- UserTxConfPduId -->
+              <field>
+                <int>[!//
+[!IF "node:exists(CanNmUserDataRxPdu)"!]
+    [!"as:modconf('PduR')[1]/PduRRoutingTables/*/PduRRoutingTable/*/PduRRoutingPath/*/
+       PduRSrcPdu[PduRSrcPduRef=node:current()/CanNmUserDataRxPdu/CanNmRxUserDataPduRef]/
+       PduRSourcePduHandleId"!]
+[!ELSE!]
+    0
+[!ENDIF!]
+                 </int>
+               </field> <!-- UserRxPduId -->
+[!ENDIF!]
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled = 'false'"!]
+              <field>
+                <!-- get Tx PduId by EcuC reference from CanIf, existence is checked in xdm -->
+                <int>[!"as:modconf('CanIf')[1]/CanIfInitCfg/*/CanIfTxPduCfg/*[CanIfTxPduRef = node:current()/CanNmTxPdu/CanNmTxPduRef]/CanIfTxPduId"!]</int>
+              </field> <!-- TxPduId -->
+[!ENDIF!]
+[!IF "count(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*[CanNmNodeIdEnabled='true']) > 0"!]
+              <field>
+                <int>
+                [!IF "node:value(./CanNmNodeIdEnabled)='true'"!]
+                [!"num:i(./CanNmNodeId)"!]
+                [!ELSE!]
+                255
+                [!ENDIF!]
+                </int>
+              </field> <!-- CanNmNodeId -->
+[!ENDIF!]
+[!IF "as:modconf('CanNm')[1]/CanNmGeneral/CanNmPnSupported = 'true'"!]
+              <field>
+                <int>[!//
+[!IF "node:exists(./CanNmPnEnabled)"!]
+  [!IF "node:value(./CanNmPnEnabled)='true'"!][!/*
+    */!]1[!//
+  [!ELSE!][!/*
+    */!]0[!//
+  [!ENDIF!]
+[!ELSE!]
+0[!//
+[!ENDIF!]</int>
+              </field> <!-- PnEnabled -->
+              <field>
+                <int>[!//
+[!IF "node:exists(./CanNmPnHandleMultipleNetworkRequests)"!]
+  [!IF "node:value(./CanNmPnHandleMultipleNetworkRequests)='true'"!][!/*
+    */!]1[!//
+  [!ELSE!][!/*
+    */!]0[!//
+  [!ENDIF!]
+[!ELSE!]
+0[!//
+[!ENDIF!]</int>
+              </field> <!-- PnHandleMultipleNetworkRequests -->
+[!ENDIF!]
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmComUserDataSupport = 'true'"!]
+              <field>
+                <int>
+                 [!IF "node:exists(CanNmUserDataRxPdu)"!]
+                 1
+                 [!ELSE!]
+                 0
+                 [!ENDIF!]
+                </int>
+              </field> <!-- UserRxPduEnabled -->
+[!ENDIF!]
+            </field>
+[!ENDLOOP!]
+[!ENDSELECT!]
+          </field> <!-- CanNm_ChannelData -->
+[!VAR "Offset" = "0"!][!//
+          <field>
+[!LOOP "node:order(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*,'CanNmRxPdu/*[1]/CanNmRxPduId')"!]
+            <field>
+              <int>[!"num:i($Offset)"!]</int>
+            </field>
+[!VAR "Offset" = "$Offset + num:i(node:ref(CanNmRxPdu/*[1]/CanNmRxPduRef)/PduLength)"!]
+[!ENDLOOP!]
+          </field> <!-- BufferOffsets -->
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled = 'false'"!]
+          <field>
+            <int>[!"num:i($Offset)"!]</int>
+          </field>  <!-- TxBufferOffset -->
+[!ENDIF!]
+[!VAR "CalculatedPbRamSize" = "0"!][!//
+[!LOOP "node:order(as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmChannelConfig/*,'CanNmRxPdu/*[1]/CanNmRxPduId')"!]
+  [!VAR "CalculatedPbRamSize" = "$CalculatedPbRamSize + num:i(node:ref(CanNmRxPdu/*[1]/CanNmRxPduRef)/PduLength)"!]
+[!ENDLOOP!]
+[!IF "as:modconf('CanNm')[1]/CanNmGlobalConfig/*[1]/CanNmPassiveModeEnabled = 'false'"!]
+  [!VAR "CalculatedPbRamSize" = "$CalculatedPbRamSize * 2"!]
+[!ENDIF!]
+          <field>
+            <int>[!"num:i($CalculatedPbRamSize)"!]</int>
+          </field>  <!-- PbRequiredCfgRamSize-->
+[!IF "as:modconf('CanNm')[1]/CanNmGeneral/CanNmPnSupported = 'true'"!]
+          <field>
+  [!SELECT "CanNmGlobalConfig/*[1]/CanNmPnInfo"!]
+    [!FOR "bytePos"="0" TO "CanNmPnInfoLength - 1"!]
+            <field>
+              <int>[!"num:i(CanNmPnFilterMaskByte/*[CanNmPnFilterMaskByteIndex = $bytePos]/CanNmPnFilterMaskByteValue)"!]</int>
+            </field>
+    [!ENDFOR!]
+  [!ENDSELECT!]
+          </field> <!-- PnFilterMask -->
+          <field>
+  [!VAR "Index" = "0"!]
+  [!SELECT "CanNmGlobalConfig/*[1]"!]
+  [!LOOP "node:order(CanNmPnInfo/CanNmPnFilterMaskByte/*,'CanNmPnFilterMaskByteIndex')"!]
+    [!FOR "BitPos" = "0" TO "7"!]
+            <field>
+              <int>[!//
+      [!IF "bit:getbit(CanNmPnFilterMaskByteValue, $BitPos) = 'true'"!]
+        [!"num:i($Index)"!]
+        [!VAR "Index" = "$Index + 1"!]
+      [!ELSE!][!/*
+        */!]255[!//
+      [!ENDIF!]</int>
+            </field>
+    [!ENDFOR!]
+  [!ENDLOOP!]
+  [!ENDSELECT!]
+          </field> <!-- EiraTimerMap -->
+[!ENDIF!]
+        </field> <!-- CanNm_ConfigType -->
+
+      </instance> <!-- CanNm_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <!-- The xpointer atribute shouldrather be something like "xpointer(//module[name='...'])",
+       but unfortunately our XML parser does not support the XPointer xpointer() Scheme.
+       This is also the reason why all these xincludes must be at the end of the file rather
+       than at the beginning, because that way the other xgen files that include this one can
+       be sure that "element(/1/1)" is the CanNm module element.
+  -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>
+
+[!ENDCODE!]

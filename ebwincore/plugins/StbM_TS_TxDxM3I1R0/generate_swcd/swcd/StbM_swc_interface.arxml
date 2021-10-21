@@ -1,0 +1,892 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+[!/* do not generate this file if RTE is not used */!]
+[!SKIPFILE "as:modconf('StbM')[1]/StbMGeneral/StbMRteUsage != 'true'"!]
+[!INCLUDE "StbM_TimeBaseHlp.m"!]
+[!VAR "StbMTimeRecordingSupport" = "node:value(as:modconf('StbM')[1]/StbMGeneral/StbMTimeRecordingSupport)"!][!//
+[!VAR "StbMSyncTimebaseNumber" = "num:i(count(as:modconf('StbM')[1]/StbMSynchronizedTimeBase/*[(not(node:value(./StbMSynchronizedTimeBaseIdentifier) > 15))]))"!][!//
+[!VAR "StbMNotificationCustomerSupport" = "node:exists(as:modconf('StbM')[1]/StbMGeneral/StbMTimerStartThreshold)"!][!//
+
+  <AR-PACKAGES>
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_StbM</SHORT-NAME>
+      <ELEMENTS/>
+      <AR-PACKAGES>
+
+        <AR-PACKAGE>
+          <SHORT-NAME>PortInterfaces</SHORT-NAME>
+          <ELEMENTS>
+
+
+
+[!LOOP "text:split($ListOfBusConnectionsToTimeBase, ';')"!][!//
+
+[!VAR "tmpTimeBaseId" = "text:split( ., ':' )[1]"!][!//
+[!VAR "tmpCtrName" = "text:split( ., ':' )[13]"!][!//
+
+
+[!VAR "masterConnected" = "text:split( ., ':' )[2]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($masterConnected = 'isMaster') or ($gatewayConnected = 'true'))"!][!//
+
+[!// ----------------------------------------------------- Provide GLOBALTIME_MASTER C-S Interface, only for MASTER time bases ------------------------------------------------------
+
+[!VAR "allowSystemWideGlobalTimeMasterForMasterEnabled" = "text:split( ., ':' )[19]"!][!//
+[!VAR "allowSystemWideGlobalTimeMasterForMaster" = "text:split( ., ':' )[16]"!][!//
+[!VAR "isSystemWideGlobalTimeMasterForMaster" = "text:split( ., ':' )[17]"!][!//
+[!IF "($allowSystemWideGlobalTimeMasterForMaster = 'true') or ($isSystemWideGlobalTimeMasterForMaster = 'true')"!][!//
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>StbM_GlobalTime_Master_[!"$tmpCtrName"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+
+
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00240.GetMasterConfig,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetMasterConfig</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>masterConfig</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_MasterConfigType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00240.SetGlobalTime,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetGlobalTime</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>timeStampPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeStampType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>userDataPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_UserDataType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+[!IF "($tmpTimeBaseId >= 16) and ($tmpTimeBaseId <= 31)"!][!//
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00240.SetOffset,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetOffset</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>timeStampPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeStampType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>userDataPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_UserDataType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+
+[!VAR "isMasterRateCorrectionActivatedOnTimeBase" = "text:split( ., ':' )[21]"!][!//
+[!IF "(($masterConnected = 'isMaster') and ($isMasterRateCorrectionActivatedOnTimeBase = 'true'))"!][!//
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00240.SetRateCorrection.Activated.OnlyOnMASTERs,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetRateCorrection</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>rateDeviation</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_RateDeviationType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00240.SetUserData,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetUserData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>userDataPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_UserDataType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+[!IF "($tmpTimeBaseId <= 31)"!][!//
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00240.TriggerTimeTransmission,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>TriggerTimeTransmission</SHORT-NAME>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00240.UpdateGlobalTime,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>UpdateGlobalTime</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>timeStampPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeStampType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>userDataPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_UserDataType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Master_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+              </OPERATIONS>
+
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+
+            </CLIENT-SERVER-INTERFACE>
+
+[!ENDIF!][!//
+
+
+[!IF "($masterConnected = 'isMaster')"!][!//
+[!// ------------------------------------------------------------- Provide GLOBALTIME_SLAVE C-S Interface, also for MASTER time bases ------------------------------------------------
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>StbM_GlobalTime_Slave_[!"$tmpCtrName"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+
+                <CLIENT-SERVER-OPERATION>
+                  <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetCurrentTime,1 -->
+                  <SHORT-NAME>GetCurrentTime</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>timeStampPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeStampType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>userDataPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_UserDataType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+
+[!IF "$StbMExtendedTimeStampUsed = 'true'"!][!//
+                <CLIENT-SERVER-OPERATION>
+                  <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetCurrentTimeExtended,1 -->
+                  <SHORT-NAME>GetCurrentTimeExtended</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>timeStampPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeStampExtendedType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>userDataPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_UserDataType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+
+
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetRateDeviation,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetRateDeviation</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>rateDeviation</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_RateDeviationType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetTimeBaseStatus,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetTimeBaseStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>syncTimeBaseStatusPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeBaseStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>offsetTimeBaseStatusPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeBaseStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+              </OPERATIONS>
+
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+
+            </CLIENT-SERVER-INTERFACE>
+
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+
+
+
+
+
+[!VAR "slaveConnected" = "text:split( ., ':' )[3]"!][!//
+[!VAR "gatewayConnected" = "text:split( ., ':' )[4]"!][!//
+[!IF "(($slaveConnected = 'isSlave') or ($gatewayConnected = 'true'))"!][!//
+
+[!// -------------------------------------------------------- Provide GLOBALTIME_SLAVE C-S Interface, for SLAVE time bases ------------------------------------------------------
+
+[!VAR "isTimeRecordingEnabledOnThisTimeBase" = "text:split( ., ':' )[15]"!][!//
+
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>StbM_GlobalTime_Slave_[!"$tmpCtrName"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+
+                <CLIENT-SERVER-OPERATION>
+                  <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetCurrentTime,1 -->
+                  <SHORT-NAME>GetCurrentTime</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>timeStampPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeStampType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>userDataPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_UserDataType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+[!IF "$StbMExtendedTimeStampUsed = 'true'"!][!//
+                <CLIENT-SERVER-OPERATION>
+                  <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetCurrentTimeExtended,1 -->
+                  <SHORT-NAME>GetCurrentTimeExtended</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>timeStampPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeStampExtendedType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>userDataPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_UserDataType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+
+
+[!IF "$StbMTimeRecordingSupport = 'true'"!][!//
+[!IF "$isTimeRecordingEnabledOnThisTimeBase = 'true'"!][!//
+
+[!IF "($tmpTimeBaseId < 16)"!][!//
+[!// GetSyncTimeRecordHead OPERATION shall be generated only for SYNC time bases, which have Sync TimeRecording activated
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetSyncTimeRecordHead,2 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetSyncTimeRecordHead</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>syncRecordTableHead</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_SyncRecordTableHeadType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ELSE!]
+[!// GetOffsetTimeRecordHead OPERATION shall be generated only for OFFSET time bases, which have Offset TimeRecording activated
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetOffsetTimeRecordHead,2 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetOffsetTimeRecordHead</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>offsetRecordTableHead</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_OffsetRecordTableHeadType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetRateDeviation,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetRateDeviation</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>rateDeviation</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_RateDeviationType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetTimeBaseStatus,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetTimeBaseStatus</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>syncTimeBaseStatusPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeBaseStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>offsetTimeBaseStatusPtr</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeBaseStatusType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+                
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00247.GetTimeLeap,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>GetTimeLeap</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>timeJump</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeDiffType</TYPE-TREF>
+                      <DIRECTION>OUT</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_GlobalTime_Slave_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+
+              </OPERATIONS>
+
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+
+            </CLIENT-SERVER-INTERFACE>
+
+
+
+[!// ------------------------------------------ Provide MEASUREMENT NOTIFICATION Client-Server Interface, for SLAVE time bases, which use SYNC or OFS TimeRecording ---------------------------------------------
+
+[!IF "$StbMTimeRecordingSupport = 'true'"!][!//
+[!IF "($isTimeRecordingEnabledOnThisTimeBase = 'true')"!][!//
+            <!-- !LINKSTO StbM.ASR44.SWS_StbM_00387,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>StbM_MeasurementNotification_[!"$tmpCtrName"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+              <OPERATIONS>
+[!IF "($tmpTimeBaseId < 16)"!][!//
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00339.SetSyncTimeRecordTable,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetSyncTimeRecordTable</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>syncRecordTableBlock</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_SyncRecordTableBlockType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_MeasurementNotification_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_MeasurementNotification_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ELSE!][!//
+                <!-- !LINKSTO StbM.ASR44.SWS_StbM_00339.SetOffsetTimeRecordTable,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetOffsetTimeRecordTable</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>offsetRecordTableBlock</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_OffsetRecordTableBlockType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_MeasurementNotification_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_MeasurementNotification_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+              </OPERATIONS>
+
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+
+            </CLIENT-SERVER-INTERFACE>
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+
+
+[!ENDIF!][!//
+
+
+
+
+[!// --------------------------------------------------------- Provide TIME VALIDATION Client-Server Interfaces -------------------------------------------------------------
+
+[!IF "$StbMTimeValidationUsed = 'true'"!][!//
+
+[!VAR "masterCanTSynConnected" = "text:split( ., ':' )[5]"!][!//
+[!VAR "masterFrTSynConnected" = "text:split( ., ':' )[6]"!][!//
+[!VAR "masterEthTSynConnected" = "text:split( ., ':' )[7]"!][!//
+[!VAR "slaveCanTSynConnected" = "text:split( ., ':' )[9]"!][!//
+[!VAR "slaveFrTSynConnected" = "text:split( ., ':' )[10]"!][!//
+[!VAR "slaveEthTSynConnected" = "text:split( ., ':' )[11]"!][!//
+
+[!VAR "isTimeValidationEnabledOnTimeBase" = "text:split( ., ':' )[14]"!][!//
+[!IF "$isTimeValidationEnabledOnTimeBase = 'true'"!][!//
+
+[!// --------------------------------------------------------- Provide TimeBaseProviderNotification_Eth TIME VALIDATION Client-Server Interface -------------------------------------------------------------
+
+[!IF "($masterEthTSynConnected = 'masterEthTSyn') or ($slaveEthTSynConnected = 'slaveEthTSyn')"!][!//
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+
+              <OPERATIONS>
+
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00461.ETH.SetSlaveTimingData.Operation,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetSlaveTimingData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>measurementData</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_EthTimeSlaveMeasurementType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00461.ETH.SetPdelayInitiatorData.Operation,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetPdelayInitiatorData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>measurementData</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_PdelayInitiatorMeasurementType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00461.ETH.SetMasterTimingData.Operation,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetMasterTimingData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>measurementData</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_EthTimeMasterMeasurementType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00461.ETH.SetPdelayResponderData.Operation,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetPdelayResponderData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>measurementData</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_PdelayResponderMeasurementType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Eth_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+
+              </OPERATIONS>
+
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+
+            </CLIENT-SERVER-INTERFACE>
+[!ENDIF!][!//
+
+
+
+[!// --------------------------------------------------------- Provide TimeBaseProviderNotification_Fr TIME VALIDATION Client-Server Interface -------------------------------------------------------------
+
+[!IF "($masterFrTSynConnected = 'masterFrTSyn') or ($slaveFrTSynConnected = 'slaveFrTSyn')"!][!//
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+
+              <OPERATIONS>
+
+[!IF "($slaveFrTSynConnected = 'slaveFrTSyn')"!][!//
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00462.FR.SetSlaveTimingData.Operation,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetSlaveTimingData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>measurementData</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_FrTimeSlaveMeasurementType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+[!IF "($masterFrTSynConnected = 'masterFrTSyn')"!][!//
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00462.FR.SetMasterTimingData.Operation,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetMasterTimingData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>measurementData</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_FrTimeMasterMeasurementType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Fr_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+              </OPERATIONS>
+
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+
+            </CLIENT-SERVER-INTERFACE>
+[!ENDIF!][!//
+
+
+
+[!// --------------------------------------------------------- Provide TimeBaseProviderNotification_Can TIME VALIDATION Client-Server Interface -------------------------------------------------------------
+
+[!IF "($masterCanTSynConnected = 'masterCanTSyn') or ($slaveCanTSynConnected = 'slaveCanTSyn')"!][!//
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+
+              <OPERATIONS>
+[!IF "($slaveCanTSynConnected = 'slaveCanTSyn')"!][!//
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00463.CAN.SetSlaveTimingData.Operation,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetSlaveTimingData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>measurementData</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_CanTimeSlaveMeasurementType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+[!IF "($masterCanTSynConnected = 'masterCanTSyn')"!][!//
+                <!-- !LINKSTO StbM.ASR20-11.SWS_StbM_00463.CAN.SetMasterTimingData.Operation,1 -->
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>SetMasterTimingData</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>measurementData</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_CanTimeMasterMeasurementType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/TimeBaseProviderNotification_Can_[!"$tmpCtrName"!]/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+[!ENDIF!][!//
+
+              </OPERATIONS>
+
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+
+            </CLIENT-SERVER-INTERFACE>
+
+[!ENDIF!][!//
+
+
+
+[!ENDIF!][!//
+[!ENDIF!][!//
+
+
+
+[!ENDLOOP!][!//
+
+
+
+
+[!// --------------------------------------------------------- Provide STATUS NOTIFICATION Sender-Receiver Interface -------------------------------------------------------------
+
+[!IF "$isStatusNotificationUsed = 'true'"!][!//
+            <!-- Sender-Receiver Interface StatusNotification -->
+            <!-- !LINKSTO StbM.ASR44.SWS_StbM_00286,1 -->
+            <SENDER-RECEIVER-INTERFACE>
+              <SHORT-NAME>StbM_StatusNotification</SHORT-NAME>
+              <IS-SERVICE>false</IS-SERVICE>
+              <DATA-ELEMENTS>
+                <VARIABLE-DATA-PROTOTYPE>
+                  <SHORT-NAME>eventNotification</SHORT-NAME>
+                  <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeBaseNotificationType</TYPE-TREF>
+                </VARIABLE-DATA-PROTOTYPE>
+              </DATA-ELEMENTS>
+            </SENDER-RECEIVER-INTERFACE>
+[!ENDIF!][!//
+
+
+
+[!// --------------------------------------------------------- Provide TIME NOTIFICATION Client-Server Interfaces -------------------------------------------------------------
+
+[!// --------------------------------------------------- Provide StbM_StartTimer TIME NOTIFICATION Client-Server Interfaces ---------------------------------------------
+
+[!IF "$StbMNotificationCustomerSupport = 'true'"!][!//
+            <!-- !LINKSTO StbM.ASR19-11.SWS_StbM_00409,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>StbM_StartTimer</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+
+              <OPERATIONS>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>StartTimer</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>expireTime</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeStampType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_StartTimer/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_StartTimer/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+              </OPERATIONS>
+
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+
+[!// --------------------------------------------------- Provide StbM_TimeNotification TIME NOTIFICATION Client-Server Interfaces ------------------------------------------
+
+[!IF "$atLeastOneStbMNotificationCustomerWithCallbackDisabled = 'true'"!]
+            <!-- !LINKSTO StbM.ASR19-11.SWS_StbM_00275,1 -->
+            <CLIENT-SERVER-INTERFACE>
+              <SHORT-NAME>StbM_TimeNotification</SHORT-NAME>
+              <IS-SERVICE>true</IS-SERVICE>
+
+              <OPERATIONS>
+
+                <CLIENT-SERVER-OPERATION>
+                  <SHORT-NAME>NotifyTime</SHORT-NAME>
+                  <ARGUMENTS>
+                    <ARGUMENT-DATA-PROTOTYPE>
+                      <SHORT-NAME>deviationTime</SHORT-NAME>
+                      <TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_StbM/ImplementationDataTypes/StbM_TimeDiffType</TYPE-TREF>
+                      <DIRECTION>IN</DIRECTION>
+                    </ARGUMENT-DATA-PROTOTYPE>
+                  </ARGUMENTS>
+                  <POSSIBLE-ERROR-REFS>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_TimeNotification/E_OK</POSSIBLE-ERROR-REF>
+                    <POSSIBLE-ERROR-REF DEST="APPLICATION-ERROR">/AUTOSAR_StbM/PortInterfaces/StbM_TimeNotification/E_NOT_OK</POSSIBLE-ERROR-REF>
+                  </POSSIBLE-ERROR-REFS>
+                </CLIENT-SERVER-OPERATION>
+
+              </OPERATIONS>
+
+              <POSSIBLE-ERRORS>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_OK</SHORT-NAME>
+                  <ERROR-CODE>0</ERROR-CODE>
+                </APPLICATION-ERROR>
+                <APPLICATION-ERROR>
+                  <SHORT-NAME>E_NOT_OK</SHORT-NAME>
+                  <ERROR-CODE>1</ERROR-CODE>
+                </APPLICATION-ERROR>
+              </POSSIBLE-ERRORS>
+            </CLIENT-SERVER-INTERFACE>
+[!ENDIF!][!//
+
+[!ENDIF!][!//
+
+
+
+
+          </ELEMENTS>
+        </AR-PACKAGE>
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+  </AR-PACKAGES>
+</AUTOSAR>

@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schm:mainFunctions
+    xmlns:schm="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd"
+    xmlns:svc="http://www.tresos.de/_project/AutoCore/svc.base_1.xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.tresos.de/_project/AutoCore/schm.mainFunctions_1.xsd">
+
+  <mainFunction name="Xcp_MainFunction">
+    <enable type="XPATH" value="as:modconf('Xcp')/XcpGeneral/XcpServiceWrapper = 'false'"/>
+    <header value="Xcp.h"/>
+    <cycleTime type="XPATH" value="as:modconf( 'Xcp' )/XcpGeneral/XcpMainFunctionPeriod"/>
+    <taskPrefix value="SchMComTask"/>
+    <taskPriority value="150"/>
+    <callBefore>
+        <mainFunction>Spi_MainFunction_Handling</mainFunction>
+    </callBefore>
+    <callAfter>
+        <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        <mainFunction>Can_MainFunction_Mode</mainFunction>
+        <mainFunction>CanTrcv_MainFunction</mainFunction>
+        <mainFunction>Can_MainFunction_Read</mainFunction>
+        <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+        <mainFunction>Dcm_MainFunction</mainFunction>
+        <mainFunction>CanTp_MainFunction</mainFunction>
+        <mainFunction>FrTp_MainFunction</mainFunction>
+        <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        <mainFunction>Com_MainFunctionTx</mainFunction>
+        <mainFunction>Can_MainFunction_Write</mainFunction>
+        <mainFunction>FrIf_MainFunction</mainFunction>
+        <mainFunction>LinIf_MainFunction</mainFunction>
+    </callAfter>
+  </mainFunction>
+
+  <mainFunction name="Xcp_Wrapper_MainFunction">
+    <enable type="XPATH" value="as:modconf('Xcp')/XcpGeneral/XcpServiceWrapper = 'true'"/>
+    <header value="Xcp_Wrapper.h"/>
+    <cycleTime type="XPATH" value="as:modconf( 'Xcp' )/XcpGeneral/XcpMainFunctionPeriod"/>
+    <taskPrefix value="SchMComTask"/>
+    <taskPriority value="150"/>
+    <callBefore>
+        <mainFunction>Spi_MainFunction_Handling</mainFunction>
+    </callBefore>
+    <callAfter>
+        <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        <mainFunction>Can_MainFunction_Mode</mainFunction>
+        <mainFunction>CanTrcv_MainFunction</mainFunction>
+        <mainFunction>Can_MainFunction_Read</mainFunction>
+        <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+        <mainFunction>Dcm_MainFunction</mainFunction>
+        <mainFunction>CanTp_MainFunction</mainFunction>
+        <mainFunction>FrTp_MainFunction</mainFunction>
+        <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        <mainFunction>Com_MainFunctionTx</mainFunction>
+        <mainFunction>Can_MainFunction_Write</mainFunction>
+        <mainFunction>FrIf_MainFunction</mainFunction>
+        <mainFunction>LinIf_MainFunction</mainFunction>
+    </callAfter>
+  </mainFunction>
+
+  <mainFunction name="Xcp_MainFunction_"
+                base="as:modconf( 'Xcp' )/XcpConfig/*/XcpEventChannel/*[XcpEventChannelTimeCycle != 0]"
+                suffix="node:name(.)">
+    <enable type="XPATH" value="as:modconf('Xcp')/XcpGeneral/XcpServiceWrapper = 'false'"/>
+    <header value="Xcp_Cfg.h"/>
+    <cycleTime value="node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_1S'), 1,
+                   node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_100MS'), 0.1,
+                    node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_10MS'), 0.01,
+                     node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_1MS'), 0.001,
+                   node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_100US'), 0.0001,
+                    node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_10US'), 0.00001,
+                     node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_1US'), 0.000001,
+                   node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_100NS'), 0.0000001,
+                    node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_10NS'), 0.00000001,
+                     node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_1NS'), 0.000000001,
+                   node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_100PS'), 0.0000000001,
+                    node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_10PS'), 0.00000000001,
+                     node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_1PS'), 0.000000000001, )))))))))))))"/>
+    <taskPrefix value="SchMComTask"/>
+    <taskPriority value="150"/>
+    <callBefore>
+        <mainFunction>Spi_MainFunction_Handling</mainFunction>
+    </callBefore>
+    <callAfter>
+        <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        <mainFunction>Can_MainFunction_Mode</mainFunction>
+        <mainFunction>CanTrcv_MainFunction</mainFunction>
+        <mainFunction>Can_MainFunction_Read</mainFunction>
+        <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+        <mainFunction>Dcm_MainFunction</mainFunction>
+        <mainFunction>CanTp_MainFunction</mainFunction>
+        <mainFunction>FrTp_MainFunction</mainFunction>
+        <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        <mainFunction>Com_MainFunctionTx</mainFunction>
+        <mainFunction>Can_MainFunction_Write</mainFunction>
+        <mainFunction>FrIf_MainFunction</mainFunction>
+        <mainFunction>LinIf_MainFunction</mainFunction>
+    </callAfter>
+  </mainFunction>
+
+  <mainFunction name="Xcp_Wrapper_MainFunction_"
+                base="as:modconf( 'Xcp' )/XcpConfig/*/XcpEventChannel/*[XcpEventChannelTimeCycle != 0]"
+                suffix="node:name(.)">
+    <enable type="XPATH" value="as:modconf('Xcp')/XcpGeneral/XcpServiceWrapper = 'true'"/>
+    <header value="Xcp_Wrapper.h"/>
+    <cycleTime value="node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_1S'), 1,
+                   node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_100MS'), 0.1,
+                    node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_10MS'), 0.01,
+                     node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_1MS'), 0.001,
+                   node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_100US'), 0.0001,
+                    node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_10US'), 0.00001,
+                     node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_1US'), 0.000001,
+                   node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_100NS'), 0.0000001,
+                    node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_10NS'), 0.00000001,
+                     node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_1NS'), 0.000000001,
+                   node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_100PS'), 0.0000000001,
+                    node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_10PS'), 0.00000000001,
+                     node:when((XcpEventChannelTimeUnit = 'TIMESTAMP_UNIT_1PS'), 0.000000000001, )))))))))))))"/>
+    <taskPrefix value="SchMComTask"/>
+    <taskPriority value="150"/>
+    <callBefore>
+        <mainFunction>Spi_MainFunction_Handling</mainFunction>
+    </callBefore>
+    <callAfter>
+        <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        <mainFunction>Can_MainFunction_Mode</mainFunction>
+        <mainFunction>CanTrcv_MainFunction</mainFunction>
+        <mainFunction>Can_MainFunction_Read</mainFunction>
+        <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+        <mainFunction>Dcm_MainFunction</mainFunction>
+        <mainFunction>CanTp_MainFunction</mainFunction>
+        <mainFunction>FrTp_MainFunction</mainFunction>
+        <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        <mainFunction>Com_MainFunctionTx</mainFunction>
+        <mainFunction>Can_MainFunction_Write</mainFunction>
+        <mainFunction>FrIf_MainFunction</mainFunction>
+        <mainFunction>LinIf_MainFunction</mainFunction>
+    </callAfter>
+  </mainFunction>
+
+  <mainFunction name="Xcp_CrcMainFunction">
+    <enable type="XPATH" value="(as:modconf('Xcp')/XcpGeneral/XcpBuildChecksumMainFunctionSupport = 'true') and (as:modconf('Xcp')/XcpGeneral/XcpServiceWrapper = 'false')"/>
+    <header value="Xcp_Cfg.h"/>
+    <cycleTime type="XPATH" value="as:modconf( 'Xcp' )/XcpGeneral/XcpCRCMainFunctionPeriod"/>
+    <taskPrefix value="SchMComTask"/>
+    <taskPriority value="160"/>
+    <callBefore>
+        <mainFunction>Spi_MainFunction_Handling</mainFunction>
+    </callBefore>
+    <callAfter>
+        <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        <mainFunction>Can_MainFunction_Mode</mainFunction>
+        <mainFunction>CanTrcv_MainFunction</mainFunction>
+        <mainFunction>Can_MainFunction_Read</mainFunction>
+        <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+        <mainFunction>Dcm_MainFunction</mainFunction>
+        <mainFunction>CanTp_MainFunction</mainFunction>
+        <mainFunction>FrTp_MainFunction</mainFunction>
+        <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        <mainFunction>Com_MainFunctionTx</mainFunction>
+        <mainFunction>Can_MainFunction_Write</mainFunction>
+        <mainFunction>FrIf_MainFunction</mainFunction>
+        <mainFunction>LinIf_MainFunction</mainFunction>
+    </callAfter>
+  </mainFunction>
+
+  <mainFunction name="Xcp_Wrapper_CrcMainFunction">
+    <enable type="XPATH" value="(as:modconf('Xcp')/XcpGeneral/XcpBuildChecksumMainFunctionSupport = 'true') and (as:modconf('Xcp')/XcpGeneral/XcpServiceWrapper = 'true')"/>
+    <header value="Xcp_Wrapper.h"/>
+    <cycleTime type="XPATH" value="as:modconf( 'Xcp' )/XcpGeneral/XcpCRCMainFunctionPeriod"/>
+    <taskPrefix value="SchMComTask"/>
+    <taskPriority value="160"/>
+    <callBefore>
+        <mainFunction>Spi_MainFunction_Handling</mainFunction>
+    </callBefore>
+    <callAfter>
+        <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        <mainFunction>Can_MainFunction_Mode</mainFunction>
+        <mainFunction>CanTrcv_MainFunction</mainFunction>
+        <mainFunction>Can_MainFunction_Read</mainFunction>
+        <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+        <mainFunction>Dcm_MainFunction</mainFunction>
+        <mainFunction>CanTp_MainFunction</mainFunction>
+        <mainFunction>FrTp_MainFunction</mainFunction>
+        <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        <mainFunction>Com_MainFunctionTx</mainFunction>
+        <mainFunction>Can_MainFunction_Write</mainFunction>
+        <mainFunction>FrIf_MainFunction</mainFunction>
+        <mainFunction>LinIf_MainFunction</mainFunction>
+    </callAfter>
+  </mainFunction>
+
+  <mainFunction name="Xcp_RxMainFunction">
+    <enable type="XPATH" value="(node:exists(as:modconf('Xcp')/XcpGeneral/XcpSupportComMainFunctions) = 'true') and (as:modconf('Xcp')/XcpGeneral/XcpServiceWrapper = 'false')"/>
+    <header value="Xcp_Cfg.h"/>
+    <cycleTime type="XPATH" value="as:modconf( 'Xcp' )/XcpGeneral/XcpMainFunctionPeriod"/>
+    <taskPrefix value="SchMComTask"/>
+    <taskPriority value="150"/>
+    <callBefore>
+        <mainFunction>Spi_MainFunction_Handling</mainFunction>
+    </callBefore>
+    <callAfter>
+        <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        <mainFunction>Can_MainFunction_Mode</mainFunction>
+        <mainFunction>CanTrcv_MainFunction</mainFunction>
+        <mainFunction>Can_MainFunction_Read</mainFunction>
+        <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+        <mainFunction>Dcm_MainFunction</mainFunction>
+        <mainFunction>CanTp_MainFunction</mainFunction>
+        <mainFunction>FrTp_MainFunction</mainFunction>
+        <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        <mainFunction>Com_MainFunctionTx</mainFunction>
+        <mainFunction>Can_MainFunction_Write</mainFunction>
+        <mainFunction>FrIf_MainFunction</mainFunction>
+        <mainFunction>LinIf_MainFunction</mainFunction>
+    </callAfter>
+  </mainFunction>
+
+  <mainFunction name="Xcp_Wrapper_RxMainFunction">
+    <enable type="XPATH" value="(node:exists(as:modconf('Xcp')/XcpGeneral/XcpSupportComMainFunctions) = 'true') and (as:modconf('Xcp')/XcpGeneral/XcpServiceWrapper = 'true')"/>
+    <header value="Xcp_Wrapper.h"/>
+    <cycleTime type="XPATH" value="as:modconf( 'Xcp' )/XcpGeneral/XcpMainFunctionPeriod"/>
+    <taskPrefix value="SchMComTask"/>
+    <taskPriority value="150"/>
+    <callBefore>
+        <mainFunction>Spi_MainFunction_Handling</mainFunction>
+    </callBefore>
+    <callAfter>
+        <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        <mainFunction>Can_MainFunction_Mode</mainFunction>
+        <mainFunction>CanTrcv_MainFunction</mainFunction>
+        <mainFunction>Can_MainFunction_Read</mainFunction>
+        <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+        <mainFunction>Dcm_MainFunction</mainFunction>
+        <mainFunction>CanTp_MainFunction</mainFunction>
+        <mainFunction>FrTp_MainFunction</mainFunction>
+        <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        <mainFunction>Com_MainFunctionTx</mainFunction>
+        <mainFunction>Can_MainFunction_Write</mainFunction>
+        <mainFunction>FrIf_MainFunction</mainFunction>
+        <mainFunction>LinIf_MainFunction</mainFunction>
+    </callAfter>
+  </mainFunction>
+
+  <mainFunction name="Xcp_TxMainFunction">
+    <enable type="XPATH" value="(node:exists(as:modconf('Xcp')/XcpGeneral/XcpSupportComMainFunctions) = 'true') and (as:modconf('Xcp')/XcpGeneral/XcpServiceWrapper = 'false')"/>
+    <header value="Xcp_Cfg.h"/>
+    <cycleTime type="XPATH" value="as:modconf( 'Xcp' )/XcpGeneral/XcpMainFunctionPeriod"/>
+    <taskPrefix value="SchMComTask"/>
+    <taskPriority value="150"/>
+    <callBefore>
+        <mainFunction>Spi_MainFunction_Handling</mainFunction>
+    </callBefore>
+    <callAfter>
+        <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        <mainFunction>Can_MainFunction_Mode</mainFunction>
+        <mainFunction>CanTrcv_MainFunction</mainFunction>
+        <mainFunction>Can_MainFunction_Read</mainFunction>
+        <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+        <mainFunction>Dcm_MainFunction</mainFunction>
+        <mainFunction>CanTp_MainFunction</mainFunction>
+        <mainFunction>FrTp_MainFunction</mainFunction>
+        <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        <mainFunction>Com_MainFunctionTx</mainFunction>
+        <mainFunction>Can_MainFunction_Write</mainFunction>
+        <mainFunction>FrIf_MainFunction</mainFunction>
+        <mainFunction>LinIf_MainFunction</mainFunction>
+    </callAfter>
+  </mainFunction>
+
+  <mainFunction name="Xcp_Wrapper_TxMainFunction">
+    <enable type="XPATH" value="(node:exists(as:modconf('Xcp')/XcpGeneral/XcpSupportComMainFunctions) = 'true') and (as:modconf('Xcp')/XcpGeneral/XcpServiceWrapper = 'true')"/>
+    <header value="Xcp_Wrapper.h"/>
+    <cycleTime type="XPATH" value="as:modconf( 'Xcp' )/XcpGeneral/XcpMainFunctionPeriod"/>
+    <taskPrefix value="SchMComTask"/>
+    <taskPriority value="150"/>
+    <callBefore>
+        <mainFunction>Spi_MainFunction_Handling</mainFunction>
+    </callBefore>
+    <callAfter>
+        <mainFunction>Can_MainFunction_BusOff</mainFunction>
+        <mainFunction>Can_MainFunction_Wakeup</mainFunction>
+        <mainFunction>Can_MainFunction_Mode</mainFunction>
+        <mainFunction>CanTrcv_MainFunction</mainFunction>
+        <mainFunction>Can_MainFunction_Read</mainFunction>
+        <mainFunction>IpduM_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRx</mainFunction>
+        <mainFunction>Com_MainFunctionRouteSignals</mainFunction>
+        <mainFunction>Dcm_MainFunction</mainFunction>
+        <mainFunction>CanTp_MainFunction</mainFunction>
+        <mainFunction>FrTp_MainFunction</mainFunction>
+        <mainFunction>IpduM_MainFunctionTx</mainFunction>
+        <mainFunction>Com_MainFunctionTx</mainFunction>
+        <mainFunction>Can_MainFunction_Write</mainFunction>
+        <mainFunction>FrIf_MainFunction</mainFunction>
+        <mainFunction>LinIf_MainFunction</mainFunction>
+    </callAfter>
+  </mainFunction>
+
+</schm:mainFunctions>
+

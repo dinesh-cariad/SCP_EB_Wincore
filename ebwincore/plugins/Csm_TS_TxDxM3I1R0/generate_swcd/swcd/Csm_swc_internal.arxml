@@ -1,0 +1,590 @@
+[!/* ====================================================================================== */!][!//
+[!INCLUDE "Csm_Macros.m"!][!//
+[!/* ====================================================================================== */!][!//
+[!//
+[!AUTOSPACING!][!//
+[!//
+[!/* do not generate this file if RTE is not used */!][!//
+[!IF "$Csm_Rte_Enabled_All = 'false'"!][!//
+  [!SKIPFILE!][!//
+[!ELSE!][!//
+[!//
+<?xml version="1.0" encoding="UTF-8"?>
+<AUTOSAR xmlns="http://autosar.org/schema/r4.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://autosar.org/schema/r4.0 AUTOSAR_4-0-3_STRICT_COMPACT.xsd">
+  <AR-PACKAGES>
+
+    <!-- ### AUTOSAR_Csm ####################################################################### -->
+    <AR-PACKAGE>
+      <SHORT-NAME>AUTOSAR_Csm</SHORT-NAME>
+      <ELEMENTS/>
+      <AR-PACKAGES>
+
+        <!-- === SWCOMPONENTTYPES ============================================================== -->
+        <AR-PACKAGE>
+          <SHORT-NAME>SwComponentTypes</SHORT-NAME>
+          <ELEMENTS>
+            <SERVICE-SW-COMPONENT-TYPE>
+              <SHORT-NAME>Csm</SHORT-NAME>
+
+              <PORTS>
+  [!LOOP "as:modconf('Csm')/CsmKeys/CsmKey/*[CsmKeyUsePort = 'true']"!][!//
+    [!VAR "vKey" = "node:name(.)"!][!//
+                <!-- !LINKSTO SWS_Csm_01042,1 -->
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>[!"$vKey"!]_KeyManagement</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/CertificateParse</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/CertificateVerify</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyCopy</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyDerive</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyElementCopy</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyElementGet</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyElementSet</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyExchangeCalcPubVal</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyExchangeCalcSecret</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyGenerate</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeySetValid</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/RandomSeed</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDLOOP!][!//
+  [!LOOP "as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']"!][!//
+    [!VAR "vJob"     = "node:name(.)"!][!//
+    [!SELECT "node:ref(./CsmJobPrimitiveRef)/*"!][!//
+      [!VAR "vService" = "text:replace(node:name(.),'Csm','')"!][!//
+      [!VAR "vConfig"  = "node:name(./..)"!][!//
+    [!ENDSELECT!][!//
+    [!IF "$vService = 'AEADDecrypt'"!][!//
+                <!-- !LINKSTO CSM.Req.Correction.SWS_Csm_00833,1 -->
+    [!ELSEIF "$vService = 'AEADEncrypt'"!][!//
+                <!-- !LINKSTO CSM.Req.Correction.SWS_Csm_00832,1 -->
+    [!ELSEIF "$vService = 'Decrypt'"!][!//
+                <!-- !LINKSTO CSM.Req.Correction.SWS_Csm_00825,1 -->
+    [!ELSEIF "$vService = 'Encrypt'"!][!//
+                <!-- !LINKSTO CSM.Req.Correction.SWS_Csm_00933,1 -->
+    [!ELSEIF "$vService = 'Hash'"!][!//
+                <!-- !LINKSTO CSM.Req.Correction.SWS_Csm_00931,1 -->
+    [!ELSEIF "$vService = 'MacGenerate'"!][!//
+                <!-- !LINKSTO CSM.Req.Correction.SWS_Csm_00932,1 -->
+    [!ELSEIF "$vService = 'MacVerify'"!][!//
+                <!-- !LINKSTO SWS_Csm_91003,1 -->
+    [!ELSEIF "$vService = 'SignatureGenerate'"!][!//
+                <!-- !LINKSTO CSM.Req.Correction.SWS_Csm_00834,1 -->
+    [!ELSEIF "$vService = 'SignatureVerify'"!][!//
+                <!-- !LINKSTO CSM.Req.Correction.SWS_Csm_00835,1 -->
+    [!ELSEIF "$vService = 'RandomGenerate'"!][!//
+                <!-- !LINKSTO CSM.Req.Correction.SWS_Csm_00838,1 -->
+    [!ENDIF!][!//
+                <P-PORT-PROTOTYPE>
+                  <SHORT-NAME>[!"$vJob"!]_[!"$vService"!]</SHORT-NAME>
+                  <PROVIDED-COM-SPECS>
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/Csm[!"$vService"!]_[!"$vConfig"!]/[!"$vService"!]</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+    [!IF "$vService != 'RandomGenerate'"!][!//
+                    <SERVER-COM-SPEC>
+                      <OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/Csm[!"$vService"!]_[!"$vConfig"!]/CancelJob</OPERATION-REF>
+                      <QUEUE-LENGTH>1</QUEUE-LENGTH>
+                    </SERVER-COM-SPEC>
+    [!ENDIF!][!//
+                  </PROVIDED-COM-SPECS>
+                  <PROVIDED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_Csm/PortInterfaces/Csm[!"$vService"!]_[!"$vConfig"!]</PROVIDED-INTERFACE-TREF>
+                </P-PORT-PROTOTYPE>
+  [!ENDLOOP!][!//
+  [!LOOP "as:modconf('Csm')/CsmCallbacks/CsmCallback/*[node:empty(./CsmCallbackFunc)]"!][!//
+    [!VAR "vCbk" = "node:name(.)"!][!//
+                <!-- !LINKSTO CSM.Req.Correction.SWS_Csm_00934,1 -->
+                <R-PORT-PROTOTYPE>
+                  <SHORT-NAME>[!"$vCbk"!]_CallbackNotification</SHORT-NAME>
+                  <REQUIRED-INTERFACE-TREF DEST="CLIENT-SERVER-INTERFACE">/AUTOSAR_Csm/PortInterfaces/CallbackNotification</REQUIRED-INTERFACE-TREF>
+                </R-PORT-PROTOTYPE>
+  [!ENDLOOP!][!//
+              </PORTS>
+
+              <INTERNAL-BEHAVIORS>
+                <SWC-INTERNAL-BEHAVIOR>
+                  <SHORT-NAME>CsmIntBeh</SHORT-NAME>
+                  <EVENTS>
+  [!LOOP "as:modconf('Csm')/CsmKeys/CsmKey/*[CsmKeyUsePort = 'true']"!][!//
+    [!VAR "vKey" = "node:name(.)"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"$vKey"!]_CertificateParse</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_CertificateParse</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/CertificateParse</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_CertificateVerify</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_CertificateVerify</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/CertificateVerify</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_KeyCopy</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_KeyCopy</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyCopy</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_KeyDerive</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_KeyDerive</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyDerive</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_KeyElementCopy</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_KeyElementCopy</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyElementCopy</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_KeyElementGet</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_KeyElementGet</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyElementGet</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_KeyElementSet</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_KeyElementSet</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyElementSet</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_KeyExchangeCalcPubVal</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_KeyExchangeCalcPubVal</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyExchangeCalcPubVal</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_KeyExchangeCalcSecret</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_KeyExchangeCalcSecret</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyExchangeCalcSecret</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_KeyGenerate</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_KeyGenerate</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeyGenerate</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_KeySetValid</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_KeySetValid</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/KeySetValid</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Key_[!"name(.)"!]_RandomSeed</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Key_RandomSeed</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CsmKeyManagement_[!"$vKey"!]/RandomSeed</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+  [!ENDLOOP!][!//
+  [!LOOP "as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']"!][!//
+    [!VAR "vJob"     = "node:name(.)"!][!//
+    [!SELECT "node:ref(./CsmJobPrimitiveRef)/*"!][!//
+      [!VAR "vService" = "text:replace(node:name(.),'Csm','')"!][!//
+      [!VAR "vConfig"  = "node:name(./..)"!][!//
+    [!ENDSELECT!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Job_[!"$vJob"!]_[!"$vService"!]</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Job_[!"$vService"!]</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vJob"!]_[!"$vService"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/Csm[!"$vService"!]_[!"$vConfig"!]/[!"$vService"!]</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+    [!IF "$vService != 'RandomGenerate'"!][!//
+                    <OPERATION-INVOKED-EVENT>
+                      <SHORT-NAME>EV_Job_[!"$vJob"!]_CancelJob</SHORT-NAME>
+                      <START-ON-EVENT-REF DEST="RUNNABLE-ENTITY">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh/RE_Job_CancelJob</START-ON-EVENT-REF>
+                      <OPERATION-IREF>
+                        <CONTEXT-P-PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vJob"!]_[!"$vService"!]</CONTEXT-P-PORT-REF>
+                        <TARGET-PROVIDED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/Csm[!"$vService"!]_[!"$vConfig"!]/CancelJob</TARGET-PROVIDED-OPERATION-REF>
+                      </OPERATION-IREF>
+                    </OPERATION-INVOKED-EVENT>
+    [!ENDIF!][!//
+  [!ENDLOOP!][!//
+                  </EVENTS>
+
+                  <HANDLE-TERMINATION-AND-RESTART>NO-SUPPORT</HANDLE-TERMINATION-AND-RESTART>
+
+                  <PORT-API-OPTIONS>
+  [!LOOP "as:modconf('Csm')/CsmKeys/CsmKey/*[CsmKeyUsePort = 'true']"!][!//
+    [!VAR "vKey"   = "node:name(.)"!][!//
+    [!VAR "vKeyId" = "node:value(./CsmKeyId)"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>[!"$vKeyId"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint32</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vKey"!]_KeyManagement</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDLOOP!][!//
+  [!LOOP "as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']"!][!//
+    [!VAR "vJob"     = "node:name(.)"!][!//
+    [!VAR "vJobId"   = "node:value(./CsmJobId)"!][!//
+    [!SELECT "node:ref(./CsmJobPrimitiveRef)/*"!][!//
+      [!VAR "vService" = "text:replace(node:name(.),'Csm','')"!][!//
+      [!VAR "vConfig"  = "node:name(./..)"!][!//
+    [!ENDSELECT!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>[!"$vJobId"!]</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Platform/ImplementationDataTypes/uint32</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+    [!IF "$vService != 'RandomGenerate'"!][!//
+                        <PORT-DEFINED-ARGUMENT-VALUE>
+                          <VALUE>
+                            <NUMERICAL-VALUE-SPECIFICATION>
+                              <VALUE>7</VALUE>
+                            </NUMERICAL-VALUE-SPECIFICATION>
+                          </VALUE>
+                          <VALUE-TYPE-TREF DEST="IMPLEMENTATION-DATA-TYPE">/AUTOSAR_Csm/ImplementationDataTypes/Crypto_OperationModeType</VALUE-TYPE-TREF>
+                        </PORT-DEFINED-ARGUMENT-VALUE>
+    [!ENDIF!][!//
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="P-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vJob"!]_[!"$vService"!]</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDLOOP!][!//
+  [!LOOP "as:modconf('Csm')/CsmCallbacks/CsmCallback/*[node:empty(./CsmCallbackFunc)]"!][!//
+    [!VAR "vCbk" = "node:name(.)"!][!//
+                    <PORT-API-OPTION>
+                      <ENABLE-TAKE-ADDRESS>true</ENABLE-TAKE-ADDRESS>
+                      <INDIRECT-API>false</INDIRECT-API>
+                      <PORT-ARG-VALUES>
+                      </PORT-ARG-VALUES>
+                      <PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vCbk"!]_CallbackNotification</PORT-REF>
+                    </PORT-API-OPTION>
+  [!ENDLOOP!][!//
+                  </PORT-API-OPTIONS>
+
+                  <RUNNABLES>
+
+  [!IF "$Csm_Flg_Async = 'true'"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_MainFunction</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_MainFunction</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(as:modconf('Csm')/CsmKeys/CsmKey/*[CsmKeyUsePort = 'true']))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_CertificateParse</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_CertificateParse</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_CertificateVerify</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_CertificateVerify</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_KeyCopy</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_KeyCopy</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_KeyDerive</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_KeyDerive</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_KeyElementCopy</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_KeyElementCopy</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_KeyElementGet</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_KeyElementGet</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_KeyElementSet</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_KeyElementSet</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_KeyExchangeCalcPubVal</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_KeyExchangeCalcPubVal</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_KeyExchangeCalcSecret</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_KeyExchangeCalcSecret</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_KeyGenerate</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_KeyGenerate</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_KeySetValid</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_KeySetValid</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Key_RandomSeed</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_RandomSeed</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmAEADDecrypt))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_AEADDecrypt</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_AEADDecrypt</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmAEADEncrypt))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_AEADEncrypt</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_AEADEncrypt</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmDecrypt))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_Decrypt</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_Decrypt</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmEncrypt))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_Encrypt</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_Encrypt</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmHash))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_Hash</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_Hash</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmMacGenerate))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_MacGenerate</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_MacGenerate</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmMacVerify))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_MacVerify</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_MacVerify</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmSignatureGenerate))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_SignatureGenerate</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_SignatureGenerate</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmSignatureVerify))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_SignatureVerify</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_SignatureVerify</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmRandomGenerate))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_RandomGenerate</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>true</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_RandomGenerate</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+  [!IF "num:i(0) != (num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/*)) - num:i(count(node:refs(as:modconf('Csm')/CsmJobs/CsmJob/*[CsmJobUsePort = 'true']/CsmJobPrimitiveRef)/CsmRandomGenerate)))"!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Job_CancelJob</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SYMBOL>Csm_CancelJob</SYMBOL>
+                    </RUNNABLE-ENTITY>
+  [!ENDIF!][!//
+                    <RUNNABLE-ENTITY>
+                      <SHORT-NAME>RE_Csm_Dummy</SHORT-NAME>
+                      <MINIMUM-START-INTERVAL>0</MINIMUM-START-INTERVAL>
+                      <CAN-BE-INVOKED-CONCURRENTLY>false</CAN-BE-INVOKED-CONCURRENTLY>
+                      <SERVER-CALL-POINTS>
+  [!LOOP "as:modconf('Csm')/CsmCallbacks/CsmCallback/*[node:empty(./CsmCallbackFunc)]"!][!//
+    [!VAR "vCbk" = "node:name(.)"!][!//
+                        <SYNCHRONOUS-SERVER-CALL-POINT>
+                          <SHORT-NAME>SSCP_[!"$vCbk"!]_CallbackNotification</SHORT-NAME>
+                          <OPERATION-IREF>
+                            <CONTEXT-R-PORT-REF DEST="R-PORT-PROTOTYPE">/AUTOSAR_Csm/SwComponentTypes/Csm/[!"$vCbk"!]_CallbackNotification</CONTEXT-R-PORT-REF>
+                            <TARGET-REQUIRED-OPERATION-REF DEST="CLIENT-SERVER-OPERATION">/AUTOSAR_Csm/PortInterfaces/CallbackNotification/CallbackNotification</TARGET-REQUIRED-OPERATION-REF>
+                          </OPERATION-IREF>
+                          <TIMEOUT>0.0</TIMEOUT>
+                        </SYNCHRONOUS-SERVER-CALL-POINT>
+  [!ENDLOOP!][!//
+                      </SERVER-CALL-POINTS>
+                      <SYMBOL>Csm_Dummy</SYMBOL>
+                    </RUNNABLE-ENTITY>
+                  </RUNNABLES>
+
+                  <SUPPORTS-MULTIPLE-INSTANTIATION>false</SUPPORTS-MULTIPLE-INSTANTIATION>
+
+                </SWC-INTERNAL-BEHAVIOR>
+              </INTERNAL-BEHAVIORS>
+            </SERVICE-SW-COMPONENT-TYPE>
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+
+    <!-- ### EB_Csm ######################################################################### -->
+    <AR-PACKAGE>
+      <SHORT-NAME>EB_Csm</SHORT-NAME>
+      <AR-PACKAGES>
+
+        <!-- === SWCIMPLEMENTATIONS ============================================================ -->
+        <AR-PACKAGE>
+          <SHORT-NAME>SwcImplementations</SHORT-NAME>
+          <ELEMENTS>
+            <SWC-IMPLEMENTATION>
+              <SHORT-NAME>CsmImpl</SHORT-NAME>
+              <CODE-DESCRIPTORS>
+                <CODE>
+                  <SHORT-NAME>Code</SHORT-NAME>
+                  <ARTIFACT-DESCRIPTORS>
+                    <AUTOSAR-ENGINEERING-OBJECT>
+                      <SHORT-LABEL>EngObject</SHORT-LABEL>
+                      <CATEGORY>SWSRC</CATEGORY>
+                    </AUTOSAR-ENGINEERING-OBJECT>
+                  </ARTIFACT-DESCRIPTORS>
+                </CODE>
+              </CODE-DESCRIPTORS>
+              <PROGRAMMING-LANGUAGE>C</PROGRAMMING-LANGUAGE>
+              <RESOURCE-CONSUMPTION>
+                <SHORT-NAME>Resources</SHORT-NAME>
+                  <MEMORY-SECTIONS>
+                    <MEMORY-SECTION>
+                      <SHORT-NAME>CODE</SHORT-NAME>
+                      <SW-ADDRMETHOD-REF DEST="SW-ADDR-METHOD">/AUTOSAR_MemMap/SwAddrMethods/CODE</SW-ADDRMETHOD-REF>
+                    </MEMORY-SECTION>
+                  </MEMORY-SECTIONS>
+              </RESOURCE-CONSUMPTION>
+              <SW-VERSION>3.1.13</SW-VERSION>
+              <VENDOR-ID>1</VENDOR-ID>
+              <BEHAVIOR-REF DEST="SWC-INTERNAL-BEHAVIOR">/AUTOSAR_Csm/SwComponentTypes/Csm/CsmIntBeh</BEHAVIOR-REF>
+            </SWC-IMPLEMENTATION>
+          </ELEMENTS>
+        </AR-PACKAGE>
+
+      </AR-PACKAGES>
+    </AR-PACKAGE>
+
+  </AR-PACKAGES>
+</AUTOSAR>
+[!ENDIF!][!//
+

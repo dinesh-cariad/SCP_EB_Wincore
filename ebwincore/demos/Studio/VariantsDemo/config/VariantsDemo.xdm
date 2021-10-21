@@ -1,0 +1,85 @@
+<?xml version='1.0'?>
+<datamodel version="3.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/08/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/08/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd" >
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="EB" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="VariantsDemo" type="AR-ELEMENT" value="MODULE-DEF">
+            <v:ctr type="MODULE-DEF">
+              <a:a name="RELEASE" value="asc:4.4.0"/>
+			  <a:a name="POSTBUILDVARIANTSUPPORT" value="true"/>
+              <v:var name="IMPLEMENTATION_CONFIG_VARIANT" type="ENUMERATION">
+                <a:a name="LABEL" value="Config Variant"/>
+                <a:da name="DEFAULT" value="VariantPostBuild"/>
+                <a:da name="RANGE">
+                  <a:v>VariantPreCompile</a:v>
+                  <a:v>VariantPostBuild</a:v>
+                </a:da>
+              </v:var>
+              <v:var name="POST_BUILD_VARIANT_USED" type="BOOLEAN">
+                <a:a name="LABEL" value="Post Build Variant Used"/>
+				<a:a name="TOOLTIP" value="Indicates whether a module implementation has or plans to have (i.e. introduced at link or post-build time) new post-build variation points."/>
+				<a:a name="DESC" value="Indicates whether a module implementation has or plans to have (i.e. introduced at link or post-build time) new post-build variation points."/>
+				<a:a name="ORIGIN" value="EB"/>
+                <a:da name="DEFAULT" value="false"/>
+                <a:da name="READONLY" value="false"/>
+     			<a:a name="POSTBUILDVARIANTVALUE" value="false"/>
+				<a:a name="IMPLEMENTATIONCONFIGCLASS" type="IMPLEMENTATIONCONFIGCLASS">
+				  <icc:v vclass="PreCompile">VariantPostBuild</icc:v>
+				</a:a>
+              </v:var>
+
+<!-- Selectable use-case -->
+              <v:lst name="SelectableContainer" type="MAP">
+			    <v:ctr name="SelectableContainer" type="IDENTIFIABLE">
+<!-- multiplicity variation -->
+<a:a name="POSTBUILDVARIANTMULTIPLICITY" value="true"/>
+                  <v:var name="Variable" type="INTEGER"/>
+				</v:ctr>
+			  </v:lst>
+              <v:ctr name="Container" type="IDENTIFIABLE">
+                <v:var name="SelectableBoolean" type="BOOLEAN">
+                  <a:da name="DEFAULT" value="false"/>
+                  <a:da name="OPTIONAL" value="true"/>
+                  <a:da name="ENABLE" value="true"/>
+<!-- value variation -->
+				  <a:a name="POSTBUILDVARIANTVALUE" value="true"/>
+                </v:var>
+			  </v:ctr>
+
+<!-- Loadable use-case -->
+              <v:lst name="LoadableContainer" type="MAP">
+				<v:ctr name="LoadableContainer" type="IDENTIFIABLE">
+<a:a name="IMPLEMENTATIONCONFIGCLASS" type="IMPLEMENTATIONCONFIGCLASS">
+  <icc:v mclass="PreCompile">VariantPreCompile</icc:v>
+  <icc:v mclass="PostBuild">VariantPostBuild</icc:v>
+</a:a>
+                  <v:var name="Integer" type="INTEGER">
+				    <a:da name="DEFAULT" value="3"/>
+                  </v:var>
+                </v:ctr>
+		      </v:lst>
+			  <v:ctr name="Container2" type="IDENTIFIABLE">
+                <v:var name="LoadableString" type="STRING">
+<a:a name="IMPLEMENTATIONCONFIGCLASS" type="IMPLEMENTATIONCONFIGCLASS">
+  <icc:v vclass="PreCompile">VariantPreCompile</icc:v>
+  <icc:v vclass="PostBuild">VariantPostBuild</icc:v>
+</a:a>
+                </v:var>
+			  </v:ctr>
+		    </v:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>

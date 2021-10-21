@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<project name="example" default="all" basedir=".">
+    <!-- An Ant build file for the NG Generator API features all standard Ant tasks (Ant version
+         1.7.0) and the following list of additional tasks provided by EB tresos (for detailed
+         information about the tasks please refer to the Javadoc of plugin
+         dreisoft.tresos.generator.ng.api):
+
+         ng.tmplgen:         Runs a classic template based code generator.
+         ng.extgen:          Runs an external generator.
+         ng.jetgen:          Runs a JET-based generator.
+         ng.javagen:         Runs a Java generator (implementing IJavaGenTemplate).
+         ng.jetgen.src:      Runs a JET-based generator after compiling the JET template.
+         ng.javagen.src:     Runs a Java generator after compiling the Java file.
+         ng.property:        Executes an xpath expression and sets the result to an Ant property.
+         ng.setgeneratorvar: Sets/changes a CodeGeneratorContext variable.
+         ng.getgeneratorvar: Writes the value of a CodeGeneratorContext variable to an Ant property.
+     -->
+
+    <!-- Ant target "all" is default -->
+    <target name="all">
+        <!-- The ng.jetgen.src task first compiles all JET files specified by nested jetIncludes
+             tags. In this example it will compile any ".jet" file under directory "../jet" and
+             all its subdirectories relative to the base directory "." (specified in the project
+             tag).
+      
+             The resulting Java file is specified by the JET directive in the JET template (in
+             this example "test.tresos.plugin.jet.generated.GenerateDefines"). The classpath of
+             the plugin that registered this generator is used for compilation and execution.
+      
+             The value of attribute "class" is the JET-compiled Java class to run after successfully
+             compilation. The value of attribute "file" specifies the output file for this JET
+             generator either absolute or relative to the output directory specified in the context
+             of this code generator. A default output file will be taken when omitted.
+         -->
+        <ng.jetgen.src class="test.tresos.plugin.jet.generated.GenerateDefines"
+                       file="jet_demo.h">
+            <jetIncludes dir="../jet" includes="**/*.jet" />
+        </ng.jetgen.src>
+
+        <!-- To get the values of generator variables from the CodeGeneratorContext (also accessible
+             with JavaGenContext.gen) you can use Ant task ng.getgeneratorvar. The following example
+             shows how to obtain the current output directory where the demo_out.h file was generated
+             to. The value of attribute "name" is the name of the variable in the context and the
+             attribute property specifies the resulting Ant property.
+         -->
+        <ng.getgeneratorvar name="outputDir" property="genOutputDir" />
+        <!-- Now you can use the property with ${genOutputDir}. -->
+        <echo message="Outputdir: ${genOutputDir}" />
+        
+        <!-- The CDS demo generator test.tresos.plugin.generator.cds.CDSDemoGenerator implements
+               interface IJavaGenTemplate. So it can be used in the ng.javagen task. The task instantiates
+               the class specified in attribute class and calls method generate() with a valid
+               JavaGenContext object.
+        
+               The optional attribute file defines the default output file for the generator either
+               absolute or relative to the output directory.
+         -->
+        <ng.javagen class="test.tresos.plugin.generator.cds.CDSDemoGenerator"
+                    file="cds_demo.c" />
+
+    </target>
+
+</project>

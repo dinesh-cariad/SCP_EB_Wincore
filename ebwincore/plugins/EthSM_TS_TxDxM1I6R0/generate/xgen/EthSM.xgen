@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module EthSM?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!CODE!]
+[!AUTOSPACING!]
+
+  <!-- This is the configuration of module EthSM -->
+  <module name="EthSM" version="[!"$moduleSoftwareVer"!]">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+
+      <?artifact directory="include" file="EthSM_Types_ExtGen.h" type="types-h" generate="no"?>
+
+[!INCLUDE "../include/EthSM_PreCompileConfig.m"!][!//
+
+    </configuration>  <!-- PreCompile -->
+
+    <!-- This is the post-build configuration of the module. -->
+    <configuration class="PostBuild">
+
+      <?artifact directory="include" file="EthSM_PBcfg.h" type="postbuild-h" ?>
+      <?artifact directory="src" file="EthSM_PBcfg.c" type="postbuild-c" ?>
+
+      <!--
+          Type declarations:
+          Specifies the content of EthSM_PBcfg.h and EthSM_Types.h
+      -->
+
+      <!-- This is the type definition of the layout type of the
+           modules' postbuild configuration structure -->
+
+      <!-- !LINKSTO EthSM.ASR43.SWS_EthSM_00081,1 -->
+      <!-- !LINKSTO EthSM.EB.ECUC_EthSM_00108_Conf,1 -->
+      <type name="EthSM_ConfigLayoutType">
+        <struct>
+          <!-- Member of the layout type starting with the RootCfg -->
+          <member name="RootCfg" type="EthSM_ConfigType"/>
+
+          <member name="Network" type="EthSM_NetworkType"
+            count="[!"num:i(count(as:modconf('EthSM')[1]/EthSMNetwork/*))"!]">
+          </member>
+        </struct>
+      </type>
+
+      <type name="EthSM_ConstConfigLayoutType">
+        <reference type="EthSM_ConfigLayoutType">
+          <compiler-abstraction>
+            <const memory-class="ETHSM_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+      <!--
+          Type definition and initialisation:
+          Specifies the content of Module_PBcfg.c
+      -->
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="EthSM_ConstConfigLayoutType"
+             name="EthSM_ConfigLayout">
+        <comment>
+          <![CDATA[Module post build configuration. - Static code accesses this configuration
+          solely via the pointer of type Module_ConfigType passed to
+          Module_Init() as parameter.]]>
+        </comment>
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"as:name(as:modconf('EthSM')[1]/EthSMConfig)"!]</symbolic-value>
+        </parameter>
+
+        <!-- Module_ConfigLayout.RootCfg -->
+        <field>
+          <field>
+            <int>[!"asc:getPlatformSignature()"!]</int> <!-- PlatformSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('EthSM')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int> <!-- LcfgSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(as:modconf('EthSM')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int> <!-- CfgSignature -->
+          </field>
+          <field>
+            <int>[!"asc:getConfigSignature(node:difference(as:modconf('EthSM')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation') ], as:modconf('EthSM')[1]/CommonPublishedInformation/Release))"!]</int> <!-- PublicInfoSignature -->
+          </field>
+          <!-- NetworkRef -->
+          <field>
+            <ref>
+              <struct-field name="Network"/>
+              <array-field index="0" />
+            </ref>
+          </field>
+
+          <field>
+            <int>[!"num:i(count(as:modconf('EthSM')[1]/EthSMNetwork/*))"!]</int> <!-- NumNetworks -->
+          </field>
+
+        </field> <!-- Module_ConfigLayout.RootCfg -->
+
+        <!-- Module_ConfigLayout.Network -->
+        <field>
+        [!LOOP "as:modconf('EthSM')[1]/EthSMNetwork/*"!][!//
+        <field>
+          <field>
+            <int>[!"node:ref(EthSMEthIfControllerRef)/EthIfCtrlIdx"!]</int> <!-- CtrlIdx -->
+          </field>
+          <field>
+            <int>[!"node:ref(EthSMComMNetworkHandleRef)/ComMChannelId"!]</int> <!-- NetworkHandleIdx -->
+          </field>
+          [!IF "as:modconf('EthSM')[1]/EthSMGeneral/EthSMDevAuthSupport = 'true'"!][!//
+          <field>
+            [!IF "node:value(./EthSMDevAuthNoComNotificationEnable)='true'"!][!/*
+              */!]<int>1</int>[!// <!-- DevAuthNotifEnable -->
+            [!ELSE!][!/*
+              */!]<int>0</int>[!//
+            [!ENDIF!][!//
+          </field>
+          [!ENDIF!]
+          [!IF "as:modconf('EthSM')[1]//ReportToDem/EthSMDemCtrlTestResultReportToDem = 'DEM'"!][!//
+          <field>
+          [!IF "node:exists(EthSMDemEventParameterRefs/ETHSM_E_LINK_DOWN)"!][!//
+            <int>[!"node:ref(EthSMDemEventParameterRefs/ETHSM_E_LINK_DOWN)/DemEventId"!]</int> <!-- DemEventId -->
+          [!ELSE!][!//
+            <symbol>ETHSM_INVALID_DEM_EVENTID</symbol> <!-- Disabled DEM Event ETHSM_E_LINK_DOWN -->
+          [!ENDIF!][!//
+          </field>
+          [!ENDIF!][!//
+        </field>
+        [!ENDLOOP!][!//
+        </field> <!-- Module_ConfigLayout.Network -->
+
+      </instance> <!-- Module_ConfigLayoutType -->
+      </memory-section>
+
+    </configuration>
+
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>
+
+[!ENDCODE!]

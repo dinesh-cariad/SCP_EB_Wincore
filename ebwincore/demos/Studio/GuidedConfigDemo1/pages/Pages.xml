@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<xform xmlns:xs="http://www.tresos.de/_projects/tresos/09/widgets.xsd">
+
+    <!--
+        Standalone Editor with two pages
+    -->
+    <Page id="XFormsWizard" title="XFormsWizard"
+        description="An example of how to create guided config page using the XForms API">
+
+        <!--
+            Page 1
+        -->
+        <Page id="DemoPage1" title="DemoPage1">
+            <Group widgetId="Page1Group1">            
+                <Label text="Int"/>
+                <Text widgetId="Page1IntWidget" mementoId="Page1IntMemento" format="INTEGER"/>
+
+                <Label text="Text"/>
+                <Text widgetId="Page1StringWidget" mementoId="Page1StringMemento" format="TEXT"/>
+
+                <Label text="Float"/>
+                <Text widgetId="Page1FloatWidget" mementoId="Page1FloatMemento" format="FLOAT"/>
+
+                <Label text="Bool"/>
+        		<CheckBox widgetId="Page1CheckboxWidget" mementoId="Page1CheckboxMemento" />
+        				
+        		<Spacer horizontalSpan="2"/>		
+                <Browser widgetId="Page1BrowserWidget" horizontalSpan="2" width="200">
+                    <text><![CDATA[
+                            <a href="wizard://guidedDemo1/Page2IntWidget">Go to Integer field on page2</a>
+                    ]]></text>
+                </Browser>  				
+            </Group>
+        </Page>
+
+        <!--
+            Page 2
+        -->
+        <Page id="DemoPage2" title="DemoPage2">
+            <Group widgetId="Page2Group1" frame="TITLE" label="Group with TITLE">
+                <Label text="Integer"/>
+                <Text widgetId="Page2IntWidget" mementoId="Page2IntMemento" format="INTEGER"/>
+            </Group>
+        </Page>
+
+
+    </Page>
+</xform>

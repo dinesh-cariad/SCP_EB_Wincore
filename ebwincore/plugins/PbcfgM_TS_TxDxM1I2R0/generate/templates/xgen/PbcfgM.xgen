@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+[!//
+[!MACRO "GetModuleName", "modulePath"!][!/*
+  */!][!VAR "_ModuleName" = "text:split($modulePath,'/')[count(text:split($modulePath,'/'))]"!][!/*
+  */!][!"$_ModuleName"!][!/*
+*/!][!ENDMACRO!][!//
+
+[!// modulePath is like the following: /AUTOSAR/TOP-LEVEL-PACKAGES/CanTrcvA/ELEMENTS/CanTrcv
+[!MACRO "GetPostfixedModuleName", "modulePath"!][!/*
+  */!][!VAR "_ModuleName"!][!CALL "GetModuleName", "modulePath"="$modulePath"!][!ENDVAR!][!/*
+  */!][!VAR "_ModuleNamePostfixed" = "$_ModuleName"!][!/*
+  */!][!IF "node:exists(concat($modulePath,'/CommonPublishedInformation/VendorApiInfix'))"!][!/*
+    */!][!VAR "_ModuleNamePostfixed" = "concat($_ModuleNamePostfixed,'_')"!][!/*
+    */!][!VAR "_ModuleNamePostfixed" = "concat($_ModuleNamePostfixed,node:value(concat($modulePath,'/CommonPublishedInformation/VendorId')))"!][!/*
+    */!][!VAR "_ModuleNamePostfixed" = "concat($_ModuleNamePostfixed,'_')"!][!/*
+    */!][!VAR "_ModuleNamePostfixed" = "concat($_ModuleNamePostfixed,node:value(concat($modulePath,'/CommonPublishedInformation/VendorApiInfix')))"!][!/*
+  */!][!ENDIF!][!/*
+  */!][!"$_ModuleNamePostfixed"!][!/*
+*/!][!ENDMACRO!][!//
+
+[!// modulePath is like the following: /AUTOSAR/TOP-LEVEL-PACKAGES/CanTrcvA/ELEMENTS/CanTrcv
+[!MACRO "GetPostfixedVariantModuleName", "modulePath"!][!/*
+  */!][!VAR "_ModuleNamePostfixed"!][!CALL "GetPostfixedModuleName", "modulePath"="$modulePath"!][!ENDVAR!][!/*
+  */!][!VAR "_ModuleNamePostfixedVariant" = "$_ModuleNamePostfixed"!][!/*
+  */!][!VAR "variantName" = "asc:getVariantName()"!][!/*
+    */!][!IF "$variantName != ''"!][!/*
+    */!][!"$_ModuleNamePostfixedVariant"!]_[!"$variantName"!][!/*
+  */!][!ELSE!][!/*
+    */!][!"$_ModuleNamePostfixedVariant"!][!/*
+  */!][!ENDIF!][!/*
+*/!][!ENDMACRO!][!//
+[!//
+[!VAR "PbcfgMVariantName"!][!CALL "GetPostfixedVariantModuleName", "modulePath"="node:path(as:modconf('PbcfgM')[1])"!][!ENDVAR!]
+[!VAR "PbcfgMSoftwareVersion"!][!"as:modconf('PbcfgM')[1]/CommonPublishedInformation/SwMajorVersion"!].[!"as:modconf('PbcfgM')[1]/CommonPublishedInformation/SwMinorVersion"!].[!"as:modconf('PbcfgM')[1]/CommonPublishedInformation/SwPatchVersion"!][!ENDVAR!]
+<?module PbcfgM?>
+<xgen xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+  <module name="PbcfgM" version="[!"$PbcfgMSoftwareVersion"!]">
+    <configuration class="PreCompile">
+      <?artifact type="types-h" directory="include" file="PbcfgM_CfgTypes.h" generate="yes"?>
+      <parameter name="relocatable-enable">
+        <boolean-value>[!"as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMRelocatableCfgEnable"!]</boolean-value>
+      </parameter>
+      <!-- !LINKSTO PbcfgM.dsn.ConfigType,1 -->
+      <type name="PbcfgM_ConfigType">
+        <comment><![CDATA[\brief Root configuration of the PbcfgM]]></comment>
+        <struct>
+        <member name="PlatformSignature" type="uint32"
+          comment="Platform signature for validation"/>
+        <member name="LcfgSignature" type="uint32"
+          comment="Validate the post build configuration against the link time configuration"/>
+        <member name="CfgSignature" type="uint32"
+          comment="Validate the post build configuration against the precompile time configuration"/>
+        <member name="PublicInfoSignature" type="uint32"
+          comment="Validate the post build configuration against the module version number"/>
+        <member name="numConfigEntry" type="uint16"
+          comment="Number of modules which are initialized by the PbcfgM module"/>
+        <member name="ConfigEntryRef" type="PbcfgM_ModuleConfigEntryType"
+          comment="Reference to the first module entry">
+          <compiler-abstraction>
+            <ref2cfg/>
+          </compiler-abstraction>
+        </member>
+
+        </struct>
+      </type>
+
+      <type name="PbcfgM_ModuleConfigEntryType">
+        <struct>
+        <member name="ConfigRef" type="void"
+          comment="Reference to the associated module configuration">
+          <compiler-abstraction>
+            <ref2cfg/>
+          </compiler-abstraction>
+        </member>
+        <member name="ModuleId" type="uint16"
+          comment="ID identifying a module"/>
+        <member name="InstanceId" type="uint16"
+          comment="ID identifying a certain instance of module"/>
+        </struct>
+      </type>
+
+    </configuration>
+    <configuration class="PostBuild">
+      <?artifact directory="include" file="[!"$PbcfgMVariantName"!]_PBcfg.h" type="postbuild-h" generate="yes"?>
+      <?artifact directory="src" file="[!"$PbcfgMVariantName"!]_PBcfg.c" type="postbuild-c" generate="yes"?>
+[!VAR "binarySupport"="as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMBinarySupportEnable"!]
+      <?artifact directory="." file="[!"$PbcfgMVariantName"!].srec" type="postbuild-srec" generate=[!IF "$binarySupport='true'"!]"yes"[!ELSE!]"no"[!ENDIF!]?>
+
+      <type name="[!"$PbcfgMVariantName"!]_ConfigLayoutType">
+        <struct>
+        <member name="PbcfgM_RootConfig" type="PbcfgM_ConfigType"/>
+        <member name="ConfigEntries" type="PbcfgM_ModuleConfigEntryType" count="[!"num:i(count(PbcfgMBswModules/*))"!]"/>
+[!LOOP "PbcfgMBswModules/*"!][!//
+        [!VAR "ModuleNamePostfixed"!][!CALL "GetPostfixedVariantModuleName", "modulePath"="node:path(node:ref(./PbcfgMBswModuleRef))"!][!ENDVAR!][!//
+<member name="Config[!"$ModuleNamePostfixed"!]" type="[!"$ModuleNamePostfixed"!]_ConfigLayoutType"/>
+[!ENDLOOP!][!//
+      </struct>
+      </type>
+      <type name="[!"$PbcfgMVariantName"!]_ConstConfigLayoutType">
+        <reference type="[!"$PbcfgMVariantName"!]_ConfigLayoutType">
+          <compiler-abstraction>
+            <const memory-class="PBCFGM_APPL_CONST" />
+          </compiler-abstraction>
+        </reference>
+      </type>
+
+      <memory-section name="CONFIG_DATA_UNSPECIFIED">
+      <instance type="[!"$PbcfgMVariantName"!]_ConstConfigLayoutType"
+          name="[!"$PbcfgMVariantName"!]_Config"
+          address="[!"as:modconf('PbcfgM')[1]/PbcfgMGeneral/PbcfgMConstCfgAddress"!]">
+
+        <parameter name="postbuild-configuration-name">
+          <symbolic-value>[!"$PbcfgMVariantName"!]_ConfigRoot</symbolic-value>
+        </parameter>
+
+        <field> <!-- PbcfgM_RootConfig -->
+          <field><int>[!"asc:getPlatformSignature()"!]</int></field>
+          <field><int>[!"asc:getConfigSignature(as:modconf('PbcfgM')[1]//*[not(child::*) and (node:configclass() = 'Link')])"!]</int></field>
+          <field><int>[!"asc:getConfigSignature(as:modconf('PbcfgM')[1]//*[not(child::*) and (node:configclass() = 'PreCompile') ])"!]</int></field>
+          <field><int>[!"asc:getConfigSignature(node:difference(as:modconf('PbcfgM')[1]/CommonPublishedInformation//*[not(child::*) and (node:configclass() = 'PublishedInformation')], as:modconf('PbcfgM')[1]/CommonPublishedInformation/Release))"!]</int></field>
+          <field><int>[!"num:i(count(as:modconf('PbcfgM')[1]/PbcfgMBswModules/*))"!]</int></field>
+          <field>
+            <ref>
+              <struct-field name="ConfigEntries" />
+              <array-field index="0" />
+            </ref>
+          </field>
+        </field>
+        <field>
+[!LOOP "PbcfgMBswModules/*"!][!/*
+   */!][!VAR "ModuleName"!][!CALL "GetModuleName", "modulePath"="node:path(node:ref(./PbcfgMBswModuleRef))"!][!ENDVAR!][!/*
+   */!][!VAR "ModuleNamePostfixed"!][!CALL "GetPostfixedVariantModuleName", "modulePath"="node:path(node:ref(./PbcfgMBswModuleRef))"!][!ENDVAR!][!//
+          <field> <!-- [!"$ModuleNamePostfixed"!] -->
+            <field>
+              <ref>
+                <struct-field name="Config[!"$ModuleNamePostfixed"!]"/>
+              </ref>
+            </field>
+            <field><int>[!"node:ref(./PbcfgMBswModuleRef)/CommonPublishedInformation/ModuleId"!]</int></field>[!//
+[!IF "node:exists(./PbcfgMModuleInstanceID)"!][!//
+            <field><int>[!"node:value(./PbcfgMModuleInstanceID)"!]</int></field>[!//
+[!ELSE!][!//
+            <field><int>0</int></field>[!//
+[!ENDIF!][!//
+          </field>
+[!ENDLOOP!][!//
+        </field>
+[!LOOP "PbcfgMBswModules/*"!][!//
+[!VAR "ModuleNamePostfixed"!][!CALL "GetPostfixedModuleName", "modulePath"="node:path(node:ref(./PbcfgMBswModuleRef))"!][!ENDVAR!][!//
+       <include-instance module="[!"$ModuleNamePostfixed"!]"/>
+[!ENDLOOP!][!//
+      </instance>
+      </memory-section>
+    </configuration>
+  </module>
+[!LOOP "PbcfgMBswModules/*"!][!//
+[!VAR "ModuleNamePostfixed"!][!CALL "GetPostfixedVariantModuleName", "modulePath"="node:path(node:ref(./PbcfgMBswModuleRef))"!][!ENDVAR!][!//
+  <xi:include href="[!"$ModuleNamePostfixed"!].xgen" xpointer="element(/1/1)"/>
+[!ENDLOOP!][!//
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+</xgen>

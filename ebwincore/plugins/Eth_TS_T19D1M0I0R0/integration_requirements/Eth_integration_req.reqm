@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specdocument>
+  <specobjects doctype="lim">
+
+    <specobject>
+      <id>lim.Eth.EB_INTREQ_Eth_0001</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+        For initialization of the Eth controller the API Eth_ControllerInit() must be called.
+        An example and imported hints can be found in the provided file: 
+        \Tresos\plugins\TS_T19D1M0I0R0\template\Eb_Intgr_BswM_UserCallouts.c
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.Eth.EB_INTREQ_Eth_0002</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+        The API Eth_SetPhysAddr() must only be called when the Ethernet controller is not active.
+        (either before the API Eth_SetControllerMode(ETH_MODE_ACTIVE) is called or after the API
+        API Eth_SetControllerMode(ETH_MODE_DOWN) is called). 
+        This ensures that there is no inconsistency of the local physical address during frame 
+        transmission and frame receptions.
+      </description>
+      
+    </specobject>
+
+    <specobject>
+      <id>lim.Eth.EB_INTREQ_Eth_0003</id>
+      <status>approved</status>
+      <source>EB integration requirement</source>
+      <version>1</version>
+      <description>
+      
+      
+        The Eth buffers must be located in an non cached memory area and they must be 
+        8 byte aligned.
+        Own array variables can be defined in the configuration table EthMemSection. The buffer 
+        memory (configuration parameter EthCtrlConfigEgressFifoBufMemSectionRef and
+        EthCtrlConfigIngressFifoBufMemSectionRef) and the buffer descriptor memory (configuration
+        parameter EthCtrlConfigEgressFifoBufDescMemSectionRef and 
+        EthCtrlConfigIngressFifoBufMemSectionRef)of every ingress and egress Fifo can be assigned 
+        to one of this memory section. 
+        When no memory section is configured the default memory section is created: 
+        Eth_BufferEthMemSection_Default
+        With the help of the linker script (or with pragma statements) the requested address alignment
+        can be ensured.
+      </description>
+    </specobject>
+    
+    
+
+
+  </specobjects>
+</specdocument>

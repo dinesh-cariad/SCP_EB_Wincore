@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?module EthIf?>
+
+<xgen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.elektrobit.com/2013/xgen" xmlns:xi="http://www.w3.org/2001/XInclude">
+
+[!CODE!]
+[!AUTOSPACING!]
+
+[!INCLUDE "../../generate_macros/EthIf_Cfg.m"!][!//
+
+  <!-- This is the configuration of module EthIf -->
+  <module name="EthIf">
+
+    <!-- This is the Precompile-time configuration of the module. -->
+    <configuration class="PreCompile">
+
+      [!IF "(variant:size() = 0) or (variant:all()[1] = variant:name())"!]
+        <?artifact directory="include" file="EthIf_Types_ExtGen.h" type="types-h" generate="yes" ?>
+      [!ELSE!]
+        <?artifact directory="include" file="EthIf_Types_ExtGen.h" type="types-h" generate="no" ?>
+      [!ENDIF!]
+
+[!INCLUDE "../../generate_macros/EthIf_PreCompileConfig.m"!][!//
+
+    </configuration>  <!-- PreCompile -->
+
+  </module>
+
+  <!-- include the AUTOSAR standard data types, etc. -->
+  <xi:include href="Base.xgen" xpointer="element(/1/1)"/>
+
+</xgen>
+
+[!ENDCODE!]

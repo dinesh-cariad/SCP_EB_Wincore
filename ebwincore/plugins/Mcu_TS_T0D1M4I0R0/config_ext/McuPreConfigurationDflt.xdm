@@ -1,0 +1,109 @@
+<?xml version='1.0'?>
+<!-- !LINKSTO TESTING001,1 -->
+<datamodel version="3.0" 
+           xmlns="http://www.tresos.de/_projects/DataModel2/08/root.xsd" 
+           xmlns:a="http://www.tresos.de/_projects/DataModel2/08/attribute.xsd" 
+           xmlns:v="http://www.tresos.de/_projects/DataModel2/06/schema.xsd" 
+           xmlns:d="http://www.tresos.de/_projects/DataModel2/06/data.xsd">
+
+  <d:ctr type="AUTOSAR" factory="autosar" 
+         xmlns:ad="http://www.tresos.de/_projects/DataModel2/08/admindata.xsd" 
+         xmlns:icc="http://www.tresos.de/_projects/DataModel2/08/implconfigclass.xsd" 
+         xmlns:mt="http://www.tresos.de/_projects/DataModel2/11/multitest.xsd" >
+    <d:lst type="TOP-LEVEL-PACKAGES">
+      <d:ctr name="TS_T0D1M4I0R0" type="AR-PACKAGE">
+        <d:lst type="ELEMENTS">
+          <d:chc name="McuPreConfigurationDflt" type="AR-ELEMENT" value="MODULE-CONFIGURATION">
+            <d:ctr type="MODULE-CONFIGURATION">
+              <a:a name="DEF" value="ASPath:/TS_T0D1M4I0R0/Mcu"/>
+              <d:ctr name="McuGeneralConfiguration" type="IDENTIFIABLE">
+                <d:var name="McuDevErrorDetect" type="BOOLEAN" value="true">
+                  <a:a name="IMPORTER_INFO" value="@DEF"/>
+                </d:var>
+                <d:var name="McuGetRamStateApi" type="BOOLEAN" value="true">
+                  <a:a name="IMPORTER_INFO" value="@DEF"/>
+                </d:var>
+                <d:var name="McuInitClock" type="BOOLEAN" value="true">
+                  <a:a name="IMPORTER_INFO" value="@DEF"/>
+                </d:var>
+                <d:var name="McuNoPll" type="BOOLEAN" value="true">
+                  <a:a name="IMPORTER_INFO" value="@DEF"/>
+                </d:var>
+                <d:var name="McuPerformResetApi" type="BOOLEAN" value="true">
+                  <a:a name="IMPORTER_INFO" value="@DEF"/>
+                </d:var>
+                <d:var name="McuVersionInfoApi" type="BOOLEAN" value="true">
+                  <a:a name="IMPORTER_INFO" value="@DEF"/>
+                </d:var>
+              </d:ctr>
+              <d:lst name="McuModuleConfiguration" type="MAP">
+                <d:ctr name="McuModuleConfiguration_0" type="IDENTIFIABLE">
+                  <d:var name="McuClockSrcFailureNotification" 
+                         type="ENUMERATION" value="DISABLED"/>
+                  <d:var name="McuNumberOfMcuModes" type="INTEGER" value="1"/>
+                  <d:var name="McuRamSectors" type="INTEGER" value="1"/>
+                  <d:var name="McuResetSetting" type="INTEGER" value="0">
+                    <a:a name="ENABLE" value="false"/>
+                    <a:a name="IMPORTER_INFO" value="@DEF"/>
+                  </d:var>
+                  <d:lst name="McuClockSettingConfig" type="MAP">
+                    <d:ctr name="McuClockSettingConfig_0" type="IDENTIFIABLE">
+                      <d:var name="McuClockSettingId" type="INTEGER" value="1"/>
+                      <d:lst name="McuClockReferencePoint" type="MAP">
+                        <d:ctr name="McuClockReferencePoint_0" 
+                               type="IDENTIFIABLE">
+                          <d:var name="McuClockReferencePointFrequency" 
+                                 type="FLOAT" value="0.0">
+                            <a:a name="IMPORTER_INFO" value="@DEF"/>
+                          </d:var>
+                        </d:ctr>
+                      </d:lst>
+                    </d:ctr>
+                  </d:lst>
+                  <d:ctr name="McuDemEventParameterRefs" type="IDENTIFIABLE">
+                    <a:a name="ENABLE" value="false"/>
+                    <d:ref name="MCU_E_CLOCK_FAILURE" type="REFERENCE" >
+                      <a:a name="ENABLE" value="false"/>
+                      <a:a name="IMPORTER_INFO" value="@DEF"/>
+                    </d:ref>
+                  </d:ctr>
+                  <d:lst name="McuModeSettingConf" type="MAP">
+                    <d:ctr name="McuModeSettingConf_0" type="IDENTIFIABLE">
+                      <d:var name="McuMode" type="INTEGER" value="1"/>
+                    </d:ctr>
+                  </d:lst>
+                  <d:lst name="McuRamSectorSettingConf" type="MAP"/>
+                </d:ctr>
+              </d:lst>
+              <d:ctr name="McuPublishedInformation" type="IDENTIFIABLE">
+                <d:lst name="McuResetReasonConf" type="MAP">
+                <d:ctr name="MCU_POWER_ON_RESET" type="IDENTIFIABLE">
+                          <d:var name="McuResetReason" 
+                                 type="INTEGER" value="0">
+                          </d:var>
+                </d:ctr>
+                <d:ctr name="MCU_WATCHDOG_RESET" type="IDENTIFIABLE">
+                          <d:var name="McuResetReason" 
+                                 type="INTEGER" value="1">
+                          </d:var>
+                </d:ctr>
+                <d:ctr name="MCU_SW_RESET" type="IDENTIFIABLE">
+                          <d:var name="McuResetReason" 
+                                 type="INTEGER" value="2">
+                          </d:var>
+                </d:ctr>
+                <d:ctr name="MCU_RESET_UNDEFINED" type="IDENTIFIABLE">
+                          <d:var name="McuResetReason" 
+                                 type="INTEGER" value="3">
+                          </d:var>
+                </d:ctr>
+                </d:lst>
+              </d:ctr>
+            </d:ctr>
+          </d:chc>
+        </d:lst>
+      </d:ctr>
+    </d:lst>
+  </d:ctr>
+
+</datamodel>
